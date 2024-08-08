@@ -1,0 +1,14 @@
+{
+  "name": "@caido/quickjs-types",
+  "version": "0.2.1",
+  "description": "Typing for the QuickJS Engine",
+  "author": "Caido Labs Inc. <dev@caido.io>",
+  "license": "MIT",
+  "types": "./src/index.d.ts",
+  "files": [
+    "src/*"
+  ],
+  "scripts": {
+    "update": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../dependency-llrt/types/ ./src/llrt/"
+  }
+}

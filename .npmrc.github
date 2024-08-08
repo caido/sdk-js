@@ -1,0 +1,5 @@
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+
+@caido:registry=https://npm.pkg.github.com
+
+publish-branch=main
