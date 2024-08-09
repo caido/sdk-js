@@ -140,11 +140,6 @@ declare module "child_process" {
     kill(signal?: QuickJS.Signals | number): boolean;
 
     /**
-     * Calls {@link ChildProcess.kill} with `'SIGTERM'`.
-     */
-    [Symbol.dispose](): void;
-
-    /**
      * events.EventEmitter
      * 1. close
      * 2. error
