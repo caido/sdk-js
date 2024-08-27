@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Publish
       shell: bash
-      working-directory: ./src/${{ inputs.package }}
+      working-directory: packages/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-npm-token }}
       run: |
@@ -42,7 +42,7 @@ runs:
     - name: Publish internal
       if: ${{ inputs.internal == 'true' }}
       shell: bash
-      working-directory: ./src/${{ inputs.package }}
+      working-directory: packages/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-github-token }}
       run: |
