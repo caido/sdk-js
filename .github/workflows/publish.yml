@@ -29,7 +29,7 @@ jobs:
           version: ${{ env.CAIDO_PNPM_VERSION }}
 
       - name: Publish quickjs-types
-        uses: .github/actions/plublish-one
+        uses: .github/actions/publish-one
         with:
           package: quickjs-types
           internal: true
@@ -37,7 +37,7 @@ jobs:
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-backend
-        uses: .github/actions/plublish-one
+        uses: .github/actions/publish-one
         with:
           package: sdk-backend
           internal: false
@@ -45,7 +45,7 @@ jobs:
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-shared
-        uses: .github/actions/plublish-one
+        uses: .github/actions/publish-one
         with:
           package: sdk-shared
           internal: true
