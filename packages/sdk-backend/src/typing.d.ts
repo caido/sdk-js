@@ -10,7 +10,15 @@ declare module "caido:plugin" {
   /**
    * The SDK for the API RPC service.
    */
-  export type APISDK = {
+  export type APISDK<API = {}, Events = {}> = {
+    /**
+     * Sends an event to the frontend plugin.
+     *
+     * @example
+     * sdk.api.send("myEvent", 5, "hello");
+     */
+    send(event: keyof Events, ...args: any[]): void;
+
     /**
      * Registers a new backend function for the RPC.
      *
@@ -20,7 +28,7 @@ declare module "caido:plugin" {
      * });
      */
     register(
-      name: string,
+      name: keyof API,
       callback: (sdk: SDK, ...args: any[]) => MaybePromise<any>,
     ): void;
   };
@@ -28,7 +36,7 @@ declare module "caido:plugin" {
   /**
    * The SDK for the API RPC service.
    */
-  export type EventsSDK = {
+  export type EventsSDK<API = {}, Events = {}> = {
     /**
      * Registers an callback on new intercepted requests.
      *
@@ -40,7 +48,7 @@ declare module "caido:plugin" {
      * });
      */
     onInterceptRequest(
-      callback: (sdk: SDK, request: Request) => MaybePromise<void>,
+      callback: (sdk: SDK<API, Events>, request: Request) => MaybePromise<void>,
     ): void;
 
     /**
@@ -55,7 +63,7 @@ declare module "caido:plugin" {
      */
     onInterceptResponse(
       callback: (
-        sdk: SDK,
+        sdk: SDK<API, Events>,
         request: Request,
         response: Response,
       ) => MaybePromise<void>,
@@ -65,7 +73,7 @@ declare module "caido:plugin" {
   /**
    * The SDK object available to all scripts.
    */
-  export interface SDK {
+  export interface SDK<API = {}, Events = {}> {
     /**
      * The console.
      *
@@ -83,10 +91,10 @@ declare module "caido:plugin" {
     /**
      * The SDK for the API RPC service.
      */
-    api: APISDK;
+    api: APISDK<API, Events>;
     /**
      * The SDK for the Events service.
      */
-    events: EventsSDK;
+    events: EventsSDK<API, Events>;
   }
 }
