@@ -27,7 +27,7 @@ runs:
         NPM_TOKEN: ${{ inputs.secret-npm-token }}
       run: |
         # Read the current version from package.json
-        CURRENT_VERSION=$(jq -r '.version' ./package.json)
+        CURRENT_VERSION=$(jq -r '.version' ./packages/${{ inputs.package }}/package.json)
 
         # Check if the version contains "-beta"
         if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
