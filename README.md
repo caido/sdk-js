@@ -23,7 +23,9 @@
 This is the monorepo for all the JS SDK and related tooling of Caido. It contains the following packages:
 
 - `quickjs-types`: Typing for the QuickJS Engine
+- `sdk-backend`: SDK definition for the Caido Backend
 - `sdk-shared`: Typing helpers shared between SDKs
+- `sdk-workflow`: SDK definition for Caido Workflows
 
 ## 💚 Community
 
