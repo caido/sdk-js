@@ -65,7 +65,7 @@ declare module "caido:plugin" {
   /**
    * The SDK object available to all scripts.
    */
-  export type SDK = {
+  export interface SDK {
     /**
      * The console.
      *
@@ -88,5 +88,5 @@ declare module "caido:plugin" {
      * The SDK for the Events service.
      */
     events: EventsSDK;
-  };
+  }
 }
