@@ -25,6 +25,12 @@ importers:
 
   packages/sdk-shared: {}
 
+  packages/sdk-workflow:
+    dependencies:
+      '@caido/quickjs-types':
+        specifier: 0.4.0
+        version: 0.4.0
+
 packages:
 
   '@caido/quickjs-types@0.4.0':

@@ -51,3 +51,11 @@ jobs:
           internal: true
           secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish sdk-workflow
+        uses: ./.github/actions/publish-one
+        with:
+          package: sdk-workflow
+          internal: true
+          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
+          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
