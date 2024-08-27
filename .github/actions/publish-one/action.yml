@@ -23,7 +23,6 @@ runs:
   steps:
     - name: Publish
       shell: bash
-      working-directory: packages/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-npm-token }}
       run: |
@@ -33,16 +32,15 @@ runs:
         # Check if the version contains "-beta"
         if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
           echo "Publishing $CURRENT_VERSION as beta tag"
-          pnpm publish --access public --tag beta
+          pnpm --filter ${{ inputs.package }} -r publish --access public --tag beta
         else
           echo "Publishing $CURRENT_VERSION as latest tag"
-          pnpm publish --access public
+          pnpm --filter ${{ inputs.package }} publish --access public
         fi
 
     - name: Publish internal
       if: ${{ inputs.internal == 'true' }}
       shell: bash
-      working-directory: packages/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-github-token }}
       run: |
@@ -56,10 +54,10 @@ runs:
         # Check if the version contains "-beta"
         if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
           echo "Publishing $CURRENT_VERSION as beta tag"
-          pnpm publish --tag beta --no-git-checks
+          pnpm --filter ${{ inputs.package }} -r publish --tag beta --no-git-checks
         else
           echo "Publishing $CURRENT_VERSION as latest tag"
-          pnpm publish --no-git-checks
+          pnpm --filter ${{ inputs.package }} -r publish --no-git-checks
         fi
 
         # Restore npmrc
