@@ -49,7 +49,7 @@ runs:
         mv .npmrc.github .npmrc
 
         # Read the current version from package.json
-        CURRENT_VERSION=$(jq -r '.version' ./package.json)
+        CURRENT_VERSION=$(jq -r '.version' ./packages/${{ inputs.package }}/package.json)
 
         # Check if the version contains "-beta"
         if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
