@@ -7,19 +7,6 @@ declare module "caido:plugin" {
     Response,
   } from "caido:utils";
 
-  export type DefineAPI<
-    API extends Record<string, (...args: any[]) => MaybePromise<any>>,
-  > = {
-    [K in keyof API]: DefineCallback<API[K]>;
-  };
-
-  export type DefineCallback<F> = F extends (
-    sdk: SDK,
-    ...args: infer A
-  ) => infer R
-    ? (...args: A) => R
-    : "Your callback must respect the format (sdk: SDK, ...args: unknown[]) => MaybePromise<unknown>";
-
   /**
    * The SDK for the API RPC service.
    */
