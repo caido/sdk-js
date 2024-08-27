@@ -1,0 +1,66 @@
+name: Publish One
+description: Action to publish one package
+
+inputs:
+  package:
+    description: Package to publish
+    required: true
+
+  internal:
+    description: Publish internally
+    required: true
+
+  secret-npm-token:
+    description: NPM Token
+    required: true
+
+  secret-github-token:
+    description: Github Token
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Publish
+      shell: bash
+      working-directory: 'src/${{ inputs.package }}'
+      env:
+        NPM_TOKEN: ${{ inputs.secret-npm-token }}
+      run: |
+        # Read the current version from package.json
+        CURRENT_VERSION=$(jq -r '.version' ./package.json)
+
+        # Check if the version contains "-beta"
+        if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+          echo "Publishing $CURRENT_VERSION as beta tag"
+          pnpm publish --access public --tag beta
+        else
+          echo "Publishing $CURRENT_VERSION as latest tag"
+          pnpm publish --access public
+        fi
+
+    - name: Publish internal
+      if: ${{ inputs.internal == 'true' }}
+      shell: bash
+      env:
+        NPM_TOKEN: ${{ inputs.secret-github-token }}
+      run: |
+        # Switch npmrc
+        mv .npmrc .npmrc.pub
+        mv .npmrc.github .npmrc
+
+        # Read the current version from package.json
+        CURRENT_VERSION=$(jq -r '.version' ./package.json)
+
+        # Check if the version contains "-beta"
+        if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+          echo "Publishing $CURRENT_VERSION as beta tag"
+          pnpm publish --tag beta --no-git-checks
+        else
+          echo "Publishing $CURRENT_VERSION as latest tag"
+          pnpm publish --no-git-checks
+        fi
+
+        # Restore npmrc
+        mv .npmrc .npmrc.github
+        mv .npmrc.pub .npmrc
