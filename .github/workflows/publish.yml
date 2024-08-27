@@ -44,6 +44,14 @@ jobs:
           secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Publish sdk-frontend
+        uses: ./.github/actions/publish-one
+        with:
+          package: sdk-frontend
+          internal: false
+          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
+          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Publish sdk-shared
         uses: ./.github/actions/publish-one
         with:

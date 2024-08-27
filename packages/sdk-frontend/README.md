@@ -18,15 +18,26 @@
   <hr />
 </div>
 
-## 👋 SDK JS
+## 👋 Frontend SDK
 
-This is the monorepo for all the JS SDK and related tooling of Caido. It contains the following packages:
+[![NPM Version](https://img.shields.io/npm/v/@caido/sdk-frontend?style=for-the-badge)](https://www.npmjs.com/package/@caido/sdk-frontend)
 
-- `sdk-backend`: SDK definition for the Caido Backend
-- `sdk-frontend`: SDK definition for the Caido Frontend
-- `sdk-workflow`: SDK definition for Caido Workflows
-- `sdk-shared`: Typing helpers shared between SDKs
-- `quickjs-types`: Typing for the QuickJS Engine
+This is repository for the Caido frontend SDK.
+
+The design pattern is heavily influenced by the VSCode SDK and works mainly with the `Command` concept.
+
+```typescript
+import { Caido } from "@caido/sdk-frontend";
+
+Caido.commands.register("my-command", {
+  name: "My Command",
+  run: (context) => {
+    // Do something
+  },
+});
+
+Caido.commandPalette.register("my-command");
+```
 
 ## 💚 Community
 
