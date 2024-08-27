@@ -19,11 +19,11 @@ inputs:
     required: true
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Publish
       shell: bash
-      working-directory: 'src/${{ inputs.package }}'
+      working-directory: ./src/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-npm-token }}
       run: |
@@ -42,6 +42,7 @@ runs:
     - name: Publish internal
       if: ${{ inputs.internal == 'true' }}
       shell: bash
+      working-directory: ./src/${{ inputs.package }}
       env:
         NPM_TOKEN: ${{ inputs.secret-github-token }}
       run: |
