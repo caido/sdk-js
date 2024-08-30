@@ -1,7 +1,7 @@
 import type { Sdk } from "./__generated__/graphql-sdk";
 import type { BackendEndpoints, BackendEvents, ToBackendRPC } from "./backend";
 import type { CommandContext } from "./commands";
-import type { Editor } from "./editor";
+import type { Editor, HTTPRequestEditor, HTTPResponseEditor } from "./editor";
 import type { Finding } from "./findings";
 import type { MenuItem } from "./menu";
 import type { Scope } from "./scopes";
@@ -59,6 +59,16 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
             body?: HTMLElement;
             footer?: HTMLElement;
         }) => HTMLElement;
+        /**
+         * Create an HTTP request editor
+         * @returns The HTTP request editor.
+         */
+        httpRequestEditor: () => HTTPRequestEditor;
+        /**
+         * Create an HTTP response editor
+         * @returns The HTTP response editor.
+         */
+        httpResponseEditor: () => HTTPResponseEditor;
     };
     /**
      * Utilities to interact with scopes

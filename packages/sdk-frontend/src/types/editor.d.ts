@@ -1,3 +1,4 @@
+import type { EditorView } from "@codemirror/view";
 /**
  * Generic editor interface.
  */
@@ -20,4 +21,12 @@ export type Editor = {
      * Focus the editor.
      */
     focus: () => void;
+};
+export type HTTPRequestEditor = {
+    getElement: () => HTMLElement;
+    getEditorView: () => EditorView;
+};
+export type HTTPResponseEditor = {
+    getElement: () => HTMLElement;
+    getEditorView: () => EditorView;
 };
