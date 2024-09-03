@@ -71,6 +71,17 @@ declare module "caido:plugin" {
   };
 
   /**
+   * The SDK for metadata information about the plugin.
+   */
+  export type MetaSDK = {
+    /**
+     * The directory of the plugin in Caido Data.
+     * You can store data related to your plugin in this directory.
+     */
+    path(): string;
+  };
+
+  /**
    * The SDK object available to all scripts.
    */
   export interface SDK<API = {}, Events = {}> {
@@ -96,5 +107,9 @@ declare module "caido:plugin" {
      * The SDK for the Events service.
      */
     events: EventsSDK<API, Events>;
+    /**
+     * The SDK for metadata information about the plugin.
+     */
+    meta: MetaSDK;
   }
 }
