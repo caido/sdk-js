@@ -117,6 +117,14 @@ declare module "caido:utils" {
   };
 
   /**
+   * An immutable saved Request and optional Response pair.
+   */
+  export type RequestResponseOpt = {
+    request: Request;
+    response?: Response | undefined;
+  };
+
+  /**
    * Information on the current page of paginated data.
    */
   export type PageInfo = {
@@ -219,6 +227,13 @@ declare module "caido:utils" {
      */
     query(): RequestsQuery;
     /**
+     * Get a request by its unique {@link ID}.
+     *
+     * @example
+     * await sdk.requests.get("1");
+     */
+    get(id: ID): Promise<RequestResponseOpt | undefined>;
+    /**
      * Sends a request.
      *
      * This respects the upstream proxy settings.
@@ -298,10 +313,33 @@ declare module "caido:utils" {
     request: Request;
   };
 
+  export type GetFindingInput = {
+    /**
+     * The name of the reporter.
+     */
+    reporter?: string | undefined;
+    /**
+     * The associated {@link Request}.
+     */
+    request: Request;
+  };
+
   /**
    * The SDK for the Findings service.
    */
   export type FindingsSDK = {
+    /**
+     * Try to get a {@link Finding} for a request.
+     * Since a request can have multiple findings, this will return the first one found.
+     * You can also filter by reporter to get a specific finding.
+     *
+     * @example
+     * await sdk.findings.get({
+     *  reporter: "Reporter",
+     *  request,
+     * });
+     */
+    get(input: GetFindingInput): Promise<Finding | undefined>;
     /**
      * Creates a new Finding.
      *
