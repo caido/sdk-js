@@ -25,7 +25,23 @@ declare module "caido:utils" {
   }
 
   /**
-   * A saved immutable Request.
+   * An immutable saved raw Request.
+   */
+  export type RequestRaw = {
+    /**
+     * Parse the raw request as a string.
+     *
+     * Unprintable characters will be replaced with `�`.
+     */
+    toText(): string;
+    /**
+     * Get the raw request as an array of bytes.
+     */
+    toBytes(): Uint8Array;
+  };
+
+  /**
+   * An immutable saved Request.
    *
    * To modify, use `toSpec` to get a `RequestSpec` object.
    */
@@ -37,9 +53,11 @@ declare module "caido:utils" {
     getMethod(): string;
     getPath(): string;
     getQuery(): string;
+    getUrl(): string;
     getHeaders(): Record<string, Array<string>>;
     getHeader(name: string): Array<string> | undefined;
     getBody(): Body | undefined;
+    getRaw(): RequestRaw;
     getCreatedAt(): Date;
     toSpec(): RequestSpec;
     toSpecRaw(): RequestSpecRaw;
@@ -96,6 +114,22 @@ declare module "caido:utils" {
   }
 
   /**
+   * An immutable saved raw Response.
+   */
+  export type ResponseRaw = {
+    /**
+     * Parse the raw response as a string.
+     *
+     * Unprintable characters will be replaced with `�`.
+     */
+    toText(): string;
+    /**
+     * Get the raw response as an array of bytes.
+     */
+    toBytes(): Uint8Array;
+  };
+
+  /**
    * An immutable saved Response.
    */
   export type Response = {
@@ -104,6 +138,7 @@ declare module "caido:utils" {
     getHeaders(): Record<string, Array<string>>;
     getHeader(name: string): Array<string> | undefined;
     getBody(): Body | undefined;
+    getRaw(): ResponseRaw;
     getRoundtripTime(): number;
     getCreatedAt(): Date;
   };
