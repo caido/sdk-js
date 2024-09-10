@@ -123,6 +123,10 @@ export type Scalars = {
         input: string;
         output: string;
     };
+    Version: {
+        input: string;
+        output: string;
+    };
 };
 export type AliasTakenUserError = UserError & {
     alias: Scalars["String"]["output"];
@@ -1188,7 +1192,7 @@ export type InstallBrowserPayload = {
     browser?: Maybe<Browser>;
     error?: Maybe<InstallBrowserError>;
 };
-export type InstallPluginPackageError = OtherUserError | PluginUserError;
+export type InstallPluginPackageError = OtherUserError | PluginUserError | StoreUserError;
 export type InstallPluginPackageInput = {
     source: PluginPackageSource;
 };
@@ -1845,6 +1849,10 @@ export type PluginPackage = {
 };
 export type PluginPackageSource = {
     file: Scalars["Upload"]["input"];
+    manifestId?: never;
+} | {
+    file?: never;
+    manifestId: Scalars["ID"]["input"];
 };
 export declare const PluginRuntime: {
     readonly Javascript: "JAVASCRIPT";
@@ -1932,6 +1940,7 @@ export type QueryRoot = {
     sitemapDescendantEntries: SitemapEntryConnection;
     sitemapEntry?: Maybe<SitemapEntry>;
     sitemapRootEntries: SitemapEntryConnection;
+    store: Store;
     stream?: Maybe<Stream>;
     streamWsMessage?: Maybe<StreamWsMessage>;
     streamWsMessages: StreamWsMessageConnection;
@@ -2658,6 +2667,35 @@ export type StartedRestoreBackupTaskPayload = {
 export type StartedTaskPayload = {
     task: Task;
 };
+export type Store = {
+    pluginPackages: Array<StorePluginPackage>;
+};
+export declare const StoreErrorReason: {
+    readonly FileUnavailable: "FILE_UNAVAILABLE";
+    readonly InvalidPublicKey: "INVALID_PUBLIC_KEY";
+    readonly InvalidSignature: "INVALID_SIGNATURE";
+    readonly PackageTooLarge: "PACKAGE_TOO_LARGE";
+    readonly PackageUnknown: "PACKAGE_UNKNOWN";
+};
+export type StoreErrorReason = (typeof StoreErrorReason)[keyof typeof StoreErrorReason];
+export type StorePluginPackage = {
+    author?: Maybe<StorePluginPackageAuthor>;
+    description?: Maybe<Scalars["String"]["output"]>;
+    license: Scalars["String"]["output"];
+    manifestId: Scalars["ID"]["output"];
+    name?: Maybe<Scalars["String"]["output"]>;
+    repository: Scalars["Url"]["output"];
+    version: Scalars["Version"]["output"];
+};
+export type StorePluginPackageAuthor = {
+    email?: Maybe<Scalars["String"]["output"]>;
+    name?: Maybe<Scalars["String"]["output"]>;
+    url?: Maybe<Scalars["String"]["output"]>;
+};
+export type StoreUserError = UserError & {
+    code: Scalars["String"]["output"];
+    reason: StoreErrorReason;
+};
 export type Stream = {
     createdAt: Scalars["Timestamp"]["output"];
     direction: StreamDirection;
@@ -2825,6 +2863,7 @@ export type SubscriptionRoot = {
     updatedInterceptOptions: UpdatedInterceptOptionsPayload;
     updatedInterceptStatus: UpdatedInterceptStatusPayload;
     updatedPlugin: UpdatedPluginPayload;
+    updatedPluginPackage: UpdatedPluginPackagePayload;
     updatedProject: UpdatedProjectPayload;
     updatedReplaySession: UpdatedReplaySessionPayload;
     updatedReplaySessionCollection: UpdatedReplaySessionCollectionPayload;
@@ -3106,6 +3145,9 @@ export type UpdatedInterceptOptionsPayload = {
 };
 export type UpdatedInterceptStatusPayload = {
     status: InterceptStatus;
+};
+export type UpdatedPluginPackagePayload = {
+    package: PluginPackage;
 };
 export type UpdatedPluginPayload = {
     plugin: Plugin;
@@ -4132,6 +4174,10 @@ type UserErrorFull_RenderFailedUserError_Fragment = {
     __typename: "RenderFailedUserError";
     code: string;
 };
+type UserErrorFull_StoreUserError_Fragment = {
+    __typename: "StoreUserError";
+    code: string;
+};
 type UserErrorFull_TaskInProgressUserError_Fragment = {
     __typename: "TaskInProgressUserError";
     code: string;
@@ -4148,7 +4194,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectLockedUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectLockedUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -4158,6 +4204,11 @@ export type PluginUserErrorFullFragment = {
     __typename: "PluginUserError";
     reason: PluginErrorReason;
     code: string;
+};
+export type StoreUserErrorFullFragment = {
+    __typename: "StoreUserError";
+    code: string;
+    storeReason: StoreErrorReason;
 };
 export type DataExportMetaFragment = {
     __typename: "DataExport";
@@ -4826,6 +4877,19 @@ export type PluginPackageFullFragment = {
     author?: {
         name?: string | undefined | null;
         email?: string | undefined | null;
+        url?: string | undefined | null;
+    } | undefined | null;
+};
+export type StorePluginPackageFullFragment = {
+    description?: string | undefined | null;
+    license: string;
+    manifestId: string;
+    name?: string | undefined | null;
+    repository: string;
+    version: string;
+    author?: {
+        email?: string | undefined | null;
+        name?: string | undefined | null;
         url?: string | undefined | null;
     } | undefined | null;
 };
@@ -7097,6 +7161,10 @@ export type InstallPluginPackageMutation = {
             __typename: "PluginUserError";
             reason: PluginErrorReason;
             code: string;
+        } | {
+            __typename: "StoreUserError";
+            code: string;
+            storeReason: StoreErrorReason;
         } | undefined | null;
     };
 };
@@ -10360,6 +10428,26 @@ export type PluginPackagesQuery = {
         } | undefined | null;
     }>;
 };
+export type StorePluginPackagesQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type StorePluginPackagesQuery = {
+    store: {
+        pluginPackages: Array<{
+            description?: string | undefined | null;
+            license: string;
+            manifestId: string;
+            name?: string | undefined | null;
+            repository: string;
+            version: string;
+            author?: {
+                email?: string | undefined | null;
+                name?: string | undefined | null;
+                url?: string | undefined | null;
+            } | undefined | null;
+        }>;
+    };
+};
 export type CurrentProjectQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -13482,6 +13570,8 @@ export type FinishedTaskSubscription = {
             code: string;
         } | {
             code: string;
+        } | {
+            code: string;
         } | undefined | null;
     };
 };
@@ -13596,6 +13686,7 @@ export declare const WorkflowUserErrorFullFragmentDoc = "\n    fragment workflow
 export declare const InvalidGlobTermsUserErrorFullFragmentDoc = "\n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    ";
 export declare const InvalidHttpqlUserErrorFullFragmentDoc = "\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    ";
 export declare const PluginUserErrorFullFragmentDoc = "\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const StoreUserErrorFullFragmentDoc = "\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const DataExportMetaFieldsFragmentDoc = "\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportMetaFragmentDoc = "\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    ";
 export declare const DataExportFullFieldsFragmentDoc = "\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    ";
@@ -13630,6 +13721,7 @@ export declare const PluginBackendMetaFragmentDoc = "\n    fragment pluginBacken
 export declare const PluginFrontendFullFragmentDoc = "\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    ";
 export declare const PluginBackendFullFragmentDoc = "\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    ";
+export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
@@ -13715,7 +13807,7 @@ export declare const UpdateUpstreamProxyDocument = "\n    mutation updateUpstrea
 export declare const DeleteUpstreamProxyDocument = "\n    mutation deleteUpstreamProxy($id: ID!) {\n  deleteUpstreamProxy(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestUpstreamProxyDocument = "\n    mutation testUpstreamProxy($input: TestUpstreamProxyInput!) {\n  testUpstreamProxy(input: $input) {\n    success\n  }\n}\n    ";
 export declare const RankUpstreamProxyDocument = "\n    mutation rankUpstreamProxy($id: ID!, $input: RankUpstreamProxyInput!) {\n  rankUpstreamProxy(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyFull\n    }\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
-export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const UninstallPluginPackageDocument = "\n    mutation uninstallPluginPackage($id: ID!) {\n  uninstallPluginPackage(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const SetPluginDataDocument = "\n    mutation setPluginData($id: ID!, $data: JSON!) {\n  setPluginData(id: $id, data: $data) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
@@ -13799,6 +13891,7 @@ export declare const InterceptOptionsDocument = "\n    query interceptOptions {\
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
 export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxies {\n    ...upstreamProxyFull\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
 export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
+export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
@@ -14029,6 +14122,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     interceptStatus(variables?: InterceptStatusQueryVariables, options?: C): Promise<InterceptStatusQuery>;
     upstreamProxies(variables?: UpstreamProxiesQueryVariables, options?: C): Promise<UpstreamProxiesQuery>;
     pluginPackages(variables?: PluginPackagesQueryVariables, options?: C): Promise<PluginPackagesQuery>;
+    storePluginPackages(variables?: StorePluginPackagesQueryVariables, options?: C): Promise<StorePluginPackagesQuery>;
     currentProject(variables?: CurrentProjectQueryVariables, options?: C): Promise<CurrentProjectQuery>;
     projects(variables?: ProjectsQueryVariables, options?: C): Promise<ProjectsQuery>;
     replayEntry(variables: ReplayEntryQueryVariables, options?: C): Promise<ReplayEntryQuery>;
