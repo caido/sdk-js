@@ -1,4 +1,5 @@
 declare module "caido:plugin" {
+  import { Database } from "sqlite";
   import {
     MaybePromise,
     FindingsSDK,
@@ -79,6 +80,11 @@ declare module "caido:plugin" {
      * You can store data related to your plugin in this directory.
      */
     path(): string;
+    /**
+     * Get a sqlite database for the plugin stored in Caido Data.
+     * You can use this to store data related to your plugin.
+     */
+    db(): Promise<Database>;
   };
 
   /**
