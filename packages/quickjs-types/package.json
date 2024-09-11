@@ -9,7 +9,8 @@
     "src/*"
   ],
   "scripts": {
-    "typing:llrt": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../dependency-llrt/types/ ./src/llrt/"
+    "typing:llrt": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../dependency-llrt/types/ ./src/llrt/",
+    "typing:extra": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../rquickjs-extra/types/ ./src/extra/"
   },
   "dependencies": {
     "prettier": "3.3.2"
