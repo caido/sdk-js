@@ -9,8 +9,7 @@
     "src/*"
   ],
   "scripts": {
-    "typing:llrt": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../dependency-llrt/types/ ./src/llrt/",
-    "typing:extra": "rsync -av --exclude=node_modules --include='*.d.ts' --include='*/' --exclude='*' ../../../rquickjs-extra/types/ ./src/extra/"
+    "typing": "./scripts/typing.sh"
   },
   "dependencies": {
     "prettier": "3.3.2"

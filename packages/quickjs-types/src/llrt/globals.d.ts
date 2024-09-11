@@ -19,4 +19,11 @@ declare global {
     // Move that to process module once we declare it
     type Platform = "darwin" | "linux" | "win32";
   }
+
+  interface SymbolConstructor {
+    /**
+     * A method that is used to release resources held by an object. Called by the semantics of the `using` statement.
+     */
+    readonly dispose: unique symbol;
+  }
 }

@@ -1,4 +1,7 @@
 {
   "name": "@caido/sdk-js",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "typescript": "5.6.2"
+  }
 }
