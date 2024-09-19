@@ -1,0 +1,1 @@
+{"version":3,"file":"scopes.d.ts","sourceRoot":"","sources":["../src/scopes.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,MAAM,KAAK,GAAG;IAClB;;OAEG;IACH,EAAE,EAAE,MAAM,CAAC;IAEX;;OAEG;IACH,IAAI,EAAE,MAAM,CAAC;IAEb;;OAEG;IACH,SAAS,EAAE,MAAM,EAAE,CAAC;IAEpB;;OAEG;IACH,QAAQ,EAAE,MAAM,EAAE,CAAC;CACpB,CAAC"}

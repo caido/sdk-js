@@ -19,3 +19,4 @@ export type Scope = {
      */
     denylist: string[];
 };
+//# sourceMappingURL=scopes.d.ts.map

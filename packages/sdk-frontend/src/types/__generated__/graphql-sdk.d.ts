@@ -14219,3 +14219,4 @@ export declare function getSdk<C>(requester: Requester<C>): {
 };
 export type Sdk = ReturnType<typeof getSdk>;
 export {};
+//# sourceMappingURL=graphql-sdk.d.ts.map

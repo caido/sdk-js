@@ -8,3 +8,4 @@ export type SidebarItem = {
      */
     setCount: (count: number) => void;
 };
+//# sourceMappingURL=sidebar.d.ts.map
