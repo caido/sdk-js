@@ -27,4 +27,3 @@ export type Finding = {
      */
     path: string;
 };
-//# sourceMappingURL=findings.d.ts.map

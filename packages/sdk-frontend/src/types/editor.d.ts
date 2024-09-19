@@ -30,4 +30,3 @@ export type HTTPResponseEditor = {
     getElement: () => HTMLElement;
     getEditorView: () => EditorView;
 };
-//# sourceMappingURL=editor.d.ts.map

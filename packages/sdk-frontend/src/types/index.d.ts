@@ -269,4 +269,3 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
         }) => SidebarItem;
     };
 };
-//# sourceMappingURL=index.d.ts.map

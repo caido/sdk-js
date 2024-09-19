@@ -75,4 +75,3 @@ type CommandContextResponse = {
     selection: string;
 };
 export {};
-//# sourceMappingURL=commands.d.ts.map

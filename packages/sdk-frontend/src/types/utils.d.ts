@@ -8,4 +8,3 @@ export type JSONCompatible<T> = unknown extends T ? never : {
 };
 export type PromisifiedReturnType<T extends (...args: unknown[]) => unknown> = ReturnType<T> extends Promise<infer U> ? Promise<U> : Promise<ReturnType<T>>;
 export {};
-//# sourceMappingURL=utils.d.ts.map
