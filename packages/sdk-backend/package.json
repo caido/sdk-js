@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-backend",
-  "version": "0.41.0",
+  "version": "0.41.1-beta.0",
   "description": "Typing for the Caido Backend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -8,8 +8,11 @@
   "files": [
     "src/*"
   ],
+  "scripts": {
+    "documentation": "typedoc"
+  },
   "dependencies": {
-    "@caido/quickjs-types": "0.7.0",
+    "@caido/quickjs-types": "0.8.1",
     "@caido/sdk-shared": "0.1.0"
   }
 }
