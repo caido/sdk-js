@@ -1,0 +1,5 @@
+{
+  "extends": ["../../typedoc.base.json"],
+  "entryPoints": ["src/index.d.ts"],
+  "excludeExternals": true
+}

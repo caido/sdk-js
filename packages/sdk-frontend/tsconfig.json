@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "module": "node16",
-    "lib": ["es6", "dom"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM"],
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
