@@ -436,7 +436,7 @@ declare module "caido:utils" {
     getCollections(): Promise<Array<ReplayCollection>>;
   };
 
-  export type ID = string;
+  export type ID = string & { __id?: never };
   export type Bytes = string | Array<number> | Uint8Array;
   export type MaybePromise<T> = T | Promise<T>;
 }
