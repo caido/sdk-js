@@ -706,17 +706,26 @@ export type CreateTamperRulePayload = {
     error?: Maybe<CreateTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
-export type CreateUpstreamProxyInput = {
+export type CreateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
     auth?: InputMaybe<UpstreamProxyAuthInput>;
+    connection: ConnectionInfoInput;
     denylist: Array<Scalars["String"]["input"]>;
     enabled: Scalars["Boolean"]["input"];
-    host: Scalars["String"]["input"];
-    kind: UpstreamProxyKind;
-    port: Scalars["Port"]["input"];
 };
-export type CreateUpstreamProxyPayload = {
-    proxy?: Maybe<UpstreamProxy>;
+export type CreateUpstreamProxyHttpPayload = {
+    proxy?: Maybe<UpstreamProxyHttp>;
+};
+export type CreateUpstreamProxySocksInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    auth?: InputMaybe<UpstreamProxyAuthInput>;
+    connection: ConnectionInfoInput;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    includeDns: Scalars["Boolean"]["input"];
+};
+export type CreateUpstreamProxySocksPayload = {
+    proxy?: Maybe<UpstreamProxySocks>;
 };
 export type CreateWorkflowError = OtherUserError | WorkflowUserError;
 export type CreateWorkflowInput = {
@@ -854,6 +863,12 @@ export type CreatedTamperRulePayload = {
     ruleEdge: TamperRuleEdge;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type CreatedUpstreamProxyHttpPayload = {
+    proxy: UpstreamProxyHttp;
+};
+export type CreatedUpstreamProxySocksPayload = {
+    proxy: UpstreamProxySocks;
+};
 export type CreatedWorkflowPayload = {
     workflowEdge: WorkflowEdge;
 };
@@ -969,7 +984,10 @@ export type DeleteTamperRuleCollectionPayload = {
 export type DeleteTamperRulePayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
-export type DeleteUpstreamProxyPayload = {
+export type DeleteUpstreamProxyHttpPayload = {
+    deletedId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type DeleteUpstreamProxySocksPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type DeleteWorkflowPayload = {
@@ -1049,6 +1067,12 @@ export type DeletedTamperRuleCollectionPayload = {
 export type DeletedTamperRulePayload = {
     deletedRuleId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
+};
+export type DeletedUpstreamProxyHttpPayload = {
+    deletedProxyId: Scalars["ID"]["output"];
+};
+export type DeletedUpstreamProxySocksPayload = {
+    deletedProxyId: Scalars["ID"]["output"];
 };
 export type DeletedWorkflowPayload = {
     deletedWorkflowId: Scalars["ID"]["output"];
@@ -1353,7 +1377,8 @@ export type MutationRoot = {
     createSitemapEntries: CreateSitemapEntriesPayload;
     createTamperRule: CreateTamperRulePayload;
     createTamperRuleCollection: CreateTamperRuleCollectionPayload;
-    createUpstreamProxy: CreateUpstreamProxyPayload;
+    createUpstreamProxyHttp: CreateUpstreamProxyHttpPayload;
+    createUpstreamProxySocks: CreateUpstreamProxySocksPayload;
     createWorkflow: CreateWorkflowPayload;
     deleteAssistantSession: DeleteAssistantSessionPayload;
     deleteAutomateEntries: DeleteAutomateEntriesPayload;
@@ -1372,7 +1397,8 @@ export type MutationRoot = {
     deleteScope: DeleteScopePayload;
     deleteTamperRule: DeleteTamperRulePayload;
     deleteTamperRuleCollection: DeleteTamperRuleCollectionPayload;
-    deleteUpstreamProxy: DeleteUpstreamProxyPayload;
+    deleteUpstreamProxyHttp: DeleteUpstreamProxyHttpPayload;
+    deleteUpstreamProxySocks: DeleteUpstreamProxySocksPayload;
     deleteWorkflow: DeleteWorkflowPayload;
     disableTamperRule: DisableTamperRulePayload;
     dropInterceptMessage: DropInterceptMessagePayload;
@@ -1389,7 +1415,8 @@ export type MutationRoot = {
     pauseAutomateTask: PauseAutomateTaskPayload;
     pauseIntercept: PauseInterceptPayload;
     rankTamperRule: RankTamperRulePayload;
-    rankUpstreamProxy: RankUpstreamProxyPayload;
+    rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
+    rankUpstreamProxySocks: RankUpstreamProxySocksPayload;
     refreshAuthenticationToken: RefreshAuthenticationTokenPayload;
     renameAssistantSession: RenameAssistantSessionPayload;
     renameAutomateEntry: RenameAutomateEntryPayload;
@@ -1423,8 +1450,11 @@ export type MutationRoot = {
     startExportRequestsTask: StartExportRequestsTaskPayload;
     startReplayTask: StartReplayTaskPayload;
     testTamperRule: TestTamperRulePayload;
-    testUpstreamProxy: TestUpstreamProxyPayload;
+    testUpstreamProxyHttp: TestUpstreamProxyHttpPayload;
+    testUpstreamProxySocks: TestUpstreamProxySocksPayload;
     togglePlugin: TogglePluginPayload;
+    toggleUpstreamProxyHttp: ToggleUpstreamProxyHttpPayload;
+    toggleUpstreamProxySocks: ToggleUpstreamProxySocksPayload;
     toggleWorkflow: ToggleWorkflowPayload;
     uninstallPluginPackage: UninstallPluginPackagePayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
@@ -1433,7 +1463,8 @@ export type MutationRoot = {
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
     updateTamperRule: UpdateTamperRulePayload;
-    updateUpstreamProxy: UpdateUpstreamProxyPayload;
+    updateUpstreamProxyHttp: UpdateUpstreamProxyHttpPayload;
+    updateUpstreamProxySocks: UpdateUpstreamProxySocksPayload;
     updateViewerSettings: UpdateViewerSettingsPayload;
     updateWorkflow: UpdateWorkflowPayload;
     uploadHostedFile: UploadHostedFilePayload;
@@ -1490,8 +1521,11 @@ export type MutationRootCreateTamperRuleArgs = {
 export type MutationRootCreateTamperRuleCollectionArgs = {
     input: CreateTamperRuleCollectionInput;
 };
-export type MutationRootCreateUpstreamProxyArgs = {
-    input: CreateUpstreamProxyInput;
+export type MutationRootCreateUpstreamProxyHttpArgs = {
+    input: CreateUpstreamProxyHttpInput;
+};
+export type MutationRootCreateUpstreamProxySocksArgs = {
+    input: CreateUpstreamProxySocksInput;
 };
 export type MutationRootCreateWorkflowArgs = {
     input: CreateWorkflowInput;
@@ -1545,7 +1579,10 @@ export type MutationRootDeleteTamperRuleArgs = {
 export type MutationRootDeleteTamperRuleCollectionArgs = {
     id: Scalars["ID"]["input"];
 };
-export type MutationRootDeleteUpstreamProxyArgs = {
+export type MutationRootDeleteUpstreamProxyHttpArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootDeleteUpstreamProxySocksArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteWorkflowArgs = {
@@ -1591,9 +1628,13 @@ export type MutationRootRankTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: RankTamperRuleInput;
 };
-export type MutationRootRankUpstreamProxyArgs = {
+export type MutationRootRankUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
-    input: RankUpstreamProxyInput;
+    input: RankUpstreamProxyHttpInput;
+};
+export type MutationRootRankUpstreamProxySocksArgs = {
+    id: Scalars["ID"]["input"];
+    input: RankUpstreamProxySocksInput;
 };
 export type MutationRootRefreshAuthenticationTokenArgs = {
     refreshToken: Scalars["Token"]["input"];
@@ -1705,10 +1746,21 @@ export type MutationRootStartReplayTaskArgs = {
 export type MutationRootTestTamperRuleArgs = {
     input: TestTamperRuleInput;
 };
-export type MutationRootTestUpstreamProxyArgs = {
-    input: TestUpstreamProxyInput;
+export type MutationRootTestUpstreamProxyHttpArgs = {
+    input: TestUpstreamProxyHttpInput;
+};
+export type MutationRootTestUpstreamProxySocksArgs = {
+    input: TestUpstreamProxySocksInput;
 };
 export type MutationRootTogglePluginArgs = {
+    enabled: Scalars["Boolean"]["input"];
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootToggleUpstreamProxyHttpArgs = {
+    enabled: Scalars["Boolean"]["input"];
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootToggleUpstreamProxySocksArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
 };
@@ -1739,9 +1791,13 @@ export type MutationRootUpdateTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateTamperRuleInput;
 };
-export type MutationRootUpdateUpstreamProxyArgs = {
+export type MutationRootUpdateUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
-    input: UpdateUpstreamProxyInput;
+    input: UpdateUpstreamProxyHttpInput;
+};
+export type MutationRootUpdateUpstreamProxySocksArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamProxySocksInput;
 };
 export type MutationRootUpdateViewerSettingsArgs = {
     input: UpdateViewerSettingsInput;
@@ -1951,7 +2007,8 @@ export type QueryRoot = {
     tamperRuleCollection?: Maybe<TamperRuleCollection>;
     tamperRuleCollections: TamperRuleCollectionConnection;
     tasks: Array<Task>;
-    upstreamProxies: Array<UpstreamProxy>;
+    upstreamProxiesHttp: Array<UpstreamProxyHttp>;
+    upstreamProxiesSocks: Array<UpstreamProxySocks>;
     viewer: User;
     workflow?: Maybe<Workflow>;
     workflowNodeDefinitions: Array<WorkflowNodeDefinition>;
@@ -2149,12 +2206,19 @@ export type RankTamperRuleInput = {
 export type RankTamperRulePayload = {
     rule?: Maybe<TamperRule>;
 };
-export type RankUpstreamProxyInput = {
+export type RankUpstreamProxyHttpInput = {
     afterId?: InputMaybe<Scalars["ID"]["input"]>;
     beforeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
-export type RankUpstreamProxyPayload = {
-    proxy?: Maybe<UpstreamProxy>;
+export type RankUpstreamProxyHttpPayload = {
+    proxy?: Maybe<UpstreamProxyHttp>;
+};
+export type RankUpstreamProxySocksInput = {
+    afterId?: InputMaybe<Scalars["ID"]["input"]>;
+    beforeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type RankUpstreamProxySocksPayload = {
+    proxy?: Maybe<UpstreamProxySocks>;
 };
 export type RefreshAuthenticationTokenError = AuthenticationUserError | OtherUserError;
 export type RefreshAuthenticationTokenPayload = {
@@ -2817,6 +2881,8 @@ export type SubscriptionRoot = {
     createdStreamWsMessage: CreatedStreamWsMessagePayload;
     createdTamperRule: CreatedTamperRulePayload;
     createdTamperRuleCollection: CreatedTamperRuleCollectionPayload;
+    createdUpstreamProxyHttp: CreatedUpstreamProxyHttpPayload;
+    createdUpstreamProxySocks: CreatedUpstreamProxySocksPayload;
     createdWorkflow: CreatedWorkflowPayload;
     deletedAssistantSession: DeletedAssistantSessionPayload;
     deletedAutomateEntry: DeletedAutomateEntryPayload;
@@ -2838,6 +2904,8 @@ export type SubscriptionRoot = {
     deletedScope: DeletedScopePayload;
     deletedTamperRule: DeletedTamperRulePayload;
     deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
+    deletedUpstreamProxyHttp: DeletedUpstreamProxyHttpPayload;
+    deletedUpstreamProxySocks: DeletedUpstreamProxySocksPayload;
     deletedWorkflow: DeletedWorkflowPayload;
     finishedBackupTask: FinishedBackupTaskPayload;
     finishedDeleteInterceptEntriesTask: FinishedDeleteInterceptEntriesTaskPayload;
@@ -2873,6 +2941,8 @@ export type SubscriptionRoot = {
     updatedSitemapEntry: UpdatedSitemapEntryPayload;
     updatedTamperRule: UpdatedTamperRulePayload;
     updatedTamperRuleCollection: UpdatedTamperRuleCollectionPayload;
+    updatedUpstreamProxyHttp: UpdatedUpstreamProxyHttpPayload;
+    updatedUpstreamProxySocks: UpdatedUpstreamProxySocksPayload;
     updatedViewerAssistantUsage: UpdatedViewerAssistantUsagePayload;
     updatedViewerSettings: UpdatedViewerSettingsPayload;
     updatedWorkflow: UpdatedWorkflowPayload;
@@ -2980,19 +3050,31 @@ export type TestTamperRulePayload = {
     error?: Maybe<TestTamperRuleError>;
     raw?: Maybe<Scalars["Blob"]["output"]>;
 };
-export type TestUpstreamProxyInput = {
+export type TestUpstreamProxyHttpInput = {
     auth?: InputMaybe<UpstreamProxyAuthInput>;
-    host: Scalars["String"]["input"];
-    kind: UpstreamProxyKind;
-    port: Scalars["Port"]["input"];
+    connection: ConnectionInfoInput;
 };
-export type TestUpstreamProxyPayload = {
+export type TestUpstreamProxyHttpPayload = {
+    success?: Maybe<Scalars["Boolean"]["output"]>;
+};
+export type TestUpstreamProxySocksInput = {
+    auth?: InputMaybe<UpstreamProxyAuthInput>;
+    connection: ConnectionInfoInput;
+    includeDns: Scalars["Boolean"]["input"];
+};
+export type TestUpstreamProxySocksPayload = {
     success?: Maybe<Scalars["Boolean"]["output"]>;
 };
 export type TogglePluginError = OtherUserError | PluginUserError | UnknownIdUserError;
 export type TogglePluginPayload = {
     error?: Maybe<TogglePluginError>;
     plugin?: Maybe<Plugin>;
+};
+export type ToggleUpstreamProxyHttpPayload = {
+    proxy?: Maybe<UpstreamProxyHttp>;
+};
+export type ToggleUpstreamProxySocksPayload = {
+    proxy?: Maybe<UpstreamProxySocks>;
 };
 export type ToggleWorkflowError = OtherUserError | UnknownIdUserError;
 export type ToggleWorkflowPayload = {
@@ -3067,17 +3149,26 @@ export type UpdateTamperRulePayload = {
     error?: Maybe<UpdateTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
-export type UpdateUpstreamProxyInput = {
+export type UpdateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
     auth?: InputMaybe<UpstreamProxyAuthInput>;
+    connection: ConnectionInfoInput;
     denylist: Array<Scalars["String"]["input"]>;
     enabled: Scalars["Boolean"]["input"];
-    host: Scalars["String"]["input"];
-    kind: UpstreamProxyKind;
-    port: Scalars["Port"]["input"];
 };
-export type UpdateUpstreamProxyPayload = {
-    proxy?: Maybe<UpstreamProxy>;
+export type UpdateUpstreamProxyHttpPayload = {
+    proxy?: Maybe<UpstreamProxyHttp>;
+};
+export type UpdateUpstreamProxySocksInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    auth?: InputMaybe<UpstreamProxyAuthInput>;
+    connection: ConnectionInfoInput;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    includeDns: Scalars["Boolean"]["input"];
+};
+export type UpdateUpstreamProxySocksPayload = {
+    proxy?: Maybe<UpstreamProxySocks>;
 };
 export type UpdateViewerSettingsInput = {
     data: Scalars["JSON"]["input"];
@@ -3196,6 +3287,12 @@ export type UpdatedTamperRulePayload = {
     ruleEdge: TamperRuleEdge;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type UpdatedUpstreamProxyHttpPayload = {
+    proxy: UpstreamProxyHttp;
+};
+export type UpdatedUpstreamProxySocksPayload = {
+    proxy: UpstreamProxySocks;
+};
 export type UpdatedViewerAssistantUsagePayload = {
     usage: AssistantUsage;
 };
@@ -3218,17 +3315,6 @@ export type UploadedBrowserPayload = {
 export type UploadedHostedFilePayload = {
     hostedFile: HostedFile;
 };
-export type UpstreamProxy = {
-    allowlist: Array<Scalars["String"]["output"]>;
-    auth?: Maybe<UpstreamProxyAuth>;
-    denylist: Array<Scalars["String"]["output"]>;
-    enabled: Scalars["Boolean"]["output"];
-    host: Scalars["String"]["output"];
-    id: Scalars["ID"]["output"];
-    kind: UpstreamProxyKind;
-    port: Scalars["Port"]["output"];
-    rank: Scalars["Rank"]["output"];
-};
 export type UpstreamProxyAuth = UpstreamProxyAuthBasic;
 export type UpstreamProxyAuthBasic = {
     password: Scalars["Sensitive"]["output"];
@@ -3241,11 +3327,25 @@ export type UpstreamProxyAuthBasicInput = {
 export type UpstreamProxyAuthInput = {
     basic: UpstreamProxyAuthBasicInput;
 };
-export declare const UpstreamProxyKind: {
-    readonly Http: "HTTP";
-    readonly Https: "HTTPS";
+export type UpstreamProxyHttp = {
+    allowlist: Array<Scalars["String"]["output"]>;
+    auth?: Maybe<UpstreamProxyAuth>;
+    connection: ConnectionInfo;
+    denylist: Array<Scalars["String"]["output"]>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    rank: Scalars["Rank"]["output"];
 };
-export type UpstreamProxyKind = (typeof UpstreamProxyKind)[keyof typeof UpstreamProxyKind];
+export type UpstreamProxySocks = {
+    allowlist: Array<Scalars["String"]["output"]>;
+    auth?: Maybe<UpstreamProxyAuth>;
+    connection: ConnectionInfo;
+    denylist: Array<Scalars["String"]["output"]>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    includeDns: Scalars["Boolean"]["output"];
+    rank: Scalars["Rank"]["output"];
+};
 export type User = {
     assistantUsage: AssistantUsage;
     id: Scalars["ID"]["output"];
@@ -4728,27 +4828,6 @@ export type InterceptResponseOptionsMetaFragment = {
 export type InterceptScopeOptionsMetaFragment = {
     scopeId: string;
 };
-export type UpstreamProxyFullFragment = {
-    __typename: "UpstreamProxy";
-    id: string;
-    allowlist: Array<string>;
-    denylist: Array<string>;
-    enabled: boolean;
-    host: string;
-    kind: UpstreamProxyKind;
-    port: number;
-    rank: string;
-    auth?: {
-        __typename: "UpstreamProxyAuthBasic";
-        username: string;
-        password: string;
-    } | undefined | null;
-};
-export type UpstreamProxyAuthBasicFullFragment = {
-    __typename: "UpstreamProxyAuthBasic";
-    username: string;
-    password: string;
-};
 export type CountFullFragment = {
     __typename: "Count";
     value: number;
@@ -5773,6 +5852,50 @@ type TaskMeta_WorkflowTask_Fragment = {
     createdAt: Date;
 };
 export type TaskMetaFragment = TaskMeta_ReplayTask_Fragment | TaskMeta_WorkflowTask_Fragment;
+export type UpstreamProxyHttpFullFragment = {
+    __typename: "UpstreamProxyHttp";
+    id: string;
+    allowlist: Array<string>;
+    denylist: Array<string>;
+    enabled: boolean;
+    rank: string;
+    auth?: {
+        __typename: "UpstreamProxyAuthBasic";
+        username: string;
+        password: string;
+    } | undefined | null;
+    connection: {
+        __typename: "ConnectionInfo";
+        host: string;
+        port: number;
+        isTls: boolean;
+    };
+};
+export type UpstreamProxySocksFullFragment = {
+    __typename: "UpstreamProxySocks";
+    id: string;
+    allowlist: Array<string>;
+    denylist: Array<string>;
+    enabled: boolean;
+    includeDns: boolean;
+    rank: string;
+    auth?: {
+        __typename: "UpstreamProxyAuthBasic";
+        username: string;
+        password: string;
+    } | undefined | null;
+    connection: {
+        __typename: "ConnectionInfo";
+        host: string;
+        port: number;
+        isTls: boolean;
+    };
+};
+export type UpstreamProxyAuthBasicFullFragment = {
+    __typename: "UpstreamProxyAuthBasic";
+    username: string;
+    password: string;
+};
 export type UserProfileFullFragment = {
     __typename: "UserProfile";
     identity: {
@@ -7016,93 +7139,6 @@ export type ResumeInterceptMutationVariables = Exact<{
 export type ResumeInterceptMutation = {
     resumeIntercept: {
         status: InterceptStatus;
-    };
-};
-export type CreateUpstreamProxyMutationVariables = Exact<{
-    input: CreateUpstreamProxyInput;
-}>;
-export type CreateUpstreamProxyMutation = {
-    createUpstreamProxy: {
-        proxy?: {
-            __typename: "UpstreamProxy";
-            id: string;
-            allowlist: Array<string>;
-            denylist: Array<string>;
-            enabled: boolean;
-            host: string;
-            kind: UpstreamProxyKind;
-            port: number;
-            rank: string;
-            auth?: {
-                __typename: "UpstreamProxyAuthBasic";
-                username: string;
-                password: string;
-            } | undefined | null;
-        } | undefined | null;
-    };
-};
-export type UpdateUpstreamProxyMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    input: UpdateUpstreamProxyInput;
-}>;
-export type UpdateUpstreamProxyMutation = {
-    updateUpstreamProxy: {
-        proxy?: {
-            __typename: "UpstreamProxy";
-            id: string;
-            allowlist: Array<string>;
-            denylist: Array<string>;
-            enabled: boolean;
-            host: string;
-            kind: UpstreamProxyKind;
-            port: number;
-            rank: string;
-            auth?: {
-                __typename: "UpstreamProxyAuthBasic";
-                username: string;
-                password: string;
-            } | undefined | null;
-        } | undefined | null;
-    };
-};
-export type DeleteUpstreamProxyMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type DeleteUpstreamProxyMutation = {
-    deleteUpstreamProxy: {
-        deletedId?: string | undefined | null;
-    };
-};
-export type TestUpstreamProxyMutationVariables = Exact<{
-    input: TestUpstreamProxyInput;
-}>;
-export type TestUpstreamProxyMutation = {
-    testUpstreamProxy: {
-        success?: boolean | undefined | null;
-    };
-};
-export type RankUpstreamProxyMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    input: RankUpstreamProxyInput;
-}>;
-export type RankUpstreamProxyMutation = {
-    rankUpstreamProxy: {
-        proxy?: {
-            __typename: "UpstreamProxy";
-            id: string;
-            allowlist: Array<string>;
-            denylist: Array<string>;
-            enabled: boolean;
-            host: string;
-            kind: UpstreamProxyKind;
-            port: number;
-            rank: string;
-            auth?: {
-                __typename: "UpstreamProxyAuthBasic";
-                username: string;
-                password: string;
-            } | undefined | null;
-        } | undefined | null;
     };
 };
 export type InstallPluginPackageMutationVariables = Exact<{
@@ -8708,6 +8744,201 @@ export type CancelTaskMutation = {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
+        } | undefined | null;
+    };
+};
+export type CreateUpstreamProxyHttpMutationVariables = Exact<{
+    input: CreateUpstreamProxyHttpInput;
+}>;
+export type CreateUpstreamProxyHttpMutation = {
+    createUpstreamProxyHttp: {
+        proxy?: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        } | undefined | null;
+    };
+};
+export type UpdateUpstreamProxyHttpMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamProxyHttpInput;
+}>;
+export type UpdateUpstreamProxyHttpMutation = {
+    updateUpstreamProxyHttp: {
+        proxy?: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        } | undefined | null;
+    };
+};
+export type DeleteUpstreamProxyHttpMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteUpstreamProxyHttpMutation = {
+    deleteUpstreamProxyHttp: {
+        deletedId?: string | undefined | null;
+    };
+};
+export type TestUpstreamProxyHttpMutationVariables = Exact<{
+    input: TestUpstreamProxyHttpInput;
+}>;
+export type TestUpstreamProxyHttpMutation = {
+    testUpstreamProxyHttp: {
+        success?: boolean | undefined | null;
+    };
+};
+export type RankUpstreamProxyHttpMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: RankUpstreamProxyHttpInput;
+}>;
+export type RankUpstreamProxyHttpMutation = {
+    rankUpstreamProxyHttp: {
+        proxy?: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        } | undefined | null;
+    };
+};
+export type CreateUpstreamProxySocksMutationVariables = Exact<{
+    input: CreateUpstreamProxySocksInput;
+}>;
+export type CreateUpstreamProxySocksMutation = {
+    createUpstreamProxySocks: {
+        proxy?: {
+            __typename: "UpstreamProxySocks";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            includeDns: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        } | undefined | null;
+    };
+};
+export type UpdateUpstreamProxySocksMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamProxySocksInput;
+}>;
+export type UpdateUpstreamProxySocksMutation = {
+    updateUpstreamProxySocks: {
+        proxy?: {
+            __typename: "UpstreamProxySocks";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            includeDns: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        } | undefined | null;
+    };
+};
+export type DeleteUpstreamProxySocksMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteUpstreamProxySocksMutation = {
+    deleteUpstreamProxySocks: {
+        deletedId?: string | undefined | null;
+    };
+};
+export type TestUpstreamProxySocksMutationVariables = Exact<{
+    input: TestUpstreamProxySocksInput;
+}>;
+export type TestUpstreamProxySocksMutation = {
+    testUpstreamProxySocks: {
+        success?: boolean | undefined | null;
+    };
+};
+export type RankUpstreamProxySocksMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: RankUpstreamProxySocksInput;
+}>;
+export type RankUpstreamProxySocksMutation = {
+    rankUpstreamProxySocks: {
+        proxy?: {
+            __typename: "UpstreamProxySocks";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            includeDns: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
         } | undefined | null;
     };
 };
@@ -10358,27 +10589,6 @@ export type InterceptStatusQueryVariables = Exact<{
 export type InterceptStatusQuery = {
     interceptStatus: InterceptStatus;
 };
-export type UpstreamProxiesQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type UpstreamProxiesQuery = {
-    upstreamProxies: Array<{
-        __typename: "UpstreamProxy";
-        id: string;
-        allowlist: Array<string>;
-        denylist: Array<string>;
-        enabled: boolean;
-        host: string;
-        kind: UpstreamProxyKind;
-        port: number;
-        rank: string;
-        auth?: {
-            __typename: "UpstreamProxyAuthBasic";
-            username: string;
-            password: string;
-        } | undefined | null;
-    }>;
-};
 export type PluginPackagesQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -11788,6 +11998,50 @@ export type GetTasksQuery = {
             name: string;
             enabled: boolean;
             global: boolean;
+        };
+    }>;
+};
+export type UpstreamProxiesQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpstreamProxiesQuery = {
+    upstreamProxiesHttp: Array<{
+        __typename: "UpstreamProxyHttp";
+        id: string;
+        allowlist: Array<string>;
+        denylist: Array<string>;
+        enabled: boolean;
+        rank: string;
+        auth?: {
+            __typename: "UpstreamProxyAuthBasic";
+            username: string;
+            password: string;
+        } | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
+        };
+    }>;
+    upstreamProxiesSocks: Array<{
+        __typename: "UpstreamProxySocks";
+        id: string;
+        allowlist: Array<string>;
+        denylist: Array<string>;
+        enabled: boolean;
+        includeDns: boolean;
+        rank: string;
+        auth?: {
+            __typename: "UpstreamProxyAuthBasic";
+            username: string;
+            password: string;
+        } | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
         };
     }>;
 };
@@ -13575,6 +13829,128 @@ export type FinishedTaskSubscription = {
         } | undefined | null;
     };
 };
+export type CreatedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedUpstreamProxyHttpSubscription = {
+    createdUpstreamProxyHttp: {
+        proxy: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        };
+    };
+};
+export type UpdatedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedUpstreamProxyHttpSubscription = {
+    updatedUpstreamProxyHttp: {
+        proxy: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        };
+    };
+};
+export type DeletedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedUpstreamProxyHttpSubscription = {
+    deletedUpstreamProxyHttp: {
+        deletedProxyId: string;
+    };
+};
+export type CreatedUpstreamProxySocksSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedUpstreamProxySocksSubscription = {
+    createdUpstreamProxySocks: {
+        proxy: {
+            __typename: "UpstreamProxySocks";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            includeDns: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        };
+    };
+};
+export type UpdatedUpstreamProxySocksSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedUpstreamProxySocksSubscription = {
+    updatedUpstreamProxySocks: {
+        proxy: {
+            __typename: "UpstreamProxySocks";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            includeDns: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+        };
+    };
+};
+export type DeletedUpstreamProxySocksSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedUpstreamProxySocksSubscription = {
+    deletedUpstreamProxySocks: {
+        deletedProxyId: string;
+    };
+};
 export type CreatedWorkflowSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -13712,8 +14088,6 @@ export declare const InterceptRequestOptionsMetaFragmentDoc = "\n    fragment in
 export declare const InterceptResponseOptionsMetaFragmentDoc = "\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    ";
 export declare const InterceptScopeOptionsMetaFragmentDoc = "\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptOptionsMetaFragmentDoc = "\n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    ";
-export declare const UpstreamProxyAuthBasicFullFragmentDoc = "\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
-export declare const UpstreamProxyFullFragmentDoc = "\n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    ";
 export declare const PluginAuthorFullFragmentDoc = "\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    ";
 export declare const PluginPackageMetaFragmentDoc = "\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    ";
 export declare const PluginMetaFragmentDoc = "\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
@@ -13750,6 +14124,9 @@ export declare const StreamWsMessageFullFragmentDoc = "\n    fragment streamWsMe
 export declare const StreamWsMessageEdgeMetaFragmentDoc = "\n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    ";
 export declare const TamperRuleFullFragmentDoc = "\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const TamperRuleCollectionFullFragmentDoc = "\n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    ";
+export declare const UpstreamProxyAuthBasicFullFragmentDoc = "\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
+export declare const UpstreamProxyHttpFullFragmentDoc = "\n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    ";
+export declare const UpstreamProxySocksFullFragmentDoc = "\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const UserProfileFullFragmentDoc = "\n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsFullFragmentDoc = "\n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
@@ -13802,11 +14179,6 @@ export declare const DropInterceptMesageDocument = "\n    mutation dropIntercept
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const PauseInterceptDocument = "\n    mutation pauseIntercept {\n  pauseIntercept {\n    status\n  }\n}\n    ";
 export declare const ResumeInterceptDocument = "\n    mutation resumeIntercept {\n  resumeIntercept {\n    status\n  }\n}\n    ";
-export declare const CreateUpstreamProxyDocument = "\n    mutation createUpstreamProxy($input: CreateUpstreamProxyInput!) {\n  createUpstreamProxy(input: $input) {\n    proxy {\n      ...upstreamProxyFull\n    }\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
-export declare const UpdateUpstreamProxyDocument = "\n    mutation updateUpstreamProxy($id: ID!, $input: UpdateUpstreamProxyInput!) {\n  updateUpstreamProxy(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyFull\n    }\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
-export declare const DeleteUpstreamProxyDocument = "\n    mutation deleteUpstreamProxy($id: ID!) {\n  deleteUpstreamProxy(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const TestUpstreamProxyDocument = "\n    mutation testUpstreamProxy($input: TestUpstreamProxyInput!) {\n  testUpstreamProxy(input: $input) {\n    success\n  }\n}\n    ";
-export declare const RankUpstreamProxyDocument = "\n    mutation rankUpstreamProxy($id: ID!, $input: RankUpstreamProxyInput!) {\n  rankUpstreamProxy(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyFull\n    }\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
 export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const UninstallPluginPackageDocument = "\n    mutation uninstallPluginPackage($id: ID!) {\n  uninstallPluginPackage(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
@@ -13843,6 +14215,16 @@ export declare const DisableTamperRuleDocument = "\n    mutation disableTamperRu
 export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const DeleteUpstreamProxyHttpDocument = "\n    mutation deleteUpstreamProxyHttp($id: ID!) {\n  deleteUpstreamProxyHttp(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const TestUpstreamProxyHttpDocument = "\n    mutation testUpstreamProxyHttp($input: TestUpstreamProxyHttpInput!) {\n  testUpstreamProxyHttp(input: $input) {\n    success\n  }\n}\n    ";
+export declare const RankUpstreamProxyHttpDocument = "\n    mutation rankUpstreamProxyHttp($id: ID!, $input: RankUpstreamProxyHttpInput!) {\n  rankUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const CreateUpstreamProxySocksDocument = "\n    mutation createUpstreamProxySocks($input: CreateUpstreamProxySocksInput!) {\n  createUpstreamProxySocks(input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const UpdateUpstreamProxySocksDocument = "\n    mutation updateUpstreamProxySocks($id: ID!, $input: UpdateUpstreamProxySocksInput!) {\n  updateUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const DeleteUpstreamProxySocksDocument = "\n    mutation deleteUpstreamProxySocks($id: ID!) {\n  deleteUpstreamProxySocks(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const TestUpstreamProxySocksDocument = "\n    mutation testUpstreamProxySocks($input: TestUpstreamProxySocksInput!) {\n  testUpstreamProxySocks(input: $input) {\n    success\n  }\n}\n    ";
+export declare const RankUpstreamProxySocksDocument = "\n    mutation rankUpstreamProxySocks($id: ID!, $input: RankUpstreamProxySocksInput!) {\n  rankUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const CreateWorkflowDocument = "\n    mutation createWorkflow($input: CreateWorkflowInput!) {\n  createWorkflow(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
 export declare const DeleteWorkflowDocument = "\n    mutation deleteWorkflow($id: ID!) {\n  deleteWorkflow(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -13889,7 +14271,6 @@ export declare const InterceptRequestMessagesDocument = "\n    query interceptRe
 export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
-export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxies {\n    ...upstreamProxyFull\n  }\n}\n    \n    fragment upstreamProxyFull on UpstreamProxy {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  host\n  kind\n  port\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
 export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
@@ -13921,6 +14302,7 @@ export declare const WebsocketMessageCountDocument = "\n    query websocketMessa
 export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageFull\n  }\n}\n    \n    fragment streamWsMessageFull on StreamWsMessage {\n  ...streamWsMessageMeta\n  raw\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
 export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    nodes {\n      ...tamperRuleCollectionFull\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    id\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    id\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
@@ -13982,6 +14364,12 @@ export declare const CreatedWsStreamDocument = "\n    subscription createdWsStre
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
 export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedUpstreamProxyHttpDocument = "\n    subscription createdUpstreamProxyHttp {\n  createdUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const UpdatedUpstreamProxyHttpDocument = "\n    subscription updatedUpstreamProxyHttp {\n  updatedUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const DeletedUpstreamProxyHttpDocument = "\n    subscription deletedUpstreamProxyHttp {\n  deletedUpstreamProxyHttp {\n    deletedProxyId\n  }\n}\n    ";
+export declare const CreatedUpstreamProxySocksDocument = "\n    subscription createdUpstreamProxySocks {\n  createdUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const UpdatedUpstreamProxySocksDocument = "\n    subscription updatedUpstreamProxySocks {\n  updatedUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
+export declare const DeletedUpstreamProxySocksDocument = "\n    subscription deletedUpstreamProxySocks {\n  deletedUpstreamProxySocks {\n    deletedProxyId\n  }\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
 export declare const DeletedWorkflowDocument = "\n    subscription deletedWorkflow {\n  deletedWorkflow {\n    deletedWorkflowId\n  }\n}\n    ";
 export declare const UpdatedWorkflowDocument = "\n    subscription updatedWorkflow {\n  updatedWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
@@ -14033,11 +14421,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     setInterceptOptions(variables: SetInterceptOptionsMutationVariables, options?: C): Promise<SetInterceptOptionsMutation>;
     pauseIntercept(variables?: PauseInterceptMutationVariables, options?: C): Promise<PauseInterceptMutation>;
     resumeIntercept(variables?: ResumeInterceptMutationVariables, options?: C): Promise<ResumeInterceptMutation>;
-    createUpstreamProxy(variables: CreateUpstreamProxyMutationVariables, options?: C): Promise<CreateUpstreamProxyMutation>;
-    updateUpstreamProxy(variables: UpdateUpstreamProxyMutationVariables, options?: C): Promise<UpdateUpstreamProxyMutation>;
-    deleteUpstreamProxy(variables: DeleteUpstreamProxyMutationVariables, options?: C): Promise<DeleteUpstreamProxyMutation>;
-    testUpstreamProxy(variables: TestUpstreamProxyMutationVariables, options?: C): Promise<TestUpstreamProxyMutation>;
-    rankUpstreamProxy(variables: RankUpstreamProxyMutationVariables, options?: C): Promise<RankUpstreamProxyMutation>;
     installPluginPackage(variables: InstallPluginPackageMutationVariables, options?: C): Promise<InstallPluginPackageMutation>;
     uninstallPluginPackage(variables: UninstallPluginPackageMutationVariables, options?: C): Promise<UninstallPluginPackageMutation>;
     togglePlugin(variables: TogglePluginMutationVariables, options?: C): Promise<TogglePluginMutation>;
@@ -14074,6 +14457,16 @@ export declare function getSdk<C>(requester: Requester<C>): {
     rankTamperRule(variables: RankTamperRuleMutationVariables, options?: C): Promise<RankTamperRuleMutation>;
     moveTamperRule(variables: MoveTamperRuleMutationVariables, options?: C): Promise<MoveTamperRuleMutation>;
     cancelTask(variables: CancelTaskMutationVariables, options?: C): Promise<CancelTaskMutation>;
+    createUpstreamProxyHttp(variables: CreateUpstreamProxyHttpMutationVariables, options?: C): Promise<CreateUpstreamProxyHttpMutation>;
+    updateUpstreamProxyHttp(variables: UpdateUpstreamProxyHttpMutationVariables, options?: C): Promise<UpdateUpstreamProxyHttpMutation>;
+    deleteUpstreamProxyHttp(variables: DeleteUpstreamProxyHttpMutationVariables, options?: C): Promise<DeleteUpstreamProxyHttpMutation>;
+    testUpstreamProxyHttp(variables: TestUpstreamProxyHttpMutationVariables, options?: C): Promise<TestUpstreamProxyHttpMutation>;
+    rankUpstreamProxyHttp(variables: RankUpstreamProxyHttpMutationVariables, options?: C): Promise<RankUpstreamProxyHttpMutation>;
+    createUpstreamProxySocks(variables: CreateUpstreamProxySocksMutationVariables, options?: C): Promise<CreateUpstreamProxySocksMutation>;
+    updateUpstreamProxySocks(variables: UpdateUpstreamProxySocksMutationVariables, options?: C): Promise<UpdateUpstreamProxySocksMutation>;
+    deleteUpstreamProxySocks(variables: DeleteUpstreamProxySocksMutationVariables, options?: C): Promise<DeleteUpstreamProxySocksMutation>;
+    testUpstreamProxySocks(variables: TestUpstreamProxySocksMutationVariables, options?: C): Promise<TestUpstreamProxySocksMutation>;
+    rankUpstreamProxySocks(variables: RankUpstreamProxySocksMutationVariables, options?: C): Promise<RankUpstreamProxySocksMutation>;
     updateViewerSettings(variables: UpdateViewerSettingsMutationVariables, options?: C): Promise<UpdateViewerSettingsMutation>;
     createWorkflow(variables: CreateWorkflowMutationVariables, options?: C): Promise<CreateWorkflowMutation>;
     deleteWorkflow(variables: DeleteWorkflowMutationVariables, options?: C): Promise<DeleteWorkflowMutation>;
@@ -14120,7 +14513,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     interceptResponseMessages(variables: InterceptResponseMessagesQueryVariables, options?: C): Promise<InterceptResponseMessagesQuery>;
     interceptOptions(variables?: InterceptOptionsQueryVariables, options?: C): Promise<InterceptOptionsQuery>;
     interceptStatus(variables?: InterceptStatusQueryVariables, options?: C): Promise<InterceptStatusQuery>;
-    upstreamProxies(variables?: UpstreamProxiesQueryVariables, options?: C): Promise<UpstreamProxiesQuery>;
     pluginPackages(variables?: PluginPackagesQueryVariables, options?: C): Promise<PluginPackagesQuery>;
     storePluginPackages(variables?: StorePluginPackagesQueryVariables, options?: C): Promise<StorePluginPackagesQuery>;
     currentProject(variables?: CurrentProjectQueryVariables, options?: C): Promise<CurrentProjectQuery>;
@@ -14152,6 +14544,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     websocketMessage(variables: WebsocketMessageQueryVariables, options?: C): Promise<WebsocketMessageQuery>;
     tamperRuleCollections(variables?: TamperRuleCollectionsQueryVariables, options?: C): Promise<TamperRuleCollectionsQuery>;
     getTasks(variables?: GetTasksQueryVariables, options?: C): Promise<GetTasksQuery>;
+    upstreamProxies(variables?: UpstreamProxiesQueryVariables, options?: C): Promise<UpstreamProxiesQuery>;
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
@@ -14213,6 +14606,12 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdStreamWsMessage(variables: CreatedStreamWsMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedStreamWsMessageSubscription>;
     startedTask(variables?: StartedTaskSubscriptionVariables, options?: C): AsyncIterable<StartedTaskSubscription>;
     finishedTask(variables?: FinishedTaskSubscriptionVariables, options?: C): AsyncIterable<FinishedTaskSubscription>;
+    createdUpstreamProxyHttp(variables?: CreatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamProxyHttpSubscription>;
+    updatedUpstreamProxyHttp(variables?: UpdatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamProxyHttpSubscription>;
+    deletedUpstreamProxyHttp(variables?: DeletedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamProxyHttpSubscription>;
+    createdUpstreamProxySocks(variables?: CreatedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamProxySocksSubscription>;
+    updatedUpstreamProxySocks(variables?: UpdatedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamProxySocksSubscription>;
+    deletedUpstreamProxySocks(variables?: DeletedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamProxySocksSubscription>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
     deletedWorkflow(variables?: DeletedWorkflowSubscriptionVariables, options?: C): AsyncIterable<DeletedWorkflowSubscription>;
     updatedWorkflow(variables?: UpdatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<UpdatedWorkflowSubscription>;
