@@ -68,6 +68,7 @@ declare module "sqlite" {
    * const db = await open({ filename: "path/to/database.sqlite" });
    * await db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT);");
    * await db.exec("INSERT INTO test (name) VALUES ('foo');");
+   * ```
    */
   export class Database {
     /**
