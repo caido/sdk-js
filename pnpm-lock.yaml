@@ -12,8 +12,8 @@ importers:
         specifier: 0.26.7
         version: 0.26.7(typescript@5.6.2)
       typedoc-plugin-markdown:
-        specifier: 4.2.8
-        version: 4.2.8(typedoc@0.26.7(typescript@5.6.2))
+        specifier: 4.2.9
+        version: 4.2.9(typedoc@0.26.7(typescript@5.6.2))
       typedoc-plugin-missing-exports:
         specifier: 3.0.0
         version: 3.0.0(typedoc@0.26.7(typescript@5.6.2))
@@ -30,11 +30,11 @@ importers:
   packages/sdk-backend:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.8.1
-        version: 0.8.1
+        specifier: 0.8.2
+        version: 0.8.2
       '@caido/sdk-shared':
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 0.1.1
+        version: 0.1.1
 
   packages/sdk-frontend:
     dependencies:
@@ -47,16 +47,16 @@ importers:
   packages/sdk-workflow:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.8.1
-        version: 0.8.1
+        specifier: 0.8.2
+        version: 0.8.2
 
 packages:
 
-  '@caido/quickjs-types@0.8.1':
-    resolution: {integrity: sha512-FZJGYG+mKb7tfJNHWdeOGtLxcX54zicdVvci5Uu8ubTQvdMLvj/emZqWwIH0m0jfvEkSdFHSLOdbaW8fTQdXXQ==}
+  '@caido/quickjs-types@0.8.2':
+    resolution: {integrity: sha512-FaJN8+G0McrdeIJDkZdPkexpP9vAqadQaDjhUdn+SWz522ysxyNLZg+xckfr/2d5jfDM5d+bqwWxCm+cTiYINQ==}
 
-  '@caido/sdk-shared@0.1.0':
-    resolution: {integrity: sha512-blffEE1ha74X/FKRC31HEh94b7gZ8riZqLDbD1Hpp7ihdlvaiQgap8i2Z6BppAaycks83+rUXTLLR6DxXNvdiQ==}
+  '@caido/sdk-shared@0.1.1':
+    resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
 
   '@codemirror/state@6.4.1':
     resolution: {integrity: sha512-QkEyUiLhsJoZkbumGZlswmAhA7CBU02Wrz7zvH4SrcifbsqwlXShVXg65f3v/ts57W3dqyamEriMhij1Z3Zz4A==}
@@ -200,8 +200,8 @@ packages:
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
 
-  typedoc-plugin-markdown@4.2.8:
-    resolution: {integrity: sha512-1EDsc66jaCjZtxdYy+Rl0KDU1WY/iyuCOOPaeFzcYFZ81FNXV8CmgUDOHri20WGmYnkEM5nQ+ooxj1vyuQo0Lg==}
+  typedoc-plugin-markdown@4.2.9:
+    resolution: {integrity: sha512-Wqmx+7ezKFgtTklEq/iUhQ5uFeBDhAT6wiS2na9cFLidIpl9jpDHJy/COYh8jUZXgIRIZVQ/bPNjyrnPFoDwzg==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.26.x
@@ -260,11 +260,11 @@ packages:
 
 snapshots:
 
-  '@caido/quickjs-types@0.8.1':
+  '@caido/quickjs-types@0.8.2':
     dependencies:
       prettier: 3.3.2
 
-  '@caido/sdk-shared@0.1.0': {}
+  '@caido/sdk-shared@0.1.1': {}
 
   '@codemirror/state@6.4.1': {}
 
@@ -439,7 +439,7 @@ snapshots:
 
   trim-lines@3.0.1: {}
 
-  typedoc-plugin-markdown@4.2.8(typedoc@0.26.7(typescript@5.6.2)):
+  typedoc-plugin-markdown@4.2.9(typedoc@0.26.7(typescript@5.6.2)):
     dependencies:
       typedoc: 0.26.7(typescript@5.6.2)
 

@@ -5,12 +5,14 @@
     "./scripts/documentation.mjs"
   ],
   "cleanOutputDir": true,
-  "outputFileStrategy": "members",
+  "outputFileStrategy": "modules",
   "entryFileName": "index",
   "readme": "none",
   "disableSources": true,
+  "excludeExternals": true,
   "placeInternalsInOwningModule": true,
   "hidePageHeader": true,
+  "expandParameters": true,
   "parametersFormat": "table",
   "indexFormat": "table"
 }

@@ -6,10 +6,12 @@ declare module "caido:plugin" {
     RequestsSDK,
     Request,
     Response,
+    ReplaySDK,
   } from "caido:utils";
 
   /**
    * The SDK for the API RPC service.
+   * @category APISDK
    */
   export type APISDK<API = {}, Events = {}> = {
     /**
@@ -36,6 +38,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK for the API RPC service.
+   * @category EventsSDK
    */
   export type EventsSDK<API = {}, Events = {}> = {
     /**
@@ -73,6 +76,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK for metadata information about the plugin.
+   * @category MetaSDK
    */
   export type MetaSDK = {
     /**
@@ -89,6 +93,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK object available to all scripts.
+   * @category SDK
    */
   export interface SDK<API = {}, Events = {}> {
     /**
@@ -102,9 +107,13 @@ declare module "caido:plugin" {
      */
     findings: FindingsSDK;
     /**
-     * The SDK for the Requests services
+     * The SDK for the Requests service.
      */
     requests: RequestsSDK;
+    /**
+     * The SDK for the Replay service.
+     */
+    replay: ReplaySDK;
     /**
      * The SDK for the API RPC service.
      */
