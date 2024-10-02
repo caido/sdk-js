@@ -3,6 +3,7 @@ declare module "caido:utils" {
    * The body of a Request or Response.
    *
    * Calling `to<FORMAT>` will try to convert the body to the desired format.
+   * @category RequestsSDK
    */
   export class Body {
     constructor(data: string | Array<number> | Uint8Array);
@@ -26,6 +27,7 @@ declare module "caido:utils" {
 
   /**
    * An immutable saved raw Request.
+   * @category RequestsSDK
    */
   export type RequestRaw = {
     /**
@@ -44,6 +46,7 @@ declare module "caido:utils" {
    * An immutable saved Request.
    *
    * To modify, use `toSpec` to get a `RequestSpec` object.
+   * @category RequestsSDK
    */
   export type Request = {
     getId(): ID;
@@ -63,6 +66,10 @@ declare module "caido:utils" {
     toSpecRaw(): RequestSpecRaw;
   };
 
+  /**
+   * Options when setting the body of a Request.
+   * @category RequestsSDK
+   */
   export type SetBodyOptions = {
     /**
      * Should update the Content-export type header.
@@ -74,6 +81,7 @@ declare module "caido:utils" {
 
   /**
    * A mutable Request not yet sent.
+   * @category RequestsSDK
    */
   export class RequestSpec {
     constructor(url: string);
@@ -100,6 +108,7 @@ declare module "caido:utils" {
 
   /**
    * A mutable raw Request not yet sent.
+   * @category RequestsSDK
    */
   export class RequestSpecRaw {
     constructor(url: string);
@@ -115,6 +124,7 @@ declare module "caido:utils" {
 
   /**
    * An immutable saved raw Response.
+   * @category RequestsSDK
    */
   export type ResponseRaw = {
     /**
@@ -131,6 +141,7 @@ declare module "caido:utils" {
 
   /**
    * An immutable saved Response.
+   * @category RequestsSDK
    */
   export type Response = {
     getId(): ID;
@@ -145,6 +156,7 @@ declare module "caido:utils" {
 
   /**
    * An immutable saved Request and Response pair.
+   * @category RequestsSDK
    */
   export type RequestResponse = {
     request: Request;
@@ -153,6 +165,7 @@ declare module "caido:utils" {
 
   /**
    * An immutable saved Request and optional Response pair.
+   * @category RequestsSDK
    */
   export type RequestResponseOpt = {
     request: Request;
@@ -169,6 +182,10 @@ declare module "caido:utils" {
     endCursor: string;
   };
 
+  /**
+   * Field to order requests by.
+   * @category RequestsSDK
+   */
   export type RequestOrderField =
     | "ext"
     | "host"
@@ -178,26 +195,40 @@ declare module "caido:utils" {
     | "query"
     | "created_at"
     | "source";
+  /**
+   * Field to order responses by.
+   * @category RequestsSDK
+   */
   export type ResponseOrderField = "length" | "roundtrip" | "code";
 
+  /**
+   * An item in a connection of requests.
+   * @category RequestsSDK
+   */
   export type RequestsConnectionItem = {
     cursor: string;
     request: Request;
     response?: Response;
   };
 
+  /**
+   * A connection of requests.
+   * @category RequestsSDK
+   */
   export type RequestsConnection = {
     pageInfo: PageInfo;
     items: Array<RequestsConnectionItem>;
   };
 
-  /*
+  /**
    * The source of a request.
+   * @category Shared
    */
   export type RequestSource = ID | Request | RequestSpec | RequestSpecRaw;
 
   /**
    * Query builder to fetch requests.
+   * @category RequestsSDK
    */
   export type RequestsQuery = {
     /**
@@ -256,6 +287,7 @@ declare module "caido:utils" {
 
   /**
    * The SDK for the Requests service.
+   * @category RequestsSDK
    */
   export type RequestsSDK = {
     /**
@@ -305,6 +337,7 @@ declare module "caido:utils" {
 
   /**
    * A saved immutable Finding.
+   * @category FindingsSDK
    */
   export type Finding = {
     /**
@@ -327,6 +360,7 @@ declare module "caido:utils" {
 
   /**
    * A mutable Finding not yet created.
+   * @category FindingsSDK
    */
   export type FindingSpec = {
     /**
@@ -353,6 +387,10 @@ declare module "caido:utils" {
     request: Request;
   };
 
+  /**
+   * Input to get a {@link Finding}.
+   * @category FindingsSDK
+   */
   export type GetFindingInput = {
     /**
      * The name of the reporter.
@@ -366,6 +404,7 @@ declare module "caido:utils" {
 
   /**
    * The SDK for the Findings service.
+   * @category FindingsSDK
    */
   export type FindingsSDK = {
     /**
@@ -399,6 +438,7 @@ declare module "caido:utils" {
 
   /**
    * A replay session.
+   * @category ReplaySDK
    */
   export type ReplaySession = {
     /**
@@ -413,6 +453,7 @@ declare module "caido:utils" {
 
   /**
    * A collection of replay sessions.
+   * @category ReplaySDK
    */
   export type ReplayCollection = {
     /**
@@ -427,6 +468,7 @@ declare module "caido:utils" {
 
   /**
    * The SDK for the Replay service.
+   * @category ReplaySDK
    */
   export type ReplaySDK = {
     createSession(
@@ -436,7 +478,19 @@ declare module "caido:utils" {
     getCollections(): Promise<Array<ReplayCollection>>;
   };
 
+  /**
+   * A unique identifier.
+   * @category Shared
+   */
   export type ID = string & { __id?: never };
+  /**
+   * Types that can be converted to bytes in inputs.
+   * @category Shared
+   */
   export type Bytes = string | Array<number> | Uint8Array;
+  /**
+   * Promise or value.
+   * @category Shared
+   */
   export type MaybePromise<T> = T | Promise<T>;
 }
