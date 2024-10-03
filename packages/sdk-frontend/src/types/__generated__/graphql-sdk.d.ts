@@ -990,8 +990,10 @@ export type DeleteUpstreamProxyHttpPayload = {
 export type DeleteUpstreamProxySocksPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
+export type DeleteWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError;
 export type DeleteWorkflowPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
+    error?: Maybe<DeleteWorkflowError>;
 };
 export type DeletedAssistantSessionPayload = {
     deletedSessionId: Scalars["ID"]["output"];
@@ -1198,7 +1200,7 @@ export type GlobalConfig = {
     address: Scalars["String"]["output"];
     onboarding: OnboardingState;
 };
-export type GlobalizeWorkflowError = OtherUserError | UnknownIdUserError | WorkflowUserError;
+export type GlobalizeWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError | WorkflowUserError;
 export type GlobalizeWorkflowPayload = {
     error?: Maybe<GlobalizeWorkflowError>;
     workflow?: Maybe<Workflow>;
@@ -1345,7 +1347,7 @@ export type InvalidRegexUserError = UserError & {
     code: Scalars["String"]["output"];
     term: Scalars["String"]["output"];
 };
-export type LocalizeWorkflowError = OtherUserError | UnknownIdUserError | WorkflowUserError;
+export type LocalizeWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError | WorkflowUserError;
 export type LocalizeWorkflowPayload = {
     error?: Maybe<LocalizeWorkflowError>;
     workflow?: Maybe<Workflow>;
@@ -1922,6 +1924,14 @@ export type PluginUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: PluginErrorReason;
 };
+export type PluginWorkflow = Plugin & {
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    manifestId: Scalars["ID"]["output"];
+    name?: Maybe<Scalars["String"]["output"]>;
+    package: PluginPackage;
+    workflow?: Maybe<Workflow>;
+};
 export type Project = {
     backups: Array<Backup>;
     createdAt: Scalars["DateTime"]["output"];
@@ -2220,6 +2230,9 @@ export type RankUpstreamProxySocksInput = {
 export type RankUpstreamProxySocksPayload = {
     proxy?: Maybe<UpstreamProxySocks>;
 };
+export type ReadOnlyUserError = UserError & {
+    code: Scalars["String"]["output"];
+};
 export type RefreshAuthenticationTokenError = AuthenticationUserError | OtherUserError;
 export type RefreshAuthenticationTokenPayload = {
     error?: Maybe<RefreshAuthenticationTokenError>;
@@ -2273,7 +2286,7 @@ export type RenameTamperRuleCollectionPayload = {
 export type RenameTamperRulePayload = {
     rule?: Maybe<TamperRule>;
 };
-export type RenameWorkflowError = OtherUserError | UnknownIdUserError;
+export type RenameWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError;
 export type RenameWorkflowPayload = {
     error?: Maybe<RenameWorkflowError>;
     workflow?: Maybe<Workflow>;
@@ -3177,7 +3190,7 @@ export type UpdateViewerSettingsInput = {
 export type UpdateViewerSettingsPayload = {
     settings?: Maybe<UserSettings>;
 };
-export type UpdateWorkflowError = OtherUserError | UnknownIdUserError | WorkflowUserError;
+export type UpdateWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError | WorkflowUserError;
 export type UpdateWorkflowInput = {
     definition: Scalars["JsonObject"]["input"];
 };
@@ -3386,6 +3399,7 @@ export type Workflow = {
     id: Scalars["ID"]["output"];
     kind: WorkflowKind;
     name: Scalars["String"]["output"];
+    readOnly: Scalars["Boolean"]["output"];
     updatedAt: Scalars["DateTime"]["output"];
 };
 /** An edge in a connection. */
@@ -3419,7 +3433,7 @@ export type WorkflowTask = Task & {
 export type WorkflowUserError = UserError & {
     code: Scalars["String"]["output"];
     message: Scalars["String"]["output"];
-    nodeId?: Maybe<Scalars["ID"]["output"]>;
+    node?: Maybe<Scalars["String"]["output"]>;
     reason: WorkflowErrorReason;
 };
 export type AssistantMessageFullFragment = {
@@ -4202,9 +4216,13 @@ export type AssistantUserErrorFullFragment = {
     code: string;
     assistantReason: AssistantErrorReason;
 };
+export type ReadOnlyUserErrorFullFragment = {
+    __typename: "ReadOnlyUserError";
+    code: string;
+};
 export type WorkflowUserErrorFullFragment = {
     __typename: "WorkflowUserError";
-    nodeId?: string | undefined | null;
+    node?: string | undefined | null;
     message: string;
     reason: WorkflowErrorReason;
     code: string;
@@ -4270,6 +4288,10 @@ type UserErrorFull_ProjectLockedUserError_Fragment = {
     __typename: "ProjectLockedUserError";
     code: string;
 };
+type UserErrorFull_ReadOnlyUserError_Fragment = {
+    __typename: "ReadOnlyUserError";
+    code: string;
+};
 type UserErrorFull_RenderFailedUserError_Fragment = {
     __typename: "RenderFailedUserError";
     code: string;
@@ -4294,7 +4316,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectLockedUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectLockedUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -4860,7 +4882,17 @@ type PluginMeta_PluginFrontend_Fragment = {
         id: string;
     };
 };
-export type PluginMetaFragment = PluginMeta_PluginBackend_Fragment | PluginMeta_PluginFrontend_Fragment;
+type PluginMeta_PluginWorkflow_Fragment = {
+    __typename: "PluginWorkflow";
+    id: string;
+    name?: string | undefined | null;
+    enabled: boolean;
+    manifestId: string;
+    package: {
+        id: string;
+    };
+};
+export type PluginMetaFragment = PluginMeta_PluginBackend_Fragment | PluginMeta_PluginFrontend_Fragment | PluginMeta_PluginWorkflow_Fragment;
 export type PluginBackendMetaFragment = {
     __typename: "PluginBackend";
     id: string;
@@ -4892,6 +4924,25 @@ export type PluginFrontendFullFragment = {
     backend?: {
         __typename: "PluginBackend";
         id: string;
+    } | undefined | null;
+    package: {
+        id: string;
+    };
+};
+export type PluginWorkflowFullFragment = {
+    __typename: "PluginWorkflow";
+    name?: string | undefined | null;
+    id: string;
+    enabled: boolean;
+    manifestId: string;
+    workflow?: {
+        __typename: "Workflow";
+        id: string;
+        kind: WorkflowKind;
+        name: string;
+        enabled: boolean;
+        global: boolean;
+        readOnly: boolean;
     } | undefined | null;
     package: {
         id: string;
@@ -4948,6 +4999,24 @@ export type PluginPackageFullFragment = {
         backend?: {
             __typename: "PluginBackend";
             id: string;
+        } | undefined | null;
+        package: {
+            id: string;
+        };
+    } | {
+        __typename: "PluginWorkflow";
+        name?: string | undefined | null;
+        id: string;
+        enabled: boolean;
+        manifestId: string;
+        workflow?: {
+            __typename: "Workflow";
+            id: string;
+            kind: WorkflowKind;
+            name: string;
+            enabled: boolean;
+            global: boolean;
+            readOnly: boolean;
         } | undefined | null;
         package: {
             id: string;
@@ -5927,6 +5996,7 @@ export type WorkflowMetaFragment = {
     name: string;
     enabled: boolean;
     global: boolean;
+    readOnly: boolean;
 };
 export type WorkflowFullFragment = {
     __typename: "Workflow";
@@ -5936,6 +6006,7 @@ export type WorkflowFullFragment = {
     name: string;
     enabled: boolean;
     global: boolean;
+    readOnly: boolean;
 };
 export type WorkflowNodeDefinitionFullFragment = {
     __typename: "WorkflowNodeDefinition";
@@ -5952,6 +6023,7 @@ export type WorkflowTaskMetaFragment = {
         name: string;
         enabled: boolean;
         global: boolean;
+        readOnly: boolean;
     };
 };
 export type SendAssistantMessageMutationVariables = Exact<{
@@ -7183,6 +7255,24 @@ export type InstallPluginPackageMutation = {
                 package: {
                     id: string;
                 };
+            } | {
+                __typename: "PluginWorkflow";
+                name?: string | undefined | null;
+                id: string;
+                enabled: boolean;
+                manifestId: string;
+                workflow?: {
+                    __typename: "Workflow";
+                    id: string;
+                    kind: WorkflowKind;
+                    name: string;
+                    enabled: boolean;
+                    global: boolean;
+                    readOnly: boolean;
+                } | undefined | null;
+                package: {
+                    id: string;
+                };
             }>;
             author?: {
                 name?: string | undefined | null;
@@ -7256,6 +7346,24 @@ export type TogglePluginMutation = {
             package: {
                 id: string;
             };
+        } | {
+            __typename: "PluginWorkflow";
+            name?: string | undefined | null;
+            id: string;
+            enabled: boolean;
+            manifestId: string;
+            workflow?: {
+                __typename: "Workflow";
+                id: string;
+                kind: WorkflowKind;
+                name: string;
+                enabled: boolean;
+                global: boolean;
+                readOnly: boolean;
+            } | undefined | null;
+            package: {
+                id: string;
+            };
         } | undefined | null;
         error?: {
             __typename: "OtherUserError";
@@ -7303,6 +7411,24 @@ export type SetPluginDataMutation = {
             backend?: {
                 __typename: "PluginBackend";
                 id: string;
+            } | undefined | null;
+            package: {
+                id: string;
+            };
+        } | {
+            __typename: "PluginWorkflow";
+            name?: string | undefined | null;
+            id: string;
+            enabled: boolean;
+            manifestId: string;
+            workflow?: {
+                __typename: "Workflow";
+                id: string;
+                kind: WorkflowKind;
+                name: string;
+                enabled: boolean;
+                global: boolean;
+                readOnly: boolean;
             } | undefined | null;
             package: {
                 id: string;
@@ -8964,7 +9090,7 @@ export type CreateWorkflowMutation = {
             code: string;
         } | {
             __typename: "WorkflowUserError";
-            nodeId?: string | undefined | null;
+            node?: string | undefined | null;
             message: string;
             reason: WorkflowErrorReason;
             code: string;
@@ -8977,6 +9103,7 @@ export type CreateWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -8986,6 +9113,17 @@ export type DeleteWorkflowMutationVariables = Exact<{
 export type DeleteWorkflowMutation = {
     deleteWorkflow: {
         deletedId?: string | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
     };
 };
 export type ToggleWorkflowMutationVariables = Exact<{
@@ -9010,6 +9148,7 @@ export type ToggleWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -9023,6 +9162,9 @@ export type RenameWorkflowMutation = {
             __typename: "OtherUserError";
             code: string;
         } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
@@ -9035,6 +9177,7 @@ export type RenameWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -9048,12 +9191,15 @@ export type UpdateWorkflowMutation = {
             __typename: "OtherUserError";
             code: string;
         } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
         } | {
             __typename: "WorkflowUserError";
-            nodeId?: string | undefined | null;
+            node?: string | undefined | null;
             message: string;
             reason: WorkflowErrorReason;
             code: string;
@@ -9066,6 +9212,7 @@ export type UpdateWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -9085,7 +9232,7 @@ export type RunConvertWorkflowMutation = {
             permissionDeniedReason: PermissionDeniedErrorReason;
         } | {
             __typename: "WorkflowUserError";
-            nodeId?: string | undefined | null;
+            node?: string | undefined | null;
             message: string;
             reason: WorkflowErrorReason;
             code: string;
@@ -9121,6 +9268,7 @@ export type RunActiveWorkflowMutation = {
                 name: string;
                 enabled: boolean;
                 global: boolean;
+                readOnly: boolean;
             };
         } | undefined | null;
     };
@@ -9134,12 +9282,15 @@ export type GlobalizeWorkflowMutation = {
             __typename: "OtherUserError";
             code: string;
         } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
         } | {
             __typename: "WorkflowUserError";
-            nodeId?: string | undefined | null;
+            node?: string | undefined | null;
             message: string;
             reason: WorkflowErrorReason;
             code: string;
@@ -9152,6 +9303,7 @@ export type GlobalizeWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -9164,12 +9316,15 @@ export type LocalizeWorkflowMutation = {
             __typename: "OtherUserError";
             code: string;
         } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
         } | {
             __typename: "WorkflowUserError";
-            nodeId?: string | undefined | null;
+            node?: string | undefined | null;
             message: string;
             reason: WorkflowErrorReason;
             code: string;
@@ -9182,6 +9337,7 @@ export type LocalizeWorkflowMutation = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         } | undefined | null;
     };
 };
@@ -10630,6 +10786,24 @@ export type PluginPackagesQuery = {
             package: {
                 id: string;
             };
+        } | {
+            __typename: "PluginWorkflow";
+            name?: string | undefined | null;
+            id: string;
+            enabled: boolean;
+            manifestId: string;
+            workflow?: {
+                __typename: "Workflow";
+                id: string;
+                kind: WorkflowKind;
+                name: string;
+                enabled: boolean;
+                global: boolean;
+                readOnly: boolean;
+            } | undefined | null;
+            package: {
+                id: string;
+            };
         }>;
         author?: {
             name?: string | undefined | null;
@@ -11998,6 +12172,7 @@ export type GetTasksQuery = {
             name: string;
             enabled: boolean;
             global: boolean;
+            readOnly: boolean;
         };
     }>;
 };
@@ -12097,6 +12272,7 @@ export type WorkflowQuery = {
         name: string;
         enabled: boolean;
         global: boolean;
+        readOnly: boolean;
     } | undefined | null;
 };
 export type WorkflowsQueryVariables = Exact<{
@@ -12111,6 +12287,7 @@ export type WorkflowsQuery = {
         name: string;
         enabled: boolean;
         global: boolean;
+        readOnly: boolean;
     }>;
 };
 export type WorkflowNodeDefinitionsQueryVariables = Exact<{
@@ -13104,6 +13281,24 @@ export type CreatedPluginPackageSubscription = {
                 package: {
                     id: string;
                 };
+            } | {
+                __typename: "PluginWorkflow";
+                name?: string | undefined | null;
+                id: string;
+                enabled: boolean;
+                manifestId: string;
+                workflow?: {
+                    __typename: "Workflow";
+                    id: string;
+                    kind: WorkflowKind;
+                    name: string;
+                    enabled: boolean;
+                    global: boolean;
+                    readOnly: boolean;
+                } | undefined | null;
+                package: {
+                    id: string;
+                };
             }>;
             author?: {
                 name?: string | undefined | null;
@@ -13152,6 +13347,24 @@ export type UpdatedPluginSubscription = {
             backend?: {
                 __typename: "PluginBackend";
                 id: string;
+            } | undefined | null;
+            package: {
+                id: string;
+            };
+        } | {
+            __typename: "PluginWorkflow";
+            name?: string | undefined | null;
+            id: string;
+            enabled: boolean;
+            manifestId: string;
+            workflow?: {
+                __typename: "Workflow";
+                id: string;
+                kind: WorkflowKind;
+                name: string;
+                enabled: boolean;
+                global: boolean;
+                readOnly: boolean;
             } | undefined | null;
             package: {
                 id: string;
@@ -13715,6 +13928,7 @@ export type StartedTaskSubscription = {
                 name: string;
                 enabled: boolean;
                 global: boolean;
+                readOnly: boolean;
             };
         };
     };
@@ -13784,9 +13998,12 @@ export type FinishedTaskSubscription = {
                 name: string;
                 enabled: boolean;
                 global: boolean;
+                readOnly: boolean;
             };
         };
         error?: {
+            code: string;
+        } | {
             code: string;
         } | {
             code: string;
@@ -13966,6 +14183,7 @@ export type CreatedWorkflowSubscription = {
                 name: string;
                 enabled: boolean;
                 global: boolean;
+                readOnly: boolean;
             };
         };
     };
@@ -13993,6 +14211,7 @@ export type UpdatedWorkflowSubscription = {
                 name: string;
                 enabled: boolean;
                 global: boolean;
+                readOnly: boolean;
             };
         };
     };
@@ -14058,7 +14277,8 @@ export declare const TaskInProgressUserErrorFullFragmentDoc = "\n    fragment ta
 export declare const UnknownIdUserErrorFullFragmentDoc = "\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const UnsupportedPlatformUserErrorFullFragmentDoc = "\n    fragment unsupportedPlatformUserErrorFull on UnsupportedPlatformUserError {\n  ...userErrorFull\n}\n    ";
 export declare const PermissionDeniedUserErrorFullFragmentDoc = "\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
-export declare const WorkflowUserErrorFullFragmentDoc = "\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    ";
+export declare const ReadOnlyUserErrorFullFragmentDoc = "\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    ";
+export declare const WorkflowUserErrorFullFragmentDoc = "\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    ";
 export declare const InvalidGlobTermsUserErrorFullFragmentDoc = "\n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    ";
 export declare const InvalidHttpqlUserErrorFullFragmentDoc = "\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    ";
 export declare const PluginUserErrorFullFragmentDoc = "\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
@@ -14094,7 +14314,9 @@ export declare const PluginMetaFragmentDoc = "\n    fragment pluginMeta on Plugi
 export declare const PluginBackendMetaFragmentDoc = "\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    ";
 export declare const PluginFrontendFullFragmentDoc = "\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    ";
 export declare const PluginBackendFullFragmentDoc = "\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
-export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    ";
+export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
+export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
 export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
@@ -14129,7 +14351,6 @@ export declare const UpstreamProxyHttpFullFragmentDoc = "\n    fragment upstream
 export declare const UpstreamProxySocksFullFragmentDoc = "\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const UserProfileFullFragmentDoc = "\n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsFullFragmentDoc = "\n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
-export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
 export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
@@ -14179,10 +14400,10 @@ export declare const DropInterceptMesageDocument = "\n    mutation dropIntercept
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const PauseInterceptDocument = "\n    mutation pauseIntercept {\n  pauseIntercept {\n    status\n  }\n}\n    ";
 export declare const ResumeInterceptDocument = "\n    mutation resumeIntercept {\n  resumeIntercept {\n    status\n  }\n}\n    ";
-export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
+export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const UninstallPluginPackageDocument = "\n    mutation uninstallPluginPackage($id: ID!) {\n  uninstallPluginPackage(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const SetPluginDataDocument = "\n    mutation setPluginData($id: ID!, $data: JSON!) {\n  setPluginData(id: $id, data: $data) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const SetPluginDataDocument = "\n    mutation setPluginData($id: ID!, $data: JSON!) {\n  setPluginData(id: $id, data: $data) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -14226,15 +14447,15 @@ export declare const DeleteUpstreamProxySocksDocument = "\n    mutation deleteUp
 export declare const TestUpstreamProxySocksDocument = "\n    mutation testUpstreamProxySocks($input: TestUpstreamProxySocksInput!) {\n  testUpstreamProxySocks(input: $input) {\n    success\n  }\n}\n    ";
 export declare const RankUpstreamProxySocksDocument = "\n    mutation rankUpstreamProxySocks($id: ID!, $input: RankUpstreamProxySocksInput!) {\n  rankUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
-export declare const CreateWorkflowDocument = "\n    mutation createWorkflow($input: CreateWorkflowInput!) {\n  createWorkflow(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const DeleteWorkflowDocument = "\n    mutation deleteWorkflow($id: ID!) {\n  deleteWorkflow(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const ToggleWorkflowDocument = "\n    mutation toggleWorkflow($id: ID!, $enabled: Boolean!) {\n  toggleWorkflow(id: $id, enabled: $enabled) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const RenameWorkflowDocument = "\n    mutation renameWorkflow($id: ID!, $name: String!) {\n  renameWorkflow(id: $id, name: $name) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const UpdateWorkflowDocument = "\n    mutation updateWorkflow($id: ID!, $input: UpdateWorkflowInput!) {\n  updateWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const RunConvertWorkflowDocument = "\n    mutation runConvertWorkflow($id: ID!, $input: Blob!) {\n  runConvertWorkflow(id: $id, input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    output\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RunActiveWorkflowDocument = "\n    mutation runActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {\n  runActiveWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const GlobalizeWorkflowDocument = "\n    mutation globalizeWorkflow($id: ID!) {\n  globalizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const LocalizeWorkflowDocument = "\n    mutation localizeWorkflow($id: ID!) {\n  localizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  nodeId\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const CreateWorkflowDocument = "\n    mutation createWorkflow($input: CreateWorkflowInput!) {\n  createWorkflow(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const DeleteWorkflowDocument = "\n    mutation deleteWorkflow($id: ID!) {\n  deleteWorkflow(id: $id) {\n    deletedId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const ToggleWorkflowDocument = "\n    mutation toggleWorkflow($id: ID!, $enabled: Boolean!) {\n  toggleWorkflow(id: $id, enabled: $enabled) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const RenameWorkflowDocument = "\n    mutation renameWorkflow($id: ID!, $name: String!) {\n  renameWorkflow(id: $id, name: $name) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const UpdateWorkflowDocument = "\n    mutation updateWorkflow($id: ID!, $input: UpdateWorkflowInput!) {\n  updateWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const RunConvertWorkflowDocument = "\n    mutation runConvertWorkflow($id: ID!, $input: Blob!) {\n  runConvertWorkflow(id: $id, input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    output\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RunActiveWorkflowDocument = "\n    mutation runActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {\n  runActiveWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const GlobalizeWorkflowDocument = "\n    mutation globalizeWorkflow($id: ID!) {\n  globalizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const LocalizeWorkflowDocument = "\n    mutation localizeWorkflow($id: ID!) {\n  localizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const AssistantModelsDocument = "\n    query assistantModels {\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantSessionDocument = "\n    query assistantSession($id: ID!) {\n  assistantSession(id: $id) {\n    ...assistantSessionFull\n  }\n}\n    \n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
@@ -14271,7 +14492,7 @@ export declare const InterceptRequestMessagesDocument = "\n    query interceptRe
 export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
-export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
+export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
@@ -14301,12 +14522,12 @@ export declare const WebsocketMessagesByOffsetDocument = "\n    query websocketM
 export declare const WebsocketMessageCountDocument = "\n    query websocketMessageCount($streamId: ID!) {\n  streamWsMessages(first: 0, streamId: $streamId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageFull\n  }\n}\n    \n    fragment streamWsMessageFull on StreamWsMessage {\n  ...streamWsMessageMeta\n  raw\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
 export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    nodes {\n      ...tamperRuleCollectionFull\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    id\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    id\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
-export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
-export declare const WorkflowsDocument = "\n    query workflows {\n  workflows {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const WorkflowsDocument = "\n    query workflows {\n  workflows {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowNodeDefinitionsDocument = "\n    query workflowNodeDefinitions {\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedAssistantMessageDocument = "\n    subscription createdAssistantMessage {\n  createdAssistantMessage {\n    messageEdge {\n      cursor\n      node {\n        ...assistantMessageFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedAssistantMessageTaskDocument = "\n    subscription createdAssistantMessageTask {\n  createdAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -14345,9 +14566,9 @@ export declare const UpdatedDeleteInterceptEntriesTaskDocument = "\n    subscrip
 export declare const FinishedDeleteInterceptEntriesTaskDocument = "\n    subscription finishedDeleteInterceptEntriesTask {\n  finishedDeleteInterceptEntriesTask {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n    error {\n      ... on InternalUserError {\n        ...internalUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const UpdatedInterceptOptionsDocument = "\n    subscription updatedInterceptOptions {\n  updatedInterceptOptions {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
-export declare const CreatedPluginPackageDocument = "\n    subscription createdPluginPackage {\n  createdPluginPackage {\n    package {\n      ...pluginPackageFull\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
+export declare const CreatedPluginPackageDocument = "\n    subscription createdPluginPackage {\n  createdPluginPackage {\n    package {\n      ...pluginPackageFull\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeletedPluginPackageDocument = "\n    subscription deletedPluginPackage {\n  deletedPluginPackage {\n    deletedPackageId\n  }\n}\n    ";
-export declare const UpdatedPluginDocument = "\n    subscription updatedPlugin {\n  updatedPlugin {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    ";
+export declare const UpdatedPluginDocument = "\n    subscription updatedPlugin {\n  updatedPlugin {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CreatedPluginEventDocument = "\n    subscription createdPluginEvent {\n  createdPluginEvent {\n    pluginId\n    eventArgs\n    eventName\n  }\n}\n    ";
 export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
@@ -14362,17 +14583,17 @@ export declare const CreatedSitemapEntryDocument = "\n    subscription createdSi
 export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const CreatedUpstreamProxyHttpDocument = "\n    subscription createdUpstreamProxyHttp {\n  createdUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const UpdatedUpstreamProxyHttpDocument = "\n    subscription updatedUpstreamProxyHttp {\n  updatedUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const DeletedUpstreamProxyHttpDocument = "\n    subscription deletedUpstreamProxyHttp {\n  deletedUpstreamProxyHttp {\n    deletedProxyId\n  }\n}\n    ";
 export declare const CreatedUpstreamProxySocksDocument = "\n    subscription createdUpstreamProxySocks {\n  createdUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const UpdatedUpstreamProxySocksDocument = "\n    subscription updatedUpstreamProxySocks {\n  updatedUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    ";
 export declare const DeletedUpstreamProxySocksDocument = "\n    subscription deletedUpstreamProxySocks {\n  deletedUpstreamProxySocks {\n    deletedProxyId\n  }\n}\n    ";
-export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeletedWorkflowDocument = "\n    subscription deletedWorkflow {\n  deletedWorkflow {\n    deletedWorkflowId\n  }\n}\n    ";
-export declare const UpdatedWorkflowDocument = "\n    subscription updatedWorkflow {\n  updatedWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n}\n    ";
+export declare const UpdatedWorkflowDocument = "\n    subscription updatedWorkflow {\n  updatedWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export type Requester<C = {}> = <R, V>(doc: string, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
 export declare function getSdk<C>(requester: Requester<C>): {
     sendAssistantMessage(variables: SendAssistantMessageMutationVariables, options?: C): Promise<SendAssistantMessageMutation>;

@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-frontend",
-  "version": "0.41.1-beta.2",
+  "version": "0.41.1-beta.3",
   "description": "Typing for the Caido Frontend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -10,9 +10,6 @@
   "files": [
     "src/*"
   ],
-  "scripts": {
-    "documentation": "typedoc"
-  },
   "peerDependencies": {
     "@codemirror/view": "^6.0.0"
   },
