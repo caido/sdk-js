@@ -78,7 +78,7 @@ declare module "sqlite" {
     /**
      * Compiles a SQL statement into a {@link https://www.sqlite.org/c3ref/stmt.html prepared statement}.
      */
-    prepare(sql: string): Statement;
+    prepare(sql: string): Promise<Statement>;
   }
 
   /**
