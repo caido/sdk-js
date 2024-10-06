@@ -17,7 +17,9 @@ rsync -av --exclude=node_modules \
 
 echo "[*] Copying rquickjs-extra typing"
 rsync -av --exclude=node_modules \
-      --include='*.d.ts' \
+      --include='sqlite.d.ts' \
+      --include='timers.d.ts' \
+      --include='url.d.ts' \
       --exclude='*' \
       ../../../rquickjs-extra/types/ \
       ./src/extra/

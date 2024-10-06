@@ -1,6 +1,6 @@
 declare module "caido:utils" {
   /**
-   * The body of a Request or Response.
+   * The body of a {@link Request} or {@link Response}.
    *
    * Calling `to<FORMAT>` will try to convert the body to the desired format.
    * @category RequestsSDK
@@ -49,20 +49,86 @@ declare module "caido:utils" {
    * @category RequestsSDK
    */
   export type Request = {
+    /**
+     * The unique Caido {@link ID} of the request.
+     */
     getId(): ID;
+    /**
+     * The target host of the request.
+     */
     getHost(): string;
+    /**
+     * The target port of the request.
+     */
     getPort(): number;
+    /**
+     * If the request uses TLS (HTTPS).
+     */
     getTls(): boolean;
+    /**
+     * The HTTP method of the request.
+     */
     getMethod(): string;
+    /**
+     * The path of the request.
+     */
     getPath(): string;
+    /**
+     * The unparsed query of the request.
+     *
+     * Excludes the leading `?`.
+     */
     getQuery(): string;
+    /**
+     * The full URL of the request.
+     */
     getUrl(): string;
+    /**
+     * The headers of the request.
+     *
+     * Header names are case-insensitive.
+     * Each header might have multiple values.
+     *
+     * @example
+     * ```json
+     * {
+     *   "Host": ["caido.io"],
+     *   "Connection": ["keep-alive"],
+     *   "Content-Length": ["95"]
+     * }
+     * ```
+     */
     getHeaders(): Record<string, Array<string>>;
+    /**
+     * Get a header value.
+     *
+     * Header name is case-insensitive.
+     * The header might have multiple values.
+     */
     getHeader(name: string): Array<string> | undefined;
+    /**
+     * The body of the request.
+     */
     getBody(): Body | undefined;
+    /**
+     * The raw version of the request.
+     *
+     * Used to access the bytes directly.
+     */
     getRaw(): RequestRaw;
+    /**
+     * The datetime the request was recorded by the proxy.
+     */
     getCreatedAt(): Date;
+    /**
+     * Copied the request to a mutable un-saved {@link RequestSpec}.
+     * This enables you to make modify a request before re-sending it.
+     */
     toSpec(): RequestSpec;
+    /**
+     * Copied the request to a mutable un-saved {@link RequestSpecRaw}.
+     * The raw requests are not parsed and can be used to send invalid HTTP Requests.
+     */
     toSpecRaw(): RequestSpecRaw;
   };
 
@@ -80,45 +146,205 @@ declare module "caido:utils" {
   };
 
   /**
-   * A mutable Request not yet sent.
+   * A mutable Request that has not yet been sent.
    * @category RequestsSDK
    */
   export class RequestSpec {
+    /**
+     * Build a new {@link RequestSpec} from a URL string. Only the host, port and scheme will be parsed.
+     *
+     * You can convert a saved immutable {@link Request} object into a {@link RequestSpec} object by using the `toSpec()` method.
+     *
+     * By default:
+     * - Method is `GET`.
+     * - Path is `/`.
+     *
+     * @example
+     * ```js
+     * const spec = new RequestSpec("https://example.com");
+     * ```
+     */
     constructor(url: string);
+    /**
+     * Get the host of the request.
+     */
     getHost(): string;
+    /**
+     * Set the host of the request.
+     *
+     * It will also update the `Host` header.
+     */
     setHost(host: string): void;
+    /**
+     * Get the port of the request.
+     */
     getPort(): number;
+    /**
+     * Set the port of the request.
+     *
+     * The port number must be between 1 and 65535.
+     */
     setPort(port: number): void;
+    /**
+     * Get if the request uses TLS (HTTPS).
+     */
     getTls(): boolean;
+    /**
+     * Set if the request uses TLS (HTTPS).
+     */
     setTls(tls: boolean): void;
+    /**
+     * Get the HTTP method of the request.
+     */
     getMethod(): string;
+    /**
+     * Set the HTTP method of the request.
+     *
+     * All strings are accepted.
+     */
     setMethod(method: string): void;
+    /**
+     * Get the path of the request.
+     */
     getPath(): string;
+    /**
+     * Set the path of the request.
+     */
     setPath(path: string): void;
+    /**
+     * Get the unparsed query of the request.
+     *
+     * Excludes the leading `?`.
+     */
     getQuery(): string;
+    /**
+     * Set the unparsed query of the request.
+     *
+     * The query string should not include the leading `?`.
+     *
+     * @example
+     * ```js
+     * spec.setQuery("q=hello");
+     * ```
+     */
     setQuery(query: string): void;
+    /**
+     * The headers of the request.
+     *
+     * Header names are case-insensitive.
+     * Each header might have multiple values.
+     *
+     * @example
+     * ```json
+     * {
+     *   "Host": ["caido.io"],
+     *   "Connection": ["keep-alive"],
+     *   "Content-Length": ["95"]
+     * }
+     * ```
+     */
     getHeaders(): Record<string, Array<string>>;
+    /**
+     * Get a header value.
+     *
+     * Header name is case-insensitive.
+     * The header might have multiple values.
+     */
     getHeader(name: string): Array<string> | undefined;
+    /**
+     * Set a header value.
+     *
+     * This will overwrite any existing values.
+     */
     setHeader(name: string, value: string): void;
+    /**
+     * Removes a header.
+     */
     removeHeader(name: string): void;
+    /**
+     * The body of the request.
+     */
     getBody(): Body | undefined;
+    /**
+     * Set the body of the request.
+     *
+     * The body can either be a {@link Body} or any type that can be converted to {@link Bytes}.
+     *
+     * @example
+     * ```js
+     * const body = new Body("Hello world.");
+     * const options = { updateContentLength: true };
+     * request.setBody(body, options);
+     * ```
+     */
     setBody(body: Body | Bytes, options?: SetBodyOptions): void;
+    /**
+     * This method sets the raw {@link Bytes} of the request and converts it to a {@link RequestSpecRaw}.
+     *
+     * This is useful when you have a prepared {@link RequestSpec} and you just want to modify the raw data.
+     * @example
+     * ```js
+     * const rawBytes = []; // RAW BYTES HERE
+     * const request = new RequestSpec("https://example.com");
+     * const rawRequest = request.setRaw(rawBytes);
+     * ```
+     */
     setRaw(raw: Bytes): RequestSpecRaw;
   }
 
   /**
-   * A mutable raw Request not yet sent.
+   * A mutable raw Request that has not yet been sent.
    * @category RequestsSDK
    */
   export class RequestSpecRaw {
+    /**
+     * Build a new {@link RequestSpecRaw} from a URL string. Only the host, port and scheme will be parsed.
+     *
+     * You can convert a saved immutable {@link Request} object into a {@link RequestSpecRaw} object by using the `toSpecRaw()` method.
+     *
+     * You MUST use `setRaw` to set the raw bytes of the request.
+     *
+     * @example
+     * ```js
+     * const spec = new RequestSpecRaw("https://example.com");
+     * ```
+     */
     constructor(url: string);
+    /**
+     * Get the host of the request.
+     */
     getHost(): string;
+    /**
+     * Set the host of the request.
+     *
+     * It will NOT update the `Host` header.
+     */
     setHost(host: string): void;
+    /**
+     * Get the port of the request.
+     */
     getPort(): number;
+    /**
+     * Set the port of the request.
+     *
+     * The port number must be between 1 and 65535.
+     */
     setPort(port: number): void;
+    /**
+     * Get if the request uses TLS (HTTPS).
+     */
     getTls(): boolean;
+    /**
+     * Set if the request uses TLS (HTTPS).
+     */
     setTls(tls: boolean): void;
+    /**
+     * Get the raw bytes of the request.
+     */
     getRaw(): Uint8Array;
+    /**
+     * Set the raw {@link Bytes} of the request.
+     */
     setRaw(raw: Bytes): void;
   }
 
@@ -144,13 +370,53 @@ declare module "caido:utils" {
    * @category RequestsSDK
    */
   export type Response = {
+    /**
+     * The unique Caido {@link ID} of the response.
+     */
     getId(): ID;
+    /**
+     * The status code of the response.
+     */
     getCode(): number;
+    /**
+     * The headers of the response.
+     *
+     * Header names are case-insensitive.
+     * Each header might have multiple values.
+     *
+     * @example
+     * ```json
+     * {
+     *   "Date": ["Sun, 26 May 2024 10:59:21 GMT"],
+     *   "Content-Type": ["text/html"]
+     * }
+     * ```
+     */
     getHeaders(): Record<string, Array<string>>;
+    /**
+     * Get a header value.
+     *
+     * Header name is case-insensitive.
+     * The header might have multiple values.
+     */
     getHeader(name: string): Array<string> | undefined;
+    /**
+     * The body of the response
+     */
     getBody(): Body | undefined;
+    /**
+     * The raw version of the response.
+     *
+     * Used to access the bytes directly.
+     */
     getRaw(): ResponseRaw;
+    /**
+     * The time it took to send the request and receive the response in milliseconds.
+     */
     getRoundtripTime(): number;
+    /**
+     * The datetime the response was recorded by the proxy.
+     */
     getCreatedAt(): Date;
   };
 
@@ -178,8 +444,8 @@ declare module "caido:utils" {
   export type PageInfo = {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
-    startCursor: string;
-    endCursor: string;
+    startCursor: Cursor;
+    endCursor: Cursor;
   };
 
   /**
@@ -206,7 +472,7 @@ declare module "caido:utils" {
    * @category RequestsSDK
    */
   export type RequestsConnectionItem = {
-    cursor: string;
+    cursor: Cursor;
     request: Request;
     response?: Response;
   };
@@ -233,15 +499,15 @@ declare module "caido:utils" {
   export type RequestsQuery = {
     /**
      * Requests after a given cursor.
-     * @param cursor Cursor of the request
+     * @param cursor {@link Cursor} of the request
      */
-    after(cursor: string): RequestsQuery;
+    after(cursor: Cursor): RequestsQuery;
 
     /**
      * Requests before a given cursor.
-     * @param cursor Cursor of the request
+     * @param cursor {@link Cursor} of the request
      */
-    before(cursor: string): RequestsQuery;
+    before(cursor: Cursor): RequestsQuery;
 
     /**
      * First n requests.
@@ -294,25 +560,30 @@ declare module "caido:utils" {
      * Query requests of the current project.
      *
      * @example
+     * ```js
      * const page = await sqk.requests.query().first(2).execute();
      * sdk.console.log(`ID: ${page.items[1].request.getId()}`);
+     * ```
      */
     query(): RequestsQuery;
     /**
      * Get a request by its unique {@link ID}.
      *
      * @example
+     * ```js
      * await sdk.requests.get("1");
+     * ```
      */
     get(id: ID): Promise<RequestResponseOpt | undefined>;
     /**
-     * Sends a request.
+     * Sends an HTTP request, either a {@link RequestSpec} or {@link RequestSpecRaw}.
      *
      * This respects the upstream proxy settings.
      *
      * @throws {Error} If the request cannot be sent.
      *
      * @example
+     * ```js
      * const spec = new RequestSpec("https://example.com");
      * try {
      *   const res = await sdk.requests.send(request)
@@ -321,16 +592,18 @@ declare module "caido:utils" {
      * } catch (err) {
      *   sdk.console.error(err);
      * }
+     * ```
      */
     send(request: RequestSpec | RequestSpecRaw): Promise<RequestResponse>;
-
     /**
      * Checks if a request is in scope.
      *
      * @example
+     * ```js
      * if (sdk.requests.inScope(request)) {
      *  sdk.console.log("In scope");
      * }
+     * ```
      */
     inScope(request: Request | RequestSpec): boolean;
   };
@@ -413,10 +686,12 @@ declare module "caido:utils" {
      * You can also filter by reporter to get a specific finding.
      *
      * @example
+     * ```js
      * await sdk.findings.get({
      *  reporter: "Reporter",
      *  request,
      * });
+     * ```
      */
     get(input: GetFindingInput): Promise<Finding | undefined>;
     /**
@@ -425,6 +700,7 @@ declare module "caido:utils" {
      * @throws {Error} If the request cannot be saved.
      *
      * @example
+     * ```js
      * await sdk.findings.create({
      *   title: "Title",
      *   description: "Description",
@@ -432,6 +708,7 @@ declare module "caido:utils" {
      *   dedupe: `${request.getHost()}-${request.getPath()}`,
      *   request,
      * });
+     * ```
      */
     create(spec: FindingSpec): Promise<Finding>;
   };
@@ -483,6 +760,11 @@ declare module "caido:utils" {
    * @category Shared
    */
   export type ID = string & { __id?: never };
+  /**
+   * A cursor for pagination.
+   * @category Shared
+   */
+  export type Cursor = string & { __cursor?: never };
   /**
    * Types that can be converted to bytes in inputs.
    * @category Shared
