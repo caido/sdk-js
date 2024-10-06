@@ -11,7 +11,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK for the API RPC service.
-   * @category APISDK
+   * @category API
    */
   export type APISDK<API = {}, Events = {}> = {
     /**
@@ -42,7 +42,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK for the API RPC service.
-   * @category EventsSDK
+   * @category Events
    */
   export type EventsSDK<API = {}, Events = {}> = {
     /**
@@ -84,7 +84,7 @@ declare module "caido:plugin" {
 
   /**
    * The SDK for metadata information about the plugin.
-   * @category MetaSDK
+   * @category Meta
    */
   export type MetaSDK = {
     /**
