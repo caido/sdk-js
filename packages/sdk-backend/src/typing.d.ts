@@ -18,7 +18,9 @@ declare module "caido:plugin" {
      * Sends an event to the frontend plugin.
      *
      * @example
+     * ```ts
      * sdk.api.send("myEvent", 5, "hello");
+     * ```
      */
     send(event: keyof Events, ...args: any[]): void;
 
@@ -26,9 +28,11 @@ declare module "caido:plugin" {
      * Registers a new backend function for the RPC.
      *
      * @example
+     * ```ts
      * sdk.api.register("multiply", (sdk: SDK, a: number, b: number) => {
      *    return a * b;
      * });
+     * ```
      */
     register(
       name: keyof API,
@@ -47,9 +51,11 @@ declare module "caido:plugin" {
      * This callback is called asynchronously and cannot modify requests.
      *
      * @example
-     * sdk.events.onInterceptRequest((sdk: SDK, request: Request) => {
+     * ```ts
+     * sdk.events.onInterceptRequest((sdk, request) => {
      *    // Do something with the request
      * });
+     * ```
      */
     onInterceptRequest(
       callback: (sdk: SDK<API, Events>, request: Request) => MaybePromise<void>,
@@ -61,9 +67,11 @@ declare module "caido:plugin" {
      * This callback is called asynchronously and cannot modify responses.
      *
      * @example
-     * sdk.events.onInterceptResponse((sdk: SDK, request: Request, response: Response) => {
+     * ```ts
+     * sdk.events.onInterceptResponse((sdk, request, response) => {
      *    // Do something with the request/response
      * });
+     * ```
      */
     onInterceptResponse(
       callback: (

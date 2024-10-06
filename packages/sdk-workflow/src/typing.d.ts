@@ -49,7 +49,7 @@ declare module "caido:workflow" {
    */
   export type SDK = {
     /**
-     * The console.
+     * The console for logging.
      *
      * This is currently the same as the global `console`.
      */
@@ -70,6 +70,15 @@ declare module "caido:workflow" {
      * Converts bytes to a string.
      *
      * Unprintable characters will be replaced with `�`.
+     *
+     * @example
+     * ```js
+     * export function run(input, sdk) {
+     *   let parsed = sdk.asString(input);
+     *   sdk.console.log(parsed);
+     *   return parsed;
+     * }
+     * ```
      */
     asString(array: Bytes): string;
   };
