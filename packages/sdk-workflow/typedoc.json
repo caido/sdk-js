@@ -5,9 +5,9 @@
   "categoryOrder": [
     "SDK",
     "Data",
-    "RequestsSDK",
-    "FindingsSDK",
-    "ReplaySDK",
+    "Requests",
+    "Findings",
+    "Replay",
     "Shared",
     "*"
   ]
