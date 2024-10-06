@@ -55,7 +55,7 @@ jobs:
       - name: Pull Request
         uses: caido/action-pull-request@v6.0.1
         with:
-          token: ${{ secrets.BOT_SECRET }}
+          token: ${{ env.CAIDO_DOC_RW_TOKEN }}
           path: ./doc-developer
           commit-message: Update SDK Documentation
           committer: Caido Bot <dev@caido.io>
