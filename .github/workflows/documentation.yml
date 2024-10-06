@@ -39,9 +39,9 @@ jobs:
       - name: Checkout doc-developer
         uses: actions/checkout@v4
         with:
-          repository: caido/doc-developper
+          repository: caido/doc-developer
           ref: main
-          path: ./doc-developper
+          path: ./doc-developer
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
 
       - name: Run script
