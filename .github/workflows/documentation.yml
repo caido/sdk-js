@@ -6,6 +6,9 @@ on:
       - 'main'
 
 env:
+  CAIDO_REF: ${{ github.ref }}
+  CAIDO_GITHUB_TOKEN: ${{ github.token }}
+  CAIDO_SDK_RW_TOKEN: ${{ secrets.CI__DOC__RW }}
   CAIDO_NODE_VERSION: 20
   CAIDO_PNPM_VERSION: 9
 
