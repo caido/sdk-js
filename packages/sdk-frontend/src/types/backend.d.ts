@@ -1,11 +1,23 @@
 import type { PromisifiedReturnType } from "./utils";
+/**
+ * Endpoints provided by the backend plugin.
+ * @category Backend
+ */
 export type BackendEndpoints = {
     [key: string]: (...args: any[]) => any;
 };
+/**
+ * Events emitted by the backend plugin.
+ * @category Backend
+ */
 export type BackendEvents = {
     [key: string]: (...args: any[]) => void;
 };
-export type ToBackendRPC<T extends BackendEndpoints, E extends BackendEvents> = {
+/**
+ * Utilities to interact with the backend plugin.
+ * @category Backend
+ */
+export type BackendSDK<T extends BackendEndpoints, E extends BackendEvents> = {
     [K in keyof T]: (...args: Parameters<T[K]>) => PromisifiedReturnType<T[K]>;
 } & {
     /**

@@ -1,4 +1,24 @@
 type JSONPrimitive = string | number | boolean | null | undefined;
+/**
+ * A unique Caido identifier per type.
+ */
+export type ID = string & {
+    __id?: never;
+};
+/**
+ * A unique command identifier.
+ * @example "my-super-command"
+ */
+export type CommandID = string & {
+    __commandId?: never;
+};
+/**
+ * A {@link https://fontawesome.com/icons|FontAwesome} icon class.
+ * @example "fas fa-rocket"
+ */
+export type Icon = string & {
+    __icon?: never;
+};
 export type JSONValue = JSONPrimitive | JSONValue[] | {
     [key: string]: JSONValue;
 };

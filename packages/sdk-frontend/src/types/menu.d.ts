@@ -1,13 +1,39 @@
+import type { CommandID, Icon } from "./utils";
+/**
+ * Utilities to insert menu items and context-menus throughout the UI.
+ * @category Menu
+ */
+export type MenuSDK = {
+    /**
+     * Register a menu item.
+     * @param item The menu item to register.
+     *
+     * @example
+     * ```ts
+     * sdk.menu.registerItem({
+     *   type: "Request",
+     *   commandId: "hello",
+     *   leadingIcon: "fas fa-hand",
+     * });
+     * ```
+     */
+    registerItem: (item: MenuItem) => void;
+};
+/**
+ * A content-menu item.
+ * @category Menu
+ */
 export type MenuItem = RequestRowMenuItem | SettingsMenuItem | RequestMenuItem | ResponseMenuItem;
 /**
  * A context-menu item that appears when right-clicking a request row.
+ * @category Menu
  */
 type RequestRowMenuItem = {
     type: "RequestRow";
     /**
      * The command ID to execute when the menu item is clicked.
      */
-    commandId: string;
+    commandId: CommandID;
     /**
      * The icon to display to the left of the menu item.
      */
@@ -15,13 +41,14 @@ type RequestRowMenuItem = {
 };
 /**
  * A context-menu item that appears when right-clicking a request pane.
+ * @category Menu
  */
 type RequestMenuItem = {
     type: "Request";
     /**
      * The command ID to execute when the menu item is clicked.
      */
-    commandId: string;
+    commandId: CommandID;
     /**
      * The icon to display to the left of the menu item.
      */
@@ -29,13 +56,14 @@ type RequestMenuItem = {
 };
 /**
  * A context-menu item that appears when right-clicking a response pane.
+ * @category Menu
  */
 type ResponseMenuItem = {
     type: "Response";
     /**
      * The command ID to execute when the menu item is
      */
-    commandId: string;
+    commandId: CommandID;
     /**
      * The icon to display to the left of the menu item.
      */
@@ -43,6 +71,7 @@ type ResponseMenuItem = {
 };
 /**
  * A menu item that appears in the settings menu.
+ * @category Menu
  */
 type SettingsMenuItem = {
     type: "Settings";
@@ -55,8 +84,8 @@ type SettingsMenuItem = {
      */
     path: string;
     /**
-     * The icon to display to the left of the menu item.
+     * The {@link Icon} to display to the left of the menu item.
      */
-    leadingIcon?: string;
+    leadingIcon?: Icon;
 };
 export {};
