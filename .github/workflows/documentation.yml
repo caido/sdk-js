@@ -44,6 +44,10 @@ jobs:
           path: ./doc-developer
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
 
+      - name: Install dependencies
+        working-directory: ./sdk-js
+        run: pnpm i --frozen-lockfile
+
       - name: Run script
         working-directory: ./doc-developer
         run: pnpm generate:sdk
