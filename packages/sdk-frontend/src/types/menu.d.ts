@@ -81,6 +81,7 @@ type SettingsMenuItem = {
     label: string;
     /**
      * The path that the user will be navigated to when the menu item is clicked
+     * The path must start with "/settings/".
      */
     path: string;
     /**

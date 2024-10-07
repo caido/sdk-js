@@ -21,12 +21,35 @@ export type Editor = {
      * Focus the editor.
      */
     focus: () => void;
+    /**
+     * Get the editor view.
+     * @returns The CodeMirror {@link https://codemirror.net/docs/ref/#view.EditorView EditorView}.
+     */
+    getEditorView: () => EditorView;
 };
 export type HTTPRequestEditor = {
+    /**
+     * Get the editor element.
+     * Append this to your DOM to display the editor.
+     * @returns The editor element.
+     */
     getElement: () => HTMLElement;
+    /**
+     * Get the editor view.
+     * @returns The CodeMirror {@link https://codemirror.net/docs/ref/#view.EditorView EditorView}.
+     */
     getEditorView: () => EditorView;
 };
 export type HTTPResponseEditor = {
+    /**
+     * Get the editor element.
+     * Append this to your DOM to display the editor.
+     * @returns The editor element.
+     */
     getElement: () => HTMLElement;
+    /**
+     * Get the editor view.
+     * @returns The CodeMirror {@link https://codemirror.net/docs/ref/#view.EditorView EditorView}.
+     */
     getEditorView: () => EditorView;
 };
