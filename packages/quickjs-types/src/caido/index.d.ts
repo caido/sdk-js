@@ -159,12 +159,28 @@ declare module "caido:utils" {
      * - Method is `GET`.
      * - Path is `/`.
      *
+     * @throws {Error} If the URL is invalid.
+     *
      * @example
      * ```js
      * const spec = new RequestSpec("https://example.com");
      * ```
      */
     constructor(url: string);
+    /**
+     * Parses raw bytes into a {@link RequestSpec}.
+     *
+     * @throws {Error} If the bytes are not a valid HTTP request.
+     * @example
+     * ```js
+     * const rawInput = 'GET / HTTP/1.1\r\nHost: example.com\r\n\r\n';
+     * const spec = RequestSpec.parse(rawInput);
+     * spec.setHeader('x-caido', 'test');
+     * const specRaw = spec.getRaw();
+     * const rawOutput = specRaw.getRaw(); // Will contain the new header
+     * ```
+     */
+    static parse(bytes: Bytes): RequestSpec;
     /**
      * Get the host of the request.
      */
@@ -282,6 +298,7 @@ declare module "caido:utils" {
      * This method sets the raw {@link Bytes} of the request and converts it to a {@link RequestSpecRaw}.
      *
      * This is useful when you have a prepared {@link RequestSpec} and you just want to modify the raw data.
+     *
      * @example
      * ```js
      * const rawBytes = []; // RAW BYTES HERE
@@ -290,6 +307,19 @@ declare module "caido:utils" {
      * ```
      */
     setRaw(raw: Bytes): RequestSpecRaw;
+    /**
+     * This methods converts the {@link RequestSpec} to a {@link RequestSpecRaw}.
+     *
+     * This is useful to retrieve the raw bytes of the request.
+     *
+     * @example
+     * ```js
+     * const spec = new RequestSpec("https://example.com");
+     * const specRaw = spec.getRaw();
+     * const bytes = specRaw.getRaw(); // GET / HTTP/1.1\r\nHost: example.com\r\n\r\n
+     * ```
+     */
+    getRaw(): RequestSpecRaw;
   }
 
   /**
