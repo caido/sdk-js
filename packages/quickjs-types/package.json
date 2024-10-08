@@ -1,6 +1,6 @@
 {
   "name": "@caido/quickjs-types",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Typing for the QuickJS Engine",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -10,8 +10,5 @@
   ],
   "scripts": {
     "typing": "./scripts/typing.sh"
-  },
-  "dependencies": {
-    "prettier": "3.3.2"
   }
 }
