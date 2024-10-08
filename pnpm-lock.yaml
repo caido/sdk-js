@@ -26,8 +26,8 @@ importers:
   packages/sdk-backend:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.2
+        version: 0.9.2
       '@caido/sdk-shared':
         specifier: 0.1.1
         version: 0.1.1
@@ -43,13 +43,13 @@ importers:
   packages/sdk-workflow:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.2
+        version: 0.9.2
 
 packages:
 
-  '@caido/quickjs-types@0.9.1':
-    resolution: {integrity: sha512-omHqdEetZiW7aqA02Ld3qFEwx7PGke0W8A2VPHh7U7nzCfzbtfQ7QuUqqWy8RvxlYr6Qtr12MBzco7iU1lAArw==}
+  '@caido/quickjs-types@0.9.2':
+    resolution: {integrity: sha512-lS9uQRIl33JFgETBR+P+mWo1R5mLkpzKfeT/v9ifQ+ahswgHM1pBfrze5P9yYzumvCDJ6x8wgrbyYlGQJqhVBg==}
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
@@ -166,11 +166,6 @@ packages:
   oniguruma-to-js@0.4.3:
     resolution: {integrity: sha512-X0jWUcAlxORhOqqBREgPMgnshB7ZGYszBNspP+tS9hPD3l13CdaXcHbgImoHUHlrvGx/7AvFEkTRhAGYh+jzjQ==}
 
-  prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
-    engines: {node: '>=14'}
-    hasBin: true
-
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
 
@@ -256,9 +251,7 @@ packages:
 
 snapshots:
 
-  '@caido/quickjs-types@0.9.1':
-    dependencies:
-      prettier: 3.3.2
+  '@caido/quickjs-types@0.9.2': {}
 
   '@caido/sdk-shared@0.1.1': {}
 
@@ -406,8 +399,6 @@ snapshots:
   oniguruma-to-js@0.4.3:
     dependencies:
       regex: 4.3.2
-
-  prettier@3.3.2: {}
 
   property-information@6.5.0: {}
 
