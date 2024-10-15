@@ -1,6 +1,6 @@
 import type { Sdk as GraphqlSDK } from "./__generated__/graphql-sdk";
 import type { BackendEndpoints, BackendEvents, BackendSDK } from "./backend";
-import type { CommandPaletteSDK } from "./command_palette";
+import type { CommandPaletteSDK } from "./commandPalette";
 import type { CommandsSDK } from "./commands";
 import type { FindingsSDK } from "./findings";
 import type { MenuSDK } from "./menu";
@@ -11,8 +11,10 @@ import type { SidebarSDK } from "./sidebar";
 import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
+import type { ReplaySDK } from "./replay";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
+export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -70,4 +72,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the sidebar.
      */
     sidebar: SidebarSDK;
+    /**
+     * Utilities to interact with Replay.
+     */
+    replay: ReplaySDK;
 };
