@@ -12,6 +12,8 @@ import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
 import type { ReplaySDK } from "./replay";
+import type { SearchSDK } from "./search";
+import type { HTTPHistorySDK } from "./httpHistory";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
@@ -73,7 +75,15 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      */
     sidebar: SidebarSDK;
     /**
-     * Utilities to interact with Replay.
+     * Utilities to interact with the Replay page.
      */
     replay: ReplaySDK;
+    /**
+     * Utilities to interact with the Search page.
+     */
+    search: SearchSDK;
+    /**
+     * Utilities to interact with the HTTP History page.
+     */
+    httpHistory: HTTPHistorySDK;
 };
