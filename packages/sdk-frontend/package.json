@@ -10,6 +10,9 @@
   "files": [
     "src/*"
   ],
+  "scripts": {
+    "documentation": "typedoc"
+  },
   "peerDependencies": {
     "@codemirror/view": "^6.0.0"
   },
