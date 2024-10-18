@@ -7,6 +7,7 @@ declare module "caido:plugin" {
     Request,
     Response,
     ReplaySDK,
+    ProjectsSDK,
   } from "caido:utils";
 
   /**
@@ -122,6 +123,10 @@ declare module "caido:plugin" {
      * The SDK for the Replay service.
      */
     replay: ReplaySDK;
+    /**
+     * The SDK for the Projects service.
+     */
+    projects: ProjectsSDK;
     /**
      * The SDK for the API RPC service.
      */

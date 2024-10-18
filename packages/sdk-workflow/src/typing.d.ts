@@ -6,6 +6,7 @@ declare module "caido:workflow" {
     Request,
     Response,
     ReplaySDK,
+    ProjectsSDK,
   } from "caido:utils";
 
   /**
@@ -66,6 +67,10 @@ declare module "caido:workflow" {
      * The SDK for the Replay service.
      */
     replay: ReplaySDK;
+    /**
+     * The SDK for the Projects service.
+     */
+    projects: ProjectsSDK;
     /**
      * Converts bytes to a string.
      *
