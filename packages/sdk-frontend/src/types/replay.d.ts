@@ -26,6 +26,10 @@ export type ReplaySession = {
      */
     collectionId: string;
 };
+/**
+ * A collection in Replay.
+ * @category Replay
+ */
 export type ReplayCollection = {
     /**
      * The ID of the collection.
