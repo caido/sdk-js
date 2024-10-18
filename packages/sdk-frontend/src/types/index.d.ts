@@ -14,9 +14,11 @@ import type { WindowSDK } from "./window";
 import type { ReplaySDK } from "./replay";
 import type { SearchSDK } from "./search";
 import type { HTTPHistorySDK } from "./httpHistory";
+import type { FilesSDK } from "./files";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
+export type { HostedFile } from "./files";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -86,4 +88,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the HTTP History page.
      */
     httpHistory: HTTPHistorySDK;
+    /**
+     * Utilities to interact with files.
+     */
+    files: FilesSDK;
 };
