@@ -1,3 +1,4 @@
+import type { ID } from "./utils";
 /**
  * A replay tab.
  * @category Replay
@@ -6,7 +7,7 @@ export type ReplayTab = {
     /**
      * The ID of the session associated with this tab.
      */
-    sessionId: string;
+    sessionId: ID;
 };
 /**
  * A session in Replay.
@@ -16,7 +17,7 @@ export type ReplaySession = {
     /**
      * The ID of the session.
      */
-    id: string;
+    id: ID;
     /**
      * The name of the session.
      */
@@ -24,7 +25,7 @@ export type ReplaySession = {
     /**
      * The ID of the collection the session belongs to.
      */
-    collectionId: string;
+    collectionId: ID;
 };
 /**
  * A collection in Replay.
@@ -34,7 +35,7 @@ export type ReplayCollection = {
     /**
      * The ID of the collection.
      */
-    id: string;
+    id: ID;
     /**
      * The name of the collection.
      */
@@ -42,7 +43,7 @@ export type ReplayCollection = {
     /**
      * The sessions in the collection.
      */
-    sessionIds: string[];
+    sessionIds: ID[];
 };
 /**
  * Utilities to interact with Replay.
@@ -53,12 +54,12 @@ export type ReplaySDK = {
      * Open a replay tab for the given session.
      * @param sessionId The ID of the session to open.
      */
-    openTab: (sessionId: string) => void;
+    openTab: (sessionId: ID) => void;
     /**
      * Close a replay tab for the given session.
      * @param sessionId The ID of the session to close.
      */
-    closeTab: (sessionId: string) => void;
+    closeTab: (sessionId: ID) => void;
     /**
      * Get the list of all open replay tabs.
      * @returns The list of all open replay tabs.
@@ -80,5 +81,5 @@ export type ReplaySDK = {
      * @param name The new name of the session.
      * @returns The updated session.
      */
-    renameSession: (id: string, name: string) => Promise<ReplaySession>;
+    renameSession: (id: ID, name: string) => Promise<ReplaySession>;
 };

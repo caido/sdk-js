@@ -13,6 +13,13 @@ export type CommandID = string & {
     __commandId?: never;
 };
 /**
+ * An HTTPQL expression.
+ * @example `req.method.eq:"POST"`
+ */
+export type HTTPQL = string & {
+    __httpql?: never;
+};
+/**
  * A {@link https://fontawesome.com/icons|FontAwesome} icon class.
  * @example "fas fa-rocket"
  */

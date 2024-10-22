@@ -4,7 +4,6 @@
   "exclude": ["src/types/__generated__/graphql-sdk.d.ts"],
   "categoryOrder": [
     "SDK",
-
     "Backend",
     "UI",
     "Scopes",

@@ -15,10 +15,13 @@ import type { ReplaySDK } from "./replay";
 import type { SearchSDK } from "./search";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { FilesSDK } from "./files";
+import type { FiltersSDK } from "./filters";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
 export type { HostedFile } from "./files";
+export type { Filter } from "./filters";
+export type { HTTPQL, ID } from "./utils";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -89,7 +92,11 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      */
     httpHistory: HTTPHistorySDK;
     /**
-     * Utilities to interact with files.
+     * Utilities to interact with the Files page.
      */
     files: FilesSDK;
+    /**
+     * Utilities to interact with Filters page.
+     */
+    filters: FiltersSDK;
 };
