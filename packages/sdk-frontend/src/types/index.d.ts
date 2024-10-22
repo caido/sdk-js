@@ -16,12 +16,14 @@ import type { SearchSDK } from "./search";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { FilesSDK } from "./files";
 import type { FiltersSDK } from "./filters";
+import type { MatchReplaceSDK } from "./matchReplace";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
 export type { HostedFile } from "./files";
 export type { Filter } from "./filters";
 export type { HTTPQL, ID } from "./utils";
+export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceStrategy, } from "./matchReplace";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -99,4 +101,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with Filters page.
      */
     filters: FiltersSDK;
+    /**
+     * Utilities to interact with Match and Replace page.
+     */
+    matchReplace: MatchReplaceSDK;
 };
