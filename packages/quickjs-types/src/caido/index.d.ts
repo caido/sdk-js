@@ -3,3 +3,5 @@
 /// <reference path="replay.d.ts" />
 /// <reference path="requests.d.ts" />
 /// <reference path="shared.d.ts" />
+
+/// <reference path="http.d.ts" />

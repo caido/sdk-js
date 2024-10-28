@@ -12,6 +12,7 @@ rsync -av --exclude=node_modules \
       --include='net.d.ts' \
       --include='os.d.ts' \
       --include='path.d.ts' \
+      --include='abort.d.ts' \
       --exclude='*' \
       ../../../dependency-llrt/types/ \
       ./src/llrt/
