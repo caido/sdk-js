@@ -5335,468 +5335,6 @@ export type RangeFullFragment = {
     start: number;
     end: number;
 };
-export type ReplayEntryMetaFragment = {
-    __typename: "ReplayEntry";
-    id: string;
-    error?: string | undefined | null;
-    connection: {
-        __typename: "ConnectionInfo";
-        host: string;
-        port: number;
-        isTls: boolean;
-    };
-    session: {
-        id: string;
-    };
-    request?: {
-        __typename: "Request";
-        id: string;
-        host: string;
-        port: number;
-        path: string;
-        query: string;
-        method: string;
-        edited: boolean;
-        isTls: boolean;
-        length: number;
-        alteration: Alteration;
-        fileExtension?: string | undefined | null;
-        source: Source;
-        createdAt: Date;
-        metadata: {
-            __typename: "RequestMetadata";
-            id: string;
-            color?: string | undefined | null;
-        };
-        response?: {
-            __typename: "Response";
-            id: string;
-            statusCode: number;
-            roundtripTime: number;
-            length: number;
-            createdAt: Date;
-            alteration: Alteration;
-            edited: boolean;
-        } | undefined | null;
-    } | undefined | null;
-};
-export type ReplayEntryFullFragment = {
-    __typename: "ReplayEntry";
-    raw: string;
-    id: string;
-    error?: string | undefined | null;
-    settings: {
-        placeholders: Array<{
-            __typename: "ReplayPlaceholder";
-            inputRange: {
-                start: number;
-                end: number;
-            };
-            outputRange: {
-                start: number;
-                end: number;
-            };
-            preprocessors: Array<{
-                __typename: "ReplayPreprocessor";
-                options: {
-                    __typename: "ReplayPrefixPreprocessor";
-                    value: string;
-                } | {
-                    __typename: "ReplaySuffixPreprocessor";
-                    value: string;
-                } | {
-                    __typename: "ReplayUrlEncodePreprocessor";
-                    charset?: string | undefined | null;
-                    nonAscii: boolean;
-                } | {
-                    __typename: "ReplayWorkflowPreprocessor";
-                    id: string;
-                };
-            }>;
-        }>;
-    };
-    connection: {
-        __typename: "ConnectionInfo";
-        host: string;
-        port: number;
-        isTls: boolean;
-    };
-    session: {
-        id: string;
-    };
-    request?: {
-        __typename: "Request";
-        id: string;
-        host: string;
-        port: number;
-        path: string;
-        query: string;
-        method: string;
-        edited: boolean;
-        isTls: boolean;
-        length: number;
-        alteration: Alteration;
-        fileExtension?: string | undefined | null;
-        source: Source;
-        createdAt: Date;
-        metadata: {
-            __typename: "RequestMetadata";
-            id: string;
-            color?: string | undefined | null;
-        };
-        response?: {
-            __typename: "Response";
-            id: string;
-            statusCode: number;
-            roundtripTime: number;
-            length: number;
-            createdAt: Date;
-            alteration: Alteration;
-            edited: boolean;
-        } | undefined | null;
-    } | undefined | null;
-};
-export type ReplaySessionMetaFragment = {
-    __typename: "ReplaySession";
-    id: string;
-    name: string;
-    activeEntry?: {
-        __typename: "ReplayEntry";
-        id: string;
-        error?: string | undefined | null;
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTls: boolean;
-        };
-        session: {
-            id: string;
-        };
-        request?: {
-            __typename: "Request";
-            id: string;
-            host: string;
-            port: number;
-            path: string;
-            query: string;
-            method: string;
-            edited: boolean;
-            isTls: boolean;
-            length: number;
-            alteration: Alteration;
-            fileExtension?: string | undefined | null;
-            source: Source;
-            createdAt: Date;
-            metadata: {
-                __typename: "RequestMetadata";
-                id: string;
-                color?: string | undefined | null;
-            };
-            response?: {
-                __typename: "Response";
-                id: string;
-                statusCode: number;
-                roundtripTime: number;
-                length: number;
-                createdAt: Date;
-                alteration: Alteration;
-                edited: boolean;
-            } | undefined | null;
-        } | undefined | null;
-    } | undefined | null;
-    collection: {
-        id: string;
-    };
-    entries: {
-        nodes: Array<{
-            __typename: "ReplayEntry";
-            id: string;
-            error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            session: {
-                id: string;
-            };
-            request?: {
-                __typename: "Request";
-                id: string;
-                host: string;
-                port: number;
-                path: string;
-                query: string;
-                method: string;
-                edited: boolean;
-                isTls: boolean;
-                length: number;
-                alteration: Alteration;
-                fileExtension?: string | undefined | null;
-                source: Source;
-                createdAt: Date;
-                metadata: {
-                    __typename: "RequestMetadata";
-                    id: string;
-                    color?: string | undefined | null;
-                };
-                response?: {
-                    __typename: "Response";
-                    id: string;
-                    statusCode: number;
-                    roundtripTime: number;
-                    length: number;
-                    createdAt: Date;
-                    alteration: Alteration;
-                    edited: boolean;
-                } | undefined | null;
-            } | undefined | null;
-        }>;
-        pageInfo: {
-            __typename: "PageInfo";
-            hasPreviousPage: boolean;
-            hasNextPage: boolean;
-            startCursor?: string | undefined | null;
-            endCursor?: string | undefined | null;
-        };
-        count: {
-            __typename: "Count";
-            value: number;
-            snapshot: number;
-        };
-    };
-};
-export type ReplaySessionCollectionMetaFragment = {
-    __typename: "ReplaySessionCollection";
-    id: string;
-    name: string;
-    sessions: Array<{
-        __typename: "ReplaySession";
-        id: string;
-        name: string;
-        activeEntry?: {
-            __typename: "ReplayEntry";
-            id: string;
-            error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            session: {
-                id: string;
-            };
-            request?: {
-                __typename: "Request";
-                id: string;
-                host: string;
-                port: number;
-                path: string;
-                query: string;
-                method: string;
-                edited: boolean;
-                isTls: boolean;
-                length: number;
-                alteration: Alteration;
-                fileExtension?: string | undefined | null;
-                source: Source;
-                createdAt: Date;
-                metadata: {
-                    __typename: "RequestMetadata";
-                    id: string;
-                    color?: string | undefined | null;
-                };
-                response?: {
-                    __typename: "Response";
-                    id: string;
-                    statusCode: number;
-                    roundtripTime: number;
-                    length: number;
-                    createdAt: Date;
-                    alteration: Alteration;
-                    edited: boolean;
-                } | undefined | null;
-            } | undefined | null;
-        } | undefined | null;
-        collection: {
-            id: string;
-        };
-        entries: {
-            nodes: Array<{
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
-        };
-    }>;
-};
-export type ReplayTaskMetaFragment = {
-    __typename: "ReplayTask";
-    id: string;
-    createdAt: Date;
-    replayEntry: {
-        __typename: "ReplayEntry";
-        id: string;
-        error?: string | undefined | null;
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTls: boolean;
-        };
-        session: {
-            id: string;
-        };
-        request?: {
-            __typename: "Request";
-            id: string;
-            host: string;
-            port: number;
-            path: string;
-            query: string;
-            method: string;
-            edited: boolean;
-            isTls: boolean;
-            length: number;
-            alteration: Alteration;
-            fileExtension?: string | undefined | null;
-            source: Source;
-            createdAt: Date;
-            metadata: {
-                __typename: "RequestMetadata";
-                id: string;
-                color?: string | undefined | null;
-            };
-            response?: {
-                __typename: "Response";
-                id: string;
-                statusCode: number;
-                roundtripTime: number;
-                length: number;
-                createdAt: Date;
-                alteration: Alteration;
-                edited: boolean;
-            } | undefined | null;
-        } | undefined | null;
-    };
-};
-export type ReplayPrefixPreprocessorFullFragment = {
-    __typename: "ReplayPrefixPreprocessor";
-    value: string;
-};
-export type ReplaySuffixPreprocessorFullFragment = {
-    __typename: "ReplaySuffixPreprocessor";
-    value: string;
-};
-export type ReplayUrlEncodePreprocessorFullFragment = {
-    __typename: "ReplayUrlEncodePreprocessor";
-    charset?: string | undefined | null;
-    nonAscii: boolean;
-};
-export type ReplayWorkflowPreprocessorFullFragment = {
-    __typename: "ReplayWorkflowPreprocessor";
-    id: string;
-};
-export type ReplayPreprocessorFullFragment = {
-    __typename: "ReplayPreprocessor";
-    options: {
-        __typename: "ReplayPrefixPreprocessor";
-        value: string;
-    } | {
-        __typename: "ReplaySuffixPreprocessor";
-        value: string;
-    } | {
-        __typename: "ReplayUrlEncodePreprocessor";
-        charset?: string | undefined | null;
-        nonAscii: boolean;
-    } | {
-        __typename: "ReplayWorkflowPreprocessor";
-        id: string;
-    };
-};
-export type ReplayPlaceholderFullFragment = {
-    __typename: "ReplayPlaceholder";
-    inputRange: {
-        start: number;
-        end: number;
-    };
-    outputRange: {
-        start: number;
-        end: number;
-    };
-    preprocessors: Array<{
-        __typename: "ReplayPreprocessor";
-        options: {
-            __typename: "ReplayPrefixPreprocessor";
-            value: string;
-        } | {
-            __typename: "ReplaySuffixPreprocessor";
-            value: string;
-        } | {
-            __typename: "ReplayUrlEncodePreprocessor";
-            charset?: string | undefined | null;
-            nonAscii: boolean;
-        } | {
-            __typename: "ReplayWorkflowPreprocessor";
-            id: string;
-        };
-    }>;
-};
 export type RuntimeFullFragment = {
     __typename: "Runtime";
     version: string;
@@ -7508,934 +7046,6 @@ export type RenameProjectMutation = {
             code: string;
         } | {
             __typename: "OtherUserError";
-            code: string;
-        } | undefined | null;
-    };
-};
-export type RenameReplaySessionCollectionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    name: Scalars["String"]["input"];
-}>;
-export type RenameReplaySessionCollectionMutation = {
-    renameReplaySessionCollection: {
-        collection?: {
-            __typename: "ReplaySessionCollection";
-            id: string;
-            name: string;
-            sessions: Array<{
-                __typename: "ReplaySession";
-                id: string;
-                name: string;
-                activeEntry?: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                } | undefined | null;
-                collection: {
-                    id: string;
-                };
-                entries: {
-                    nodes: Array<{
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTls: boolean;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                        } | undefined | null;
-                    }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
-                };
-            }>;
-        } | undefined | null;
-    };
-};
-export type CreateReplaySessionCollectionMutationVariables = Exact<{
-    input: CreateReplaySessionCollectionInput;
-}>;
-export type CreateReplaySessionCollectionMutation = {
-    createReplaySessionCollection: {
-        collection?: {
-            __typename: "ReplaySessionCollection";
-            id: string;
-            name: string;
-            sessions: Array<{
-                __typename: "ReplaySession";
-                id: string;
-                name: string;
-                activeEntry?: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                } | undefined | null;
-                collection: {
-                    id: string;
-                };
-                entries: {
-                    nodes: Array<{
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTls: boolean;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                        } | undefined | null;
-                    }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
-                };
-            }>;
-        } | undefined | null;
-    };
-};
-export type DeleteReplaySessionCollectionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type DeleteReplaySessionCollectionMutation = {
-    deleteReplaySessionCollection: {
-        deletedId?: string | undefined | null;
-    };
-};
-export type RenameReplaySessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    name: Scalars["String"]["input"];
-}>;
-export type RenameReplaySessionMutation = {
-    renameReplaySession: {
-        session?: {
-            __typename: "ReplaySession";
-            id: string;
-            name: string;
-            activeEntry?: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            } | undefined | null;
-            collection: {
-                id: string;
-            };
-            entries: {
-                nodes: Array<{
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
-            };
-        } | undefined | null;
-    };
-};
-export type SetActiveReplaySessionEntryMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    entryId: Scalars["ID"]["input"];
-}>;
-export type SetActiveReplaySessionEntryMutation = {
-    setActiveReplaySessionEntry: {
-        session?: {
-            __typename: "ReplaySession";
-            id: string;
-            name: string;
-            activeEntry?: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            } | undefined | null;
-            collection: {
-                id: string;
-            };
-            entries: {
-                nodes: Array<{
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
-            };
-        } | undefined | null;
-    };
-};
-export type DeleteReplaySessionsMutationVariables = Exact<{
-    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
-}>;
-export type DeleteReplaySessionsMutation = {
-    deleteReplaySessions: {
-        deletedIds?: Array<string> | undefined | null;
-    };
-};
-export type CreateReplaySessionMutationVariables = Exact<{
-    input: CreateReplaySessionInput;
-}>;
-export type CreateReplaySessionMutation = {
-    createReplaySession: {
-        session?: {
-            __typename: "ReplaySession";
-            id: string;
-            name: string;
-            collection: {
-                __typename: "ReplaySessionCollection";
-                id: string;
-                name: string;
-                sessions: Array<{
-                    __typename: "ReplaySession";
-                    id: string;
-                    name: string;
-                    activeEntry?: {
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTls: boolean;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                        } | undefined | null;
-                    } | undefined | null;
-                    collection: {
-                        id: string;
-                    };
-                    entries: {
-                        nodes: Array<{
-                            __typename: "ReplayEntry";
-                            id: string;
-                            error?: string | undefined | null;
-                            connection: {
-                                __typename: "ConnectionInfo";
-                                host: string;
-                                port: number;
-                                isTls: boolean;
-                            };
-                            session: {
-                                id: string;
-                            };
-                            request?: {
-                                __typename: "Request";
-                                id: string;
-                                host: string;
-                                port: number;
-                                path: string;
-                                query: string;
-                                method: string;
-                                edited: boolean;
-                                isTls: boolean;
-                                length: number;
-                                alteration: Alteration;
-                                fileExtension?: string | undefined | null;
-                                source: Source;
-                                createdAt: Date;
-                                metadata: {
-                                    __typename: "RequestMetadata";
-                                    id: string;
-                                    color?: string | undefined | null;
-                                };
-                                response?: {
-                                    __typename: "Response";
-                                    id: string;
-                                    statusCode: number;
-                                    roundtripTime: number;
-                                    length: number;
-                                    createdAt: Date;
-                                    alteration: Alteration;
-                                    edited: boolean;
-                                } | undefined | null;
-                            } | undefined | null;
-                        }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
-                    };
-                }>;
-            };
-            activeEntry?: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            } | undefined | null;
-            entries: {
-                nodes: Array<{
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
-            };
-        } | undefined | null;
-    };
-};
-export type MoveReplaySessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    collectionId: Scalars["ID"]["input"];
-}>;
-export type MoveReplaySessionMutation = {
-    moveReplaySession: {
-        session?: {
-            __typename: "ReplaySession";
-            id: string;
-            name: string;
-            activeEntry?: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            } | undefined | null;
-            collection: {
-                id: string;
-            };
-            entries: {
-                nodes: Array<{
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
-            };
-        } | undefined | null;
-    };
-};
-export type StartReplayTaskMutationVariables = Exact<{
-    sessionId: Scalars["ID"]["input"];
-    input: StartReplayTaskInput;
-}>;
-export type StartReplayTaskMutation = {
-    startReplayTask: {
-        task?: {
-            __typename: "ReplayTask";
-            id: string;
-            createdAt: Date;
-            replayEntry: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            };
-        } | undefined | null;
-        error?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "PermissionDeniedUserError";
-            code: string;
-            permissionDeniedReason: PermissionDeniedErrorReason;
-        } | {
-            __typename: "TaskInProgressUserError";
-            taskId: string;
             code: string;
         } | undefined | null;
     };
@@ -10723,609 +9333,6 @@ export type ProjectsQuery = {
         }>;
     }>;
 };
-export type ReplayEntryQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type ReplayEntryQuery = {
-    replayEntry?: {
-        __typename: "ReplayEntry";
-        raw: string;
-        id: string;
-        error?: string | undefined | null;
-        settings: {
-            placeholders: Array<{
-                __typename: "ReplayPlaceholder";
-                inputRange: {
-                    start: number;
-                    end: number;
-                };
-                outputRange: {
-                    start: number;
-                    end: number;
-                };
-                preprocessors: Array<{
-                    __typename: "ReplayPreprocessor";
-                    options: {
-                        __typename: "ReplayPrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "ReplaySuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "ReplayUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "ReplayWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-        };
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTls: boolean;
-        };
-        session: {
-            id: string;
-        };
-        request?: {
-            __typename: "Request";
-            id: string;
-            host: string;
-            port: number;
-            path: string;
-            query: string;
-            method: string;
-            edited: boolean;
-            isTls: boolean;
-            length: number;
-            alteration: Alteration;
-            fileExtension?: string | undefined | null;
-            source: Source;
-            createdAt: Date;
-            metadata: {
-                __typename: "RequestMetadata";
-                id: string;
-                color?: string | undefined | null;
-            };
-            response?: {
-                __typename: "Response";
-                id: string;
-                statusCode: number;
-                roundtripTime: number;
-                length: number;
-                createdAt: Date;
-                alteration: Alteration;
-                edited: boolean;
-            } | undefined | null;
-        } | undefined | null;
-    } | undefined | null;
-};
-export type ActiveReplayEntryBySessionQueryVariables = Exact<{
-    sessionId: Scalars["ID"]["input"];
-}>;
-export type ActiveReplayEntryBySessionQuery = {
-    replaySession?: {
-        __typename: "ReplaySession";
-        id: string;
-        name: string;
-        activeEntry?: {
-            __typename: "ReplayEntry";
-            id: string;
-            error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            session: {
-                id: string;
-            };
-            request?: {
-                __typename: "Request";
-                id: string;
-                host: string;
-                port: number;
-                path: string;
-                query: string;
-                method: string;
-                edited: boolean;
-                isTls: boolean;
-                length: number;
-                alteration: Alteration;
-                fileExtension?: string | undefined | null;
-                source: Source;
-                createdAt: Date;
-                metadata: {
-                    __typename: "RequestMetadata";
-                    id: string;
-                    color?: string | undefined | null;
-                };
-                response?: {
-                    __typename: "Response";
-                    id: string;
-                    statusCode: number;
-                    roundtripTime: number;
-                    length: number;
-                    createdAt: Date;
-                    alteration: Alteration;
-                    edited: boolean;
-                } | undefined | null;
-            } | undefined | null;
-        } | undefined | null;
-        collection: {
-            id: string;
-        };
-        entries: {
-            nodes: Array<{
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
-        };
-    } | undefined | null;
-};
-export type ReplayEntriesBySessionQueryVariables = Exact<{
-    sessionId: Scalars["ID"]["input"];
-}>;
-export type ReplayEntriesBySessionQuery = {
-    replaySession?: {
-        __typename: "ReplaySession";
-        id: string;
-        name: string;
-        entries: {
-            edges: Array<{
-                cursor: string;
-                node: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                };
-            }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
-            nodes: Array<{
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTls: boolean;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                } | undefined | null;
-            }>;
-        };
-        activeEntry?: {
-            __typename: "ReplayEntry";
-            id: string;
-            error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            session: {
-                id: string;
-            };
-            request?: {
-                __typename: "Request";
-                id: string;
-                host: string;
-                port: number;
-                path: string;
-                query: string;
-                method: string;
-                edited: boolean;
-                isTls: boolean;
-                length: number;
-                alteration: Alteration;
-                fileExtension?: string | undefined | null;
-                source: Source;
-                createdAt: Date;
-                metadata: {
-                    __typename: "RequestMetadata";
-                    id: string;
-                    color?: string | undefined | null;
-                };
-                response?: {
-                    __typename: "Response";
-                    id: string;
-                    statusCode: number;
-                    roundtripTime: number;
-                    length: number;
-                    createdAt: Date;
-                    alteration: Alteration;
-                    edited: boolean;
-                } | undefined | null;
-            } | undefined | null;
-        } | undefined | null;
-        collection: {
-            id: string;
-        };
-    } | undefined | null;
-};
-export type ReplaySessionEntriesQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type ReplaySessionEntriesQuery = {
-    replaySession?: {
-        activeEntry?: {
-            __typename: "ReplayEntry";
-            id: string;
-            error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            session: {
-                id: string;
-            };
-            request?: {
-                __typename: "Request";
-                id: string;
-                host: string;
-                port: number;
-                path: string;
-                query: string;
-                method: string;
-                edited: boolean;
-                isTls: boolean;
-                length: number;
-                alteration: Alteration;
-                fileExtension?: string | undefined | null;
-                source: Source;
-                createdAt: Date;
-                metadata: {
-                    __typename: "RequestMetadata";
-                    id: string;
-                    color?: string | undefined | null;
-                };
-                response?: {
-                    __typename: "Response";
-                    id: string;
-                    statusCode: number;
-                    roundtripTime: number;
-                    length: number;
-                    createdAt: Date;
-                    alteration: Alteration;
-                    edited: boolean;
-                } | undefined | null;
-            } | undefined | null;
-        } | undefined | null;
-        entries: {
-            edges: Array<{
-                cursor: string;
-                node: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                };
-            }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
-        };
-    } | undefined | null;
-};
-export type ReplaySessionCollectionsQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type ReplaySessionCollectionsQuery = {
-    replaySessionCollections: {
-        edges: Array<{
-            node: {
-                __typename: "ReplaySessionCollection";
-                id: string;
-                name: string;
-                sessions: Array<{
-                    __typename: "ReplaySession";
-                    id: string;
-                    name: string;
-                    activeEntry?: {
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTls: boolean;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                        } | undefined | null;
-                    } | undefined | null;
-                    collection: {
-                        id: string;
-                    };
-                    entries: {
-                        nodes: Array<{
-                            __typename: "ReplayEntry";
-                            id: string;
-                            error?: string | undefined | null;
-                            connection: {
-                                __typename: "ConnectionInfo";
-                                host: string;
-                                port: number;
-                                isTls: boolean;
-                            };
-                            session: {
-                                id: string;
-                            };
-                            request?: {
-                                __typename: "Request";
-                                id: string;
-                                host: string;
-                                port: number;
-                                path: string;
-                                query: string;
-                                method: string;
-                                edited: boolean;
-                                isTls: boolean;
-                                length: number;
-                                alteration: Alteration;
-                                fileExtension?: string | undefined | null;
-                                source: Source;
-                                createdAt: Date;
-                                metadata: {
-                                    __typename: "RequestMetadata";
-                                    id: string;
-                                    color?: string | undefined | null;
-                                };
-                                response?: {
-                                    __typename: "Response";
-                                    id: string;
-                                    statusCode: number;
-                                    roundtripTime: number;
-                                    length: number;
-                                    createdAt: Date;
-                                    alteration: Alteration;
-                                    edited: boolean;
-                                } | undefined | null;
-                            } | undefined | null;
-                        }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
-                    };
-                }>;
-            };
-        }>;
-    };
-};
 export type ResponseQueryVariables = Exact<{
     id: Scalars["ID"]["input"];
 }>;
@@ -11959,6 +9966,2510 @@ export type WorkflowNodeDefinitionsQuery = {
         __typename: "WorkflowNodeDefinition";
         raw: JSONValue;
     }>;
+};
+export type ReplayEntryMetaFragment = {
+    __typename: "ReplayEntry";
+    id: string;
+    error?: string | undefined | null;
+    connection: {
+        __typename: "ConnectionInfo";
+        host: string;
+        port: number;
+        isTls: boolean;
+    };
+    session: {
+        id: string;
+    };
+    request?: {
+        __typename: "Request";
+        id: string;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        method: string;
+        edited: boolean;
+        isTls: boolean;
+        length: number;
+        alteration: Alteration;
+        fileExtension?: string | undefined | null;
+        source: Source;
+        createdAt: Date;
+        metadata: {
+            __typename: "RequestMetadata";
+            id: string;
+            color?: string | undefined | null;
+        };
+        response?: {
+            __typename: "Response";
+            id: string;
+            statusCode: number;
+            roundtripTime: number;
+            length: number;
+            createdAt: Date;
+            alteration: Alteration;
+            edited: boolean;
+        } | undefined | null;
+    } | undefined | null;
+};
+export type ReplayEntryFullFragment = {
+    __typename: "ReplayEntry";
+    raw: string;
+    id: string;
+    error?: string | undefined | null;
+    settings: {
+        placeholders: Array<{
+            __typename: "ReplayPlaceholder";
+            inputRange: {
+                start: number;
+                end: number;
+            };
+            outputRange: {
+                start: number;
+                end: number;
+            };
+            preprocessors: Array<{
+                __typename: "ReplayPreprocessor";
+                options: {
+                    __typename: "ReplayPrefixPreprocessor";
+                    value: string;
+                } | {
+                    __typename: "ReplaySuffixPreprocessor";
+                    value: string;
+                } | {
+                    __typename: "ReplayUrlEncodePreprocessor";
+                    charset?: string | undefined | null;
+                    nonAscii: boolean;
+                } | {
+                    __typename: "ReplayWorkflowPreprocessor";
+                    id: string;
+                };
+            }>;
+        }>;
+    };
+    connection: {
+        __typename: "ConnectionInfo";
+        host: string;
+        port: number;
+        isTls: boolean;
+    };
+    session: {
+        id: string;
+    };
+    request?: {
+        __typename: "Request";
+        id: string;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        method: string;
+        edited: boolean;
+        isTls: boolean;
+        length: number;
+        alteration: Alteration;
+        fileExtension?: string | undefined | null;
+        source: Source;
+        createdAt: Date;
+        metadata: {
+            __typename: "RequestMetadata";
+            id: string;
+            color?: string | undefined | null;
+        };
+        response?: {
+            __typename: "Response";
+            id: string;
+            statusCode: number;
+            roundtripTime: number;
+            length: number;
+            createdAt: Date;
+            alteration: Alteration;
+            edited: boolean;
+        } | undefined | null;
+    } | undefined | null;
+};
+export type ReplaySessionMetaFragment = {
+    __typename: "ReplaySession";
+    id: string;
+    name: string;
+    activeEntry?: {
+        __typename: "ReplayEntry";
+        id: string;
+        error?: string | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
+        };
+        session: {
+            id: string;
+        };
+        request?: {
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+        } | undefined | null;
+    } | undefined | null;
+    collection: {
+        id: string;
+    };
+    entries: {
+        nodes: Array<{
+            __typename: "ReplayEntry";
+            id: string;
+            error?: string | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            session: {
+                id: string;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            } | undefined | null;
+        }>;
+        pageInfo: {
+            __typename: "PageInfo";
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+            startCursor?: string | undefined | null;
+            endCursor?: string | undefined | null;
+        };
+        count: {
+            __typename: "Count";
+            value: number;
+            snapshot: number;
+        };
+    };
+};
+export type ReplaySessionCollectionMetaFragment = {
+    __typename: "ReplaySessionCollection";
+    id: string;
+    name: string;
+    sessions: Array<{
+        __typename: "ReplaySession";
+        id: string;
+        name: string;
+        activeEntry?: {
+            __typename: "ReplayEntry";
+            id: string;
+            error?: string | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            session: {
+                id: string;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            } | undefined | null;
+        } | undefined | null;
+        collection: {
+            id: string;
+        };
+        entries: {
+            nodes: Array<{
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            }>;
+            pageInfo: {
+                __typename: "PageInfo";
+                hasPreviousPage: boolean;
+                hasNextPage: boolean;
+                startCursor?: string | undefined | null;
+                endCursor?: string | undefined | null;
+            };
+            count: {
+                __typename: "Count";
+                value: number;
+                snapshot: number;
+            };
+        };
+    }>;
+};
+export type ReplayTaskMetaFragment = {
+    __typename: "ReplayTask";
+    id: string;
+    createdAt: Date;
+    replayEntry: {
+        __typename: "ReplayEntry";
+        id: string;
+        error?: string | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
+        };
+        session: {
+            id: string;
+        };
+        request?: {
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+        } | undefined | null;
+    };
+};
+export type ReplayPrefixPreprocessorFullFragment = {
+    __typename: "ReplayPrefixPreprocessor";
+    value: string;
+};
+export type ReplaySuffixPreprocessorFullFragment = {
+    __typename: "ReplaySuffixPreprocessor";
+    value: string;
+};
+export type ReplayUrlEncodePreprocessorFullFragment = {
+    __typename: "ReplayUrlEncodePreprocessor";
+    charset?: string | undefined | null;
+    nonAscii: boolean;
+};
+export type ReplayWorkflowPreprocessorFullFragment = {
+    __typename: "ReplayWorkflowPreprocessor";
+    id: string;
+};
+export type ReplayPreprocessorFullFragment = {
+    __typename: "ReplayPreprocessor";
+    options: {
+        __typename: "ReplayPrefixPreprocessor";
+        value: string;
+    } | {
+        __typename: "ReplaySuffixPreprocessor";
+        value: string;
+    } | {
+        __typename: "ReplayUrlEncodePreprocessor";
+        charset?: string | undefined | null;
+        nonAscii: boolean;
+    } | {
+        __typename: "ReplayWorkflowPreprocessor";
+        id: string;
+    };
+};
+export type ReplayPlaceholderFullFragment = {
+    __typename: "ReplayPlaceholder";
+    inputRange: {
+        start: number;
+        end: number;
+    };
+    outputRange: {
+        start: number;
+        end: number;
+    };
+    preprocessors: Array<{
+        __typename: "ReplayPreprocessor";
+        options: {
+            __typename: "ReplayPrefixPreprocessor";
+            value: string;
+        } | {
+            __typename: "ReplaySuffixPreprocessor";
+            value: string;
+        } | {
+            __typename: "ReplayUrlEncodePreprocessor";
+            charset?: string | undefined | null;
+            nonAscii: boolean;
+        } | {
+            __typename: "ReplayWorkflowPreprocessor";
+            id: string;
+        };
+    }>;
+};
+export type ReplayEntryQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type ReplayEntryQuery = {
+    replayEntry?: {
+        __typename: "ReplayEntry";
+        raw: string;
+        id: string;
+        error?: string | undefined | null;
+        settings: {
+            placeholders: Array<{
+                __typename: "ReplayPlaceholder";
+                inputRange: {
+                    start: number;
+                    end: number;
+                };
+                outputRange: {
+                    start: number;
+                    end: number;
+                };
+                preprocessors: Array<{
+                    __typename: "ReplayPreprocessor";
+                    options: {
+                        __typename: "ReplayPrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplaySuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplayUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "ReplayWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+        };
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
+        };
+        session: {
+            id: string;
+        };
+        request?: {
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+        } | undefined | null;
+    } | undefined | null;
+};
+export type ActiveReplayEntryBySessionQueryVariables = Exact<{
+    sessionId: Scalars["ID"]["input"];
+}>;
+export type ActiveReplayEntryBySessionQuery = {
+    replaySession?: {
+        __typename: "ReplaySession";
+        id: string;
+        name: string;
+        activeEntry?: {
+            __typename: "ReplayEntry";
+            id: string;
+            error?: string | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            session: {
+                id: string;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            } | undefined | null;
+        } | undefined | null;
+        collection: {
+            id: string;
+        };
+        entries: {
+            nodes: Array<{
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            }>;
+            pageInfo: {
+                __typename: "PageInfo";
+                hasPreviousPage: boolean;
+                hasNextPage: boolean;
+                startCursor?: string | undefined | null;
+                endCursor?: string | undefined | null;
+            };
+            count: {
+                __typename: "Count";
+                value: number;
+                snapshot: number;
+            };
+        };
+    } | undefined | null;
+};
+export type ReplayEntriesBySessionQueryVariables = Exact<{
+    sessionId: Scalars["ID"]["input"];
+}>;
+export type ReplayEntriesBySessionQuery = {
+    replaySession?: {
+        __typename: "ReplaySession";
+        id: string;
+        name: string;
+        entries: {
+            edges: Array<{
+                cursor: string;
+                node: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
+            }>;
+            pageInfo: {
+                __typename: "PageInfo";
+                hasPreviousPage: boolean;
+                hasNextPage: boolean;
+                startCursor?: string | undefined | null;
+                endCursor?: string | undefined | null;
+            };
+            count: {
+                __typename: "Count";
+                value: number;
+                snapshot: number;
+            };
+            nodes: Array<{
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            }>;
+        };
+        activeEntry?: {
+            __typename: "ReplayEntry";
+            id: string;
+            error?: string | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            session: {
+                id: string;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            } | undefined | null;
+        } | undefined | null;
+        collection: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type ReplaySessionEntriesQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type ReplaySessionEntriesQuery = {
+    replaySession?: {
+        activeEntry?: {
+            __typename: "ReplayEntry";
+            id: string;
+            error?: string | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            session: {
+                id: string;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            } | undefined | null;
+        } | undefined | null;
+        entries: {
+            edges: Array<{
+                cursor: string;
+                node: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
+            }>;
+            pageInfo: {
+                __typename: "PageInfo";
+                hasPreviousPage: boolean;
+                hasNextPage: boolean;
+                startCursor?: string | undefined | null;
+                endCursor?: string | undefined | null;
+            };
+            count: {
+                __typename: "Count";
+                value: number;
+                snapshot: number;
+            };
+        };
+    } | undefined | null;
+};
+export type ReplaySessionCollectionsQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type ReplaySessionCollectionsQuery = {
+    replaySessionCollections: {
+        edges: Array<{
+            node: {
+                __typename: "ReplaySessionCollection";
+                id: string;
+                name: string;
+                sessions: Array<{
+                    __typename: "ReplaySession";
+                    id: string;
+                    name: string;
+                    activeEntry?: {
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                    entries: {
+                        nodes: Array<{
+                            __typename: "ReplayEntry";
+                            id: string;
+                            error?: string | undefined | null;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTls: boolean;
+                            };
+                            session: {
+                                id: string;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                            } | undefined | null;
+                        }>;
+                        pageInfo: {
+                            __typename: "PageInfo";
+                            hasPreviousPage: boolean;
+                            hasNextPage: boolean;
+                            startCursor?: string | undefined | null;
+                            endCursor?: string | undefined | null;
+                        };
+                        count: {
+                            __typename: "Count";
+                            value: number;
+                            snapshot: number;
+                        };
+                    };
+                }>;
+            };
+        }>;
+    };
+};
+export type RenameReplaySessionCollectionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    name: Scalars["String"]["input"];
+}>;
+export type RenameReplaySessionCollectionMutation = {
+    renameReplaySessionCollection: {
+        collection?: {
+            __typename: "ReplaySessionCollection";
+            id: string;
+            name: string;
+            sessions: Array<{
+                __typename: "ReplaySession";
+                id: string;
+                name: string;
+                activeEntry?: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                } | undefined | null;
+                collection: {
+                    id: string;
+                };
+                entries: {
+                    nodes: Array<{
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    }>;
+                    pageInfo: {
+                        __typename: "PageInfo";
+                        hasPreviousPage: boolean;
+                        hasNextPage: boolean;
+                        startCursor?: string | undefined | null;
+                        endCursor?: string | undefined | null;
+                    };
+                    count: {
+                        __typename: "Count";
+                        value: number;
+                        snapshot: number;
+                    };
+                };
+            }>;
+        } | undefined | null;
+    };
+};
+export type CreateReplaySessionCollectionMutationVariables = Exact<{
+    input: CreateReplaySessionCollectionInput;
+}>;
+export type CreateReplaySessionCollectionMutation = {
+    createReplaySessionCollection: {
+        collection?: {
+            __typename: "ReplaySessionCollection";
+            id: string;
+            name: string;
+            sessions: Array<{
+                __typename: "ReplaySession";
+                id: string;
+                name: string;
+                activeEntry?: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                } | undefined | null;
+                collection: {
+                    id: string;
+                };
+                entries: {
+                    nodes: Array<{
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    }>;
+                    pageInfo: {
+                        __typename: "PageInfo";
+                        hasPreviousPage: boolean;
+                        hasNextPage: boolean;
+                        startCursor?: string | undefined | null;
+                        endCursor?: string | undefined | null;
+                    };
+                    count: {
+                        __typename: "Count";
+                        value: number;
+                        snapshot: number;
+                    };
+                };
+            }>;
+        } | undefined | null;
+    };
+};
+export type DeleteReplaySessionCollectionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteReplaySessionCollectionMutation = {
+    deleteReplaySessionCollection: {
+        deletedId?: string | undefined | null;
+    };
+};
+export type RenameReplaySessionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    name: Scalars["String"]["input"];
+}>;
+export type RenameReplaySessionMutation = {
+    renameReplaySession: {
+        session?: {
+            __typename: "ReplaySession";
+            id: string;
+            name: string;
+            activeEntry?: {
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            } | undefined | null;
+            collection: {
+                id: string;
+            };
+            entries: {
+                nodes: Array<{
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                }>;
+                pageInfo: {
+                    __typename: "PageInfo";
+                    hasPreviousPage: boolean;
+                    hasNextPage: boolean;
+                    startCursor?: string | undefined | null;
+                    endCursor?: string | undefined | null;
+                };
+                count: {
+                    __typename: "Count";
+                    value: number;
+                    snapshot: number;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type SetActiveReplaySessionEntryMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    entryId: Scalars["ID"]["input"];
+}>;
+export type SetActiveReplaySessionEntryMutation = {
+    setActiveReplaySessionEntry: {
+        session?: {
+            __typename: "ReplaySession";
+            id: string;
+            name: string;
+            activeEntry?: {
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            } | undefined | null;
+            collection: {
+                id: string;
+            };
+            entries: {
+                nodes: Array<{
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                }>;
+                pageInfo: {
+                    __typename: "PageInfo";
+                    hasPreviousPage: boolean;
+                    hasNextPage: boolean;
+                    startCursor?: string | undefined | null;
+                    endCursor?: string | undefined | null;
+                };
+                count: {
+                    __typename: "Count";
+                    value: number;
+                    snapshot: number;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type DeleteReplaySessionsMutationVariables = Exact<{
+    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+}>;
+export type DeleteReplaySessionsMutation = {
+    deleteReplaySessions: {
+        deletedIds?: Array<string> | undefined | null;
+    };
+};
+export type CreateReplaySessionMutationVariables = Exact<{
+    input: CreateReplaySessionInput;
+}>;
+export type CreateReplaySessionMutation = {
+    createReplaySession: {
+        session?: {
+            __typename: "ReplaySession";
+            id: string;
+            name: string;
+            collection: {
+                __typename: "ReplaySessionCollection";
+                id: string;
+                name: string;
+                sessions: Array<{
+                    __typename: "ReplaySession";
+                    id: string;
+                    name: string;
+                    activeEntry?: {
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                    entries: {
+                        nodes: Array<{
+                            __typename: "ReplayEntry";
+                            id: string;
+                            error?: string | undefined | null;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTls: boolean;
+                            };
+                            session: {
+                                id: string;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                            } | undefined | null;
+                        }>;
+                        pageInfo: {
+                            __typename: "PageInfo";
+                            hasPreviousPage: boolean;
+                            hasNextPage: boolean;
+                            startCursor?: string | undefined | null;
+                            endCursor?: string | undefined | null;
+                        };
+                        count: {
+                            __typename: "Count";
+                            value: number;
+                            snapshot: number;
+                        };
+                    };
+                }>;
+            };
+            activeEntry?: {
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            } | undefined | null;
+            entries: {
+                nodes: Array<{
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                }>;
+                pageInfo: {
+                    __typename: "PageInfo";
+                    hasPreviousPage: boolean;
+                    hasNextPage: boolean;
+                    startCursor?: string | undefined | null;
+                    endCursor?: string | undefined | null;
+                };
+                count: {
+                    __typename: "Count";
+                    value: number;
+                    snapshot: number;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type MoveReplaySessionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    collectionId: Scalars["ID"]["input"];
+}>;
+export type MoveReplaySessionMutation = {
+    moveReplaySession: {
+        session?: {
+            __typename: "ReplaySession";
+            id: string;
+            name: string;
+            activeEntry?: {
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            } | undefined | null;
+            collection: {
+                id: string;
+            };
+            entries: {
+                nodes: Array<{
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                }>;
+                pageInfo: {
+                    __typename: "PageInfo";
+                    hasPreviousPage: boolean;
+                    hasNextPage: boolean;
+                    startCursor?: string | undefined | null;
+                    endCursor?: string | undefined | null;
+                };
+                count: {
+                    __typename: "Count";
+                    value: number;
+                    snapshot: number;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type StartReplayTaskMutationVariables = Exact<{
+    sessionId: Scalars["ID"]["input"];
+    input: StartReplayTaskInput;
+}>;
+export type StartReplayTaskMutation = {
+    startReplayTask: {
+        task?: {
+            __typename: "ReplayTask";
+            id: string;
+            createdAt: Date;
+            replayEntry: {
+                __typename: "ReplayEntry";
+                id: string;
+                error?: string | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTls: boolean;
+                };
+                session: {
+                    id: string;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                } | undefined | null;
+            };
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "TaskInProgressUserError";
+            taskId: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type CreatedReplaySessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedReplaySessionSubscription = {
+    createdReplaySession: {
+        sessionEdge: {
+            node: {
+                __typename: "ReplaySession";
+                id: string;
+                name: string;
+                activeEntry?: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                } | undefined | null;
+                collection: {
+                    id: string;
+                };
+                entries: {
+                    nodes: Array<{
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    }>;
+                    pageInfo: {
+                        __typename: "PageInfo";
+                        hasPreviousPage: boolean;
+                        hasNextPage: boolean;
+                        startCursor?: string | undefined | null;
+                        endCursor?: string | undefined | null;
+                    };
+                    count: {
+                        __typename: "Count";
+                        value: number;
+                        snapshot: number;
+                    };
+                };
+            };
+        };
+    };
+};
+export type UpdatedReplaySessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedReplaySessionSubscription = {
+    updatedReplaySession: {
+        snapshot: number;
+        sessionEdge: {
+            node: {
+                __typename: "ReplaySession";
+                id: string;
+                name: string;
+                activeEntry?: {
+                    __typename: "ReplayEntry";
+                    id: string;
+                    error?: string | undefined | null;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTls: boolean;
+                    };
+                    session: {
+                        id: string;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    } | undefined | null;
+                } | undefined | null;
+                collection: {
+                    id: string;
+                };
+                entries: {
+                    nodes: Array<{
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    }>;
+                    pageInfo: {
+                        __typename: "PageInfo";
+                        hasPreviousPage: boolean;
+                        hasNextPage: boolean;
+                        startCursor?: string | undefined | null;
+                        endCursor?: string | undefined | null;
+                    };
+                    count: {
+                        __typename: "Count";
+                        value: number;
+                        snapshot: number;
+                    };
+                };
+            };
+        };
+    };
+};
+export type DeletedReplaySessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedReplaySessionSubscription = {
+    deletedReplaySession: {
+        deletedSessionId: string;
+    };
+};
+export type CreatedReplaySessionCollectionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedReplaySessionCollectionSubscription = {
+    createdReplaySessionCollection: {
+        collectionEdge: {
+            node: {
+                __typename: "ReplaySessionCollection";
+                id: string;
+                name: string;
+                sessions: Array<{
+                    __typename: "ReplaySession";
+                    id: string;
+                    name: string;
+                    activeEntry?: {
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                    entries: {
+                        nodes: Array<{
+                            __typename: "ReplayEntry";
+                            id: string;
+                            error?: string | undefined | null;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTls: boolean;
+                            };
+                            session: {
+                                id: string;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                            } | undefined | null;
+                        }>;
+                        pageInfo: {
+                            __typename: "PageInfo";
+                            hasPreviousPage: boolean;
+                            hasNextPage: boolean;
+                            startCursor?: string | undefined | null;
+                            endCursor?: string | undefined | null;
+                        };
+                        count: {
+                            __typename: "Count";
+                            value: number;
+                            snapshot: number;
+                        };
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type UpdatedReplaySessionCollectionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedReplaySessionCollectionSubscription = {
+    updatedReplaySessionCollection: {
+        collectionEdge: {
+            node: {
+                __typename: "ReplaySessionCollection";
+                id: string;
+                name: string;
+                sessions: Array<{
+                    __typename: "ReplaySession";
+                    id: string;
+                    name: string;
+                    activeEntry?: {
+                        __typename: "ReplayEntry";
+                        id: string;
+                        error?: string | undefined | null;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTls: boolean;
+                        };
+                        session: {
+                            id: string;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                        } | undefined | null;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                    entries: {
+                        nodes: Array<{
+                            __typename: "ReplayEntry";
+                            id: string;
+                            error?: string | undefined | null;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTls: boolean;
+                            };
+                            session: {
+                                id: string;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                            } | undefined | null;
+                        }>;
+                        pageInfo: {
+                            __typename: "PageInfo";
+                            hasPreviousPage: boolean;
+                            hasNextPage: boolean;
+                            startCursor?: string | undefined | null;
+                            endCursor?: string | undefined | null;
+                        };
+                        count: {
+                            __typename: "Count";
+                            value: number;
+                            snapshot: number;
+                        };
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type DeletedReplaySessionCollectionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedReplaySessionCollectionSubscription = {
+    deletedReplaySessionCollection: {
+        deletedCollectionId: string;
+    };
 };
 export type RequestFullFragment = {
     __typename: "Request";
@@ -13566,128 +14077,6 @@ export type DeletedProjectSubscription = {
         deletedProjectId: string;
     };
 };
-export type UpdatedReplaySessionSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type UpdatedReplaySessionSubscription = {
-    updatedReplaySession: {
-        snapshot: number;
-        sessionEdge: {
-            node: {
-                __typename: "ReplaySession";
-                id: string;
-                name: string;
-                activeEntry?: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTls: boolean;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    } | undefined | null;
-                } | undefined | null;
-                collection: {
-                    id: string;
-                };
-                entries: {
-                    nodes: Array<{
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTls: boolean;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                        } | undefined | null;
-                    }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
-                };
-            };
-        };
-    };
-};
 export type CreatedScopeSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -14350,20 +14739,6 @@ export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on W
 export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
 export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
-export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
-export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
-export declare const ReplayUrlEncodePreprocessorFullFragmentDoc = "\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    ";
-export declare const ReplayWorkflowPreprocessorFullFragmentDoc = "\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
-export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    ";
-export declare const ReplayPlaceholderFullFragmentDoc = "\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    ";
-export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    ";
-export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const CountFullFragmentDoc = "\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    ";
-export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
-export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
-export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    ";
 export declare const ReleaseFullFragmentDoc = "\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n  availableUpdate {\n    ...releaseFull\n  }\n}\n    ";
 export declare const ScopeFullFragmentDoc = "\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
@@ -14383,7 +14758,21 @@ export declare const UserProfileFullFragmentDoc = "\n    fragment userProfileFul
 export declare const UserSettingsFullFragmentDoc = "\n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
+export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
+export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
+export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
+export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
+export declare const ReplayUrlEncodePreprocessorFullFragmentDoc = "\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    ";
+export declare const ReplayWorkflowPreprocessorFullFragmentDoc = "\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
+export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    ";
+export declare const ReplayPlaceholderFullFragmentDoc = "\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    ";
+export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    ";
+export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const CountFullFragmentDoc = "\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    ";
+export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const AssistantModelsDocument = "\n    query assistantModels {\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
@@ -14448,15 +14837,6 @@ export declare const CreateProjectDocument = "\n    mutation createProject($inpu
 export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {\n  startReplayTask(sessionId: $sessionId, input: $input) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreateScopeDocument = "\n    mutation createScope($input: CreateScopeInput!) {\n  createScope(input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdateScopeDocument = "\n    mutation updateScope($id: ID!, $input: UpdateScopeInput!) {\n  updateScope(id: $id, input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!) {\n  deleteScope(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -14529,11 +14909,6 @@ export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  p
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    activeEntry {\n      ...replayEntryMeta\n    }\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const GetRuntimeDocument = "\n    query getRuntime {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n  availableUpdate {\n    ...releaseFull\n  }\n}\n    \n\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";
@@ -14558,6 +14933,26 @@ export declare const UserSettingsDocument = "\n    query userSettings {\n  viewe
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsDocument = "\n    query workflows {\n  workflows {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowNodeDefinitionsDocument = "\n    query workflowNodeDefinitions {\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    activeEntry {\n      ...replayEntryMeta\n    }\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {\n  startReplayTask(sessionId: $sessionId, input: $input) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQL) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const RequestDocument = "\n    query request($id: ID!) {\n  request(id: $id) {\n    ...requestFull\n  }\n}\n    \n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
@@ -14608,7 +15003,6 @@ export declare const CreatedPluginEventDocument = "\n    subscription createdPlu
 export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const CreatedScopeDocument = "\n    subscription createdScope {\n  createdScope {\n    scopeEdge {\n      node {\n        ...scopeFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdatedScopeDocument = "\n    subscription updatedScope {\n  updatedScope {\n    scopeEdge {\n      node {\n        ...scopeFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
@@ -14690,15 +15084,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     selectProject(variables: SelectProjectMutationVariables, options?: C): Promise<SelectProjectMutation>;
     deleteProject(variables: DeleteProjectMutationVariables, options?: C): Promise<DeleteProjectMutation>;
     renameProject(variables: RenameProjectMutationVariables, options?: C): Promise<RenameProjectMutation>;
-    renameReplaySessionCollection(variables: RenameReplaySessionCollectionMutationVariables, options?: C): Promise<RenameReplaySessionCollectionMutation>;
-    createReplaySessionCollection(variables: CreateReplaySessionCollectionMutationVariables, options?: C): Promise<CreateReplaySessionCollectionMutation>;
-    deleteReplaySessionCollection(variables: DeleteReplaySessionCollectionMutationVariables, options?: C): Promise<DeleteReplaySessionCollectionMutation>;
-    renameReplaySession(variables: RenameReplaySessionMutationVariables, options?: C): Promise<RenameReplaySessionMutation>;
-    setActiveReplaySessionEntry(variables: SetActiveReplaySessionEntryMutationVariables, options?: C): Promise<SetActiveReplaySessionEntryMutation>;
-    deleteReplaySessions(variables: DeleteReplaySessionsMutationVariables, options?: C): Promise<DeleteReplaySessionsMutation>;
-    createReplaySession(variables: CreateReplaySessionMutationVariables, options?: C): Promise<CreateReplaySessionMutation>;
-    moveReplaySession(variables: MoveReplaySessionMutationVariables, options?: C): Promise<MoveReplaySessionMutation>;
-    startReplayTask(variables: StartReplayTaskMutationVariables, options?: C): Promise<StartReplayTaskMutation>;
     createScope(variables: CreateScopeMutationVariables, options?: C): Promise<CreateScopeMutation>;
     updateScope(variables: UpdateScopeMutationVariables, options?: C): Promise<UpdateScopeMutation>;
     deleteScope(variables: DeleteScopeMutationVariables, options?: C): Promise<DeleteScopeMutation>;
@@ -14771,11 +15156,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     storePluginPackages(variables?: StorePluginPackagesQueryVariables, options?: C): Promise<StorePluginPackagesQuery>;
     currentProject(variables?: CurrentProjectQueryVariables, options?: C): Promise<CurrentProjectQuery>;
     projects(variables?: ProjectsQueryVariables, options?: C): Promise<ProjectsQuery>;
-    replayEntry(variables: ReplayEntryQueryVariables, options?: C): Promise<ReplayEntryQuery>;
-    activeReplayEntryBySession(variables: ActiveReplayEntryBySessionQueryVariables, options?: C): Promise<ActiveReplayEntryBySessionQuery>;
-    replayEntriesBySession(variables: ReplayEntriesBySessionQueryVariables, options?: C): Promise<ReplayEntriesBySessionQuery>;
-    replaySessionEntries(variables: ReplaySessionEntriesQueryVariables, options?: C): Promise<ReplaySessionEntriesQuery>;
-    replaySessionCollections(variables?: ReplaySessionCollectionsQueryVariables, options?: C): Promise<ReplaySessionCollectionsQuery>;
     response(variables: ResponseQueryVariables, options?: C): Promise<ResponseQuery>;
     getRuntime(variables?: GetRuntimeQueryVariables, options?: C): Promise<GetRuntimeQuery>;
     getLogs(variables?: GetLogsQueryVariables, options?: C): Promise<GetLogsQuery>;
@@ -14800,6 +15180,26 @@ export declare function getSdk<C>(requester: Requester<C>): {
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
     workflows(variables?: WorkflowsQueryVariables, options?: C): Promise<WorkflowsQuery>;
     workflowNodeDefinitions(variables?: WorkflowNodeDefinitionsQueryVariables, options?: C): Promise<WorkflowNodeDefinitionsQuery>;
+    replayEntry(variables: ReplayEntryQueryVariables, options?: C): Promise<ReplayEntryQuery>;
+    activeReplayEntryBySession(variables: ActiveReplayEntryBySessionQueryVariables, options?: C): Promise<ActiveReplayEntryBySessionQuery>;
+    replayEntriesBySession(variables: ReplayEntriesBySessionQueryVariables, options?: C): Promise<ReplayEntriesBySessionQuery>;
+    replaySessionEntries(variables: ReplaySessionEntriesQueryVariables, options?: C): Promise<ReplaySessionEntriesQuery>;
+    replaySessionCollections(variables?: ReplaySessionCollectionsQueryVariables, options?: C): Promise<ReplaySessionCollectionsQuery>;
+    renameReplaySessionCollection(variables: RenameReplaySessionCollectionMutationVariables, options?: C): Promise<RenameReplaySessionCollectionMutation>;
+    createReplaySessionCollection(variables: CreateReplaySessionCollectionMutationVariables, options?: C): Promise<CreateReplaySessionCollectionMutation>;
+    deleteReplaySessionCollection(variables: DeleteReplaySessionCollectionMutationVariables, options?: C): Promise<DeleteReplaySessionCollectionMutation>;
+    renameReplaySession(variables: RenameReplaySessionMutationVariables, options?: C): Promise<RenameReplaySessionMutation>;
+    setActiveReplaySessionEntry(variables: SetActiveReplaySessionEntryMutationVariables, options?: C): Promise<SetActiveReplaySessionEntryMutation>;
+    deleteReplaySessions(variables: DeleteReplaySessionsMutationVariables, options?: C): Promise<DeleteReplaySessionsMutation>;
+    createReplaySession(variables: CreateReplaySessionMutationVariables, options?: C): Promise<CreateReplaySessionMutation>;
+    moveReplaySession(variables: MoveReplaySessionMutationVariables, options?: C): Promise<MoveReplaySessionMutation>;
+    startReplayTask(variables: StartReplayTaskMutationVariables, options?: C): Promise<StartReplayTaskMutation>;
+    createdReplaySession(variables?: CreatedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<CreatedReplaySessionSubscription>;
+    updatedReplaySession(variables?: UpdatedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<UpdatedReplaySessionSubscription>;
+    deletedReplaySession(variables?: DeletedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<DeletedReplaySessionSubscription>;
+    createdReplaySessionCollection(variables?: CreatedReplaySessionCollectionSubscriptionVariables, options?: C): AsyncIterable<CreatedReplaySessionCollectionSubscription>;
+    updatedReplaySessionCollection(variables?: UpdatedReplaySessionCollectionSubscriptionVariables, options?: C): AsyncIterable<UpdatedReplaySessionCollectionSubscription>;
+    deletedReplaySessionCollection(variables?: DeletedReplaySessionCollectionSubscriptionVariables, options?: C): AsyncIterable<DeletedReplaySessionCollectionSubscription>;
     requests(variables?: RequestsQueryVariables, options?: C): Promise<RequestsQuery>;
     requestCount(variables?: RequestCountQueryVariables, options?: C): Promise<RequestCountQuery>;
     request(variables: RequestQueryVariables, options?: C): Promise<RequestQuery>;
@@ -14850,7 +15250,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdProject(variables?: CreatedProjectSubscriptionVariables, options?: C): AsyncIterable<CreatedProjectSubscription>;
     updatedProject(variables?: UpdatedProjectSubscriptionVariables, options?: C): AsyncIterable<UpdatedProjectSubscription>;
     deletedProject(variables?: DeletedProjectSubscriptionVariables, options?: C): AsyncIterable<DeletedProjectSubscription>;
-    updatedReplaySession(variables?: UpdatedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<UpdatedReplaySessionSubscription>;
     createdScope(variables?: CreatedScopeSubscriptionVariables, options?: C): AsyncIterable<CreatedScopeSubscription>;
     updatedScope(variables?: UpdatedScopeSubscriptionVariables, options?: C): AsyncIterable<UpdatedScopeSubscription>;
     createdSitemapEntry(variables?: CreatedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<CreatedSitemapEntrySubscription>;
