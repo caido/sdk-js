@@ -8,6 +8,7 @@ declare module "caido:plugin" {
     Response,
     ReplaySDK,
     ProjectsSDK,
+    Project,
   } from "caido:utils";
 
   /**
@@ -79,6 +80,29 @@ declare module "caido:plugin" {
         sdk: SDK<API, Events>,
         request: Request,
         response: Response,
+      ) => MaybePromise<void>,
+    ): void;
+
+    /**
+     * Registers an callback on project change.
+     *
+     * This callback is called asynchronously and cannot modify the project.
+     *
+     * It can happen that the project is null if the user deleted the currently selected one.
+     *
+     * @example
+     * ```ts
+     * sdk.events.onProjectChange((sdk, project) => {
+     *   if (project !== null) {
+     *     // Do something with the project
+     *   }
+     * });
+     * ```
+     */
+    onProjectChange(
+      callback: (
+        sdk: SDK<API, Events>,
+        project: Project | null,
       ) => MaybePromise<void>,
     ): void;
   };
