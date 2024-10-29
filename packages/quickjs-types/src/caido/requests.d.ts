@@ -597,6 +597,14 @@ declare module "caido:utils" {
      */
     query(): RequestsQuery;
     /**
+     * Checks if a request/response matches an HTTPQL filter.
+     *
+     * @param filter HTTPQL filter
+     * @param request The {@link Request} to match against
+     * @param response The {@link Response} to match against
+     */
+    matches(filter: string, request: Request, response?: Response): boolean;
+    /**
      * Get a request by its unique {@link ID}.
      *
      * @example
