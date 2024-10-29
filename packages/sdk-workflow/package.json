@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-workflow",
-  "version": "0.42.1-beta.4",
+  "version": "0.43.0",
   "description": "Typing for the Caido Workflow SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
