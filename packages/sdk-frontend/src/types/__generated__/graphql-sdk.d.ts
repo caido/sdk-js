@@ -3784,20 +3784,6 @@ export type UpdatedViewerAssistantUsageSubscription = {
         };
     };
 };
-export type AuthenticationRequestFullFragment = {
-    __typename: "AuthenticationRequest";
-    id: string;
-    expiresAt: Date;
-    userCode: string;
-    verificationUrl: string;
-};
-export type AuthenticationTokenFullFragment = {
-    __typename: "AuthenticationToken";
-    accessToken: string;
-    expiresAt: Date;
-    refreshToken?: string | undefined | null;
-    scopes: Array<AuthenticationScope>;
-};
 export type AutomateEntryMetaFragment = {
     __typename: "AutomateEntry";
     id: string;
@@ -4253,6 +4239,1231 @@ export type AutomateTaskEdgeMetaFragment = {
             };
         };
     };
+};
+export type AutomateEntryQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type AutomateEntryQuery = {
+    automateEntry?: {
+        __typename: "AutomateEntry";
+        id: string;
+        name: string;
+        createdAt: Date;
+        settings: {
+            __typename: "AutomateSettings";
+            closeConnection: boolean;
+            updateContentLength: boolean;
+            strategy: AutomatePayloadStrategy;
+            concurrency: {
+                __typename: "AutomateConcurrencySetting";
+                delay: number;
+                workers: number;
+            };
+            retryOnFailure: {
+                __typename: "AutomateRetryOnFailureSetting";
+                backoff: number;
+                maximumRetries: number;
+            };
+            payloads: Array<{
+                __typename: "AutomatePayload";
+                options: {
+                    __typename: "AutomateHostedFilePayload";
+                    id: string;
+                    delimiter?: string | undefined | null;
+                } | {
+                    __typename: "AutomateNullPayload";
+                    quantity: number;
+                } | {
+                    __typename: "AutomateNumberPayload";
+                    range: {
+                        start: number;
+                        end: number;
+                    };
+                } | {
+                    __typename: "AutomateSimpleListPayload";
+                    list: Array<string>;
+                };
+                preprocessors: Array<{
+                    __typename: "AutomatePreprocessor";
+                    options: {
+                        __typename: "AutomatePrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateSuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "AutomateWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+            placeholders: Array<{
+                __typename: "AutomatePlaceholder";
+                start: number;
+                end: number;
+            }>;
+        };
+        session: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type AutomateEntryRequestsQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    after?: InputMaybe<Scalars["String"]["input"]>;
+    first?: InputMaybe<Scalars["Int"]["input"]>;
+    before?: InputMaybe<Scalars["String"]["input"]>;
+    last?: InputMaybe<Scalars["Int"]["input"]>;
+    order?: InputMaybe<AutomateEntryRequestOrderInput>;
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+}>;
+export type AutomateEntryRequestsQuery = {
+    automateEntry?: {
+        __typename: "AutomateEntry";
+        id: string;
+        name: string;
+        createdAt: Date;
+        requests: {
+            snapshot: number;
+            edges: Array<{
+                __typename: "AutomateEntryRequestEdge";
+                cursor: string;
+                node: {
+                    __typename: "AutomateEntryRequest";
+                    sequenceId: string;
+                    automateEntryId: string;
+                    error?: string | undefined | null;
+                    request: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    };
+                    payloads: Array<{
+                        __typename: "AutomateEntryRequestPayload";
+                        position?: number | undefined | null;
+                        raw?: string | undefined | null;
+                    }>;
+                };
+            }>;
+        };
+        settings: {
+            __typename: "AutomateSettings";
+            closeConnection: boolean;
+            updateContentLength: boolean;
+            strategy: AutomatePayloadStrategy;
+            concurrency: {
+                __typename: "AutomateConcurrencySetting";
+                delay: number;
+                workers: number;
+            };
+            retryOnFailure: {
+                __typename: "AutomateRetryOnFailureSetting";
+                backoff: number;
+                maximumRetries: number;
+            };
+            payloads: Array<{
+                __typename: "AutomatePayload";
+                options: {
+                    __typename: "AutomateHostedFilePayload";
+                    id: string;
+                    delimiter?: string | undefined | null;
+                } | {
+                    __typename: "AutomateNullPayload";
+                    quantity: number;
+                } | {
+                    __typename: "AutomateNumberPayload";
+                    range: {
+                        start: number;
+                        end: number;
+                    };
+                } | {
+                    __typename: "AutomateSimpleListPayload";
+                    list: Array<string>;
+                };
+                preprocessors: Array<{
+                    __typename: "AutomatePreprocessor";
+                    options: {
+                        __typename: "AutomatePrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateSuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "AutomateWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+            placeholders: Array<{
+                __typename: "AutomatePlaceholder";
+                start: number;
+                end: number;
+            }>;
+        };
+        session: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type AutomateEntryRequestsByOffsetQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    limit?: InputMaybe<Scalars["Int"]["input"]>;
+    offset?: InputMaybe<Scalars["Int"]["input"]>;
+    order?: InputMaybe<AutomateEntryRequestOrderInput>;
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+}>;
+export type AutomateEntryRequestsByOffsetQuery = {
+    automateEntry?: {
+        __typename: "AutomateEntry";
+        id: string;
+        name: string;
+        createdAt: Date;
+        requestsByOffset: {
+            snapshot: number;
+            edges: Array<{
+                __typename: "AutomateEntryRequestEdge";
+                cursor: string;
+                node: {
+                    __typename: "AutomateEntryRequest";
+                    sequenceId: string;
+                    automateEntryId: string;
+                    error?: string | undefined | null;
+                    request: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                    };
+                    payloads: Array<{
+                        __typename: "AutomateEntryRequestPayload";
+                        position?: number | undefined | null;
+                        raw?: string | undefined | null;
+                    }>;
+                };
+            }>;
+        };
+        settings: {
+            __typename: "AutomateSettings";
+            closeConnection: boolean;
+            updateContentLength: boolean;
+            strategy: AutomatePayloadStrategy;
+            concurrency: {
+                __typename: "AutomateConcurrencySetting";
+                delay: number;
+                workers: number;
+            };
+            retryOnFailure: {
+                __typename: "AutomateRetryOnFailureSetting";
+                backoff: number;
+                maximumRetries: number;
+            };
+            payloads: Array<{
+                __typename: "AutomatePayload";
+                options: {
+                    __typename: "AutomateHostedFilePayload";
+                    id: string;
+                    delimiter?: string | undefined | null;
+                } | {
+                    __typename: "AutomateNullPayload";
+                    quantity: number;
+                } | {
+                    __typename: "AutomateNumberPayload";
+                    range: {
+                        start: number;
+                        end: number;
+                    };
+                } | {
+                    __typename: "AutomateSimpleListPayload";
+                    list: Array<string>;
+                };
+                preprocessors: Array<{
+                    __typename: "AutomatePreprocessor";
+                    options: {
+                        __typename: "AutomatePrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateSuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "AutomateWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+            placeholders: Array<{
+                __typename: "AutomatePlaceholder";
+                start: number;
+                end: number;
+            }>;
+        };
+        session: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type AutomateEntryRequestsCountQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+}>;
+export type AutomateEntryRequestsCountQuery = {
+    automateEntry?: {
+        __typename: "AutomateEntry";
+        id: string;
+        name: string;
+        createdAt: Date;
+        requests: {
+            count: {
+                __typename: "Count";
+                value: number;
+                snapshot: number;
+            };
+        };
+        settings: {
+            __typename: "AutomateSettings";
+            closeConnection: boolean;
+            updateContentLength: boolean;
+            strategy: AutomatePayloadStrategy;
+            concurrency: {
+                __typename: "AutomateConcurrencySetting";
+                delay: number;
+                workers: number;
+            };
+            retryOnFailure: {
+                __typename: "AutomateRetryOnFailureSetting";
+                backoff: number;
+                maximumRetries: number;
+            };
+            payloads: Array<{
+                __typename: "AutomatePayload";
+                options: {
+                    __typename: "AutomateHostedFilePayload";
+                    id: string;
+                    delimiter?: string | undefined | null;
+                } | {
+                    __typename: "AutomateNullPayload";
+                    quantity: number;
+                } | {
+                    __typename: "AutomateNumberPayload";
+                    range: {
+                        start: number;
+                        end: number;
+                    };
+                } | {
+                    __typename: "AutomateSimpleListPayload";
+                    list: Array<string>;
+                };
+                preprocessors: Array<{
+                    __typename: "AutomatePreprocessor";
+                    options: {
+                        __typename: "AutomatePrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateSuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "AutomateWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+            placeholders: Array<{
+                __typename: "AutomatePlaceholder";
+                start: number;
+                end: number;
+            }>;
+        };
+        session: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type AutomateSessionsQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type AutomateSessionsQuery = {
+    automateSessions: {
+        edges: Array<{
+            node: {
+                __typename: "AutomateSession";
+                id: string;
+                name: string;
+                createdAt: Date;
+                entries: Array<{
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                }>;
+            };
+        }>;
+    };
+};
+export type AutomateSessionQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type AutomateSessionQuery = {
+    automateSession?: {
+        __typename: "AutomateSession";
+        raw: string;
+        id: string;
+        name: string;
+        createdAt: Date;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTls: boolean;
+        };
+        settings: {
+            __typename: "AutomateSettings";
+            closeConnection: boolean;
+            updateContentLength: boolean;
+            strategy: AutomatePayloadStrategy;
+            concurrency: {
+                __typename: "AutomateConcurrencySetting";
+                delay: number;
+                workers: number;
+            };
+            retryOnFailure: {
+                __typename: "AutomateRetryOnFailureSetting";
+                backoff: number;
+                maximumRetries: number;
+            };
+            payloads: Array<{
+                __typename: "AutomatePayload";
+                options: {
+                    __typename: "AutomateHostedFilePayload";
+                    id: string;
+                    delimiter?: string | undefined | null;
+                } | {
+                    __typename: "AutomateNullPayload";
+                    quantity: number;
+                } | {
+                    __typename: "AutomateNumberPayload";
+                    range: {
+                        start: number;
+                        end: number;
+                    };
+                } | {
+                    __typename: "AutomateSimpleListPayload";
+                    list: Array<string>;
+                };
+                preprocessors: Array<{
+                    __typename: "AutomatePreprocessor";
+                    options: {
+                        __typename: "AutomatePrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateSuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "AutomateUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "AutomateWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+            placeholders: Array<{
+                __typename: "AutomatePlaceholder";
+                start: number;
+                end: number;
+            }>;
+        };
+        entries: Array<{
+            __typename: "AutomateEntry";
+            id: string;
+            name: string;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+        }>;
+    } | undefined | null;
+};
+export type AutomateTasksQueryVariables = Exact<{
+    after?: InputMaybe<Scalars["String"]["input"]>;
+    before?: InputMaybe<Scalars["String"]["input"]>;
+    first?: InputMaybe<Scalars["Int"]["input"]>;
+    last?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+export type AutomateTasksQuery = {
+    automateTasks: {
+        edges: Array<{
+            node: {
+                id: string;
+                paused: boolean;
+                entry: {
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                };
+            };
+        }>;
+        pageInfo: {
+            __typename: "PageInfo";
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+            startCursor?: string | undefined | null;
+            endCursor?: string | undefined | null;
+        };
+    };
+};
+export type DeleteAutomateEntriesMutationVariables = Exact<{
+    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+}>;
+export type DeleteAutomateEntriesMutation = {
+    deleteAutomateEntries: {
+        deletedIds: Array<string>;
+        errors: Array<{
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "TaskInProgressUserError";
+            taskId: string;
+            code: string;
+        }>;
+    };
+};
+export type RenameAutomateEntryMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    name: Scalars["String"]["input"];
+}>;
+export type RenameAutomateEntryMutation = {
+    renameAutomateEntry: {
+        entry?: {
+            __typename: "AutomateEntry";
+            id: string;
+            name: string;
+            createdAt: Date;
+            settings: {
+                __typename: "AutomateSettings";
+                closeConnection: boolean;
+                updateContentLength: boolean;
+                strategy: AutomatePayloadStrategy;
+                concurrency: {
+                    __typename: "AutomateConcurrencySetting";
+                    delay: number;
+                    workers: number;
+                };
+                retryOnFailure: {
+                    __typename: "AutomateRetryOnFailureSetting";
+                    backoff: number;
+                    maximumRetries: number;
+                };
+                payloads: Array<{
+                    __typename: "AutomatePayload";
+                    options: {
+                        __typename: "AutomateHostedFilePayload";
+                        id: string;
+                        delimiter?: string | undefined | null;
+                    } | {
+                        __typename: "AutomateNullPayload";
+                        quantity: number;
+                    } | {
+                        __typename: "AutomateNumberPayload";
+                        range: {
+                            start: number;
+                            end: number;
+                        };
+                    } | {
+                        __typename: "AutomateSimpleListPayload";
+                        list: Array<string>;
+                    };
+                    preprocessors: Array<{
+                        __typename: "AutomatePreprocessor";
+                        options: {
+                            __typename: "AutomatePrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateSuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "AutomateWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+                placeholders: Array<{
+                    __typename: "AutomatePlaceholder";
+                    start: number;
+                    end: number;
+                }>;
+            };
+            session: {
+                id: string;
+            };
+        } | undefined | null;
+    };
+};
+export type CreateAutomateSessionMutationVariables = Exact<{
+    input: CreateAutomateSessionInput;
+}>;
+export type CreateAutomateSessionMutation = {
+    createAutomateSession: {
+        session?: {
+            __typename: "AutomateSession";
+            raw: string;
+            id: string;
+            name: string;
+            createdAt: Date;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            settings: {
+                __typename: "AutomateSettings";
+                closeConnection: boolean;
+                updateContentLength: boolean;
+                strategy: AutomatePayloadStrategy;
+                concurrency: {
+                    __typename: "AutomateConcurrencySetting";
+                    delay: number;
+                    workers: number;
+                };
+                retryOnFailure: {
+                    __typename: "AutomateRetryOnFailureSetting";
+                    backoff: number;
+                    maximumRetries: number;
+                };
+                payloads: Array<{
+                    __typename: "AutomatePayload";
+                    options: {
+                        __typename: "AutomateHostedFilePayload";
+                        id: string;
+                        delimiter?: string | undefined | null;
+                    } | {
+                        __typename: "AutomateNullPayload";
+                        quantity: number;
+                    } | {
+                        __typename: "AutomateNumberPayload";
+                        range: {
+                            start: number;
+                            end: number;
+                        };
+                    } | {
+                        __typename: "AutomateSimpleListPayload";
+                        list: Array<string>;
+                    };
+                    preprocessors: Array<{
+                        __typename: "AutomatePreprocessor";
+                        options: {
+                            __typename: "AutomatePrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateSuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "AutomateWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+                placeholders: Array<{
+                    __typename: "AutomatePlaceholder";
+                    start: number;
+                    end: number;
+                }>;
+            };
+            entries: Array<{
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            }>;
+        } | undefined | null;
+    };
+};
+export type DeleteAutomateSessionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteAutomateSessionMutation = {
+    deleteAutomateSession: {
+        deletedId?: string | undefined | null;
+    };
+};
+export type RenameAutomateSessionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    name: Scalars["String"]["input"];
+}>;
+export type RenameAutomateSessionMutation = {
+    renameAutomateSession: {
+        session?: {
+            __typename: "AutomateSession";
+            raw: string;
+            id: string;
+            name: string;
+            createdAt: Date;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            settings: {
+                __typename: "AutomateSettings";
+                closeConnection: boolean;
+                updateContentLength: boolean;
+                strategy: AutomatePayloadStrategy;
+                concurrency: {
+                    __typename: "AutomateConcurrencySetting";
+                    delay: number;
+                    workers: number;
+                };
+                retryOnFailure: {
+                    __typename: "AutomateRetryOnFailureSetting";
+                    backoff: number;
+                    maximumRetries: number;
+                };
+                payloads: Array<{
+                    __typename: "AutomatePayload";
+                    options: {
+                        __typename: "AutomateHostedFilePayload";
+                        id: string;
+                        delimiter?: string | undefined | null;
+                    } | {
+                        __typename: "AutomateNullPayload";
+                        quantity: number;
+                    } | {
+                        __typename: "AutomateNumberPayload";
+                        range: {
+                            start: number;
+                            end: number;
+                        };
+                    } | {
+                        __typename: "AutomateSimpleListPayload";
+                        list: Array<string>;
+                    };
+                    preprocessors: Array<{
+                        __typename: "AutomatePreprocessor";
+                        options: {
+                            __typename: "AutomatePrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateSuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "AutomateWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+                placeholders: Array<{
+                    __typename: "AutomatePlaceholder";
+                    start: number;
+                    end: number;
+                }>;
+            };
+            entries: Array<{
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            }>;
+        } | undefined | null;
+    };
+};
+export type UpdateAutomateSessionMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateAutomateSessionInput;
+}>;
+export type UpdateAutomateSessionMutation = {
+    updateAutomateSession: {
+        session?: {
+            __typename: "AutomateSession";
+            raw: string;
+            id: string;
+            name: string;
+            createdAt: Date;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTls: boolean;
+            };
+            settings: {
+                __typename: "AutomateSettings";
+                closeConnection: boolean;
+                updateContentLength: boolean;
+                strategy: AutomatePayloadStrategy;
+                concurrency: {
+                    __typename: "AutomateConcurrencySetting";
+                    delay: number;
+                    workers: number;
+                };
+                retryOnFailure: {
+                    __typename: "AutomateRetryOnFailureSetting";
+                    backoff: number;
+                    maximumRetries: number;
+                };
+                payloads: Array<{
+                    __typename: "AutomatePayload";
+                    options: {
+                        __typename: "AutomateHostedFilePayload";
+                        id: string;
+                        delimiter?: string | undefined | null;
+                    } | {
+                        __typename: "AutomateNullPayload";
+                        quantity: number;
+                    } | {
+                        __typename: "AutomateNumberPayload";
+                        range: {
+                            start: number;
+                            end: number;
+                        };
+                    } | {
+                        __typename: "AutomateSimpleListPayload";
+                        list: Array<string>;
+                    };
+                    preprocessors: Array<{
+                        __typename: "AutomatePreprocessor";
+                        options: {
+                            __typename: "AutomatePrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateSuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "AutomateUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "AutomateWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+                placeholders: Array<{
+                    __typename: "AutomatePlaceholder";
+                    start: number;
+                    end: number;
+                }>;
+            };
+            entries: Array<{
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            }>;
+        } | undefined | null;
+    };
+};
+export type CancelAutomateTaskMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type CancelAutomateTaskMutation = {
+    cancelAutomateTask: {
+        cancelledId?: string | undefined | null;
+        userError?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type PauseAutomateTaskMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type PauseAutomateTaskMutation = {
+    pauseAutomateTask: {
+        automateTask?: {
+            id: string;
+            paused: boolean;
+            entry: {
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+        userError?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type ResumeAutomateTaskMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type ResumeAutomateTaskMutation = {
+    resumeAutomateTask: {
+        automateTask?: {
+            id: string;
+            paused: boolean;
+            entry: {
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+        userError?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type StartAutomateTaskMutationVariables = Exact<{
+    automateSessionId: Scalars["ID"]["input"];
+}>;
+export type StartAutomateTaskMutation = {
+    startAutomateTask: {
+        automateTask?: {
+            id: string;
+            paused: boolean;
+            entry: {
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type CreatedAutomateEntryRequestSubscriptionVariables = Exact<{
+    order?: InputMaybe<AutomateEntryRequestOrderInput>;
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+}>;
+export type CreatedAutomateEntryRequestSubscription = {
+    createdAutomateEntryRequest: {
+        snapshot: number;
+        automateEntryRequestEdge: {
+            __typename: "AutomateEntryRequestEdge";
+            cursor: string;
+            node: {
+                __typename: "AutomateEntryRequest";
+                sequenceId: string;
+                automateEntryId: string;
+                error?: string | undefined | null;
+                request: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                };
+                payloads: Array<{
+                    __typename: "AutomateEntryRequestPayload";
+                    position?: number | undefined | null;
+                    raw?: string | undefined | null;
+                }>;
+            };
+        };
+    };
+};
+export type CreatedAutomateTaskSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedAutomateTaskSubscription = {
+    createdAutomateTask: {
+        snapshot: number;
+        automateTaskEdge: {
+            node: {
+                id: string;
+                paused: boolean;
+                entry: {
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                };
+            };
+        };
+    };
+};
+export type DeletedAutomateTaskSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedAutomateTaskSubscription = {
+    deletedAutomateTask: {
+        deletedAutomateTaskId: string;
+        snapshot: number;
+    };
+};
+export type UpdatedAutomateTaskSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedAutomateTaskSubscription = {
+    updatedAutomateTask: {
+        snapshot: number;
+        automateTaskEdge: {
+            node: {
+                id: string;
+                paused: boolean;
+                entry: {
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                };
+            };
+        };
+    };
+};
+export type CreatedAutomateEntrySubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedAutomateEntrySubscription = {
+    createdAutomateEntry: {
+        automateEntryEdge: {
+            node: {
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            };
+        };
+    };
+};
+export type UpdatedAutomateEntrySubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedAutomateEntrySubscription = {
+    updatedAutomateEntry: {
+        snapshot: number;
+        automateEntryEdge: {
+            node: {
+                __typename: "AutomateEntry";
+                id: string;
+                name: string;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+            };
+        };
+    };
+};
+export type DeletedAutomateEntrySubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedAutomateEntrySubscription = {
+    deletedAutomateEntry: {
+        deletedAutomateEntryId: string;
+    };
+};
+export type CreatedAutomateSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedAutomateSessionSubscription = {
+    createdAutomateSession: {
+        automateSessionEdge: {
+            node: {
+                __typename: "AutomateSession";
+                id: string;
+                name: string;
+                createdAt: Date;
+                entries: Array<{
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type UpdatedAutomateSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedAutomateSessionSubscription = {
+    updatedAutomateSession: {
+        snapshot: number;
+        automateSessionEdge: {
+            node: {
+                __typename: "AutomateSession";
+                id: string;
+                name: string;
+                createdAt: Date;
+                entries: Array<{
+                    __typename: "AutomateEntry";
+                    id: string;
+                    name: string;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type DeletedAutomateSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedAutomateSessionSubscription = {
+    deletedAutomateSession: {
+        deletedAutomateSessionId: string;
+    };
+};
+export type AuthenticationRequestFullFragment = {
+    __typename: "AuthenticationRequest";
+    id: string;
+    expiresAt: Date;
+    userCode: string;
+    verificationUrl: string;
+};
+export type AuthenticationTokenFullFragment = {
+    __typename: "AuthenticationToken";
+    accessToken: string;
+    expiresAt: Date;
+    refreshToken?: string | undefined | null;
+    scopes: Array<AuthenticationScope>;
 };
 export type BackupMetaFragment = {
     __typename: "Backup";
@@ -5654,460 +6865,6 @@ export type LogoutMutationVariables = Exact<{
 export type LogoutMutation = {
     logout: {
         success: boolean;
-    };
-};
-export type DeleteAutomateEntriesMutationVariables = Exact<{
-    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
-}>;
-export type DeleteAutomateEntriesMutation = {
-    deleteAutomateEntries: {
-        deletedIds: Array<string>;
-        errors: Array<{
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "TaskInProgressUserError";
-            taskId: string;
-            code: string;
-        }>;
-    };
-};
-export type RenameAutomateEntryMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    name: Scalars["String"]["input"];
-}>;
-export type RenameAutomateEntryMutation = {
-    renameAutomateEntry: {
-        entry?: {
-            __typename: "AutomateEntry";
-            id: string;
-            name: string;
-            createdAt: Date;
-            settings: {
-                __typename: "AutomateSettings";
-                closeConnection: boolean;
-                updateContentLength: boolean;
-                strategy: AutomatePayloadStrategy;
-                concurrency: {
-                    __typename: "AutomateConcurrencySetting";
-                    delay: number;
-                    workers: number;
-                };
-                retryOnFailure: {
-                    __typename: "AutomateRetryOnFailureSetting";
-                    backoff: number;
-                    maximumRetries: number;
-                };
-                payloads: Array<{
-                    __typename: "AutomatePayload";
-                    options: {
-                        __typename: "AutomateHostedFilePayload";
-                        id: string;
-                        delimiter?: string | undefined | null;
-                    } | {
-                        __typename: "AutomateNullPayload";
-                        quantity: number;
-                    } | {
-                        __typename: "AutomateNumberPayload";
-                        range: {
-                            start: number;
-                            end: number;
-                        };
-                    } | {
-                        __typename: "AutomateSimpleListPayload";
-                        list: Array<string>;
-                    };
-                    preprocessors: Array<{
-                        __typename: "AutomatePreprocessor";
-                        options: {
-                            __typename: "AutomatePrefixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateSuffixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateUrlEncodePreprocessor";
-                            charset?: string | undefined | null;
-                            nonAscii: boolean;
-                        } | {
-                            __typename: "AutomateWorkflowPreprocessor";
-                            id: string;
-                        };
-                    }>;
-                }>;
-                placeholders: Array<{
-                    __typename: "AutomatePlaceholder";
-                    start: number;
-                    end: number;
-                }>;
-            };
-            session: {
-                id: string;
-            };
-        } | undefined | null;
-    };
-};
-export type CreateAutomateSessionMutationVariables = Exact<{
-    input: CreateAutomateSessionInput;
-}>;
-export type CreateAutomateSessionMutation = {
-    createAutomateSession: {
-        session?: {
-            __typename: "AutomateSession";
-            raw: string;
-            id: string;
-            name: string;
-            createdAt: Date;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            settings: {
-                __typename: "AutomateSettings";
-                closeConnection: boolean;
-                updateContentLength: boolean;
-                strategy: AutomatePayloadStrategy;
-                concurrency: {
-                    __typename: "AutomateConcurrencySetting";
-                    delay: number;
-                    workers: number;
-                };
-                retryOnFailure: {
-                    __typename: "AutomateRetryOnFailureSetting";
-                    backoff: number;
-                    maximumRetries: number;
-                };
-                payloads: Array<{
-                    __typename: "AutomatePayload";
-                    options: {
-                        __typename: "AutomateHostedFilePayload";
-                        id: string;
-                        delimiter?: string | undefined | null;
-                    } | {
-                        __typename: "AutomateNullPayload";
-                        quantity: number;
-                    } | {
-                        __typename: "AutomateNumberPayload";
-                        range: {
-                            start: number;
-                            end: number;
-                        };
-                    } | {
-                        __typename: "AutomateSimpleListPayload";
-                        list: Array<string>;
-                    };
-                    preprocessors: Array<{
-                        __typename: "AutomatePreprocessor";
-                        options: {
-                            __typename: "AutomatePrefixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateSuffixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateUrlEncodePreprocessor";
-                            charset?: string | undefined | null;
-                            nonAscii: boolean;
-                        } | {
-                            __typename: "AutomateWorkflowPreprocessor";
-                            id: string;
-                        };
-                    }>;
-                }>;
-                placeholders: Array<{
-                    __typename: "AutomatePlaceholder";
-                    start: number;
-                    end: number;
-                }>;
-            };
-            entries: Array<{
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            }>;
-        } | undefined | null;
-    };
-};
-export type DeleteAutomateSessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type DeleteAutomateSessionMutation = {
-    deleteAutomateSession: {
-        deletedId?: string | undefined | null;
-    };
-};
-export type RenameAutomateSessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    name: Scalars["String"]["input"];
-}>;
-export type RenameAutomateSessionMutation = {
-    renameAutomateSession: {
-        session?: {
-            __typename: "AutomateSession";
-            raw: string;
-            id: string;
-            name: string;
-            createdAt: Date;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            settings: {
-                __typename: "AutomateSettings";
-                closeConnection: boolean;
-                updateContentLength: boolean;
-                strategy: AutomatePayloadStrategy;
-                concurrency: {
-                    __typename: "AutomateConcurrencySetting";
-                    delay: number;
-                    workers: number;
-                };
-                retryOnFailure: {
-                    __typename: "AutomateRetryOnFailureSetting";
-                    backoff: number;
-                    maximumRetries: number;
-                };
-                payloads: Array<{
-                    __typename: "AutomatePayload";
-                    options: {
-                        __typename: "AutomateHostedFilePayload";
-                        id: string;
-                        delimiter?: string | undefined | null;
-                    } | {
-                        __typename: "AutomateNullPayload";
-                        quantity: number;
-                    } | {
-                        __typename: "AutomateNumberPayload";
-                        range: {
-                            start: number;
-                            end: number;
-                        };
-                    } | {
-                        __typename: "AutomateSimpleListPayload";
-                        list: Array<string>;
-                    };
-                    preprocessors: Array<{
-                        __typename: "AutomatePreprocessor";
-                        options: {
-                            __typename: "AutomatePrefixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateSuffixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateUrlEncodePreprocessor";
-                            charset?: string | undefined | null;
-                            nonAscii: boolean;
-                        } | {
-                            __typename: "AutomateWorkflowPreprocessor";
-                            id: string;
-                        };
-                    }>;
-                }>;
-                placeholders: Array<{
-                    __typename: "AutomatePlaceholder";
-                    start: number;
-                    end: number;
-                }>;
-            };
-            entries: Array<{
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            }>;
-        } | undefined | null;
-    };
-};
-export type UpdateAutomateSessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    input: UpdateAutomateSessionInput;
-}>;
-export type UpdateAutomateSessionMutation = {
-    updateAutomateSession: {
-        session?: {
-            __typename: "AutomateSession";
-            raw: string;
-            id: string;
-            name: string;
-            createdAt: Date;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTls: boolean;
-            };
-            settings: {
-                __typename: "AutomateSettings";
-                closeConnection: boolean;
-                updateContentLength: boolean;
-                strategy: AutomatePayloadStrategy;
-                concurrency: {
-                    __typename: "AutomateConcurrencySetting";
-                    delay: number;
-                    workers: number;
-                };
-                retryOnFailure: {
-                    __typename: "AutomateRetryOnFailureSetting";
-                    backoff: number;
-                    maximumRetries: number;
-                };
-                payloads: Array<{
-                    __typename: "AutomatePayload";
-                    options: {
-                        __typename: "AutomateHostedFilePayload";
-                        id: string;
-                        delimiter?: string | undefined | null;
-                    } | {
-                        __typename: "AutomateNullPayload";
-                        quantity: number;
-                    } | {
-                        __typename: "AutomateNumberPayload";
-                        range: {
-                            start: number;
-                            end: number;
-                        };
-                    } | {
-                        __typename: "AutomateSimpleListPayload";
-                        list: Array<string>;
-                    };
-                    preprocessors: Array<{
-                        __typename: "AutomatePreprocessor";
-                        options: {
-                            __typename: "AutomatePrefixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateSuffixPreprocessor";
-                            value: string;
-                        } | {
-                            __typename: "AutomateUrlEncodePreprocessor";
-                            charset?: string | undefined | null;
-                            nonAscii: boolean;
-                        } | {
-                            __typename: "AutomateWorkflowPreprocessor";
-                            id: string;
-                        };
-                    }>;
-                }>;
-                placeholders: Array<{
-                    __typename: "AutomatePlaceholder";
-                    start: number;
-                    end: number;
-                }>;
-            };
-            entries: Array<{
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            }>;
-        } | undefined | null;
-    };
-};
-export type CancelAutomateTaskMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type CancelAutomateTaskMutation = {
-    cancelAutomateTask: {
-        cancelledId?: string | undefined | null;
-        userError?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "UnknownIdUserError";
-            id: string;
-            code: string;
-        } | undefined | null;
-    };
-};
-export type PauseAutomateTaskMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type PauseAutomateTaskMutation = {
-    pauseAutomateTask: {
-        automateTask?: {
-            id: string;
-            paused: boolean;
-            entry: {
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            };
-        } | undefined | null;
-        userError?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "UnknownIdUserError";
-            id: string;
-            code: string;
-        } | undefined | null;
-    };
-};
-export type ResumeAutomateTaskMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type ResumeAutomateTaskMutation = {
-    resumeAutomateTask: {
-        automateTask?: {
-            id: string;
-            paused: boolean;
-            entry: {
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            };
-        } | undefined | null;
-        userError?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "UnknownIdUserError";
-            id: string;
-            code: string;
-        } | undefined | null;
-    };
-};
-export type StartAutomateTaskMutationVariables = Exact<{
-    automateSessionId: Scalars["ID"]["input"];
-}>;
-export type StartAutomateTaskMutation = {
-    startAutomateTask: {
-        automateTask?: {
-            id: string;
-            paused: boolean;
-            entry: {
-                __typename: "AutomateEntry";
-                id: string;
-                name: string;
-                createdAt: Date;
-                session: {
-                    id: string;
-                };
-            };
-        } | undefined | null;
     };
 };
 export type CreateBackupMutationVariables = Exact<{
@@ -7860,551 +8617,6 @@ export type LocalizeWorkflowMutation = {
             global: boolean;
             readOnly: boolean;
         } | undefined | null;
-    };
-};
-export type AutomateEntryQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type AutomateEntryQuery = {
-    automateEntry?: {
-        __typename: "AutomateEntry";
-        id: string;
-        name: string;
-        createdAt: Date;
-        settings: {
-            __typename: "AutomateSettings";
-            closeConnection: boolean;
-            updateContentLength: boolean;
-            strategy: AutomatePayloadStrategy;
-            concurrency: {
-                __typename: "AutomateConcurrencySetting";
-                delay: number;
-                workers: number;
-            };
-            retryOnFailure: {
-                __typename: "AutomateRetryOnFailureSetting";
-                backoff: number;
-                maximumRetries: number;
-            };
-            payloads: Array<{
-                __typename: "AutomatePayload";
-                options: {
-                    __typename: "AutomateHostedFilePayload";
-                    id: string;
-                    delimiter?: string | undefined | null;
-                } | {
-                    __typename: "AutomateNullPayload";
-                    quantity: number;
-                } | {
-                    __typename: "AutomateNumberPayload";
-                    range: {
-                        start: number;
-                        end: number;
-                    };
-                } | {
-                    __typename: "AutomateSimpleListPayload";
-                    list: Array<string>;
-                };
-                preprocessors: Array<{
-                    __typename: "AutomatePreprocessor";
-                    options: {
-                        __typename: "AutomatePrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateSuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "AutomateWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-            placeholders: Array<{
-                __typename: "AutomatePlaceholder";
-                start: number;
-                end: number;
-            }>;
-        };
-        session: {
-            id: string;
-        };
-    } | undefined | null;
-};
-export type AutomateEntryRequestsQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    after?: InputMaybe<Scalars["String"]["input"]>;
-    first?: InputMaybe<Scalars["Int"]["input"]>;
-    before?: InputMaybe<Scalars["String"]["input"]>;
-    last?: InputMaybe<Scalars["Int"]["input"]>;
-    order?: InputMaybe<AutomateEntryRequestOrderInput>;
-    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-}>;
-export type AutomateEntryRequestsQuery = {
-    automateEntry?: {
-        __typename: "AutomateEntry";
-        id: string;
-        name: string;
-        createdAt: Date;
-        requests: {
-            snapshot: number;
-            edges: Array<{
-                __typename: "AutomateEntryRequestEdge";
-                cursor: string;
-                node: {
-                    __typename: "AutomateEntryRequest";
-                    sequenceId: string;
-                    automateEntryId: string;
-                    error?: string | undefined | null;
-                    request: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    };
-                    payloads: Array<{
-                        __typename: "AutomateEntryRequestPayload";
-                        position?: number | undefined | null;
-                        raw?: string | undefined | null;
-                    }>;
-                };
-            }>;
-        };
-        settings: {
-            __typename: "AutomateSettings";
-            closeConnection: boolean;
-            updateContentLength: boolean;
-            strategy: AutomatePayloadStrategy;
-            concurrency: {
-                __typename: "AutomateConcurrencySetting";
-                delay: number;
-                workers: number;
-            };
-            retryOnFailure: {
-                __typename: "AutomateRetryOnFailureSetting";
-                backoff: number;
-                maximumRetries: number;
-            };
-            payloads: Array<{
-                __typename: "AutomatePayload";
-                options: {
-                    __typename: "AutomateHostedFilePayload";
-                    id: string;
-                    delimiter?: string | undefined | null;
-                } | {
-                    __typename: "AutomateNullPayload";
-                    quantity: number;
-                } | {
-                    __typename: "AutomateNumberPayload";
-                    range: {
-                        start: number;
-                        end: number;
-                    };
-                } | {
-                    __typename: "AutomateSimpleListPayload";
-                    list: Array<string>;
-                };
-                preprocessors: Array<{
-                    __typename: "AutomatePreprocessor";
-                    options: {
-                        __typename: "AutomatePrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateSuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "AutomateWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-            placeholders: Array<{
-                __typename: "AutomatePlaceholder";
-                start: number;
-                end: number;
-            }>;
-        };
-        session: {
-            id: string;
-        };
-    } | undefined | null;
-};
-export type AutomateEntryRequestsByOffsetQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    limit?: InputMaybe<Scalars["Int"]["input"]>;
-    offset?: InputMaybe<Scalars["Int"]["input"]>;
-    order?: InputMaybe<AutomateEntryRequestOrderInput>;
-    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-}>;
-export type AutomateEntryRequestsByOffsetQuery = {
-    automateEntry?: {
-        __typename: "AutomateEntry";
-        id: string;
-        name: string;
-        createdAt: Date;
-        requestsByOffset: {
-            snapshot: number;
-            edges: Array<{
-                __typename: "AutomateEntryRequestEdge";
-                cursor: string;
-                node: {
-                    __typename: "AutomateEntryRequest";
-                    sequenceId: string;
-                    automateEntryId: string;
-                    error?: string | undefined | null;
-                    request: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                    };
-                    payloads: Array<{
-                        __typename: "AutomateEntryRequestPayload";
-                        position?: number | undefined | null;
-                        raw?: string | undefined | null;
-                    }>;
-                };
-            }>;
-        };
-        settings: {
-            __typename: "AutomateSettings";
-            closeConnection: boolean;
-            updateContentLength: boolean;
-            strategy: AutomatePayloadStrategy;
-            concurrency: {
-                __typename: "AutomateConcurrencySetting";
-                delay: number;
-                workers: number;
-            };
-            retryOnFailure: {
-                __typename: "AutomateRetryOnFailureSetting";
-                backoff: number;
-                maximumRetries: number;
-            };
-            payloads: Array<{
-                __typename: "AutomatePayload";
-                options: {
-                    __typename: "AutomateHostedFilePayload";
-                    id: string;
-                    delimiter?: string | undefined | null;
-                } | {
-                    __typename: "AutomateNullPayload";
-                    quantity: number;
-                } | {
-                    __typename: "AutomateNumberPayload";
-                    range: {
-                        start: number;
-                        end: number;
-                    };
-                } | {
-                    __typename: "AutomateSimpleListPayload";
-                    list: Array<string>;
-                };
-                preprocessors: Array<{
-                    __typename: "AutomatePreprocessor";
-                    options: {
-                        __typename: "AutomatePrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateSuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "AutomateWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-            placeholders: Array<{
-                __typename: "AutomatePlaceholder";
-                start: number;
-                end: number;
-            }>;
-        };
-        session: {
-            id: string;
-        };
-    } | undefined | null;
-};
-export type AutomateEntryRequestsCountQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-}>;
-export type AutomateEntryRequestsCountQuery = {
-    automateEntry?: {
-        __typename: "AutomateEntry";
-        id: string;
-        name: string;
-        createdAt: Date;
-        requests: {
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
-        };
-        settings: {
-            __typename: "AutomateSettings";
-            closeConnection: boolean;
-            updateContentLength: boolean;
-            strategy: AutomatePayloadStrategy;
-            concurrency: {
-                __typename: "AutomateConcurrencySetting";
-                delay: number;
-                workers: number;
-            };
-            retryOnFailure: {
-                __typename: "AutomateRetryOnFailureSetting";
-                backoff: number;
-                maximumRetries: number;
-            };
-            payloads: Array<{
-                __typename: "AutomatePayload";
-                options: {
-                    __typename: "AutomateHostedFilePayload";
-                    id: string;
-                    delimiter?: string | undefined | null;
-                } | {
-                    __typename: "AutomateNullPayload";
-                    quantity: number;
-                } | {
-                    __typename: "AutomateNumberPayload";
-                    range: {
-                        start: number;
-                        end: number;
-                    };
-                } | {
-                    __typename: "AutomateSimpleListPayload";
-                    list: Array<string>;
-                };
-                preprocessors: Array<{
-                    __typename: "AutomatePreprocessor";
-                    options: {
-                        __typename: "AutomatePrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateSuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "AutomateWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-            placeholders: Array<{
-                __typename: "AutomatePlaceholder";
-                start: number;
-                end: number;
-            }>;
-        };
-        session: {
-            id: string;
-        };
-    } | undefined | null;
-};
-export type AutomateSessionsQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type AutomateSessionsQuery = {
-    automateSessions: {
-        edges: Array<{
-            node: {
-                __typename: "AutomateSession";
-                id: string;
-                name: string;
-                createdAt: Date;
-                entries: Array<{
-                    __typename: "AutomateEntry";
-                    id: string;
-                    name: string;
-                    createdAt: Date;
-                    session: {
-                        id: string;
-                    };
-                }>;
-            };
-        }>;
-    };
-};
-export type AutomateSessionQueryVariables = Exact<{
-    id: Scalars["ID"]["input"];
-}>;
-export type AutomateSessionQuery = {
-    automateSession?: {
-        __typename: "AutomateSession";
-        raw: string;
-        id: string;
-        name: string;
-        createdAt: Date;
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTls: boolean;
-        };
-        settings: {
-            __typename: "AutomateSettings";
-            closeConnection: boolean;
-            updateContentLength: boolean;
-            strategy: AutomatePayloadStrategy;
-            concurrency: {
-                __typename: "AutomateConcurrencySetting";
-                delay: number;
-                workers: number;
-            };
-            retryOnFailure: {
-                __typename: "AutomateRetryOnFailureSetting";
-                backoff: number;
-                maximumRetries: number;
-            };
-            payloads: Array<{
-                __typename: "AutomatePayload";
-                options: {
-                    __typename: "AutomateHostedFilePayload";
-                    id: string;
-                    delimiter?: string | undefined | null;
-                } | {
-                    __typename: "AutomateNullPayload";
-                    quantity: number;
-                } | {
-                    __typename: "AutomateNumberPayload";
-                    range: {
-                        start: number;
-                        end: number;
-                    };
-                } | {
-                    __typename: "AutomateSimpleListPayload";
-                    list: Array<string>;
-                };
-                preprocessors: Array<{
-                    __typename: "AutomatePreprocessor";
-                    options: {
-                        __typename: "AutomatePrefixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateSuffixPreprocessor";
-                        value: string;
-                    } | {
-                        __typename: "AutomateUrlEncodePreprocessor";
-                        charset?: string | undefined | null;
-                        nonAscii: boolean;
-                    } | {
-                        __typename: "AutomateWorkflowPreprocessor";
-                        id: string;
-                    };
-                }>;
-            }>;
-            placeholders: Array<{
-                __typename: "AutomatePlaceholder";
-                start: number;
-                end: number;
-            }>;
-        };
-        entries: Array<{
-            __typename: "AutomateEntry";
-            id: string;
-            name: string;
-            createdAt: Date;
-            session: {
-                id: string;
-            };
-        }>;
-    } | undefined | null;
-};
-export type AutomateTasksQueryVariables = Exact<{
-    after?: InputMaybe<Scalars["String"]["input"]>;
-    before?: InputMaybe<Scalars["String"]["input"]>;
-    first?: InputMaybe<Scalars["Int"]["input"]>;
-    last?: InputMaybe<Scalars["Int"]["input"]>;
-}>;
-export type AutomateTasksQuery = {
-    automateTasks: {
-        edges: Array<{
-            node: {
-                id: string;
-                paused: boolean;
-                entry: {
-                    __typename: "AutomateEntry";
-                    id: string;
-                    name: string;
-                    createdAt: Date;
-                    session: {
-                        id: string;
-                    };
-                };
-            };
-        }>;
-        pageInfo: {
-            __typename: "PageInfo";
-            hasPreviousPage: boolean;
-            hasNextPage: boolean;
-            startCursor?: string | undefined | null;
-            endCursor?: string | undefined | null;
-        };
     };
 };
 export type BackupsQueryVariables = Exact<{
@@ -13077,116 +13289,6 @@ export type CreatedAuthenticationTokenSubscription = {
         } | undefined | null;
     };
 };
-export type CreatedAutomateEntryRequestSubscriptionVariables = Exact<{
-    order?: InputMaybe<AutomateEntryRequestOrderInput>;
-    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-}>;
-export type CreatedAutomateEntryRequestSubscription = {
-    createdAutomateEntryRequest: {
-        snapshot: number;
-        automateEntryRequestEdge: {
-            __typename: "AutomateEntryRequestEdge";
-            cursor: string;
-            node: {
-                __typename: "AutomateEntryRequest";
-                sequenceId: string;
-                automateEntryId: string;
-                error?: string | undefined | null;
-                request: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                };
-                payloads: Array<{
-                    __typename: "AutomateEntryRequestPayload";
-                    position?: number | undefined | null;
-                    raw?: string | undefined | null;
-                }>;
-            };
-        };
-    };
-};
-export type CreatedAutomateTaskSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type CreatedAutomateTaskSubscription = {
-    createdAutomateTask: {
-        snapshot: number;
-        automateTaskEdge: {
-            node: {
-                id: string;
-                paused: boolean;
-                entry: {
-                    __typename: "AutomateEntry";
-                    id: string;
-                    name: string;
-                    createdAt: Date;
-                    session: {
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-};
-export type DeletedAutomateTaskSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type DeletedAutomateTaskSubscription = {
-    deletedAutomateTask: {
-        deletedAutomateTaskId: string;
-        snapshot: number;
-    };
-};
-export type UpdatedAutomateTaskSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type UpdatedAutomateTaskSubscription = {
-    updatedAutomateTask: {
-        snapshot: number;
-        automateTaskEdge: {
-            node: {
-                id: string;
-                paused: boolean;
-                entry: {
-                    __typename: "AutomateEntry";
-                    id: string;
-                    name: string;
-                    createdAt: Date;
-                    session: {
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-};
 export type CreatedBackupSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -14646,8 +14748,6 @@ export declare const AuthenticationUserErrorFullFragmentDoc = "\n    fragment au
 export declare const OtherUserErrorFullFragmentDoc = "\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const AssistantMessageTaskFullFragmentDoc = "\n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n}\n    ";
 export declare const AssistantUsageFullFragmentDoc = "\n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    ";
-export declare const AuthenticationRequestFullFragmentDoc = "\n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    ";
-export declare const AuthenticationTokenFullFragmentDoc = "\n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
 export declare const AutomateEntryMetaFragmentDoc = "\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const ConcurrencySettingFullFragmentDoc = "\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    ";
 export declare const RetryOnFailureSettingFullFragmentDoc = "\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    ";
@@ -14676,6 +14776,8 @@ export declare const ConnectionInfoFullFragmentDoc = "\n    fragment connectionI
 export declare const AutomateSessionFullFragmentDoc = "\n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    ";
 export declare const AutomateTaskMetaFragmentDoc = "\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    ";
 export declare const AutomateTaskEdgeMetaFragmentDoc = "\n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    ";
+export declare const AuthenticationRequestFullFragmentDoc = "\n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    ";
+export declare const AuthenticationTokenFullFragmentDoc = "\n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
 export declare const BackupMetaFragmentDoc = "\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const BackupTaskMetaFragmentDoc = "\n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    ";
 export declare const FinishedBackupTaskSuccessFullFragmentDoc = "\n    fragment finishedBackupTaskSuccessFull on FinishedBackupTaskSuccess {\n  __typename\n  task {\n    ...backupTaskMeta\n  }\n}\n    ";
@@ -14787,9 +14889,13 @@ export declare const CreatedAssistantMessageDocument = "\n    subscription creat
 export declare const CreatedAssistantMessageTaskDocument = "\n    subscription createdAssistantMessageTask {\n  createdAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const UpdatedAssistantMessageTaskDocument = "\n    subscription updatedAssistantMessageTask {\n  updatedAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const UpdatedViewerAssistantUsageDocument = "\n    subscription updatedViewerAssistantUsage {\n  updatedViewerAssistantUsage {\n    usage {\n      ...assistantUsageFull\n    }\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    ";
-export declare const StartAuthenticationFlowDocument = "\n    mutation startAuthenticationFlow {\n  startAuthenticationFlow {\n    request {\n      ...authenticationRequestFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RefreshAuthenticationTokenDocument = "\n    mutation refreshAuthenticationToken($refreshToken: Token!) {\n  refreshAuthenticationToken(refreshToken: $refreshToken) {\n    token {\n      ...authenticationTokenFull\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
-export declare const LogoutDocument = "\n    mutation logout {\n  logout {\n    success\n  }\n}\n    ";
+export declare const AutomateEntryDocument = "\n    query automateEntry($id: ID!) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
+export declare const AutomateEntryRequestsDocument = "\n    query automateEntryRequests($id: ID!, $after: String, $first: Int, $before: String, $last: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(\n      after: $after\n      before: $before\n      first: $first\n      last: $last\n      order: $order\n      filter: $filter\n    ) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
+export declare const AutomateEntryRequestsByOffsetDocument = "\n    query automateEntryRequestsByOffset($id: ID!, $limit: Int, $offset: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requestsByOffset(limit: $limit, offset: $offset, order: $order, filter: $filter) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
+export declare const AutomateEntryRequestsCountDocument = "\n    query automateEntryRequestsCount($id: ID!, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(first: 0, filter: $filter) {\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const AutomateSessionsDocument = "\n    query automateSessions {\n  automateSessions {\n    edges {\n      node {\n        ...automateSessionMeta\n      }\n    }\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const AutomateSessionDocument = "\n    query automateSession($id: ID!) {\n  automateSession(id: $id) {\n    ...automateSessionFull\n  }\n}\n    \n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    \n\n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
+export declare const AutomateTasksDocument = "\n    query automateTasks($after: String, $before: String, $first: Int, $last: Int) {\n  automateTasks(after: $after, before: $before, first: $first, last: $last) {\n    edges {\n      node {\n        ...automateTaskMeta\n      }\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const DeleteAutomateEntriesDocument = "\n    mutation deleteAutomateEntries($ids: [ID!]!) {\n  deleteAutomateEntries(ids: $ids) {\n    deletedIds\n    errors {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RenameAutomateEntryDocument = "\n    mutation renameAutomateEntry($id: ID!, $name: String!) {\n  renameAutomateEntry(id: $id, name: $name) {\n    entry {\n      ...automateEntryFull\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
 export declare const CreateAutomateSessionDocument = "\n    mutation createAutomateSession($input: CreateAutomateSessionInput!) {\n  createAutomateSession(input: $input) {\n    session {\n      ...automateSessionFull\n    }\n  }\n}\n    \n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    \n\n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
@@ -14800,6 +14906,19 @@ export declare const CancelAutomateTaskDocument = "\n    mutation cancelAutomate
 export declare const PauseAutomateTaskDocument = "\n    mutation pauseAutomateTask($id: ID!) {\n  pauseAutomateTask(id: $id) {\n    automateTask {\n      ...automateTaskMeta\n    }\n    userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const ResumeAutomateTaskDocument = "\n    mutation resumeAutomateTask($id: ID!) {\n  resumeAutomateTask(id: $id) {\n    automateTask {\n      ...automateTaskMeta\n    }\n    userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const StartAutomateTaskDocument = "\n    mutation startAutomateTask($automateSessionId: ID!) {\n  startAutomateTask(automateSessionId: $automateSessionId) {\n    automateTask {\n      ...automateTaskMeta\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const CreatedAutomateEntryRequestDocument = "\n    subscription createdAutomateEntryRequest($order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  createdAutomateEntryRequest(filter: $filter) {\n    automateEntryRequestEdge(order: $order) {\n      ...automateEntryRequestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
+export declare const CreatedAutomateTaskDocument = "\n    subscription createdAutomateTask {\n  createdAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const DeletedAutomateTaskDocument = "\n    subscription deletedAutomateTask {\n  deletedAutomateTask {\n    deletedAutomateTaskId\n    snapshot\n  }\n}\n    ";
+export declare const UpdatedAutomateTaskDocument = "\n    subscription updatedAutomateTask {\n  updatedAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const CreatedAutomateEntryDocument = "\n    subscription createdAutomateEntry {\n  createdAutomateEntry {\n    automateEntryEdge {\n      node {\n        ...automateEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const UpdatedAutomateEntryDocument = "\n    subscription updatedAutomateEntry {\n  updatedAutomateEntry {\n    automateEntryEdge {\n      node {\n        ...automateEntryMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const DeletedAutomateEntryDocument = "\n    subscription deletedAutomateEntry {\n  deletedAutomateEntry {\n    deletedAutomateEntryId\n  }\n}\n    ";
+export declare const CreatedAutomateSessionDocument = "\n    subscription createdAutomateSession {\n  createdAutomateSession {\n    automateSessionEdge {\n      node {\n        ...automateSessionMeta\n      }\n    }\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const UpdatedAutomateSessionDocument = "\n    subscription updatedAutomateSession {\n  updatedAutomateSession {\n    automateSessionEdge {\n      node {\n        ...automateSessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
+export declare const DeletedAutomateSessionDocument = "\n    subscription deletedAutomateSession {\n  deletedAutomateSession {\n    deletedAutomateSessionId\n  }\n}\n    ";
+export declare const StartAuthenticationFlowDocument = "\n    mutation startAuthenticationFlow {\n  startAuthenticationFlow {\n    request {\n      ...authenticationRequestFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RefreshAuthenticationTokenDocument = "\n    mutation refreshAuthenticationToken($refreshToken: Token!) {\n  refreshAuthenticationToken(refreshToken: $refreshToken) {\n    token {\n      ...authenticationTokenFull\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
+export declare const LogoutDocument = "\n    mutation logout {\n  logout {\n    success\n  }\n}\n    ";
 export declare const CreateBackupDocument = "\n    mutation createBackup($id: ID!) {\n  createBackup(projectId: $id) {\n    task {\n      ...backupTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const DeleteBackupDocument = "\n    mutation deleteBackup($id: ID!) {\n  deleteBackup(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const RenameBackupDocument = "\n    mutation renameBackup($id: ID!, $name: String!) {\n  renameBackup(id: $id, name: $name) {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
@@ -14873,13 +14992,6 @@ export declare const RunConvertWorkflowDocument = "\n    mutation runConvertWork
 export declare const RunActiveWorkflowDocument = "\n    mutation runActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {\n  runActiveWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const GlobalizeWorkflowDocument = "\n    mutation globalizeWorkflow($id: ID!) {\n  globalizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const LocalizeWorkflowDocument = "\n    mutation localizeWorkflow($id: ID!) {\n  localizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
-export declare const AutomateEntryDocument = "\n    query automateEntry($id: ID!) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
-export declare const AutomateEntryRequestsDocument = "\n    query automateEntryRequests($id: ID!, $after: String, $first: Int, $before: String, $last: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(\n      after: $after\n      before: $before\n      first: $first\n      last: $last\n      order: $order\n      filter: $filter\n    ) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
-export declare const AutomateEntryRequestsByOffsetDocument = "\n    query automateEntryRequestsByOffset($id: ID!, $limit: Int, $offset: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requestsByOffset(limit: $limit, offset: $offset, order: $order, filter: $filter) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
-export declare const AutomateEntryRequestsCountDocument = "\n    query automateEntryRequestsCount($id: ID!, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(first: 0, filter: $filter) {\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const AutomateSessionsDocument = "\n    query automateSessions {\n  automateSessions {\n    edges {\n      node {\n        ...automateSessionMeta\n      }\n    }\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
-export declare const AutomateSessionDocument = "\n    query automateSession($id: ID!) {\n  automateSession(id: $id) {\n    ...automateSessionFull\n  }\n}\n    \n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    \n\n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTls\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
-export declare const AutomateTasksDocument = "\n    query automateTasks($after: String, $before: String, $first: Int, $last: Int) {\n  automateTasks(after: $after, before: $before, first: $first, last: $last) {\n    edges {\n      node {\n        ...automateTaskMeta\n      }\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const BackupsDocument = "\n    query backups {\n  backups {\n    ...backupMeta\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const BackupUriDocument = "\n    query backupUri($id: ID!) {\n  backup(id: $id) {\n    downloadUri\n  }\n}\n    ";
 export declare const BackupTasksDocument = "\n    query backupTasks {\n  backupTasks {\n    ...backupTaskMeta\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
@@ -14964,10 +15076,6 @@ export declare const CreatedRequestDocument = "\n    subscription createdRequest
 export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const UpdatedRequestMetadataDocument = "\n    subscription updatedRequestMetadata {\n  updatedRequestMetadata {\n    metadata {\n      ...requestMetadataFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
 export declare const CreatedAuthenticationTokenDocument = "\n    subscription createdAuthenticationToken($requestId: ID!) {\n  createdAuthenticationToken(requestId: $requestId) {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedAutomateEntryRequestDocument = "\n    subscription createdAutomateEntryRequest($order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  createdAutomateEntryRequest(filter: $filter) {\n    automateEntryRequestEdge(order: $order) {\n      ...automateEntryRequestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
-export declare const CreatedAutomateTaskDocument = "\n    subscription createdAutomateTask {\n  createdAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
-export declare const DeletedAutomateTaskDocument = "\n    subscription deletedAutomateTask {\n  deletedAutomateTask {\n    deletedAutomateTaskId\n    snapshot\n  }\n}\n    ";
-export declare const UpdatedAutomateTaskDocument = "\n    subscription updatedAutomateTask {\n  updatedAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedBackupDocument = "\n    subscription createdBackup {\n  createdBackup {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const UpdatedBackupDocument = "\n    subscription updatedBackup {\n  updatedBackup {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const DeletedBackupDocument = "\n    subscription deletedBackup {\n  deletedBackup {\n    deletedBackupId\n  }\n}\n    ";
@@ -15034,9 +15142,13 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdAssistantMessageTask(variables?: CreatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageTaskSubscription>;
     updatedAssistantMessageTask(variables?: UpdatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAssistantMessageTaskSubscription>;
     updatedViewerAssistantUsage(variables?: UpdatedViewerAssistantUsageSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerAssistantUsageSubscription>;
-    startAuthenticationFlow(variables?: StartAuthenticationFlowMutationVariables, options?: C): Promise<StartAuthenticationFlowMutation>;
-    refreshAuthenticationToken(variables: RefreshAuthenticationTokenMutationVariables, options?: C): Promise<RefreshAuthenticationTokenMutation>;
-    logout(variables?: LogoutMutationVariables, options?: C): Promise<LogoutMutation>;
+    automateEntry(variables: AutomateEntryQueryVariables, options?: C): Promise<AutomateEntryQuery>;
+    automateEntryRequests(variables: AutomateEntryRequestsQueryVariables, options?: C): Promise<AutomateEntryRequestsQuery>;
+    automateEntryRequestsByOffset(variables: AutomateEntryRequestsByOffsetQueryVariables, options?: C): Promise<AutomateEntryRequestsByOffsetQuery>;
+    automateEntryRequestsCount(variables: AutomateEntryRequestsCountQueryVariables, options?: C): Promise<AutomateEntryRequestsCountQuery>;
+    automateSessions(variables?: AutomateSessionsQueryVariables, options?: C): Promise<AutomateSessionsQuery>;
+    automateSession(variables: AutomateSessionQueryVariables, options?: C): Promise<AutomateSessionQuery>;
+    automateTasks(variables?: AutomateTasksQueryVariables, options?: C): Promise<AutomateTasksQuery>;
     deleteAutomateEntries(variables: DeleteAutomateEntriesMutationVariables, options?: C): Promise<DeleteAutomateEntriesMutation>;
     renameAutomateEntry(variables: RenameAutomateEntryMutationVariables, options?: C): Promise<RenameAutomateEntryMutation>;
     createAutomateSession(variables: CreateAutomateSessionMutationVariables, options?: C): Promise<CreateAutomateSessionMutation>;
@@ -15047,6 +15159,19 @@ export declare function getSdk<C>(requester: Requester<C>): {
     pauseAutomateTask(variables: PauseAutomateTaskMutationVariables, options?: C): Promise<PauseAutomateTaskMutation>;
     resumeAutomateTask(variables: ResumeAutomateTaskMutationVariables, options?: C): Promise<ResumeAutomateTaskMutation>;
     startAutomateTask(variables: StartAutomateTaskMutationVariables, options?: C): Promise<StartAutomateTaskMutation>;
+    createdAutomateEntryRequest(variables?: CreatedAutomateEntryRequestSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateEntryRequestSubscription>;
+    createdAutomateTask(variables?: CreatedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateTaskSubscription>;
+    deletedAutomateTask(variables?: DeletedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<DeletedAutomateTaskSubscription>;
+    updatedAutomateTask(variables?: UpdatedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAutomateTaskSubscription>;
+    createdAutomateEntry(variables?: CreatedAutomateEntrySubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateEntrySubscription>;
+    updatedAutomateEntry(variables?: UpdatedAutomateEntrySubscriptionVariables, options?: C): AsyncIterable<UpdatedAutomateEntrySubscription>;
+    deletedAutomateEntry(variables?: DeletedAutomateEntrySubscriptionVariables, options?: C): AsyncIterable<DeletedAutomateEntrySubscription>;
+    createdAutomateSession(variables?: CreatedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateSessionSubscription>;
+    updatedAutomateSession(variables?: UpdatedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<UpdatedAutomateSessionSubscription>;
+    deletedAutomateSession(variables?: DeletedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<DeletedAutomateSessionSubscription>;
+    startAuthenticationFlow(variables?: StartAuthenticationFlowMutationVariables, options?: C): Promise<StartAuthenticationFlowMutation>;
+    refreshAuthenticationToken(variables: RefreshAuthenticationTokenMutationVariables, options?: C): Promise<RefreshAuthenticationTokenMutation>;
+    logout(variables?: LogoutMutationVariables, options?: C): Promise<LogoutMutation>;
     createBackup(variables: CreateBackupMutationVariables, options?: C): Promise<CreateBackupMutation>;
     deleteBackup(variables: DeleteBackupMutationVariables, options?: C): Promise<DeleteBackupMutation>;
     renameBackup(variables: RenameBackupMutationVariables, options?: C): Promise<RenameBackupMutation>;
@@ -15120,13 +15245,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     runActiveWorkflow(variables: RunActiveWorkflowMutationVariables, options?: C): Promise<RunActiveWorkflowMutation>;
     globalizeWorkflow(variables: GlobalizeWorkflowMutationVariables, options?: C): Promise<GlobalizeWorkflowMutation>;
     localizeWorkflow(variables: LocalizeWorkflowMutationVariables, options?: C): Promise<LocalizeWorkflowMutation>;
-    automateEntry(variables: AutomateEntryQueryVariables, options?: C): Promise<AutomateEntryQuery>;
-    automateEntryRequests(variables: AutomateEntryRequestsQueryVariables, options?: C): Promise<AutomateEntryRequestsQuery>;
-    automateEntryRequestsByOffset(variables: AutomateEntryRequestsByOffsetQueryVariables, options?: C): Promise<AutomateEntryRequestsByOffsetQuery>;
-    automateEntryRequestsCount(variables: AutomateEntryRequestsCountQueryVariables, options?: C): Promise<AutomateEntryRequestsCountQuery>;
-    automateSessions(variables?: AutomateSessionsQueryVariables, options?: C): Promise<AutomateSessionsQuery>;
-    automateSession(variables: AutomateSessionQueryVariables, options?: C): Promise<AutomateSessionQuery>;
-    automateTasks(variables?: AutomateTasksQueryVariables, options?: C): Promise<AutomateTasksQuery>;
     backups(variables?: BackupsQueryVariables, options?: C): Promise<BackupsQuery>;
     backupUri(variables: BackupUriQueryVariables, options?: C): Promise<BackupUriQuery>;
     backupTasks(variables?: BackupTasksQueryVariables, options?: C): Promise<BackupTasksQuery>;
@@ -15211,10 +15329,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     updatedRequest(variables?: UpdatedRequestSubscriptionVariables, options?: C): AsyncIterable<UpdatedRequestSubscription>;
     updatedRequestMetadata(variables?: UpdatedRequestMetadataSubscriptionVariables, options?: C): AsyncIterable<UpdatedRequestMetadataSubscription>;
     createdAuthenticationToken(variables: CreatedAuthenticationTokenSubscriptionVariables, options?: C): AsyncIterable<CreatedAuthenticationTokenSubscription>;
-    createdAutomateEntryRequest(variables?: CreatedAutomateEntryRequestSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateEntryRequestSubscription>;
-    createdAutomateTask(variables?: CreatedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateTaskSubscription>;
-    deletedAutomateTask(variables?: DeletedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<DeletedAutomateTaskSubscription>;
-    updatedAutomateTask(variables?: UpdatedAutomateTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAutomateTaskSubscription>;
     createdBackup(variables?: CreatedBackupSubscriptionVariables, options?: C): AsyncIterable<CreatedBackupSubscription>;
     updatedBackup(variables?: UpdatedBackupSubscriptionVariables, options?: C): AsyncIterable<UpdatedBackupSubscription>;
     deletedBackup(variables?: DeletedBackupSubscriptionVariables, options?: C): AsyncIterable<DeletedBackupSubscription>;
