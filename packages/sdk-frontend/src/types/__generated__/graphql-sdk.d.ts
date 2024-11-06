@@ -49,6 +49,10 @@ export type Scalars = {
         input: string;
         output: string;
     };
+    Binary: {
+        input: Uint8Array;
+        output: Uint8Array;
+    };
     Blob: {
         input: string;
         output: string;
@@ -594,6 +598,30 @@ export type CancelTaskError = OtherUserError | UnknownIdUserError;
 export type CancelTaskPayload = {
     cancelledId?: Maybe<Scalars["ID"]["output"]>;
     error?: Maybe<CancelTaskError>;
+};
+export type Certificate = {
+    p12: Scalars["Binary"]["output"];
+};
+export type CertificateP12Args = {
+    password?: InputMaybe<Scalars["Sensitive"]["input"]>;
+};
+export declare const CertificateErrorReason: {
+    readonly InvalidCertificate: "INVALID_CERTIFICATE";
+    readonly InvalidP12: "INVALID_P12";
+    readonly InvalidPassword: "INVALID_PASSWORD";
+    readonly InvalidPrivateKey: "INVALID_PRIVATE_KEY";
+};
+export type CertificateErrorReason = (typeof CertificateErrorReason)[keyof typeof CertificateErrorReason];
+export type CertificateInput = {
+    p12: CertificateInputP12;
+};
+export type CertificateInputP12 = {
+    file: Scalars["Upload"]["input"];
+    password?: InputMaybe<Scalars["Sensitive"]["input"]>;
+};
+export type CertificateUserError = UserError & {
+    code: Scalars["String"]["output"];
+    reason: CertificateErrorReason;
 };
 export type ConnectionInfo = {
     host: Scalars["String"]["output"];
@@ -1213,6 +1241,13 @@ export type HostedFile = {
     size: Scalars["Int"]["output"];
     updatedAt: Scalars["DateTime"]["output"];
 };
+export type ImportCertificateError = CertificateUserError | OtherUserError;
+export type ImportCertificateInput = {
+    certificate: CertificateInput;
+};
+export type ImportCertificatePayload = {
+    error?: Maybe<ImportCertificateError>;
+};
 export type InstallBrowserError = OtherUserError | UnsupportedPlatformUserError;
 export type InstallBrowserPayload = {
     browser?: Maybe<Browser>;
@@ -1408,6 +1443,7 @@ export type MutationRoot = {
     enableTamperRule: EnableTamperRulePayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
+    importCertificate: ImportCertificatePayload;
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
     localizeWorkflow: LocalizeWorkflowPayload;
@@ -1420,6 +1456,7 @@ export type MutationRoot = {
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
     rankUpstreamProxySocks: RankUpstreamProxySocksPayload;
     refreshAuthenticationToken: RefreshAuthenticationTokenPayload;
+    regenerateCertificate: RegenerateCertificatePayload;
     renameAssistantSession: RenameAssistantSessionPayload;
     renameAutomateEntry: RenameAutomateEntryPayload;
     renameAutomateSession: RenameAutomateSessionPayload;
@@ -1608,6 +1645,9 @@ export type MutationRootForwardInterceptMessageArgs = {
 };
 export type MutationRootGlobalizeWorkflowArgs = {
     id: Scalars["ID"]["input"];
+};
+export type MutationRootImportCertificateArgs = {
+    input: ImportCertificateInput;
 };
 export type MutationRootInstallPluginPackageArgs = {
     input: InstallPluginPackageInput;
@@ -2240,6 +2280,9 @@ export type RefreshAuthenticationTokenPayload = {
     error?: Maybe<RefreshAuthenticationTokenError>;
     token?: Maybe<AuthenticationToken>;
 };
+export type RegenerateCertificatePayload = {
+    success: Scalars["Boolean"]["output"];
+};
 export type Release = {
     links: Array<ReleaseLink>;
     releasedAt: Scalars["DateTime"]["output"];
@@ -2596,6 +2639,7 @@ export type RunConvertWorkflowPayload = {
 };
 export type Runtime = {
     availableUpdate?: Maybe<Release>;
+    certificate: Certificate;
     logs: Scalars["Uri"]["output"];
     platform: Scalars["String"]["output"];
     version: Scalars["String"]["output"];
@@ -5734,6 +5778,10 @@ type UserErrorFull_BackupUserError_Fragment = {
     __typename: "BackupUserError";
     code: string;
 };
+type UserErrorFull_CertificateUserError_Fragment = {
+    __typename: "CertificateUserError";
+    code: string;
+};
 type UserErrorFull_InternalUserError_Fragment = {
     __typename: "InternalUserError";
     code: string;
@@ -5798,7 +5846,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -5818,6 +5866,11 @@ export type ProjectUserErrorFullFragment = {
     __typename: "ProjectUserError";
     code: string;
     projectReason: ProjectErrorReason;
+};
+export type CertificateUserErrorFullFragment = {
+    __typename: "CertificateUserError";
+    code: string;
+    certificateReason: CertificateErrorReason;
 };
 export type DataExportMetaFragment = {
     __typename: "DataExport";
@@ -7807,6 +7860,29 @@ export type RenameProjectMutation = {
         } | undefined | null;
     };
 };
+export type ImportCertificateMutationVariables = Exact<{
+    input: ImportCertificateInput;
+}>;
+export type ImportCertificateMutation = {
+    importCertificate: {
+        error?: {
+            __typename: "CertificateUserError";
+            code: string;
+            certificateReason: CertificateErrorReason;
+        } | {
+            __typename: "OtherUserError";
+            code: string;
+        } | undefined | null;
+    };
+};
+export type RegenerateCertificateMutationVariables = Exact<{
+    [key: string]: never;
+}>;
+export type RegenerateCertificateMutation = {
+    regenerateCertificate: {
+        success: boolean;
+    };
+};
 export type CreateScopeMutationVariables = Exact<{
     input: CreateScopeInput;
 }>;
@@ -9598,6 +9674,16 @@ export type GetLogsQueryVariables = Exact<{
 export type GetLogsQuery = {
     runtime: {
         logs: string;
+    };
+};
+export type GetCertificateQueryVariables = Exact<{
+    password?: InputMaybe<Scalars["Sensitive"]["input"]>;
+}>;
+export type GetCertificateQuery = {
+    runtime: {
+        certificate: {
+            p12: Uint8Array;
+        };
     };
 };
 export type ScopesQueryVariables = Exact<{
@@ -14565,6 +14651,8 @@ export type FinishedTaskSubscription = {
             code: string;
         } | {
             code: string;
+        } | {
+            code: string;
         } | undefined | null;
     };
 };
@@ -14806,6 +14894,7 @@ export declare const InvalidHttpqlUserErrorFullFragmentDoc = "\n    fragment inv
 export declare const PluginUserErrorFullFragmentDoc = "\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const StoreUserErrorFullFragmentDoc = "\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const ProjectUserErrorFullFragmentDoc = "\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    ";
+export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    ";
 export declare const DataExportMetaFieldsFragmentDoc = "\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportMetaFragmentDoc = "\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    ";
 export declare const DataExportFullFieldsFragmentDoc = "\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    ";
@@ -14956,6 +15045,8 @@ export declare const CreateProjectDocument = "\n    mutation createProject($inpu
 export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RegenerateCertificateDocument = "\n    mutation regenerateCertificate {\n  regenerateCertificate {\n    success\n  }\n}\n    ";
 export declare const CreateScopeDocument = "\n    mutation createScope($input: CreateScopeInput!) {\n  createScope(input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdateScopeDocument = "\n    mutation updateScope($id: ID!, $input: UpdateScopeInput!) {\n  updateScope(id: $id, input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!) {\n  deleteScope(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -15024,6 +15115,7 @@ export declare const ProjectsDocument = "\n    query projects {\n  projects {\n 
 export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const GetRuntimeDocument = "\n    query getRuntime {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n  availableUpdate {\n    ...releaseFull\n  }\n}\n    \n\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";
+export declare const GetCertificateDocument = "\n    query getCertificate($password: Sensitive) {\n  runtime {\n    certificate {\n      p12(password: $password)\n    }\n  }\n}\n    ";
 export declare const ScopesDocument = "\n    query scopes {\n  scopes {\n    ...scopeFull\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const SitemapRootEntriesDocument = "\n    query sitemapRootEntries($scopeId: ID) {\n  sitemapRootEntries(scopeId: $scopeId) {\n    edges {\n      ...sitemapEntryEdgeMeta\n    }\n  }\n}\n    \n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryChildrenDocument = "\n    query sitemapEntryChildren($id: ID!) {\n  sitemapDescendantEntries(parentId: $id, depth: DIRECT) {\n    edges {\n      cursor\n      node {\n        ...sitemapEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
@@ -15209,6 +15301,8 @@ export declare function getSdk<C>(requester: Requester<C>): {
     selectProject(variables: SelectProjectMutationVariables, options?: C): Promise<SelectProjectMutation>;
     deleteProject(variables: DeleteProjectMutationVariables, options?: C): Promise<DeleteProjectMutation>;
     renameProject(variables: RenameProjectMutationVariables, options?: C): Promise<RenameProjectMutation>;
+    importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
+    regenerateCertificate(variables?: RegenerateCertificateMutationVariables, options?: C): Promise<RegenerateCertificateMutation>;
     createScope(variables: CreateScopeMutationVariables, options?: C): Promise<CreateScopeMutation>;
     updateScope(variables: UpdateScopeMutationVariables, options?: C): Promise<UpdateScopeMutation>;
     deleteScope(variables: DeleteScopeMutationVariables, options?: C): Promise<DeleteScopeMutation>;
@@ -15277,6 +15371,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     response(variables: ResponseQueryVariables, options?: C): Promise<ResponseQuery>;
     getRuntime(variables?: GetRuntimeQueryVariables, options?: C): Promise<GetRuntimeQuery>;
     getLogs(variables?: GetLogsQueryVariables, options?: C): Promise<GetLogsQuery>;
+    getCertificate(variables?: GetCertificateQueryVariables, options?: C): Promise<GetCertificateQuery>;
     scopes(variables?: ScopesQueryVariables, options?: C): Promise<ScopesQuery>;
     sitemapRootEntries(variables?: SitemapRootEntriesQueryVariables, options?: C): Promise<SitemapRootEntriesQuery>;
     sitemapEntryChildren(variables: SitemapEntryChildrenQueryVariables, options?: C): Promise<SitemapEntryChildrenQuery>;
