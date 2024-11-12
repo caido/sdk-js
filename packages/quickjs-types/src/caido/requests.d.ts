@@ -211,28 +211,37 @@ declare module "caido:utils" {
     setTls(tls: boolean): void;
     /**
      * Get the HTTP method of the request.
+     *
+     * Get the raw version by passing `{ raw: true }` in the options.
      */
     getMethod(): string;
+    getMethod(options: RawOption): Uint8Array;
     /**
      * Set the HTTP method of the request.
      *
      * All strings are accepted.
      */
-    setMethod(method: string): void;
+    setMethod(method: Bytes): void;
     /**
      * Get the path of the request.
+     *
+     * Get the raw version by passing `{ raw: true }` in the options.
      */
     getPath(): string;
+    getPath(options: RawOption): Uint8Array;
     /**
      * Set the path of the request.
      */
-    setPath(path: string): void;
+    setPath(path: Bytes): void;
     /**
      * Get the unparsed query of the request.
+     *
+     * Get the raw version by passing `{ raw: true }` in the options.
      *
      * Excludes the leading `?`.
      */
     getQuery(): string;
+    getQuery(options: RawOption): Uint8Array;
     /**
      * Set the unparsed query of the request.
      *
@@ -243,7 +252,7 @@ declare module "caido:utils" {
      * spec.setQuery("q=hello");
      * ```
      */
-    setQuery(query: string): void;
+    setQuery(query: Bytes): void;
     /**
      * The headers of the request.
      *

@@ -19,4 +19,9 @@ declare module "caido:utils" {
    * @category Shared
    */
   export type MaybePromise<T> = T | Promise<T>;
+  /**
+   * Option to return raw value
+   * @category Shared
+   */
+  export type RawOption = { raw: true };
 }
