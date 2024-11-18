@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-workflow",
-  "version": "0.43.2-beta.0",
+  "version": "0.43.2-beta.1",
   "description": "Typing for the Caido Workflow SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -12,6 +12,6 @@
     "documentation": "typedoc"
   },
   "dependencies": {
-    "@caido/quickjs-types": "^0.13.0"
+    "@caido/quickjs-types": "^0.14.0"
   }
 }
