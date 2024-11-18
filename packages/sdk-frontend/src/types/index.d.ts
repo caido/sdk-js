@@ -17,6 +17,7 @@ import type { HTTPHistorySDK } from "./httpHistory";
 import type { FilesSDK } from "./files";
 import type { FiltersSDK } from "./filters";
 import type { MatchReplaceSDK } from "./matchReplace";
+import type { EnvironmentSDK } from "./environment";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
@@ -105,4 +106,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with Match and Replace page.
      */
     matchReplace: MatchReplaceSDK;
+    /**
+     * Utilities to interact with the environment.
+     */
+    env: EnvironmentSDK;
 };

@@ -659,6 +659,15 @@ export type CreateBackupPayload = {
     error?: Maybe<CreateBackupError>;
     task?: Maybe<BackupTask>;
 };
+export type CreateEnvironmentError = NameTakenUserError | OtherUserError | PermissionDeniedUserError;
+export type CreateEnvironmentInput = {
+    name: Scalars["String"]["input"];
+    variables: Array<EnvironmentVariableInput>;
+};
+export type CreateEnvironmentPayload = {
+    environment?: Maybe<Environment>;
+    error?: Maybe<CreateEnvironmentError>;
+};
 export type CreateFilterPresetError = AliasTakenUserError | NameTakenUserError | OtherUserError | PermissionDeniedUserError;
 export type CreateFilterPresetInput = {
     alias: Scalars["Alias"]["input"];
@@ -810,6 +819,10 @@ export type CreatedDataExportPayload = {
 };
 export type CreatedDataExportTaskPayload = {
     exportTaskEdge: DataExportTaskEdge;
+};
+export type CreatedEnvironmentPayload = {
+    environment: Environment;
+    snapshot: Scalars["Snapshot"]["output"];
 };
 export type CreatedFilterPresetPayload = {
     filterEdge: FilterPresetEdge;
@@ -970,6 +983,11 @@ export type DeleteDataExportPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
     userError?: Maybe<DeleteDataExportError>;
 };
+export type DeleteEnvironmentError = OtherUserError | UnknownIdUserError;
+export type DeleteEnvironmentPayload = {
+    deletedId?: Maybe<Scalars["ID"]["output"]>;
+    error?: Maybe<DeleteEnvironmentError>;
+};
 export type DeleteFilterPresetPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1056,6 +1074,10 @@ export type DeletedDataExportPayload = {
 export type DeletedDataExportTaskPayload = {
     deletedExportTaskId: Scalars["ID"]["output"];
 };
+export type DeletedEnvironmentPayload = {
+    deletedEnvironmentId: Scalars["ID"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
+};
 export type DeletedFilterPresetPayload = {
     deletedFilterId: Scalars["ID"]["output"];
 };
@@ -1121,6 +1143,31 @@ export type DuplicateAutomateSessionPayload = {
 export type EnableTamperRulePayload = {
     rule?: Maybe<TamperRule>;
 };
+export type Environment = {
+    id: Scalars["ID"]["output"];
+    name: Scalars["String"]["output"];
+    variables: Array<EnvironmentVariable>;
+    version: Scalars["Int"]["output"];
+};
+export type EnvironmentContext = {
+    global?: Maybe<Environment>;
+    selected?: Maybe<Environment>;
+};
+export type EnvironmentVariable = {
+    kind: EnvironmentVariableKind;
+    name: Scalars["String"]["output"];
+    value: Scalars["String"]["output"];
+};
+export type EnvironmentVariableInput = {
+    kind: EnvironmentVariableKind;
+    name: Scalars["String"]["input"];
+    value: Scalars["String"]["input"];
+};
+export declare const EnvironmentVariableKind: {
+    readonly Plain: "PLAIN";
+    readonly Secret: "SECRET";
+};
+export type EnvironmentVariableKind = (typeof EnvironmentVariableKind)[keyof typeof EnvironmentVariableKind];
 export type FilterClauseFindingInput = {
     reporter?: InputMaybe<Scalars["String"]["input"]>;
 };
@@ -1407,6 +1454,7 @@ export type MutationRoot = {
     createAssistantSession: CreateAssistantSessionPayload;
     createAutomateSession: CreateAutomateSessionPayload;
     createBackup: CreateBackupPayload;
+    createEnvironment: CreateEnvironmentPayload;
     createFilterPreset: CreateFilterPresetPayload;
     createFinding: CreateFindingPayload;
     createProject: CreateProjectPayload;
@@ -1425,6 +1473,7 @@ export type MutationRoot = {
     deleteBackup: DeleteBackupPayload;
     deleteBrowser: DeleteBrowserPayload;
     deleteDataExport: DeleteDataExportPayload;
+    deleteEnvironment: DeleteEnvironmentPayload;
     deleteFilterPreset: DeleteFilterPresetPayload;
     deleteFindings: DeleteFindingsPayload;
     deleteHostedFile: DeleteHostedFilePayload;
@@ -1478,6 +1527,7 @@ export type MutationRoot = {
     resumeIntercept: ResumeInterceptPayload;
     runActiveWorkflow: RunActiveWorkflowPayload;
     runConvertWorkflow: RunConvertWorkflowPayload;
+    selectEnvironment: SelectEnvironmentPayload;
     selectProject: SelectProjectPayload;
     sendAssistantMessage: SendAssistantMessagePayload;
     /** @deprecated Remove usage, no replacement */
@@ -1500,6 +1550,7 @@ export type MutationRoot = {
     uninstallPluginPackage: UninstallPluginPackagePayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
     updateBrowser: UpdateBrowserPayload;
+    updateEnvironment: UpdateEnvironmentPayload;
     updateFilterPreset: UpdateFilterPresetPayload;
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
@@ -1533,6 +1584,9 @@ export type MutationRootCreateAutomateSessionArgs = {
 };
 export type MutationRootCreateBackupArgs = {
     projectId: Scalars["ID"]["input"];
+};
+export type MutationRootCreateEnvironmentArgs = {
+    input: CreateEnvironmentInput;
 };
 export type MutationRootCreateFilterPresetArgs = {
     input: CreateFilterPresetInput;
@@ -1584,6 +1638,9 @@ export type MutationRootDeleteBackupArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteDataExportArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootDeleteEnvironmentArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteFilterPresetArgs = {
@@ -1753,6 +1810,9 @@ export type MutationRootRunConvertWorkflowArgs = {
     id: Scalars["ID"]["input"];
     input: Scalars["Blob"]["input"];
 };
+export type MutationRootSelectEnvironmentArgs = {
+    id?: InputMaybe<Scalars["ID"]["input"]>;
+};
 export type MutationRootSelectProjectArgs = {
     id: Scalars["ID"]["input"];
 };
@@ -1819,6 +1879,10 @@ export type MutationRootUpdateAutomateSessionArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateAutomateSessionInput;
 };
+export type MutationRootUpdateEnvironmentArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateEnvironmentInput;
+};
 export type MutationRootUpdateFilterPresetArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateFilterPresetInput;
@@ -1856,6 +1920,10 @@ export type MutationRootUploadHostedFileArgs = {
 export type NameTakenUserError = UserError & {
     code: Scalars["String"]["output"];
     name: Scalars["String"]["output"];
+};
+export type NewerVersionUserError = UserError & {
+    code: Scalars["String"]["output"];
+    version: Scalars["Int"]["output"];
 };
 export type OnboardingState = {
     caCertificate: Scalars["Boolean"]["output"];
@@ -2019,6 +2087,9 @@ export type QueryRoot = {
     dataExport?: Maybe<DataExport>;
     dataExportTasks: Array<DataExportTask>;
     dataExports: Array<DataExport>;
+    environment?: Maybe<Environment>;
+    environmentContext: EnvironmentContext;
+    environments: Array<Environment>;
     filterPreset?: Maybe<FilterPreset>;
     filterPresets: Array<FilterPreset>;
     finding?: Maybe<Finding>;
@@ -2093,6 +2164,9 @@ export type QueryRootBackupArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootDataExportArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type QueryRootEnvironmentArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootFilterPresetArgs = {
@@ -2400,6 +2474,12 @@ export type ReplayEntrySettingsInput = {
     placeholders: Array<ReplayPlaceholderInput>;
     updateContentLength: Scalars["Boolean"]["input"];
 };
+export type ReplayEnvironmentPreprocessor = {
+    variableName: Scalars["String"]["output"];
+};
+export type ReplayEnvironmentPreprocessorInput = {
+    variableName: Scalars["String"]["input"];
+};
 export type ReplayPlaceholder = {
     inputRange: Range;
     outputRange: Range;
@@ -2422,23 +2502,33 @@ export type ReplayPreprocessor = {
 export type ReplayPreprocessorInput = {
     options: ReplayPreprocessorOptionsInput;
 };
-export type ReplayPreprocessorOptions = ReplayPrefixPreprocessor | ReplaySuffixPreprocessor | ReplayUrlEncodePreprocessor | ReplayWorkflowPreprocessor;
+export type ReplayPreprocessorOptions = ReplayEnvironmentPreprocessor | ReplayPrefixPreprocessor | ReplaySuffixPreprocessor | ReplayUrlEncodePreprocessor | ReplayWorkflowPreprocessor;
 export type ReplayPreprocessorOptionsInput = {
+    environment: ReplayEnvironmentPreprocessorInput;
+    prefix?: never;
+    suffix?: never;
+    urlEncode?: never;
+    workflow?: never;
+} | {
+    environment?: never;
     prefix: ReplayPrefixPreprocessorInput;
     suffix?: never;
     urlEncode?: never;
     workflow?: never;
 } | {
+    environment?: never;
     prefix?: never;
     suffix: ReplaySuffixPreprocessorInput;
     urlEncode?: never;
     workflow?: never;
 } | {
+    environment?: never;
     prefix?: never;
     suffix?: never;
     urlEncode: ReplayUrlEncodePreprocessorInput;
     workflow?: never;
 } | {
+    environment?: never;
     prefix?: never;
     suffix?: never;
     urlEncode?: never;
@@ -2660,6 +2750,11 @@ export type ScopeEdge = {
     cursor: Scalars["String"]["output"];
     /** The item at the end of the edge */
     node: Scope;
+};
+export type SelectEnvironmentError = OtherUserError | UnknownIdUserError;
+export type SelectEnvironmentPayload = {
+    environment?: Maybe<Environment>;
+    error?: Maybe<SelectEnvironmentError>;
 };
 export type SelectProjectPayload = {
     error?: Maybe<SelectProjectPayloadError>;
@@ -2927,6 +3022,7 @@ export type SubscriptionRoot = {
     createdBackup: CreatedBackupPayload;
     createdDataExport: CreatedDataExportPayload;
     createdDataExportTask: CreatedDataExportTaskPayload;
+    createdEnvironment: CreatedEnvironmentPayload;
     createdFilterPreset: CreatedFilterPresetPayload;
     createdFinding: CreatedFindingPayload;
     createdInterceptEntry: CreatedInterceptEntryPayload;
@@ -2954,6 +3050,7 @@ export type SubscriptionRoot = {
     deletedBrowser: DeletedBrowserPayload;
     deletedDataExport: DeletedDataExportPayload;
     deletedDataExportTask: DeletedDataExportTaskPayload;
+    deletedEnvironment: DeletedEnvironmentPayload;
     deletedFilterPreset: DeletedFilterPresetPayload;
     deletedFindings: DeletedFindingsPayload;
     deletedHostedFile: DeletedHostedFilePayload;
@@ -2987,6 +3084,8 @@ export type SubscriptionRoot = {
     updatedBrowser: UpdatedBrowserPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
+    updatedEnvironment: UpdatedEnvironmentPayload;
+    updatedEnvironmentContext: UpdatedEnvironmentContextPayload;
     updatedFilterPreset: UpdatedFilterPresetPayload;
     updatedHostedFile: UpdatedHostedFilePayload;
     updatedInterceptEntry: UpdatedInterceptEntryPayload;
@@ -3170,6 +3269,16 @@ export type UpdateBrowserPayload = {
     browser?: Maybe<Browser>;
     error?: Maybe<UpdateBrowserError>;
 };
+export type UpdateEnvironmentError = NameTakenUserError | NewerVersionUserError | OtherUserError | PermissionDeniedUserError | UnknownIdUserError;
+export type UpdateEnvironmentInput = {
+    name: Scalars["String"]["input"];
+    variables: Array<EnvironmentVariableInput>;
+    version: Scalars["Int"]["input"];
+};
+export type UpdateEnvironmentPayload = {
+    environment?: Maybe<Environment>;
+    error?: Maybe<UpdateEnvironmentError>;
+};
 export type UpdateFilterPresetError = AliasTakenUserError | NameTakenUserError | OtherUserError;
 export type UpdateFilterPresetInput = {
     alias: Scalars["Alias"]["input"];
@@ -3279,6 +3388,13 @@ export type UpdatedDataExportPayload = {
 export type UpdatedDeleteInterceptEntriesTaskPayload = {
     snapshot: Scalars["Snapshot"]["output"];
     task: DeleteInterceptEntriesTask;
+};
+export type UpdatedEnvironmentContextPayload = {
+    environmentContext: EnvironmentContext;
+};
+export type UpdatedEnvironmentPayload = {
+    environment: Environment;
+    snapshot: Scalars["Snapshot"]["output"];
 };
 export type UpdatedFilterPresetPayload = {
     filterEdge: FilterPresetEdge;
@@ -5508,6 +5624,287 @@ export type DeletedAutomateSessionSubscription = {
         deletedAutomateSessionId: string;
     };
 };
+export type EnvironmentMetaFragment = {
+    __typename: "Environment";
+    id: string;
+    name: string;
+    version: number;
+};
+export type EnvironmentVariableFullFragment = {
+    name: string;
+    value: string;
+    kind: EnvironmentVariableKind;
+};
+export type EnvironmentFullFragment = {
+    __typename: "Environment";
+    id: string;
+    name: string;
+    version: number;
+    variables: Array<{
+        name: string;
+        value: string;
+        kind: EnvironmentVariableKind;
+    }>;
+};
+export type EnvironmentContextFullFragment = {
+    global?: {
+        __typename: "Environment";
+        id: string;
+        name: string;
+        version: number;
+        variables: Array<{
+            name: string;
+            value: string;
+            kind: EnvironmentVariableKind;
+        }>;
+    } | undefined | null;
+    selected?: {
+        __typename: "Environment";
+        id: string;
+        name: string;
+        version: number;
+        variables: Array<{
+            name: string;
+            value: string;
+            kind: EnvironmentVariableKind;
+        }>;
+    } | undefined | null;
+};
+export type EnvironmentQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type EnvironmentQuery = {
+    environment?: {
+        __typename: "Environment";
+        id: string;
+        name: string;
+        version: number;
+        variables: Array<{
+            name: string;
+            value: string;
+            kind: EnvironmentVariableKind;
+        }>;
+    } | undefined | null;
+};
+export type EnvironmentsQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type EnvironmentsQuery = {
+    environments: Array<{
+        __typename: "Environment";
+        id: string;
+        name: string;
+        version: number;
+    }>;
+};
+export type EnvironmentContextQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type EnvironmentContextQuery = {
+    environmentContext: {
+        global?: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
+        } | undefined | null;
+        selected?: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
+        } | undefined | null;
+    };
+};
+export type CreateEnvironmentMutationVariables = Exact<{
+    input: CreateEnvironmentInput;
+}>;
+export type CreateEnvironmentMutation = {
+    createEnvironment: {
+        environment?: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
+        } | undefined | null;
+        error?: {
+            __typename: "NameTakenUserError";
+            name: string;
+            code: string;
+        } | {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | undefined | null;
+    };
+};
+export type UpdateEnvironmentMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateEnvironmentInput;
+}>;
+export type UpdateEnvironmentMutation = {
+    updateEnvironment: {
+        environment?: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
+        } | undefined | null;
+        error?: {
+            __typename: "NameTakenUserError";
+            name: string;
+            code: string;
+        } | {
+            __typename: "NewerVersionUserError";
+            version: number;
+            code: string;
+        } | {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type DeleteEnvironmentMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteEnvironmentMutation = {
+    deleteEnvironment: {
+        deletedId?: string | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type SelectEnvironmentMutationVariables = Exact<{
+    id?: InputMaybe<Scalars["ID"]["input"]>;
+}>;
+export type SelectEnvironmentMutation = {
+    selectEnvironment: {
+        environment?: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type CreatedEnvironmentSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedEnvironmentSubscription = {
+    createdEnvironment: {
+        snapshot: number;
+        environment: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+        };
+    };
+};
+export type UpdatedEnvironmentSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedEnvironmentSubscription = {
+    updatedEnvironment: {
+        snapshot: number;
+        environment: {
+            __typename: "Environment";
+            id: string;
+            name: string;
+            version: number;
+        };
+    };
+};
+export type DeletedEnvironmentSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedEnvironmentSubscription = {
+    deletedEnvironment: {
+        deletedEnvironmentId: string;
+        snapshot: number;
+    };
+};
+export type UpdatedEnvironmentContextSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedEnvironmentContextSubscription = {
+    updatedEnvironmentContext: {
+        environmentContext: {
+            global?: {
+                __typename: "Environment";
+                id: string;
+                name: string;
+                version: number;
+                variables: Array<{
+                    name: string;
+                    value: string;
+                    kind: EnvironmentVariableKind;
+                }>;
+            } | undefined | null;
+            selected?: {
+                __typename: "Environment";
+                id: string;
+                name: string;
+                version: number;
+                variables: Array<{
+                    name: string;
+                    value: string;
+                    kind: EnvironmentVariableKind;
+                }>;
+            } | undefined | null;
+        };
+    };
+};
 export type AuthenticationRequestFullFragment = {
     __typename: "AuthenticationRequest";
     id: string;
@@ -5816,6 +6213,10 @@ type UserErrorFull_NameTakenUserError_Fragment = {
     __typename: "NameTakenUserError";
     code: string;
 };
+type UserErrorFull_NewerVersionUserError_Fragment = {
+    __typename: "NewerVersionUserError";
+    code: string;
+};
 type UserErrorFull_OtherUserError_Fragment = {
     __typename: "OtherUserError";
     code: string;
@@ -5860,7 +6261,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -5885,6 +6286,11 @@ export type CertificateUserErrorFullFragment = {
     __typename: "CertificateUserError";
     code: string;
     certificateReason: CertificateErrorReason;
+};
+export type NewerVersionUserErrorFullFragment = {
+    __typename: "NewerVersionUserError";
+    version: number;
+    code: string;
 };
 export type DataExportMetaFragment = {
     __typename: "DataExport";
@@ -10380,6 +10786,9 @@ export type ReplayEntryFullFragment = {
             preprocessors: Array<{
                 __typename: "ReplayPreprocessor";
                 options: {
+                    __typename: "ReplayEnvironmentPreprocessor";
+                    variableName: string;
+                } | {
                     __typename: "ReplayPrefixPreprocessor";
                     value: string;
                 } | {
@@ -10745,9 +11154,16 @@ export type ReplayWorkflowPreprocessorFullFragment = {
     __typename: "ReplayWorkflowPreprocessor";
     id: string;
 };
+export type ReplayEnvironmentPreprocessorFullFragment = {
+    __typename: "ReplayEnvironmentPreprocessor";
+    variableName: string;
+};
 export type ReplayPreprocessorFullFragment = {
     __typename: "ReplayPreprocessor";
     options: {
+        __typename: "ReplayEnvironmentPreprocessor";
+        variableName: string;
+    } | {
         __typename: "ReplayPrefixPreprocessor";
         value: string;
     } | {
@@ -10775,6 +11191,9 @@ export type ReplayPlaceholderFullFragment = {
     preprocessors: Array<{
         __typename: "ReplayPreprocessor";
         options: {
+            __typename: "ReplayEnvironmentPreprocessor";
+            variableName: string;
+        } | {
             __typename: "ReplayPrefixPreprocessor";
             value: string;
         } | {
@@ -10813,6 +11232,9 @@ export type ReplayEntryQuery = {
                 preprocessors: Array<{
                     __typename: "ReplayPreprocessor";
                     options: {
+                        __typename: "ReplayEnvironmentPreprocessor";
+                        variableName: string;
+                    } | {
                         __typename: "ReplayPrefixPreprocessor";
                         value: string;
                     } | {
@@ -14805,6 +15227,8 @@ export type FinishedTaskSubscription = {
             code: string;
         } | {
             code: string;
+        } | {
+            code: string;
         } | undefined | null;
     };
 };
@@ -15020,6 +15444,10 @@ export declare const ConnectionInfoFullFragmentDoc = "\n    fragment connectionI
 export declare const AutomateSessionFullFragmentDoc = "\n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    ";
 export declare const AutomateTaskMetaFragmentDoc = "\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    ";
 export declare const AutomateTaskEdgeMetaFragmentDoc = "\n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    ";
+export declare const EnvironmentMetaFragmentDoc = "\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
+export declare const EnvironmentVariableFullFragmentDoc = "\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
+export declare const EnvironmentFullFragmentDoc = "\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    ";
+export declare const EnvironmentContextFullFragmentDoc = "\n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    ";
 export declare const AuthenticationRequestFullFragmentDoc = "\n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    ";
 export declare const AuthenticationTokenFullFragmentDoc = "\n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
 export declare const BackupMetaFragmentDoc = "\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
@@ -15051,6 +15479,7 @@ export declare const PluginUserErrorFullFragmentDoc = "\n    fragment pluginUser
 export declare const StoreUserErrorFullFragmentDoc = "\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    ";
 export declare const ProjectUserErrorFullFragmentDoc = "\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    ";
 export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    ";
+export declare const NewerVersionUserErrorFullFragmentDoc = "\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    ";
 export declare const DataExportMetaFieldsFragmentDoc = "\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportMetaFragmentDoc = "\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    ";
 export declare const DataExportFullFieldsFragmentDoc = "\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    ";
@@ -15112,7 +15541,8 @@ export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment r
 export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplayUrlEncodePreprocessorFullFragmentDoc = "\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    ";
 export declare const ReplayWorkflowPreprocessorFullFragmentDoc = "\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
-export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    ";
+export declare const ReplayEnvironmentPreprocessorFullFragmentDoc = "\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
+export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    ";
 export declare const ReplayPlaceholderFullFragmentDoc = "\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    ";
 export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    ";
 export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
@@ -15161,6 +15591,17 @@ export declare const DeletedAutomateEntryDocument = "\n    subscription deletedA
 export declare const CreatedAutomateSessionDocument = "\n    subscription createdAutomateSession {\n  createdAutomateSession {\n    automateSessionEdge {\n      node {\n        ...automateSessionMeta\n      }\n    }\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const UpdatedAutomateSessionDocument = "\n    subscription updatedAutomateSession {\n  updatedAutomateSession {\n    automateSessionEdge {\n      node {\n        ...automateSessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const DeletedAutomateSessionDocument = "\n    subscription deletedAutomateSession {\n  deletedAutomateSession {\n    deletedAutomateSessionId\n  }\n}\n    ";
+export declare const EnvironmentDocument = "\n    query environment($id: ID!) {\n  environment(id: $id) {\n    ...environmentFull\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
+export declare const EnvironmentsDocument = "\n    query environments {\n  environments {\n    ...environmentMeta\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
+export declare const EnvironmentContextDocument = "\n    query environmentContext {\n  environmentContext {\n    ...environmentContextFull\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
+export declare const CreateEnvironmentDocument = "\n    mutation createEnvironment($input: CreateEnvironmentInput!) {\n  createEnvironment(input: $input) {\n    environment {\n      ...environmentFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const UpdateEnvironmentDocument = "\n    mutation updateEnvironment($id: ID!, $input: UpdateEnvironmentInput!) {\n  updateEnvironment(id: $id, input: $input) {\n    environment {\n      ...environmentFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on NewerVersionUserError {\n        ...newerVersionUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const DeleteEnvironmentDocument = "\n    mutation deleteEnvironment($id: ID!) {\n  deleteEnvironment(id: $id) {\n    deletedId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const SelectEnvironmentDocument = "\n    mutation selectEnvironment($id: ID) {\n  selectEnvironment(id: $id) {\n    environment {\n      ...environmentFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedEnvironmentDocument = "\n    subscription createdEnvironment {\n  createdEnvironment {\n    environment {\n      ...environmentMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
+export declare const UpdatedEnvironmentDocument = "\n    subscription updatedEnvironment {\n  updatedEnvironment {\n    environment {\n      ...environmentMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
+export declare const DeletedEnvironmentDocument = "\n    subscription deletedEnvironment {\n  deletedEnvironment {\n    deletedEnvironmentId\n    snapshot\n  }\n}\n    ";
+export declare const UpdatedEnvironmentContextDocument = "\n    subscription updatedEnvironmentContext {\n  updatedEnvironmentContext {\n    environmentContext {\n      ...environmentContextFull\n    }\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const StartAuthenticationFlowDocument = "\n    mutation startAuthenticationFlow {\n  startAuthenticationFlow {\n    request {\n      ...authenticationRequestFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RefreshAuthenticationTokenDocument = "\n    mutation refreshAuthenticationToken($refreshToken: Token!) {\n  refreshAuthenticationToken(refreshToken: $refreshToken) {\n    token {\n      ...authenticationTokenFull\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    ";
 export declare const LogoutDocument = "\n    mutation logout {\n  logout {\n    success\n  }\n}\n    ";
@@ -15293,7 +15734,7 @@ export declare const UserSettingsDocument = "\n    query userSettings {\n  viewe
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsDocument = "\n    query workflows {\n  workflows {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowNodeDefinitionsDocument = "\n    query workflowNodeDefinitions {\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
 export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    activeEntry {\n      ...replayEntryMeta\n    }\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -15417,6 +15858,17 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdAutomateSession(variables?: CreatedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<CreatedAutomateSessionSubscription>;
     updatedAutomateSession(variables?: UpdatedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<UpdatedAutomateSessionSubscription>;
     deletedAutomateSession(variables?: DeletedAutomateSessionSubscriptionVariables, options?: C): AsyncIterable<DeletedAutomateSessionSubscription>;
+    environment(variables: EnvironmentQueryVariables, options?: C): Promise<EnvironmentQuery>;
+    environments(variables?: EnvironmentsQueryVariables, options?: C): Promise<EnvironmentsQuery>;
+    environmentContext(variables?: EnvironmentContextQueryVariables, options?: C): Promise<EnvironmentContextQuery>;
+    createEnvironment(variables: CreateEnvironmentMutationVariables, options?: C): Promise<CreateEnvironmentMutation>;
+    updateEnvironment(variables: UpdateEnvironmentMutationVariables, options?: C): Promise<UpdateEnvironmentMutation>;
+    deleteEnvironment(variables: DeleteEnvironmentMutationVariables, options?: C): Promise<DeleteEnvironmentMutation>;
+    selectEnvironment(variables?: SelectEnvironmentMutationVariables, options?: C): Promise<SelectEnvironmentMutation>;
+    createdEnvironment(variables?: CreatedEnvironmentSubscriptionVariables, options?: C): AsyncIterable<CreatedEnvironmentSubscription>;
+    updatedEnvironment(variables?: UpdatedEnvironmentSubscriptionVariables, options?: C): AsyncIterable<UpdatedEnvironmentSubscription>;
+    deletedEnvironment(variables?: DeletedEnvironmentSubscriptionVariables, options?: C): AsyncIterable<DeletedEnvironmentSubscription>;
+    updatedEnvironmentContext(variables?: UpdatedEnvironmentContextSubscriptionVariables, options?: C): AsyncIterable<UpdatedEnvironmentContextSubscription>;
     startAuthenticationFlow(variables?: StartAuthenticationFlowMutationVariables, options?: C): Promise<StartAuthenticationFlowMutation>;
     refreshAuthenticationToken(variables: RefreshAuthenticationTokenMutationVariables, options?: C): Promise<RefreshAuthenticationTokenMutation>;
     logout(variables?: LogoutMutationVariables, options?: C): Promise<LogoutMutation>;
