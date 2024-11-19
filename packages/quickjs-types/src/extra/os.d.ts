@@ -25,6 +25,17 @@ declare module "os" {
   export function version(): string;
 
   /**
+   * Returns the string path of the current user's home directory.
+   *
+   * On POSIX, it uses the `$HOME` environment variable if defined. Otherwise it
+   * uses the [effective UID](https://en.wikipedia.org/wiki/User_identifier#Effective_user_ID) to look up the user's home directory.
+   *
+   * On Windows, it uses the `USERPROFILE` environment variable if defined.
+   * Otherwise it uses the path to the profile directory of the current user.
+   */
+  export function homedir(): string;
+
+  /**
    * Returns a string identifying the operating system platform for which
    * the Node.js binary was compiled. The value is set at compile time.
    */

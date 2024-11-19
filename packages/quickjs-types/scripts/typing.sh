@@ -10,7 +10,6 @@ rsync -av --exclude=node_modules \
       --include='events.d.ts' \
       --include='fs.d.ts' \
       --include='net.d.ts' \
-      --include='os.d.ts' \
       --include='path.d.ts' \
       --include='abort.d.ts' \
       --exclude='*' \
@@ -19,6 +18,8 @@ rsync -av --exclude=node_modules \
 
 echo "[*] Copying rquickjs-extra typing"
 rsync -av --exclude=node_modules \
+      --include='globals.d.ts' \
+      --include='os.d.ts' \
       --include='sqlite.d.ts' \
       --include='timers.d.ts' \
       --include='url.d.ts' \

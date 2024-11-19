@@ -1,6 +1,6 @@
 {
   "name": "@caido/quickjs-types",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Typing for the QuickJS Engine",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",

@@ -68,7 +68,6 @@ declare module "sqlite" {
    * const db = await open({ filename: "path/to/database.sqlite" });
    * await db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT);");
    * await db.exec("INSERT INTO test (name) VALUES ('foo');");
-   * ```
    */
   export class Database {
     /**
@@ -78,7 +77,7 @@ declare module "sqlite" {
     /**
      * Compiles a SQL statement into a {@link https://www.sqlite.org/c3ref/stmt.html prepared statement}.
      */
-    prepare(sql: string): Promise<Statement>;
+    prepare(sql: string): Statement;
   }
 
   /**

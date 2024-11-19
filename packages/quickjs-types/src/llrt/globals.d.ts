@@ -15,9 +15,6 @@ declare global {
       | Float32Array
       | Float64Array;
     type ArrayBufferView = TypedArray | DataView;
-
-    // Move that to process module once we declare it
-    type Platform = "darwin" | "linux" | "win32";
   }
 
   interface SymbolConstructor {
