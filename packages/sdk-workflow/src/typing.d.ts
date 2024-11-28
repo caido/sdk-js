@@ -7,6 +7,7 @@ declare module "caido:workflow" {
     Response,
     ReplaySDK,
     ProjectsSDK,
+    EnvironmentSDK,
   } from "caido:utils";
 
   /**
@@ -71,6 +72,10 @@ declare module "caido:workflow" {
      * The SDK for the Projects service.
      */
     projects: ProjectsSDK;
+    /**
+     * The SDK for the Environment service.
+     */
+    env: EnvironmentSDK;
     /**
      * Converts bytes to a string.
      *
