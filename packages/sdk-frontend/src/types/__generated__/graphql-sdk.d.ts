@@ -7186,6 +7186,37 @@ export type DataExportTasksQuery = {
         };
     }>;
 };
+export type DataExportStateQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DataExportStateQuery = {
+    dataExports: Array<{
+        __typename: "DataExport";
+        id: string;
+        name: string;
+        path: string;
+        size: number;
+        status: DataExportStatus;
+        format: DataExportFormat;
+        error?: string | undefined | null;
+        createdAt: Date;
+    }>;
+    dataExportTasks: Array<{
+        __typename: "DataExportTask";
+        id: string;
+        export: {
+            __typename: "DataExport";
+            id: string;
+            name: string;
+            path: string;
+            size: number;
+            status: DataExportStatus;
+            format: DataExportFormat;
+            error?: string | undefined | null;
+            createdAt: Date;
+        };
+    }>;
+};
 export type CreatedDataExportSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -15639,6 +15670,7 @@ export declare const CancelDataExportTaskDocument = "\n    mutation cancelDataEx
 export declare const DataExportsDocument = "\n    query dataExports {\n  dataExports {\n    ...dataExportMeta\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportDocument = "\n    query dataExport($id: ID!) {\n  dataExport(id: $id) {\n    ...dataExportFull\n  }\n}\n    \n    fragment dataExportFull on DataExport {\n  ...dataExportFullFields\n}\n    \n\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportTasksDocument = "\n    query dataExportTasks {\n  dataExportTasks {\n    ...dataExportTaskMeta\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DataExportStateDocument = "\n    query dataExportState {\n  dataExports {\n    ...dataExportMeta\n  }\n  dataExportTasks {\n    ...dataExportTaskMeta\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    ";
 export declare const CreatedDataExportDocument = "\n    subscription createdDataExport {\n  createdDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        ...dataExportMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const UpdatedDataExportDocument = "\n    subscription updatedDataExport {\n  updatedDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        ...dataExportMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DeletedDataExportDocument = "\n    subscription deletedDataExport {\n  deletedDataExport {\n    deletedDataExportId\n    snapshot\n  }\n}\n    ";
@@ -15906,6 +15938,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     dataExports(variables?: DataExportsQueryVariables, options?: C): Promise<DataExportsQuery>;
     dataExport(variables: DataExportQueryVariables, options?: C): Promise<DataExportQuery>;
     dataExportTasks(variables?: DataExportTasksQueryVariables, options?: C): Promise<DataExportTasksQuery>;
+    dataExportState(variables?: DataExportStateQueryVariables, options?: C): Promise<DataExportStateQuery>;
     createdDataExport(variables?: CreatedDataExportSubscriptionVariables, options?: C): AsyncIterable<CreatedDataExportSubscription>;
     updatedDataExport(variables?: UpdatedDataExportSubscriptionVariables, options?: C): AsyncIterable<UpdatedDataExportSubscription>;
     deletedDataExport(variables?: DeletedDataExportSubscriptionVariables, options?: C): AsyncIterable<DeletedDataExportSubscription>;
