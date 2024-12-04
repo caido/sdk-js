@@ -20,6 +20,10 @@ declare module "caido:utils" {
      * The name of the reporter.
      */
     getReporter(): string;
+    /**
+     * The deduplication key of the finding.
+     */
+    getDedupeKey(): DedupeKey | undefined;
   };
 
   /**
@@ -44,7 +48,7 @@ declare module "caido:utils" {
      * Deduplication key for findings.
      * If a finding with the same dedupe key already exists, it will not be created.
      */
-    dedupeKey?: string | undefined;
+    dedupeKey?: DedupeKey | undefined;
     /**
      * The associated {@link Request}.
      */
@@ -55,16 +59,24 @@ declare module "caido:utils" {
    * Input to get a {@link Finding}.
    * @category Findings
    */
-  export type GetFindingInput = {
-    /**
-     * The name of the reporter.
-     */
-    reporter?: string | undefined;
-    /**
-     * The associated {@link Request}.
-     */
-    request: Request;
-  };
+  export type GetFindingInput =
+    | DedupeKey
+    | {
+        /**
+         * The name of the reporter.
+         */
+        reporter?: string | undefined;
+        /**
+         * The associated {@link Request}.
+         */
+        request: Request;
+      };
+
+  /**
+   * A deduplication key.
+   * @category Findings
+   */
+  export type DedupeKey = string & { __dedupeKey?: never };
 
   /**
    * The SDK for the Findings service.
@@ -73,8 +85,11 @@ declare module "caido:utils" {
   export type FindingsSDK = {
     /**
      * Try to get a {@link Finding} for a request.
+     *
      * Since a request can have multiple findings, this will return the first one found.
      * You can also filter by reporter to get a specific finding.
+     *
+     * Finally, you can use a deduplication key to get a specific finding.
      *
      * @example
      * ```js
@@ -86,6 +101,16 @@ declare module "caido:utils" {
      */
     get(input: GetFindingInput): Promise<Finding | undefined>;
     /**
+     * Check if a {@link Finding} exists.
+     * Similar to `get`, but returns a boolean.
+     *
+     * @example
+     * ```js
+     * await sdk.findings.exists("my-dedupe-key");
+     * ```
+     */
+    exists(input: GetFindingInput): Promise<boolean>;
+    /**
      * Creates a new Finding.
      *
      * @throws {Error} If the request cannot be saved.
@@ -96,7 +121,7 @@ declare module "caido:utils" {
      *   title: "Title",
      *   description: "Description",
      *   reporter: "Reporter",
-     *   dedupe: `${request.getHost()}-${request.getPath()}`,
+     *   dedupeKey: `${request.getHost()}-${request.getPath()}`,
      *   request,
      * });
      * ```

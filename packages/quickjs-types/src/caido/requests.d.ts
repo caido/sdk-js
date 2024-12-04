@@ -151,7 +151,8 @@ declare module "caido:utils" {
    */
   export class RequestSpec {
     /**
-     * Build a new {@link RequestSpec} from a URL string. Only the host, port and scheme will be parsed.
+     * Build a new {@link RequestSpec} from a URL string.
+     * We try to infer as much information as possible from the URL, including the scheme, host, path and query.
      *
      * You can convert a saved immutable {@link Request} object into a {@link RequestSpec} object by using the `toSpec()` method.
      *
