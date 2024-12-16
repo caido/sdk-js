@@ -7121,6 +7121,11 @@ export type NewerVersionUserErrorFullFragment = {
     version: number;
     code: string;
 };
+export type AuthorizationUserErrorFullFragment = {
+    __typename: "AuthorizationUserError";
+    reason: AuthorizationErrorReason;
+    code: string;
+};
 export type DataExportMetaFragment = {
     __typename: "DataExport";
     id: string;
@@ -15648,6 +15653,7 @@ export declare const StoreUserErrorFullFragmentDoc = "\n    fragment storeUserEr
 export declare const ProjectUserErrorFullFragmentDoc = "\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    ";
 export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    ";
 export declare const NewerVersionUserErrorFullFragmentDoc = "\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    ";
+export declare const AuthorizationUserErrorFullFragmentDoc = "\n    fragment authorizationUserErrorFull on AuthorizationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const DataExportMetaFieldsFragmentDoc = "\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportMetaFragmentDoc = "\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    ";
 export declare const DataExportFullFieldsFragmentDoc = "\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    ";
