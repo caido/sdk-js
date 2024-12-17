@@ -13604,17 +13604,6 @@ export type RuntimeFullFragment = {
     __typename: "Runtime";
     version: string;
     platform: string;
-    availableUpdate?: {
-        __typename: "Release";
-        releasedAt: Date;
-        version: string;
-        links: Array<{
-            __typename: "ReleaseLink";
-            display: string;
-            link: string;
-            platform: string;
-        }>;
-    } | undefined | null;
 };
 export type ReleaseFullFragment = {
     __typename: "Release";
@@ -13627,14 +13616,11 @@ export type ReleaseFullFragment = {
         platform: string;
     }>;
 };
-export type GetRuntimeQueryVariables = Exact<{
+export type GetUpdateStateQueryVariables = Exact<{
     [key: string]: never;
 }>;
-export type GetRuntimeQuery = {
+export type GetUpdateStateQuery = {
     runtime: {
-        __typename: "Runtime";
-        version: string;
-        platform: string;
         availableUpdate?: {
             __typename: "Release";
             releasedAt: Date;
@@ -13646,6 +13632,16 @@ export type GetRuntimeQuery = {
                 platform: string;
             }>;
         } | undefined | null;
+    };
+};
+export type GetInstanceStateQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type GetInstanceStateQuery = {
+    runtime: {
+        __typename: "Runtime";
+        version: string;
+        platform: string;
     };
 };
 export type GetLogsQueryVariables = Exact<{
@@ -15707,8 +15703,8 @@ export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n 
 export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
+export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const ReleaseFullFragmentDoc = "\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
-export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n  availableUpdate {\n    ...releaseFull\n  }\n}\n    ";
 export declare const ScopeFullFragmentDoc = "\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const SitemapEntryMetaFragmentDoc = "\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryEdgeMetaFragmentDoc = "\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    ";
@@ -15925,7 +15921,8 @@ export declare const CreatedRequestDocument = "\n    subscription createdRequest
 export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const UpdatedRequestMetadataDocument = "\n    subscription updatedRequestMetadata {\n  updatedRequestMetadata {\n    metadata {\n      ...requestMetadataFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
 export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const GetRuntimeDocument = "\n    query getRuntime {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n  availableUpdate {\n    ...releaseFull\n  }\n}\n    \n\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
+export declare const GetUpdateStateDocument = "\n    query getUpdateState {\n  runtime {\n    availableUpdate {\n      ...releaseFull\n    }\n  }\n}\n    \n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
+export declare const GetInstanceStateDocument = "\n    query getInstanceState {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";
 export declare const GetCertificateDocument = "\n    query getCertificate($password: Sensitive) {\n  runtime {\n    certificate {\n      p12(password: $password)\n    }\n  }\n}\n    ";
 export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -16193,7 +16190,8 @@ export declare function getSdk<C>(requester: Requester<C>): {
     updatedRequest(variables?: UpdatedRequestSubscriptionVariables, options?: C): AsyncIterable<UpdatedRequestSubscription>;
     updatedRequestMetadata(variables?: UpdatedRequestMetadataSubscriptionVariables, options?: C): AsyncIterable<UpdatedRequestMetadataSubscription>;
     response(variables: ResponseQueryVariables, options?: C): Promise<ResponseQuery>;
-    getRuntime(variables?: GetRuntimeQueryVariables, options?: C): Promise<GetRuntimeQuery>;
+    getUpdateState(variables?: GetUpdateStateQueryVariables, options?: C): Promise<GetUpdateStateQuery>;
+    getInstanceState(variables?: GetInstanceStateQueryVariables, options?: C): Promise<GetInstanceStateQuery>;
     getLogs(variables?: GetLogsQueryVariables, options?: C): Promise<GetLogsQuery>;
     getCertificate(variables?: GetCertificateQueryVariables, options?: C): Promise<GetCertificateQuery>;
     importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
