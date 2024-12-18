@@ -1405,9 +1405,11 @@ export type InterceptRequestMessage = InterceptMessage & {
 };
 export type InterceptRequestOptions = {
     enabled: Scalars["Boolean"]["output"];
+    filter?: Maybe<Scalars["HTTPQL"]["output"]>;
 };
 export type InterceptRequestOptionsInput = {
     enabled: Scalars["Boolean"]["input"];
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
 };
 export type InterceptResponseMessage = InterceptMessage & {
     id: Scalars["ID"]["output"];
@@ -1416,9 +1418,11 @@ export type InterceptResponseMessage = InterceptMessage & {
 };
 export type InterceptResponseOptions = {
     enabled: Scalars["Boolean"]["output"];
+    filter?: Maybe<Scalars["HTTPQL"]["output"]>;
 };
 export type InterceptResponseOptionsInput = {
     enabled: Scalars["Boolean"]["input"];
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
 };
 export type InterceptScopeOptions = {
     scopeId: Scalars["ID"]["output"];
@@ -13797,6 +13801,14 @@ export type UpdatedScopeSubscription = {
         };
     };
 };
+export type DeletedScopeSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedScopeSubscription = {
+    deletedScope: {
+        deletedScopeId: string;
+    };
+};
 export type SitemapEntryEdgeMetaFragment = {
     __typename: "SitemapEntryEdge";
     cursor: string;
@@ -15933,6 +15945,7 @@ export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!)
 export declare const ScopesDocument = "\n    query scopes {\n  scopes {\n    ...scopeFull\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const CreatedScopeDocument = "\n    subscription createdScope {\n  createdScope {\n    scopeEdge {\n      node {\n        ...scopeFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdatedScopeDocument = "\n    subscription updatedScope {\n  updatedScope {\n    scopeEdge {\n      node {\n        ...scopeFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
+export declare const DeletedScopeDocument = "\n    subscription deletedScope {\n  deletedScope {\n    deletedScopeId\n  }\n}\n    ";
 export declare const SitemapRootEntriesDocument = "\n    query sitemapRootEntries($scopeId: ID) {\n  sitemapRootEntries(scopeId: $scopeId) {\n    edges {\n      ...sitemapEntryEdgeMeta\n    }\n  }\n}\n    \n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryChildrenDocument = "\n    query sitemapEntryChildren($id: ID!) {\n  sitemapDescendantEntries(parentId: $id, depth: DIRECT) {\n    edges {\n      cursor\n      node {\n        ...sitemapEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryRequestsDocument = "\n    query sitemapEntryRequests($id: ID!, $after: String, $before: String, $first: Int, $last: Int) {\n  sitemapEntry(id: $id) {\n    ...sitemapEntryMeta\n    requests(after: $after, before: $before, first: $first, last: $last) {\n      edges {\n        cursor\n        node {\n          ...requestMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
@@ -16202,6 +16215,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     scopes(variables?: ScopesQueryVariables, options?: C): Promise<ScopesQuery>;
     createdScope(variables?: CreatedScopeSubscriptionVariables, options?: C): AsyncIterable<CreatedScopeSubscription>;
     updatedScope(variables?: UpdatedScopeSubscriptionVariables, options?: C): AsyncIterable<UpdatedScopeSubscription>;
+    deletedScope(variables?: DeletedScopeSubscriptionVariables, options?: C): AsyncIterable<DeletedScopeSubscription>;
     sitemapRootEntries(variables?: SitemapRootEntriesQueryVariables, options?: C): Promise<SitemapRootEntriesQuery>;
     sitemapEntryChildren(variables: SitemapEntryChildrenQueryVariables, options?: C): Promise<SitemapEntryChildrenQuery>;
     sitemapEntryRequests(variables: SitemapEntryRequestsQueryVariables, options?: C): Promise<SitemapEntryRequestsQuery>;
