@@ -3705,17 +3705,6 @@ export type AssistantUsageFullFragment = {
     __typename: "AssistantUsage";
     balance: number;
 };
-export type AssistantModelsQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type AssistantModelsQuery = {
-    assistantModels: Array<{
-        __typename: "AssistantModel";
-        id: string;
-        name: string;
-        tokenCredit: number;
-    }>;
-};
 export type AssistantSessionsQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -3751,10 +3740,10 @@ export type AssistantSessionQuery = {
         }>;
     } | undefined | null;
 };
-export type AssistantUsageQueryVariables = Exact<{
+export type AssistantCloudStateQueryVariables = Exact<{
     [key: string]: never;
 }>;
-export type AssistantUsageQuery = {
+export type AssistantCloudStateQuery = {
     viewer: {
         id: string;
         assistantUsage: {
@@ -3762,6 +3751,12 @@ export type AssistantUsageQuery = {
             balance: number;
         };
     };
+    assistantModels: Array<{
+        __typename: "AssistantModel";
+        id: string;
+        name: string;
+        tokenCredit: number;
+    }>;
 };
 export type SendAssistantMessageMutationVariables = Exact<{
     sessionId: Scalars["ID"]["input"];
@@ -15736,10 +15731,9 @@ export declare const UserSettingsFullFragmentDoc = "\n    fragment userSettingsF
 export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
-export declare const AssistantModelsDocument = "\n    query assistantModels {\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantSessionDocument = "\n    query assistantSession($id: ID!) {\n  assistantSession(id: $id) {\n    ...assistantSessionFull\n  }\n}\n    \n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
-export declare const AssistantUsageDocument = "\n    query assistantUsage {\n  viewer {\n    id\n    assistantUsage {\n      ...assistantUsageFull\n    }\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    ";
+export declare const AssistantCloudStateDocument = "\n    query assistantCloudState {\n  viewer {\n    id\n    assistantUsage {\n      ...assistantUsageFull\n    }\n  }\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    \n\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
 export declare const SendAssistantMessageDocument = "\n    mutation sendAssistantMessage($sessionId: ID!, $message: String) {\n  sendAssistantMessage(sessionId: $sessionId, message: $message) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const CreateAssistantSessionDocument = "\n    mutation createAssistantSession($input: CreateAssistantSessionInput!) {\n  createAssistantSession(input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const DeleteAssistantSessionDocument = "\n    mutation deleteAssistantSession($id: ID!) {\n  deleteAssistantSession(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -16006,10 +16000,9 @@ export declare const GlobalizeWorkflowDocument = "\n    mutation globalizeWorkfl
 export declare const LocalizeWorkflowDocument = "\n    mutation localizeWorkflow($id: ID!) {\n  localizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export type Requester<C = {}> = <R, V>(doc: string, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
 export declare function getSdk<C>(requester: Requester<C>): {
-    assistantModels(variables?: AssistantModelsQueryVariables, options?: C): Promise<AssistantModelsQuery>;
     assistantSessions(variables?: AssistantSessionsQueryVariables, options?: C): Promise<AssistantSessionsQuery>;
     assistantSession(variables: AssistantSessionQueryVariables, options?: C): Promise<AssistantSessionQuery>;
-    assistantUsage(variables?: AssistantUsageQueryVariables, options?: C): Promise<AssistantUsageQuery>;
+    assistantCloudState(variables?: AssistantCloudStateQueryVariables, options?: C): Promise<AssistantCloudStateQuery>;
     sendAssistantMessage(variables: SendAssistantMessageMutationVariables, options?: C): Promise<SendAssistantMessageMutation>;
     createAssistantSession(variables: CreateAssistantSessionMutationVariables, options?: C): Promise<CreateAssistantSessionMutation>;
     deleteAssistantSession(variables: DeleteAssistantSessionMutationVariables, options?: C): Promise<DeleteAssistantSessionMutation>;
