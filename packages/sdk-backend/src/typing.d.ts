@@ -123,6 +123,17 @@ declare module "caido:plugin" {
      * You can use this to store data related to your plugin.
      */
     db(): Promise<Database>;
+    /**
+     * Get the version of the plugin.
+     * This uses the semver format.
+     */
+    version(): string;
+    /**
+     * Check if an update is available for the plugin.
+     *
+     * @throws If Caido Cloud is offline.
+     */
+    updateAvailable(): Promise<boolean>;
   };
 
   /**
