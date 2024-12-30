@@ -7,6 +7,7 @@ import type { FilesSDK } from "./files";
 import type { FiltersSDK } from "./filters";
 import type { FindingsSDK } from "./findings";
 import type { HTTPHistorySDK } from "./httpHistory";
+import type { InterceptSDK } from "./intercept";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
 import type { NavigationSDK } from "./navigation";
@@ -15,6 +16,7 @@ import type { ScopesSDK } from "./scopes";
 import type { SearchSDK } from "./search";
 import type { ShortcutsSDK } from "./shortcuts";
 import type { SidebarSDK } from "./sidebar";
+import type { SitemapSDK } from "./sitemap";
 import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
@@ -25,6 +27,7 @@ export type { HostedFile } from "./files";
 export type { Filter } from "./filters";
 export type { HTTPQL, ID } from "./utils";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceStrategy, } from "./matchReplace";
+export type { Scope } from "./scopes";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -110,4 +113,12 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the environment.
      */
     env: EnvironmentSDK;
+    /**
+     * Utilities to interact with the Sitemap page.
+     */
+    sitemap: SitemapSDK;
+    /**
+     * Utilities to interact with the Intercept page.
+     */
+    intercept: InterceptSDK;
 };

@@ -56,7 +56,7 @@ export type ScopesSDK = {
  * Represents a scope.
  * @category Scopes
  */
-type Scope = {
+export type Scope = {
     /**
      * The unique ID of the scope.
      */
@@ -74,4 +74,3 @@ type Scope = {
      */
     denylist: string[];
 };
-export {};
