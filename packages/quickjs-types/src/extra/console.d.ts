@@ -5,7 +5,7 @@ declare global {
    * Console interface for logging.
    *
    * Currently logs are only available in the backend logs.
-   * See https://docs.caido.io/report_bug.html#1-backend-logs
+   * See the [documentation](https://docs.caido.io/report_bug.html#1-backend-logs) on how to retrieve them.
    */
   type Console = {
     /**

@@ -157,6 +157,7 @@ declare module "caido:utils" {
      * You can convert a saved immutable {@link Request} object into a {@link RequestSpec} object by using the `toSpec()` method.
      *
      * By default:
+     *
      * - Method is `GET`.
      * - Path is `/`.
      *

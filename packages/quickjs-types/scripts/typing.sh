@@ -20,7 +20,6 @@ echo "[*] Copying rquickjs-extra typing"
 rsync -av --exclude=node_modules \
       --include='globals.d.ts' \
       --include='os.d.ts' \
-      --include='sqlite.d.ts' \
       --include='timers.d.ts' \
       --include='url.d.ts' \
       --exclude='*' \
