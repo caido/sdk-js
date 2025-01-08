@@ -28,6 +28,7 @@ export type { Filter } from "./filters";
 export type { HTTPQL, ID } from "./utils";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceStrategy, } from "./matchReplace";
 export type { Scope } from "./scopes";
+export type { EnvironmentVariable } from "./environment";
 /**
  * Utilities for frontend plugins.
  * @category SDK
