@@ -1,4 +1,5 @@
 import type { Sdk as GraphqlSDK } from "./__generated__/graphql-sdk";
+import type { AssetsSDK } from "./assets";
 import type { BackendEndpoints, BackendEvents, BackendSDK } from "./backend";
 import type { CommandPaletteSDK } from "./commandPalette";
 import type { CommandsSDK } from "./commands";
@@ -74,6 +75,10 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with frontend-plugin storage.
      */
     storage: StorageSDK;
+    /**
+     * Utilities to interact with the plugin's static assets.
+     */
+    assets: AssetsSDK;
     /**
      * Utilities to interact with shortcuts.
      */
