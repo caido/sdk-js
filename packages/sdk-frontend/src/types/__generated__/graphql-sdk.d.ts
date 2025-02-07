@@ -69,6 +69,10 @@ export type Scalars = {
         input: Date;
         output: Date;
     };
+    Duration: {
+        input: number;
+        output: number;
+    };
     HTTPQL: {
         input: string;
         output: string;
@@ -581,6 +585,10 @@ export type Browser = {
     size: Scalars["Int"]["output"];
     version: Scalars["String"]["output"];
 };
+export type BrowserRequest = {
+    replay: Scalars["String"]["output"];
+    showResponse: Scalars["String"]["output"];
+};
 export type CancelAutomateTaskError = OtherUserError | UnknownIdUserError;
 export type CancelAutomateTaskPayload = {
     cancelledId?: Maybe<Scalars["ID"]["output"]>;
@@ -860,6 +868,9 @@ export type CreatedInterceptEntryPayloadInterceptEntryEdgeArgs = {
 export type CreatedInterceptMessagePayload = {
     messageEdge: InterceptMessageEdge;
     snapshot: Scalars["Snapshot"]["output"];
+};
+export type CreatedLogLinesPayload = {
+    lines: Array<LogLine>;
 };
 export type CreatedPluginEventPayload = {
     eventArgs: Array<Scalars["JsonRaw"]["output"]>;
@@ -1292,6 +1303,7 @@ export type ForwardInterceptResponseMessageInput = {
 export type GlobalConfig = {
     address: Scalars["String"]["output"];
     onboarding: OnboardingState;
+    project: ProjectConfig;
 };
 export type GlobalizeWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError | WorkflowUserError;
 export type GlobalizeWorkflowPayload = {
@@ -1456,6 +1468,20 @@ export type LocalizeWorkflowPayload = {
     error?: Maybe<LocalizeWorkflowError>;
     workflow?: Maybe<Workflow>;
 };
+export declare const LogLevel: {
+    readonly Debug: "DEBUG";
+    readonly Error: "ERROR";
+    readonly Info: "INFO";
+    readonly Trace: "TRACE";
+    readonly Warn: "WARN";
+};
+export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
+export type LogLine = {
+    level: LogLevel;
+    message: Scalars["String"]["output"];
+    target: Scalars["String"]["output"];
+    timestamp: Scalars["Timestamp"]["output"];
+};
 export type LogoutError = CloudUserError | OtherUserError;
 export type LogoutPayload = {
     error?: Maybe<LogoutError>;
@@ -1556,6 +1582,7 @@ export type MutationRoot = {
     setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
     setGlobalConfigOnboarding: SetConfigOnboardingPayload;
     setGlobalConfigPort: SetConfigPortPayload;
+    setGlobalConfigProject: SetConfigProjectPayload;
     setInterceptOptions: SetInterceptOptionsPayload;
     setPluginData: SetPluginDataPayload;
     startAuthenticationFlow: StartAuthenticationFlowPayload;
@@ -1852,6 +1879,9 @@ export type MutationRootSetGlobalConfigOnboardingArgs = {
 export type MutationRootSetGlobalConfigPortArgs = {
     input: Scalars["Int"]["input"];
 };
+export type MutationRootSetGlobalConfigProjectArgs = {
+    input: SetConfigProjectInput;
+};
 export type MutationRootSetInterceptOptionsArgs = {
     input: InterceptOptionsInput;
 };
@@ -1997,7 +2027,7 @@ export type Plugin = {
 export type PluginAuthor = {
     email?: Maybe<Scalars["String"]["output"]>;
     name?: Maybe<Scalars["String"]["output"]>;
-    url?: Maybe<Scalars["String"]["output"]>;
+    url?: Maybe<Scalars["Url"]["output"]>;
 };
 export type PluginBackend = Plugin & {
     enabled: Scalars["Boolean"]["output"];
@@ -2017,6 +2047,7 @@ export declare const PluginErrorReason: {
 };
 export type PluginErrorReason = (typeof PluginErrorReason)[keyof typeof PluginErrorReason];
 export type PluginFrontend = Plugin & {
+    assets?: Maybe<Scalars["String"]["output"]>;
     backend?: Maybe<PluginBackend>;
     data?: Maybe<Scalars["JSON"]["output"]>;
     enabled: Scalars["Boolean"]["output"];
@@ -2027,11 +2058,15 @@ export type PluginFrontend = Plugin & {
     package: PluginPackage;
     style?: Maybe<Scalars["String"]["output"]>;
 };
+export type PluginLinks = {
+    sponsor?: Maybe<Scalars["Url"]["output"]>;
+};
 export type PluginPackage = {
     author?: Maybe<PluginAuthor>;
     description?: Maybe<Scalars["String"]["output"]>;
     id: Scalars["ID"]["output"];
     installedAt: Scalars["DateTime"]["output"];
+    links?: Maybe<PluginLinks>;
     manifestId: Scalars["ID"]["output"];
     name?: Maybe<Scalars["String"]["output"]>;
     plugins: Array<Plugin>;
@@ -2075,6 +2110,10 @@ export type Project = {
     updatedAt: Scalars["DateTime"]["output"];
     version: Scalars["String"]["output"];
 };
+export type ProjectConfig = {
+    selectOnStart: ProjectSelectOnStart;
+    selectProjectId?: Maybe<Scalars["ID"]["output"]>;
+};
 export declare const ProjectErrorReason: {
     readonly Deleting: "DELETING";
     readonly Exporting: "EXPORTING";
@@ -2083,6 +2122,12 @@ export declare const ProjectErrorReason: {
     readonly TooRecent: "TOO_RECENT";
 };
 export type ProjectErrorReason = (typeof ProjectErrorReason)[keyof typeof ProjectErrorReason];
+export declare const ProjectSelectOnStart: {
+    readonly LastUsed: "LAST_USED";
+    readonly Nothing: "NOTHING";
+    readonly Selected: "SELECTED";
+};
+export type ProjectSelectOnStart = (typeof ProjectSelectOnStart)[keyof typeof ProjectSelectOnStart];
 export declare const ProjectStatus: {
     readonly Error: "ERROR";
     readonly Ready: "READY";
@@ -2636,6 +2681,7 @@ export type ReplayWorkflowPreprocessorInput = {
 };
 export type Request = {
     alteration: Alteration;
+    browser: BrowserRequest;
     createdAt: Scalars["Timestamp"]["output"];
     edited: Scalars["Boolean"]["output"];
     edits: Array<Request>;
@@ -2800,6 +2846,13 @@ export type SetConfigOnboardingPayload = {
     config: GlobalConfig;
 };
 export type SetConfigPortPayload = {
+    config: GlobalConfig;
+};
+export type SetConfigProjectInput = {
+    selectOnStart: ProjectSelectOnStart;
+    selectProjectId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type SetConfigProjectPayload = {
     config: GlobalConfig;
 };
 export type SetInterceptOptionsPayload = {
@@ -3050,6 +3103,7 @@ export type SubscriptionRoot = {
     createdFinding: CreatedFindingPayload;
     createdInterceptEntry: CreatedInterceptEntryPayload;
     createdInterceptMessage: CreatedInterceptMessagePayload;
+    createdLogLines: CreatedLogLinesPayload;
     createdPluginEvent: CreatedPluginEventPayload;
     createdPluginPackage: CreatedPluginPackagePayload;
     createdProject: CreatedProjectPayload;
@@ -3141,6 +3195,9 @@ export type SubscriptionRootCreatedAutomateEntryRequestArgs = {
 export type SubscriptionRootCreatedInterceptEntryArgs = {
     filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type SubscriptionRootCreatedLogLinesArgs = {
+    duration: Scalars["Duration"]["input"];
 };
 export type SubscriptionRootCreatedRequestArgs = {
     filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
@@ -6585,6 +6642,11 @@ export type OnboardingFullFragment = {
     license: boolean;
     project: boolean;
 };
+export type ProjectConfigFullFragment = {
+    __typename: "ProjectConfig";
+    selectOnStart: ProjectSelectOnStart;
+    selectProjectId?: string | undefined | null;
+};
 export type UpdateOnboardingMutationVariables = Exact<{
     input: SetConfigOnboardingInput;
 }>;
@@ -6600,6 +6662,20 @@ export type UpdateOnboardingMutation = {
         };
     };
 };
+export type UpdateProjectConfigMutationVariables = Exact<{
+    input: SetConfigProjectInput;
+}>;
+export type UpdateProjectConfigMutation = {
+    setGlobalConfigProject: {
+        config: {
+            project: {
+                __typename: "ProjectConfig";
+                selectOnStart: ProjectSelectOnStart;
+                selectProjectId?: string | undefined | null;
+            };
+        };
+    };
+};
 export type GlobalConfigQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -6611,6 +6687,23 @@ export type GlobalConfigQuery = {
             caCertificate: boolean;
             license: boolean;
             project: boolean;
+        };
+        project: {
+            __typename: "ProjectConfig";
+            selectOnStart: ProjectSelectOnStart;
+            selectProjectId?: string | undefined | null;
+        };
+    };
+};
+export type ProjectGlobalConfigQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type ProjectGlobalConfigQuery = {
+    globalConfig: {
+        project: {
+            __typename: "ProjectConfig";
+            selectOnStart: ProjectSelectOnStart;
+            selectProjectId?: string | undefined | null;
         };
     };
 };
@@ -9601,6 +9694,9 @@ export type PluginAuthorFullFragment = {
     email?: string | undefined | null;
     url?: string | undefined | null;
 };
+export type PluginLinksFullFragment = {
+    sponsor?: string | undefined | null;
+};
 export type PluginPackageMetaFragment = {
     id: string;
     name?: string | undefined | null;
@@ -9612,6 +9708,9 @@ export type PluginPackageMetaFragment = {
         name?: string | undefined | null;
         email?: string | undefined | null;
         url?: string | undefined | null;
+    } | undefined | null;
+    links?: {
+        sponsor?: string | undefined | null;
     } | undefined | null;
 };
 export type PluginPackageFullFragment = {
@@ -9674,6 +9773,9 @@ export type PluginPackageFullFragment = {
         name?: string | undefined | null;
         email?: string | undefined | null;
         url?: string | undefined | null;
+    } | undefined | null;
+    links?: {
+        sponsor?: string | undefined | null;
     } | undefined | null;
 };
 export type StorePluginPackageFullFragment = {
@@ -9754,6 +9856,9 @@ export type PluginPackagesQuery = {
             name?: string | undefined | null;
             email?: string | undefined | null;
             url?: string | undefined | null;
+        } | undefined | null;
+        links?: {
+            sponsor?: string | undefined | null;
         } | undefined | null;
     }>;
 };
@@ -9843,6 +9948,9 @@ export type InstallPluginPackageMutation = {
                 name?: string | undefined | null;
                 email?: string | undefined | null;
                 url?: string | undefined | null;
+            } | undefined | null;
+            links?: {
+                sponsor?: string | undefined | null;
             } | undefined | null;
         } | undefined | null;
         error?: {
@@ -10082,6 +10190,9 @@ export type CreatedPluginPackageSubscription = {
                 name?: string | undefined | null;
                 email?: string | undefined | null;
                 url?: string | undefined | null;
+            } | undefined | null;
+            links?: {
+                sponsor?: string | undefined | null;
             } | undefined | null;
         };
     };
@@ -13334,6 +13445,17 @@ export type RequestQuery = {
         } | undefined | null;
     } | undefined | null;
 };
+export type RequestBrowserUrlQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type RequestBrowserUrlQuery = {
+    request?: {
+        browser: {
+            replay: string;
+            showResponse: string;
+        };
+    } | undefined | null;
+};
 export type RequestsByOffsetQueryVariables = Exact<{
     limit?: InputMaybe<Scalars["Int"]["input"]>;
     offset?: InputMaybe<Scalars["Int"]["input"]>;
@@ -15648,6 +15770,7 @@ export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    
 export declare const FinishedRestoreBackupTaskErrorFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
 export declare const BrowserFullFragmentDoc = "\n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const OnboardingFullFragmentDoc = "\n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
+export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const EnvironmentMetaFragmentDoc = "\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentVariableFullFragmentDoc = "\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentFullFragmentDoc = "\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    ";
@@ -15697,7 +15820,8 @@ export declare const InterceptOptionsMetaFragmentDoc = "\n    fragment intercept
 export declare const TamperRuleFullFragmentDoc = "\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const TamperRuleCollectionFullFragmentDoc = "\n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    ";
 export declare const PluginAuthorFullFragmentDoc = "\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    ";
-export declare const PluginPackageMetaFragmentDoc = "\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    ";
+export declare const PluginLinksFullFragmentDoc = "\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    ";
+export declare const PluginPackageMetaFragmentDoc = "\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    ";
 export declare const PluginMetaFragmentDoc = "\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const PluginBackendMetaFragmentDoc = "\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    ";
 export declare const PluginFrontendFullFragmentDoc = "\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    ";
@@ -15809,7 +15933,9 @@ export declare const DeletedBrowserDocument = "\n    subscription deletedBrowser
 export declare const InstalledBrowserDocument = "\n    subscription installedBrowser {\n  installedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdatedBrowserDocument = "\n    subscription updatedBrowser {\n  updatedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdateOnboardingDocument = "\n    mutation updateOnboarding($input: SetConfigOnboardingInput!) {\n  setGlobalConfigOnboarding(input: $input) {\n    config {\n      onboarding {\n        ...onboardingFull\n      }\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
-export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
+export declare const UpdateProjectConfigDocument = "\n    mutation updateProjectConfig($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...projectConfigFull\n      }\n    }\n  }\n}\n    \n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...projectConfigFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const ProjectGlobalConfigDocument = "\n    query projectGlobalConfig {\n  globalConfig {\n    project {\n      ...projectConfigFull\n    }\n  }\n}\n    \n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const EnvironmentDocument = "\n    query environment($id: ID!) {\n  environment(id: $id) {\n    ...environmentFull\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentsDocument = "\n    query environments {\n  environments {\n    ...environmentMeta\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentContextDocument = "\n    query environmentContext {\n  environmentContext {\n    ...environmentContextFull\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
@@ -15890,13 +16016,13 @@ export declare const EnableTamperRuleDocument = "\n    mutation enableTamperRule
 export declare const DisableTamperRuleDocument = "\n    mutation disableTamperRule($id: ID!) {\n  disableTamperRule(id: $id) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  isEnabled\n  isRegex\n  name\n  matchTerm\n  replaceTerm\n  strategy\n  rank\n  condition\n  collection {\n    id\n  }\n}\n    ";
-export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
-export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UninstallPluginPackageDocument = "\n    mutation uninstallPluginPackage($id: ID!) {\n  uninstallPluginPackage(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const SetPluginDataDocument = "\n    mutation setPluginData($id: ID!, $data: JSON!) {\n  setPluginData(id: $id, data: $data) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const CreatedPluginPackageDocument = "\n    subscription createdPluginPackage {\n  createdPluginPackage {\n    package {\n      ...pluginPackageFull\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const CreatedPluginPackageDocument = "\n    subscription createdPluginPackage {\n  createdPluginPackage {\n    package {\n      ...pluginPackageFull\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeletedPluginPackageDocument = "\n    subscription deletedPluginPackage {\n  deletedPluginPackage {\n    deletedPackageId\n  }\n}\n    ";
 export declare const UpdatedPluginDocument = "\n    subscription updatedPlugin {\n  updatedPlugin {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CreatedPluginEventDocument = "\n    subscription createdPluginEvent {\n  createdPluginEvent {\n    pluginId\n    eventArgs\n    eventName\n  }\n}\n    ";
@@ -15932,6 +16058,7 @@ export declare const DeletedReplaySessionCollectionDocument = "\n    subscriptio
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQL) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const RequestDocument = "\n    query request($id: ID!) {\n  request(id: $id) {\n    ...requestFull\n  }\n}\n    \n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RequestBrowserUrlDocument = "\n    query requestBrowserUrl($id: ID!) {\n  request(id: $id) {\n    browser {\n      replay\n      showResponse\n    }\n  }\n}\n    ";
 export declare const RequestsByOffsetDocument = "\n    query requestsByOffset($limit: Int, $offset: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requestsByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const UpdateRequestMetadataDocument = "\n    mutation updateRequestMetadata($id: ID!, $input: UpdateRequestMetadataInput!) {\n  updateRequestMetadata(id: $id, input: $input) {\n    snapshot\n    metadata {\n      ...requestMetadataFull\n    }\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
 export declare const StartExportRequestsTaskDocument = "\n    mutation startExportRequestsTask($input: StartExportRequestsTaskInput!) {\n  startExportRequestsTask(input: $input) {\n    task {\n      ...dataExportTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
@@ -16078,7 +16205,9 @@ export declare function getSdk<C>(requester: Requester<C>): {
     installedBrowser(variables?: InstalledBrowserSubscriptionVariables, options?: C): AsyncIterable<InstalledBrowserSubscription>;
     updatedBrowser(variables?: UpdatedBrowserSubscriptionVariables, options?: C): AsyncIterable<UpdatedBrowserSubscription>;
     updateOnboarding(variables: UpdateOnboardingMutationVariables, options?: C): Promise<UpdateOnboardingMutation>;
+    updateProjectConfig(variables: UpdateProjectConfigMutationVariables, options?: C): Promise<UpdateProjectConfigMutation>;
     globalConfig(variables?: GlobalConfigQueryVariables, options?: C): Promise<GlobalConfigQuery>;
+    projectGlobalConfig(variables?: ProjectGlobalConfigQueryVariables, options?: C): Promise<ProjectGlobalConfigQuery>;
     environment(variables: EnvironmentQueryVariables, options?: C): Promise<EnvironmentQuery>;
     environments(variables?: EnvironmentsQueryVariables, options?: C): Promise<EnvironmentsQuery>;
     environmentContext(variables?: EnvironmentContextQueryVariables, options?: C): Promise<EnvironmentContextQuery>;
@@ -16201,6 +16330,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     requests(variables?: RequestsQueryVariables, options?: C): Promise<RequestsQuery>;
     requestCount(variables?: RequestCountQueryVariables, options?: C): Promise<RequestCountQuery>;
     request(variables: RequestQueryVariables, options?: C): Promise<RequestQuery>;
+    requestBrowserUrl(variables: RequestBrowserUrlQueryVariables, options?: C): Promise<RequestBrowserUrlQuery>;
     requestsByOffset(variables?: RequestsByOffsetQueryVariables, options?: C): Promise<RequestsByOffsetQuery>;
     updateRequestMetadata(variables: UpdateRequestMetadataMutationVariables, options?: C): Promise<UpdateRequestMetadataMutation>;
     startExportRequestsTask(variables: StartExportRequestsTaskMutationVariables, options?: C): Promise<StartExportRequestsTaskMutation>;
