@@ -12,6 +12,6 @@
     "documentation": "typedoc"
   },
   "dependencies": {
-    "@caido/quickjs-types": "0.16.1"
+    "@caido/quickjs-types": "0.17.1"
   }
 }

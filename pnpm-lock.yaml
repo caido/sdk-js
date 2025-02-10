@@ -26,8 +26,8 @@ importers:
   packages/sdk-backend:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.16.1
-        version: 0.16.1
+        specifier: 0.17.1
+        version: 0.17.1
       '@caido/sdk-shared':
         specifier: ^0.1.0
         version: 0.1.1
@@ -43,13 +43,13 @@ importers:
   packages/sdk-workflow:
     dependencies:
       '@caido/quickjs-types':
-        specifier: 0.16.1
-        version: 0.16.1
+        specifier: 0.17.1
+        version: 0.17.1
 
 packages:
 
-  '@caido/quickjs-types@0.16.1':
-    resolution: {integrity: sha512-NfdzXY5sPWQXwl/i5HMK4asL34gva3QCOPGe5fQ/zwC5U5+nFyKVERUU8bNeUE+L8y0wuyMJ0q3s3pMkl01l6A==}
+  '@caido/quickjs-types@0.17.1':
+    resolution: {integrity: sha512-cVjSAzwKLXtMOjgQ3yYKjgF1HWPXK8dk14Pgy3iP1Z/SwGgdtn5U+M1KX/w8SkWbwsZ5MRAGcbf5QhOkHQcm+g==}
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
@@ -151,7 +151,7 @@ packages:
 
 snapshots:
 
-  '@caido/quickjs-types@0.16.1': {}
+  '@caido/quickjs-types@0.17.1': {}
 
   '@caido/sdk-shared@0.1.1': {}
 
