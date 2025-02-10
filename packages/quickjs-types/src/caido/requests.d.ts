@@ -18,7 +18,7 @@ declare module "caido:utils" {
      *
      * @throws {SyntaxError} If the body is not valid JSON.
      */
-    toJson(): any;
+    toJson(): unknown;
     /**
      * Get the raw body as an array of bytes.
      */
@@ -183,6 +183,12 @@ declare module "caido:utils" {
      * ```
      */
     static parse(bytes: Bytes): RequestSpec;
+    /**
+     * Parses the raw bytes of a {@link RequestSpecRaw} into a {@link RequestSpec}.
+     *
+     * @throws {Error} If the bytes are not a valid HTTP request.
+     */
+    static parse(raw: RequestSpecRaw): RequestSpec;
     /**
      * Get the host of the request.
      */
@@ -387,6 +393,13 @@ declare module "caido:utils" {
      * Set the raw {@link Bytes} of the request.
      */
     setRaw(raw: Bytes): void;
+    /**
+     * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
+     * 
+     * @throws {Error} If the bytes are not a valid HTTP request.
+     * @see {@link RequestSpec.parse}
+     */
+    getSpec(): RequestSpec;
   }
 
   /**
