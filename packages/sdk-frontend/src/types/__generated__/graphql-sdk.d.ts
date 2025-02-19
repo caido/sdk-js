@@ -942,6 +942,10 @@ export type CreatedUpstreamProxySocksPayload = {
 export type CreatedWorkflowPayload = {
     workflowEdge: WorkflowEdge;
 };
+export type CurrentProject = {
+    config: ProjectConfig;
+    project: Project;
+};
 export type DataExport = {
     createdAt: Scalars["DateTime"]["output"];
     downloadUri?: Maybe<Scalars["Uri"]["output"]>;
@@ -1303,7 +1307,11 @@ export type ForwardInterceptResponseMessageInput = {
 export type GlobalConfig = {
     address: Scalars["String"]["output"];
     onboarding: OnboardingState;
-    project: ProjectConfig;
+    project: GlobalConfigProject;
+};
+export type GlobalConfigProject = {
+    selectOnStart: ProjectSelectOnStart;
+    selectProjectId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type GlobalizeWorkflowError = OtherUserError | ReadOnlyUserError | UnknownIdUserError | WorkflowUserError;
 export type GlobalizeWorkflowPayload = {
@@ -1585,6 +1593,7 @@ export type MutationRoot = {
     setGlobalConfigProject: SetConfigProjectPayload;
     setInterceptOptions: SetInterceptOptionsPayload;
     setPluginData: SetPluginDataPayload;
+    setProjectConfigStream: SetProjectConfigStreamPayload;
     startAuthenticationFlow: StartAuthenticationFlowPayload;
     startAutomateTask: StartAutomateTaskPayload;
     startExportRequestsTask: StartExportRequestsTaskPayload;
@@ -1889,6 +1898,9 @@ export type MutationRootSetPluginDataArgs = {
     data: Scalars["JSON"]["input"];
     id: Scalars["ID"]["input"];
 };
+export type MutationRootSetProjectConfigStreamArgs = {
+    input: ProjectConfigStreamInput;
+};
 export type MutationRootStartAutomateTaskArgs = {
     automateSessionId: Scalars["ID"]["input"];
 };
@@ -2111,8 +2123,13 @@ export type Project = {
     version: Scalars["String"]["output"];
 };
 export type ProjectConfig = {
-    selectOnStart: ProjectSelectOnStart;
-    selectProjectId?: Maybe<Scalars["ID"]["output"]>;
+    stream: ProjectConfigStream;
+};
+export type ProjectConfigStream = {
+    stripExtension: Scalars["Boolean"]["output"];
+};
+export type ProjectConfigStreamInput = {
+    stripExtension: Scalars["Boolean"]["input"];
 };
 export declare const ProjectErrorReason: {
     readonly Deleting: "DELETING";
@@ -2150,7 +2167,7 @@ export type QueryRoot = {
     backupTasks: Array<BackupTask>;
     backups: Array<Backup>;
     browser?: Maybe<Browser>;
-    currentProject?: Maybe<Project>;
+    currentProject?: Maybe<CurrentProject>;
     dataExport?: Maybe<DataExport>;
     dataExportTasks: Array<DataExportTask>;
     dataExports: Array<DataExport>;
@@ -2825,8 +2842,8 @@ export type SelectEnvironmentPayload = {
     error?: Maybe<SelectEnvironmentError>;
 };
 export type SelectProjectPayload = {
+    currentProject?: Maybe<CurrentProject>;
     error?: Maybe<SelectProjectPayloadError>;
-    project?: Maybe<Project>;
 };
 export type SelectProjectPayloadError = OtherUserError | ProjectUserError | UnknownIdUserError;
 export type SendAssistantMessageError = CloudUserError | OtherUserError | PermissionDeniedUserError | TaskInProgressUserError;
@@ -2862,6 +2879,9 @@ export type SetPluginDataError = OtherUserError | PluginUserError | UnknownIdUse
 export type SetPluginDataPayload = {
     error?: Maybe<SetPluginDataError>;
     plugin?: Maybe<Plugin>;
+};
+export type SetProjectConfigStreamPayload = {
+    config: ProjectConfigStream;
 };
 export declare const SitemapDescendantsDepth: {
     readonly All: "ALL";
@@ -6642,8 +6662,8 @@ export type OnboardingFullFragment = {
     license: boolean;
     project: boolean;
 };
-export type ProjectConfigFullFragment = {
-    __typename: "ProjectConfig";
+export type GlobalConfigProjectFullFragment = {
+    __typename: "GlobalConfigProject";
     selectOnStart: ProjectSelectOnStart;
     selectProjectId?: string | undefined | null;
 };
@@ -6662,14 +6682,14 @@ export type UpdateOnboardingMutation = {
         };
     };
 };
-export type UpdateProjectConfigMutationVariables = Exact<{
+export type UpdateGlobalConfigProjectMutationVariables = Exact<{
     input: SetConfigProjectInput;
 }>;
-export type UpdateProjectConfigMutation = {
+export type UpdateGlobalConfigProjectMutation = {
     setGlobalConfigProject: {
         config: {
             project: {
-                __typename: "ProjectConfig";
+                __typename: "GlobalConfigProject";
                 selectOnStart: ProjectSelectOnStart;
                 selectProjectId?: string | undefined | null;
             };
@@ -6689,19 +6709,19 @@ export type GlobalConfigQuery = {
             project: boolean;
         };
         project: {
-            __typename: "ProjectConfig";
+            __typename: "GlobalConfigProject";
             selectOnStart: ProjectSelectOnStart;
             selectProjectId?: string | undefined | null;
         };
     };
 };
-export type ProjectGlobalConfigQueryVariables = Exact<{
+export type GlobalConfigProjectQueryVariables = Exact<{
     [key: string]: never;
 }>;
-export type ProjectGlobalConfigQuery = {
+export type GlobalConfigProjectQuery = {
     globalConfig: {
         project: {
-            __typename: "ProjectConfig";
+            __typename: "GlobalConfigProject";
             selectOnStart: ProjectSelectOnStart;
             selectProjectId?: string | undefined | null;
         };
@@ -10285,6 +10305,27 @@ export type ProjectFullFragment = {
         id: string;
     }>;
 };
+export type CurrentProjectFullFragment = {
+    project: {
+        __typename: "Project";
+        id: string;
+        name: string;
+        path: string;
+        version: string;
+        status: ProjectStatus;
+        size: number;
+        createdAt: Date;
+        updatedAt: Date;
+        backups: Array<{
+            id: string;
+        }>;
+    };
+    config: {
+        stream: {
+            stripExtension: boolean;
+        };
+    };
+};
 export type CreatedProjectSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -10377,19 +10418,26 @@ export type SelectProjectMutationVariables = Exact<{
 }>;
 export type SelectProjectMutation = {
     selectProject: {
-        project?: {
-            __typename: "Project";
-            id: string;
-            name: string;
-            path: string;
-            version: string;
-            status: ProjectStatus;
-            size: number;
-            createdAt: Date;
-            updatedAt: Date;
-            backups: Array<{
+        currentProject?: {
+            project: {
+                __typename: "Project";
                 id: string;
-            }>;
+                name: string;
+                path: string;
+                version: string;
+                status: ProjectStatus;
+                size: number;
+                createdAt: Date;
+                updatedAt: Date;
+                backups: Array<{
+                    id: string;
+                }>;
+            };
+            config: {
+                stream: {
+                    stripExtension: boolean;
+                };
+            };
         } | undefined | null;
         error?: {
             __typename: "OtherUserError";
@@ -10460,18 +10508,25 @@ export type CurrentProjectQueryVariables = Exact<{
 }>;
 export type CurrentProjectQuery = {
     currentProject?: {
-        __typename: "Project";
-        id: string;
-        name: string;
-        path: string;
-        version: string;
-        status: ProjectStatus;
-        size: number;
-        createdAt: Date;
-        updatedAt: Date;
-        backups: Array<{
+        project: {
+            __typename: "Project";
             id: string;
-        }>;
+            name: string;
+            path: string;
+            version: string;
+            status: ProjectStatus;
+            size: number;
+            createdAt: Date;
+            updatedAt: Date;
+            backups: Array<{
+                id: string;
+            }>;
+        };
+        config: {
+            stream: {
+                stripExtension: boolean;
+            };
+        };
     } | undefined | null;
 };
 export type ProjectsQueryVariables = Exact<{
@@ -10492,6 +10547,24 @@ export type ProjectsQuery = {
             id: string;
         }>;
     }>;
+};
+export type ProjectConfigFullFragment = {
+    stream: {
+        stripExtension: boolean;
+    };
+};
+export type ProjectConfigStreamFullFragment = {
+    stripExtension: boolean;
+};
+export type SetProjectConfigStreamMutationVariables = Exact<{
+    input: ProjectConfigStreamInput;
+}>;
+export type SetProjectConfigStreamMutation = {
+    setProjectConfigStream: {
+        config: {
+            stripExtension: boolean;
+        };
+    };
 };
 export type RangeFullFragment = {
     start: number;
@@ -15770,7 +15843,7 @@ export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    
 export declare const FinishedRestoreBackupTaskErrorFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
 export declare const BrowserFullFragmentDoc = "\n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const OnboardingFullFragmentDoc = "\n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
-export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigProjectFullFragmentDoc = "\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const EnvironmentMetaFragmentDoc = "\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentVariableFullFragmentDoc = "\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentFullFragmentDoc = "\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    ";
@@ -15830,6 +15903,9 @@ export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on W
 export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
 export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
+export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
+export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
+export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
@@ -15933,9 +16009,9 @@ export declare const DeletedBrowserDocument = "\n    subscription deletedBrowser
 export declare const InstalledBrowserDocument = "\n    subscription installedBrowser {\n  installedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdatedBrowserDocument = "\n    subscription updatedBrowser {\n  updatedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdateOnboardingDocument = "\n    mutation updateOnboarding($input: SetConfigOnboardingInput!) {\n  setGlobalConfigOnboarding(input: $input) {\n    config {\n      onboarding {\n        ...onboardingFull\n      }\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
-export declare const UpdateProjectConfigDocument = "\n    mutation updateProjectConfig($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...projectConfigFull\n      }\n    }\n  }\n}\n    \n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
-export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...projectConfigFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
-export declare const ProjectGlobalConfigDocument = "\n    query projectGlobalConfig {\n  globalConfig {\n    project {\n      ...projectConfigFull\n    }\n  }\n}\n    \n    fragment projectConfigFull on ProjectConfig {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const UpdateGlobalConfigProjectDocument = "\n    mutation updateGlobalConfigProject($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...globalConfigProjectFull\n      }\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigProjectDocument = "\n    query globalConfigProject {\n  globalConfig {\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const EnvironmentDocument = "\n    query environment($id: ID!) {\n  environment(id: $id) {\n    ...environmentFull\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentsDocument = "\n    query environments {\n  environments {\n    ...environmentMeta\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentContextDocument = "\n    query environmentContext {\n  environmentContext {\n    ...environmentContextFull\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
@@ -16030,11 +16106,12 @@ export declare const CreatedProjectDocument = "\n    subscription createdProject
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
 export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
 export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -16205,9 +16282,9 @@ export declare function getSdk<C>(requester: Requester<C>): {
     installedBrowser(variables?: InstalledBrowserSubscriptionVariables, options?: C): AsyncIterable<InstalledBrowserSubscription>;
     updatedBrowser(variables?: UpdatedBrowserSubscriptionVariables, options?: C): AsyncIterable<UpdatedBrowserSubscription>;
     updateOnboarding(variables: UpdateOnboardingMutationVariables, options?: C): Promise<UpdateOnboardingMutation>;
-    updateProjectConfig(variables: UpdateProjectConfigMutationVariables, options?: C): Promise<UpdateProjectConfigMutation>;
+    updateGlobalConfigProject(variables: UpdateGlobalConfigProjectMutationVariables, options?: C): Promise<UpdateGlobalConfigProjectMutation>;
     globalConfig(variables?: GlobalConfigQueryVariables, options?: C): Promise<GlobalConfigQuery>;
-    projectGlobalConfig(variables?: ProjectGlobalConfigQueryVariables, options?: C): Promise<ProjectGlobalConfigQuery>;
+    globalConfigProject(variables?: GlobalConfigProjectQueryVariables, options?: C): Promise<GlobalConfigProjectQuery>;
     environment(variables: EnvironmentQueryVariables, options?: C): Promise<EnvironmentQuery>;
     environments(variables?: EnvironmentsQueryVariables, options?: C): Promise<EnvironmentsQuery>;
     environmentContext(variables?: EnvironmentContextQueryVariables, options?: C): Promise<EnvironmentContextQuery>;
@@ -16307,6 +16384,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     renameProject(variables: RenameProjectMutationVariables, options?: C): Promise<RenameProjectMutation>;
     currentProject(variables?: CurrentProjectQueryVariables, options?: C): Promise<CurrentProjectQuery>;
     projects(variables?: ProjectsQueryVariables, options?: C): Promise<ProjectsQuery>;
+    setProjectConfigStream(variables: SetProjectConfigStreamMutationVariables, options?: C): Promise<SetProjectConfigStreamMutation>;
     replayEntry(variables: ReplayEntryQueryVariables, options?: C): Promise<ReplayEntryQuery>;
     activeReplayEntryBySession(variables: ActiveReplayEntryBySessionQueryVariables, options?: C): Promise<ActiveReplayEntryBySessionQuery>;
     replayEntriesBySession(variables: ReplayEntriesBySessionQueryVariables, options?: C): Promise<ReplayEntriesBySessionQuery>;
