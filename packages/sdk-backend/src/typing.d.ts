@@ -10,6 +10,7 @@ declare module "caido:plugin" {
     ProjectsSDK,
     Project,
     EnvironmentSDK,
+    RuntimeSDK,
   } from "caido:utils";
 
   /**
@@ -185,5 +186,9 @@ declare module "caido:plugin" {
      * The SDK for metadata information about the plugin.
      */
     meta: MetaSDK;
+    /**
+     * The SDK for the runtime information.
+     */
+    runtime: RuntimeSDK;
   }
 }

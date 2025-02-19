@@ -8,6 +8,7 @@ declare module "caido:workflow" {
     ReplaySDK,
     ProjectsSDK,
     EnvironmentSDK,
+    RuntimeSDK,
   } from "caido:utils";
 
   /**
@@ -76,6 +77,10 @@ declare module "caido:workflow" {
      * The SDK for the Environment service.
      */
     env: EnvironmentSDK;
+    /**
+     * The SDK for the runtime information.
+     */
+    runtime: RuntimeSDK;
     /**
      * Converts bytes to a string.
      *
