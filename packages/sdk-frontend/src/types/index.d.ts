@@ -13,6 +13,7 @@ import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
 import type { NavigationSDK } from "./navigation";
 import type { ReplaySDK } from "./replay";
+import type { RuntimeSDK } from "./runtime";
 import type { ScopesSDK } from "./scopes";
 import type { SearchSDK } from "./search";
 import type { ShortcutsSDK } from "./shortcuts";
@@ -127,4 +128,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the Intercept page.
      */
     intercept: InterceptSDK;
+    /**
+     * Utilities to interact with the runtime.
+     */
+    runtime: RuntimeSDK;
 };
