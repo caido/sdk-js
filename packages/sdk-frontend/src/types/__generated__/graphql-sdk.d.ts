@@ -13843,6 +13843,13 @@ export type ReleaseFullFragment = {
         platform: string;
     }>;
 };
+export type LogLineFullFragment = {
+    __typename: "LogLine";
+    level: LogLevel;
+    message: string;
+    target: string;
+    timestamp: Date;
+};
 export type GetUpdateStateQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -13910,6 +13917,20 @@ export type RegenerateCertificateMutationVariables = Exact<{
 export type RegenerateCertificateMutation = {
     regenerateCertificate: {
         success: boolean;
+    };
+};
+export type CreatedLogLinesSubscriptionVariables = Exact<{
+    duration: Scalars["Duration"]["input"];
+}>;
+export type CreatedLogLinesSubscription = {
+    createdLogLines: {
+        lines: Array<{
+            __typename: "LogLine";
+            level: LogLevel;
+            message: string;
+            target: string;
+            timestamp: Date;
+        }>;
     };
 };
 export type ScopeFullFragment = {
@@ -15947,6 +15968,7 @@ export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMet
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const ReleaseFullFragmentDoc = "\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
+export declare const LogLineFullFragmentDoc = "\n    fragment logLineFull on LogLine {\n  __typename\n  level\n  message\n  target\n  timestamp\n}\n    ";
 export declare const ScopeFullFragmentDoc = "\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const SitemapEntryMetaFragmentDoc = "\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryEdgeMetaFragmentDoc = "\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    ";
@@ -16171,6 +16193,7 @@ export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    
 export declare const GetCertificateDocument = "\n    query getCertificate($password: Sensitive) {\n  runtime {\n    certificate {\n      p12(password: $password)\n    }\n  }\n}\n    ";
 export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RegenerateCertificateDocument = "\n    mutation regenerateCertificate {\n  regenerateCertificate {\n    success\n  }\n}\n    ";
+export declare const CreatedLogLinesDocument = "\n    subscription createdLogLines($duration: Duration!) {\n  createdLogLines(duration: $duration) {\n    lines {\n      ...logLineFull\n    }\n  }\n}\n    \n    fragment logLineFull on LogLine {\n  __typename\n  level\n  message\n  target\n  timestamp\n}\n    ";
 export declare const CreateScopeDocument = "\n    mutation createScope($input: CreateScopeInput!) {\n  createScope(input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdateScopeDocument = "\n    mutation updateScope($id: ID!, $input: UpdateScopeInput!) {\n  updateScope(id: $id, input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!) {\n  deleteScope(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -16443,6 +16466,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     getCertificate(variables?: GetCertificateQueryVariables, options?: C): Promise<GetCertificateQuery>;
     importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
     regenerateCertificate(variables?: RegenerateCertificateMutationVariables, options?: C): Promise<RegenerateCertificateMutation>;
+    createdLogLines(variables: CreatedLogLinesSubscriptionVariables, options?: C): AsyncIterable<CreatedLogLinesSubscription>;
     createScope(variables: CreateScopeMutationVariables, options?: C): Promise<CreateScopeMutation>;
     updateScope(variables: UpdateScopeMutationVariables, options?: C): Promise<UpdateScopeMutation>;
     deleteScope(variables: DeleteScopeMutationVariables, options?: C): Promise<DeleteScopeMutation>;

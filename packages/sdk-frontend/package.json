@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-frontend",
-  "version": "v0.46.0",
+  "version": "0.46.1-beta.0",
   "description": "Typing for the Caido Frontend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
