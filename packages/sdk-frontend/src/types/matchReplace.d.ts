@@ -50,22 +50,13 @@ export type MatchReplaceSDK = {
      * Create a rule.
      * @param options - The options for the rule.
      * @param options.name - The name of the rule.
-     * @param options.isEnabled - Whether the rule is enabled.
-     * @param options.matchTerm - The match term of the rule.
-     * @param options.replaceTerm - The replace term of the rule.
-     * @param options.isRegex - Whether the match term is a regex.
-     * @param options.strategy - The strategy of the rule.
      * @param options.query - The HTTPQL query to match the rule against.
      * @param options.collectionId - The ID of the collection the rule belongs to.
      */
     createRule: (options: {
         name: string;
-        isEnabled: boolean;
-        matchTerm: string;
-        replaceTerm: string;
-        isRegex: boolean;
         query: HTTPQL;
-        strategy: MatchReplaceStrategy;
+        section: MatchReplaceSection;
         collectionId: ID;
     }) => Promise<MatchReplaceRule>;
     /**
@@ -73,22 +64,20 @@ export type MatchReplaceSDK = {
      * @param id - The ID of the rule.
      * @param options - The new values for the rule.
      * @param options.name - The new name of the rule.
-     * @param options.isEnabled - Whether the rule is enabled.
-     * @param options.matchTerm - The new match term of the rule.
-     * @param options.replaceTerm - The new replace term of the rule.
-     * @param options.isRegex - Whether the match term is a regex.
      * @param options.query - The new HTTPQL query of the rule.
-     * @param options.strategy - The new strategy of the rule.
+     * @param options.section - The new section of the rule.
      */
     updateRule: (id: ID, options: {
         name: string;
-        isEnabled: boolean;
-        matchTerm: string;
-        replaceTerm: string;
-        isRegex: boolean;
-        query: HTTPQL;
-        strategy: MatchReplaceStrategy;
+        query?: HTTPQL;
+        section: MatchReplaceSection;
     }) => Promise<MatchReplaceRule>;
+    /**
+     * Toggle a rule.
+     * @param id - The ID of the rule.
+     * @param enabled - Whether the rule should be enabled.
+     */
+    toggleRule: (id: ID, enabled: boolean) => Promise<void>;
     /**
      * Delete a rule.
      * @param id - The ID of the rule.
@@ -113,32 +102,207 @@ export type MatchReplaceRule = {
      */
     isEnabled: boolean;
     /**
-     * The match term of the rule.
-     */
-    matchTerm: string;
-    /**
-     * The replace term of the rule.
-     */
-    replaceTerm: string;
-    /**
-     * Whether the match term is a regex.
-     */
-    isRegex: boolean;
-    /**
      * The HTTPQL query to match the rule against.
      * Only requests that match the query will be affected by the rule.
      */
     query: HTTPQL;
     /**
-     * The strategy of the rule.
+     * The section of the rule.
      */
-    strategy: MatchReplaceStrategy;
+    section: MatchReplaceSection;
     /**
      * The ID of the collection the rule belongs to.
      */
     collectionId: ID;
 };
-export type MatchReplaceStrategy = "REQUEST_FIRST_LINE" | "REQUEST_HEADER" | "REQUEST_BODY" | "RESPONSE_FIRST_LINE" | "RESPONSE_HEADER" | "RESPONSE_BODY";
+export type MatchReplaceSection = MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
+export type MatchReplaceSectionResponseStatusCode = {
+    kind: "SectionResponseStatusCode";
+    operation: MatchReplaceOperationStatusCode;
+};
+export type MatchReplaceOperationStatusCode = KeepOperation<MatchReplaceOperationStatusCodeUpdate>;
+export type MatchReplaceOperationStatusCodeUpdate = {
+    kind: "OperationStatusCodeUpdate";
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceSectionRequestQuery = {
+    kind: "SectionRequestQuery";
+    operation: MatchReplaceOperationQuery;
+};
+export type MatchReplaceOperationQuery = MatchReplaceOperationQueryRaw | MatchReplaceOperationQueryAdd | MatchReplaceOperationQueryRemove | MatchReplaceOperationQueryUpdate;
+export type MatchReplaceOperationQueryRaw = {
+    kind: "OperationQueryRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceOperationQueryAdd = {
+    kind: "OperationQueryAdd";
+    matcher: MatchReplaceMatcherName;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceOperationQueryRemove = {
+    kind: "OperationQueryRemove";
+    matcher: MatchReplaceMatcherName;
+};
+export type MatchReplaceOperationQueryUpdate = {
+    kind: "OperationQueryUpdate";
+    matcher: MatchReplaceMatcherName;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceSectionRequestPath = {
+    kind: "SectionRequestPath";
+    operation: MatchReplaceOperationPath;
+};
+export type MatchReplaceOperationPath = KeepOperation<MatchReplaceOperationPathRaw>;
+export type MatchReplaceOperationPathRaw = {
+    kind: "OperationPathRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceSectionRequestMethod = {
+    kind: "SectionRequestMethod";
+    operation: MatchReplaceOperationMethod;
+};
+export type MatchReplaceOperationMethod = KeepOperation<MatchReplaceOperationMethodUpdate>;
+export type MatchReplaceOperationMethodUpdate = {
+    kind: "OperationMethodUpdate";
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceSectionRequestHeader = {
+    kind: "SectionRequestHeader";
+    operation: MatchReplaceOperationHeader;
+};
+export type MatchReplaceSectionResponseHeader = {
+    kind: "SectionResponseHeader";
+    operation: MatchReplaceOperationHeader;
+};
+/**
+ * An operation for the header section.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationHeader = MatchReplaceOperationHeaderRaw | MatchReplaceOperationHeaderAdd | MatchReplaceOperationHeaderRemove | MatchReplaceOperationHeaderUpdate;
+export type MatchReplaceOperationHeaderRaw = {
+    kind: "OperationHeaderRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceOperationHeaderAdd = {
+    kind: "OperationHeaderAdd";
+    matcher: MatchReplaceMatcherName;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceOperationHeaderRemove = {
+    kind: "OperationHeaderRemove";
+    matcher: MatchReplaceMatcherName;
+};
+export type MatchReplaceOperationHeaderUpdate = {
+    kind: "OperationHeaderUpdate";
+    matcher: MatchReplaceMatcherName;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceSectionRequestBody = {
+    kind: "SectionRequestBody";
+    operation: MatchReplaceOperationBody;
+};
+export type MatchReplaceSectionResponseBody = {
+    kind: "SectionResponseBody";
+    operation: MatchReplaceOperationBody;
+};
+/**
+ * An operation for the body section.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationBody = KeepOperation<MatchReplaceOperationBodyRaw>;
+/**
+ * A raw operation for the body section.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationBodyRaw = {
+    kind: "OperationBodyRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
+/**
+ * A section for the request first line.
+ * @category Match and Replace
+ */
+export type MatchReplaceSectionRequestFirstLine = {
+    kind: "SectionRequestFirstLine";
+    operation: MatchReplaceOperationFirstLine;
+};
+/**
+ * A section for the response first line.
+ * @category Match and Replace
+ */
+export type MatchReplaceSectionResponseFirstLine = {
+    kind: "SectionResponseFirstLine";
+    operation: MatchReplaceOperationFirstLine;
+};
+export type MatchReplaceOperationFirstLine = KeepOperation<MatchReplaceOperationFirstLineRaw>;
+/**
+ * A raw operation for the request first line.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationFirstLineRaw = {
+    kind: "OperationFirstLineRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
+export type MatchReplaceMatcherName = {
+    kind: "MatcherName";
+    name: string;
+};
+/**
+ * A matcher for raw operations in Match and Replace.
+ * @category Match and Replace
+ */
+export type MatchReplaceMatcherRaw = MatchReplaceMatcherRawRegex | MatchReplaceMatcherRawValue | MatchReplaceMatcherRawFull;
+/**
+ * This matcher will match using a regex over the section.
+ * @category Match and Replace
+ */
+export type MatchReplaceMatcherRawRegex = {
+    kind: "MatcherRawRegex";
+    regex: string;
+};
+/**
+ * This matcher will match the value if present in the section.
+ * @category Match and Replace
+ */
+export type MatchReplaceMatcherRawValue = {
+    kind: "MatcherRawValue";
+    value: string;
+};
+/**
+ * This matcher will match the entire section.
+ * @category Match and Replace
+ */
+export type MatchReplaceMatcherRawFull = {
+    kind: "MatcherRawFull";
+};
+/**
+ * A replacer in Match and Replace.
+ * @category Match and Replace
+ */
+export type MatchReplaceReplacer = MatchReplaceReplacerTerm | MatchReplaceReplacerWorkflow;
+/**
+ * A replacer that replaces with a term.
+ * If the matcher is a regex, groups will be interpolated.
+ * @category Match and Replace
+ */
+export type MatchReplaceReplacerTerm = {
+    kind: "ReplacerTerm";
+    term: string;
+};
+/**
+ * A replacer that replaces with the result of a workflow.
+ * The input of the workflow depends on the operation and matcher.
+ * @category Match and Replace
+ */
+export type MatchReplaceReplacerWorkflow = {
+    kind: "ReplacerWorkflow";
+    workflowId: ID;
+};
 /**
  * A collection in Match and Replace.
  * @category Match and Replace
@@ -148,3 +312,7 @@ export type MatchReplaceCollection = {
     name: string;
     ruleIds: ID[];
 };
+type KeepOperation<T> = T & {
+    __operation?: never;
+};
+export {};
