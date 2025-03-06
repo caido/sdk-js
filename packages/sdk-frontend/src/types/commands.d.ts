@@ -68,8 +68,10 @@ type CommandContextRequest = {
     type: "RequestContext";
     /**
      * The request that is currently open in the request pane.
+     * If the request has not yet been saved in the database, the id will be undefined.
      */
     request: {
+        id: ID | undefined;
         host: string;
         port: number;
         path: string;
