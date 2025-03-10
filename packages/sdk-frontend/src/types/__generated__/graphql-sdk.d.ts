@@ -683,6 +683,23 @@ export type CreateBackupPayload = {
     error?: Maybe<CreateBackupError>;
     task?: Maybe<BackupTask>;
 };
+export type CreateDnsRewriteError = OtherUserError | UnknownIdUserError;
+export type CreateDnsRewriteInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    resolution: DnsResolverInput;
+};
+export type CreateDnsRewritePayload = {
+    error?: Maybe<CreateDnsRewriteError>;
+    rewrite?: Maybe<DnsRewrite>;
+};
+export type CreateDnsUpstreamInput = {
+    ip: Scalars["String"]["input"];
+    name: Scalars["String"]["input"];
+};
+export type CreateDnsUpstreamPayload = {
+    upstream: DnsUpstream;
+};
 export type CreateEnvironmentError = CloudUserError | NameTakenUserError | OtherUserError | PermissionDeniedUserError;
 export type CreateEnvironmentInput = {
     name: Scalars["String"]["input"];
@@ -833,6 +850,12 @@ export type CreatedAutomateTaskPayload = {
 export type CreatedBackupPayload = {
     backup: Backup;
 };
+export type CreatedDnsRewritePayload = {
+    rewrite: DnsRewrite;
+};
+export type CreatedDnsUpstreamPayload = {
+    upstream: DnsUpstream;
+};
 export type CreatedDataExportPayload = {
     dataExportEdge: DataExportEdge;
     snapshot: Scalars["Snapshot"]["output"];
@@ -942,6 +965,39 @@ export type CurrentProject = {
     config: ProjectConfig;
     project: Project;
 };
+export type DnsIpResolver = {
+    ip: Scalars["String"]["output"];
+};
+export type DnsIpResolverInput = {
+    ip: Scalars["String"]["input"];
+};
+export type DnsResolver = DnsIpResolver | DnsUpstreamResolver;
+export type DnsResolverInput = {
+    ip: DnsIpResolverInput;
+    upstream?: never;
+} | {
+    ip?: never;
+    upstream: DnsUpstreamResolverInput;
+};
+export type DnsRewrite = {
+    allowlist: Array<Scalars["String"]["output"]>;
+    denylist: Array<Scalars["String"]["output"]>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    rank: Scalars["Rank"]["output"];
+    resolution: DnsResolver;
+};
+export type DnsUpstream = {
+    id: Scalars["ID"]["output"];
+    ip: Scalars["String"]["output"];
+    name: Scalars["String"]["output"];
+};
+export type DnsUpstreamResolver = {
+    id: Scalars["ID"]["output"];
+};
+export type DnsUpstreamResolverInput = {
+    id: Scalars["ID"]["input"];
+};
 export type DataExport = {
     createdAt: Scalars["DateTime"]["output"];
     downloadUri?: Maybe<Scalars["Uri"]["output"]>;
@@ -1004,6 +1060,12 @@ export type DeleteBackupPayload = {
 };
 export type DeleteBrowserPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type DeleteDnsRewritePayload = {
+    deletedId: Scalars["ID"]["output"];
+};
+export type DeleteDnsUpstreamPayload = {
+    deletedId: Scalars["ID"]["output"];
 };
 export type DeleteDataExportError = OtherUserError | TaskInProgressUserError;
 export type DeleteDataExportPayload = {
@@ -1093,6 +1155,12 @@ export type DeletedBackupPayload = {
 };
 export type DeletedBrowserPayload = {
     deletedBrowserId: Scalars["ID"]["output"];
+};
+export type DeletedDnsRewritePayload = {
+    deletedId: Scalars["ID"]["output"];
+};
+export type DeletedDnsUpstreamPayload = {
+    deletedId: Scalars["ID"]["output"];
 };
 export type DeletedDataExportPayload = {
     deletedDataExportId: Scalars["ID"]["output"];
@@ -1500,6 +1568,8 @@ export type MutationRoot = {
     createAssistantSession: CreateAssistantSessionPayload;
     createAutomateSession: CreateAutomateSessionPayload;
     createBackup: CreateBackupPayload;
+    createDnsRewrite: CreateDnsRewritePayload;
+    createDnsUpstream: CreateDnsUpstreamPayload;
     createEnvironment: CreateEnvironmentPayload;
     createFilterPreset: CreateFilterPresetPayload;
     createFinding: CreateFindingPayload;
@@ -1519,6 +1589,8 @@ export type MutationRoot = {
     deleteBackup: DeleteBackupPayload;
     deleteBrowser: DeleteBrowserPayload;
     deleteDataExport: DeleteDataExportPayload;
+    deleteDnsRewrite: DeleteDnsRewritePayload;
+    deleteDnsUpstream: DeleteDnsUpstreamPayload;
     deleteEnvironment: DeleteEnvironmentPayload;
     deleteFilterPreset: DeleteFilterPresetPayload;
     deleteFindings: DeleteFindingsPayload;
@@ -1547,6 +1619,7 @@ export type MutationRoot = {
     moveTamperRule: MoveTamperRulePayload;
     pauseAutomateTask: PauseAutomateTaskPayload;
     pauseIntercept: PauseInterceptPayload;
+    rankDnsRewrite: RankDnsRewritePayload;
     rankTamperRule: RankTamperRulePayload;
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
     rankUpstreamProxySocks: RankUpstreamProxySocksPayload;
@@ -1592,6 +1665,7 @@ export type MutationRoot = {
     testWorkflowActive: TestWorkflowActivePayload;
     testWorkflowConvert: TestWorkflowConvertPayload;
     testWorkflowPassive: TestWorkflowPassivePayload;
+    toggleDnsRewrite: ToggleDnsRewritePayload;
     togglePlugin: TogglePluginPayload;
     toggleTamperRule: ToggleTamperRulePayload;
     toggleUpstreamProxyHttp: ToggleUpstreamProxyHttpPayload;
@@ -1600,6 +1674,8 @@ export type MutationRoot = {
     uninstallPluginPackage: UninstallPluginPackagePayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
     updateBrowser: UpdateBrowserPayload;
+    updateDnsRewrite: UpdateDnsRewritePayload;
+    updateDnsUpstream: UpdateDnsUpstreamPayload;
     updateEnvironment: UpdateEnvironmentPayload;
     updateFilterPreset: UpdateFilterPresetPayload;
     updateRequestMetadata: UpdateRequestMetadataPayload;
@@ -1634,6 +1710,12 @@ export type MutationRootCreateAutomateSessionArgs = {
 };
 export type MutationRootCreateBackupArgs = {
     projectId: Scalars["ID"]["input"];
+};
+export type MutationRootCreateDnsRewriteArgs = {
+    input: CreateDnsRewriteInput;
+};
+export type MutationRootCreateDnsUpstreamArgs = {
+    input: CreateDnsUpstreamInput;
 };
 export type MutationRootCreateEnvironmentArgs = {
     input: CreateEnvironmentInput;
@@ -1688,6 +1770,12 @@ export type MutationRootDeleteBackupArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteDataExportArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootDeleteDnsRewriteArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootDeleteDnsUpstreamArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteEnvironmentArgs = {
@@ -1769,17 +1857,21 @@ export type MutationRootMoveTamperRuleArgs = {
 export type MutationRootPauseAutomateTaskArgs = {
     id: Scalars["ID"]["input"];
 };
+export type MutationRootRankDnsRewriteArgs = {
+    id: Scalars["ID"]["input"];
+    input: RankInput;
+};
 export type MutationRootRankTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: RankTamperRuleInput;
 };
 export type MutationRootRankUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
-    input: RankUpstreamProxyHttpInput;
+    input: RankInput;
 };
 export type MutationRootRankUpstreamProxySocksArgs = {
     id: Scalars["ID"]["input"];
-    input: RankUpstreamProxySocksInput;
+    input: RankInput;
 };
 export type MutationRootRefreshAuthenticationTokenArgs = {
     refreshToken: Scalars["Token"]["input"];
@@ -1915,6 +2007,10 @@ export type MutationRootTestWorkflowConvertArgs = {
 export type MutationRootTestWorkflowPassiveArgs = {
     input: TestWorkflowPassiveInput;
 };
+export type MutationRootToggleDnsRewriteArgs = {
+    enabled: Scalars["Boolean"]["input"];
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootTogglePluginArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
@@ -1941,6 +2037,14 @@ export type MutationRootUninstallPluginPackageArgs = {
 export type MutationRootUpdateAutomateSessionArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateAutomateSessionInput;
+};
+export type MutationRootUpdateDnsRewriteArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateDnsRewriteInput;
+};
+export type MutationRootUpdateDnsUpstreamArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateDnsUpstreamInput;
 };
 export type MutationRootUpdateEnvironmentArgs = {
     id: Scalars["ID"]["input"];
@@ -2170,6 +2274,8 @@ export type QueryRoot = {
     dataExport?: Maybe<DataExport>;
     dataExportTasks: Array<DataExportTask>;
     dataExports: Array<DataExport>;
+    dnsRewrites: Array<DnsRewrite>;
+    dnsUpstreams: Array<DnsUpstream>;
     environment?: Maybe<Environment>;
     environmentContext: EnvironmentContext;
     environments: Array<Environment>;
@@ -2404,12 +2510,19 @@ export type RangeInput = {
     end: Scalars["Int"]["input"];
     start: Scalars["Int"]["input"];
 };
+export type RankDnsRewritePayload = {
+    rewrite: DnsRewrite;
+};
 export declare const RankErrorReason: {
     readonly ConcurrentUpdate: "CONCURRENT_UPDATE";
     readonly InvalidAfterBefore: "INVALID_AFTER_BEFORE";
     readonly NotEnabled: "NOT_ENABLED";
 };
 export type RankErrorReason = (typeof RankErrorReason)[keyof typeof RankErrorReason];
+export type RankInput = {
+    afterId?: InputMaybe<Scalars["ID"]["input"]>;
+    beforeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
 export type RankTamperRuleError = OtherUserError | RankUserError | UnknownIdUserError;
 export type RankTamperRuleInput = {
     afterId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -2419,16 +2532,8 @@ export type RankTamperRulePayload = {
     error?: Maybe<RankTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
-export type RankUpstreamProxyHttpInput = {
-    afterId?: InputMaybe<Scalars["ID"]["input"]>;
-    beforeId?: InputMaybe<Scalars["ID"]["input"]>;
-};
 export type RankUpstreamProxyHttpPayload = {
     proxy?: Maybe<UpstreamProxyHttp>;
-};
-export type RankUpstreamProxySocksInput = {
-    afterId?: InputMaybe<Scalars["ID"]["input"]>;
-    beforeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 export type RankUpstreamProxySocksPayload = {
     proxy?: Maybe<UpstreamProxySocks>;
@@ -3128,6 +3233,8 @@ export type SubscriptionRoot = {
     createdBackup: CreatedBackupPayload;
     createdDataExport: CreatedDataExportPayload;
     createdDataExportTask: CreatedDataExportTaskPayload;
+    createdDnsRewrite: CreatedDnsRewritePayload;
+    createdDnsUpstream: CreatedDnsUpstreamPayload;
     createdEnvironment: CreatedEnvironmentPayload;
     createdFilterPreset: CreatedFilterPresetPayload;
     createdFinding: CreatedFindingPayload;
@@ -3157,6 +3264,8 @@ export type SubscriptionRoot = {
     deletedBrowser: DeletedBrowserPayload;
     deletedDataExport: DeletedDataExportPayload;
     deletedDataExportTask: DeletedDataExportTaskPayload;
+    deletedDnsRewrite: DeletedDnsRewritePayload;
+    deletedDnsUpstream: DeletedDnsUpstreamPayload;
     deletedEnvironment: DeletedEnvironmentPayload;
     deletedFilterPreset: DeletedFilterPresetPayload;
     deletedFindings: DeletedFindingsPayload;
@@ -3191,6 +3300,8 @@ export type SubscriptionRoot = {
     updatedBrowser: UpdatedBrowserPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
+    updatedDnsRewrite: UpdatedDnsRewritePayload;
+    updatedDnsUpstream: UpdatedDnsUpstreamPayload;
     updatedEnvironment: UpdatedEnvironmentPayload;
     updatedEnvironmentContext: UpdatedEnvironmentContextPayload;
     updatedFilterPreset: UpdatedFilterPresetPayload;
@@ -3726,6 +3837,9 @@ export type TestWorkflowPassivePayload = {
     error?: Maybe<TestWorkflowPassiveError>;
     runState?: Maybe<Scalars["JsonObject"]["output"]>;
 };
+export type ToggleDnsRewritePayload = {
+    rewrite: DnsRewrite;
+};
 export type TogglePluginError = OtherUserError | PluginUserError | UnknownIdUserError;
 export type TogglePluginPayload = {
     error?: Maybe<TogglePluginError>;
@@ -3773,6 +3887,23 @@ export type UpdateBrowserError = CloudUserError | OtherUserError | RenderFailedU
 export type UpdateBrowserPayload = {
     browser?: Maybe<Browser>;
     error?: Maybe<UpdateBrowserError>;
+};
+export type UpdateDnsRewriteError = OtherUserError | UnknownIdUserError;
+export type UpdateDnsRewriteInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    resolution: DnsResolverInput;
+};
+export type UpdateDnsRewritePayload = {
+    error?: Maybe<UpdateDnsRewriteError>;
+    rewrite?: Maybe<DnsRewrite>;
+};
+export type UpdateDnsUpstreamInput = {
+    ip: Scalars["String"]["input"];
+    name: Scalars["String"]["input"];
+};
+export type UpdateDnsUpstreamPayload = {
+    upstream: DnsUpstream;
 };
 export type UpdateEnvironmentError = NameTakenUserError | NewerVersionUserError | OtherUserError | PermissionDeniedUserError | UnknownIdUserError;
 export type UpdateEnvironmentInput = {
@@ -3881,6 +4012,12 @@ export type UpdatedBackupPayload = {
 };
 export type UpdatedBrowserPayload = {
     browser: Browser;
+};
+export type UpdatedDnsRewritePayload = {
+    rewrite: DnsRewrite;
+};
+export type UpdatedDnsUpstreamPayload = {
+    upstream: DnsUpstream;
 };
 export type UpdatedDataExportPayload = {
     dataExportEdge: DataExportEdge;
@@ -7155,6 +7292,259 @@ export type ConnectionInfoFullFragment = {
     port: number;
     isTLS: boolean;
     SNI?: string | undefined | null;
+};
+export type DnsRewriteFullFragment = {
+    id: string;
+    rank: string;
+    enabled: boolean;
+    allowlist: Array<string>;
+    denylist: Array<string>;
+    resolution: {
+        ip: string;
+    } | {
+        id: string;
+    };
+};
+export type DnsUpstreamFullFragment = {
+    id: string;
+    ip: string;
+    name: string;
+};
+export type DnsConfigStateQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DnsConfigStateQuery = {
+    dnsRewrites: Array<{
+        id: string;
+        rank: string;
+        enabled: boolean;
+        allowlist: Array<string>;
+        denylist: Array<string>;
+        resolution: {
+            ip: string;
+        } | {
+            id: string;
+        };
+    }>;
+    dnsUpstreams: Array<{
+        id: string;
+        ip: string;
+        name: string;
+    }>;
+};
+export type CreateDnsRewriteMutationVariables = Exact<{
+    input: CreateDnsRewriteInput;
+}>;
+export type CreateDnsRewriteMutation = {
+    createDnsRewrite: {
+        rewrite?: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type DeleteDnsRewriteMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteDnsRewriteMutation = {
+    deleteDnsRewrite: {
+        deletedId: string;
+    };
+};
+export type UpdateDnsRewriteMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateDnsRewriteInput;
+}>;
+export type UpdateDnsRewriteMutation = {
+    updateDnsRewrite: {
+        rewrite?: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type ToggleDnsRewriteMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    enabled: Scalars["Boolean"]["input"];
+}>;
+export type ToggleDnsRewriteMutation = {
+    toggleDnsRewrite: {
+        rewrite: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        };
+    };
+};
+export type RankDnsRewriteMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: RankInput;
+}>;
+export type RankDnsRewriteMutation = {
+    rankDnsRewrite: {
+        rewrite: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        };
+    };
+};
+export type CreateDnsUpstreamMutationVariables = Exact<{
+    input: CreateDnsUpstreamInput;
+}>;
+export type CreateDnsUpstreamMutation = {
+    createDnsUpstream: {
+        upstream: {
+            id: string;
+            ip: string;
+            name: string;
+        };
+    };
+};
+export type DeleteDnsUpstreamMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteDnsUpstreamMutation = {
+    deleteDnsUpstream: {
+        deletedId: string;
+    };
+};
+export type UpdateDnsUpstreamMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateDnsUpstreamInput;
+}>;
+export type UpdateDnsUpstreamMutation = {
+    updateDnsUpstream: {
+        upstream: {
+            id: string;
+            ip: string;
+            name: string;
+        };
+    };
+};
+export type CreatedDnsRewriteSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedDnsRewriteSubscription = {
+    createdDnsRewrite: {
+        rewrite: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        };
+    };
+};
+export type DeletedDnsRewriteSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedDnsRewriteSubscription = {
+    deletedDnsRewrite: {
+        deletedId: string;
+    };
+};
+export type UpdatedDnsRewriteSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedDnsRewriteSubscription = {
+    updatedDnsRewrite: {
+        rewrite: {
+            id: string;
+            rank: string;
+            enabled: boolean;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            resolution: {
+                ip: string;
+            } | {
+                id: string;
+            };
+        };
+    };
+};
+export type CreatedDnsUpstreamSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedDnsUpstreamSubscription = {
+    createdDnsUpstream: {
+        upstream: {
+            id: string;
+            ip: string;
+            name: string;
+        };
+    };
+};
+export type DeletedDnsUpstreamSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedDnsUpstreamSubscription = {
+    deletedDnsUpstream: {
+        deletedId: string;
+    };
+};
+export type UpdatedDnsUpstreamSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedDnsUpstreamSubscription = {
+    updatedDnsUpstream: {
+        upstream: {
+            id: string;
+            ip: string;
+            name: string;
+        };
+    };
 };
 export type EnvironmentMetaFragment = {
     __typename: "Environment";
@@ -19349,7 +19739,7 @@ export type TestUpstreamProxyHttpMutation = {
 };
 export type RankUpstreamProxyHttpMutationVariables = Exact<{
     id: Scalars["ID"]["input"];
-    input: RankUpstreamProxyHttpInput;
+    input: RankInput;
 }>;
 export type RankUpstreamProxyHttpMutation = {
     rankUpstreamProxyHttp: {
@@ -19450,7 +19840,7 @@ export type TestUpstreamProxySocksMutation = {
 };
 export type RankUpstreamProxySocksMutationVariables = Exact<{
     id: Scalars["ID"]["input"];
-    input: RankUpstreamProxySocksInput;
+    input: RankInput;
 }>;
 export type RankUpstreamProxySocksMutation = {
     rankUpstreamProxySocks: {
@@ -20184,6 +20574,8 @@ export declare const FinishedRestoreBackupTaskErrorFullFragmentDoc = "\n    frag
 export declare const BrowserFullFragmentDoc = "\n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const OnboardingFullFragmentDoc = "\n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
 export declare const GlobalConfigProjectFullFragmentDoc = "\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const DnsRewriteFullFragmentDoc = "\n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
+export declare const DnsUpstreamFullFragmentDoc = "\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
 export declare const EnvironmentMetaFragmentDoc = "\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentVariableFullFragmentDoc = "\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentFullFragmentDoc = "\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    ";
@@ -20380,6 +20772,21 @@ export declare const UpdateOnboardingDocument = "\n    mutation updateOnboarding
 export declare const UpdateGlobalConfigProjectDocument = "\n    mutation updateGlobalConfigProject($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...globalConfigProjectFull\n      }\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const GlobalConfigProjectDocument = "\n    query globalConfigProject {\n  globalConfig {\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const DnsConfigStateDocument = "\n    query DnsConfigState {\n  dnsRewrites {\n    ...dnsRewriteFull\n  }\n  dnsUpstreams {\n    ...dnsUpstreamFull\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
+export declare const CreateDnsRewriteDocument = "\n    mutation createDnsRewrite($input: CreateDNSRewriteInput!) {\n  createDnsRewrite(input: $input) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const DeleteDnsRewriteDocument = "\n    mutation deleteDnsRewrite($id: ID!) {\n  deleteDnsRewrite(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const UpdateDnsRewriteDocument = "\n    mutation updateDnsRewrite($id: ID!, $input: UpdateDNSRewriteInput!) {\n  updateDnsRewrite(id: $id, input: $input) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const ToggleDnsRewriteDocument = "\n    mutation toggleDnsRewrite($id: ID!, $enabled: Boolean!) {\n  toggleDnsRewrite(id: $id, enabled: $enabled) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
+export declare const RankDnsRewriteDocument = "\n    mutation rankDnsRewrite($id: ID!, $input: RankInput!) {\n  rankDnsRewrite(id: $id, input: $input) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
+export declare const CreateDnsUpstreamDocument = "\n    mutation createDnsUpstream($input: CreateDNSUpstreamInput!) {\n  createDnsUpstream(input: $input) {\n    upstream {\n      ...dnsUpstreamFull\n    }\n  }\n}\n    \n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
+export declare const DeleteDnsUpstreamDocument = "\n    mutation deleteDnsUpstream($id: ID!) {\n  deleteDnsUpstream(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const UpdateDnsUpstreamDocument = "\n    mutation updateDnsUpstream($id: ID!, $input: UpdateDNSUpstreamInput!) {\n  updateDnsUpstream(id: $id, input: $input) {\n    upstream {\n      ...dnsUpstreamFull\n    }\n  }\n}\n    \n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
+export declare const CreatedDnsRewriteDocument = "\n    subscription createdDnsRewrite {\n  createdDnsRewrite {\n    rewrite {\n      ...dnsRewriteFull\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
+export declare const DeletedDnsRewriteDocument = "\n    subscription deletedDnsRewrite {\n  deletedDnsRewrite {\n    deletedId\n  }\n}\n    ";
+export declare const UpdatedDnsRewriteDocument = "\n    subscription updatedDnsRewrite {\n  updatedDnsRewrite {\n    rewrite {\n      ...dnsRewriteFull\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
+export declare const CreatedDnsUpstreamDocument = "\n    subscription createdDnsUpstream {\n  createdDnsUpstream {\n    upstream {\n      ...dnsUpstreamFull\n    }\n  }\n}\n    \n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
+export declare const DeletedDnsUpstreamDocument = "\n    subscription deletedDnsUpstream {\n  deletedDnsUpstream {\n    deletedId\n  }\n}\n    ";
+export declare const UpdatedDnsUpstreamDocument = "\n    subscription updatedDnsUpstream {\n  updatedDnsUpstream {\n    upstream {\n      ...dnsUpstreamFull\n    }\n  }\n}\n    \n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
 export declare const EnvironmentDocument = "\n    query environment($id: ID!) {\n  environment(id: $id) {\n    ...environmentFull\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const EnvironmentsDocument = "\n    query environments {\n  environments {\n    ...environmentMeta\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const EnvironmentContextDocument = "\n    query environmentContext {\n  environmentContext {\n    ...environmentContextFull\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
@@ -20550,12 +20957,12 @@ export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUps
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeleteUpstreamProxyHttpDocument = "\n    mutation deleteUpstreamProxyHttp($id: ID!) {\n  deleteUpstreamProxyHttp(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestUpstreamProxyHttpDocument = "\n    mutation testUpstreamProxyHttp($input: TestUpstreamProxyHttpInput!) {\n  testUpstreamProxyHttp(input: $input) {\n    success\n  }\n}\n    ";
-export declare const RankUpstreamProxyHttpDocument = "\n    mutation rankUpstreamProxyHttp($id: ID!, $input: RankUpstreamProxyHttpInput!) {\n  rankUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
+export declare const RankUpstreamProxyHttpDocument = "\n    mutation rankUpstreamProxyHttp($id: ID!, $input: RankInput!) {\n  rankUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const CreateUpstreamProxySocksDocument = "\n    mutation createUpstreamProxySocks($input: CreateUpstreamProxySocksInput!) {\n  createUpstreamProxySocks(input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxySocksDocument = "\n    mutation updateUpstreamProxySocks($id: ID!, $input: UpdateUpstreamProxySocksInput!) {\n  updateUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeleteUpstreamProxySocksDocument = "\n    mutation deleteUpstreamProxySocks($id: ID!) {\n  deleteUpstreamProxySocks(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestUpstreamProxySocksDocument = "\n    mutation testUpstreamProxySocks($input: TestUpstreamProxySocksInput!) {\n  testUpstreamProxySocks(input: $input) {\n    success\n  }\n}\n    ";
-export declare const RankUpstreamProxySocksDocument = "\n    mutation rankUpstreamProxySocks($id: ID!, $input: RankUpstreamProxySocksInput!) {\n  rankUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
+export declare const RankUpstreamProxySocksDocument = "\n    mutation rankUpstreamProxySocks($id: ID!, $input: RankInput!) {\n  rankUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const CreatedUpstreamProxyHttpDocument = "\n    subscription createdUpstreamProxyHttp {\n  createdUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdatedUpstreamProxyHttpDocument = "\n    subscription updatedUpstreamProxyHttp {\n  updatedUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeletedUpstreamProxyHttpDocument = "\n    subscription deletedUpstreamProxyHttp {\n  deletedUpstreamProxyHttp {\n    deletedProxyId\n  }\n}\n    ";
@@ -20654,6 +21061,21 @@ export declare function getSdk<C>(requester: Requester<C>): {
     updateGlobalConfigProject(variables: UpdateGlobalConfigProjectMutationVariables, options?: C): Promise<UpdateGlobalConfigProjectMutation>;
     globalConfig(variables?: GlobalConfigQueryVariables, options?: C): Promise<GlobalConfigQuery>;
     globalConfigProject(variables?: GlobalConfigProjectQueryVariables, options?: C): Promise<GlobalConfigProjectQuery>;
+    DnsConfigState(variables?: DnsConfigStateQueryVariables, options?: C): Promise<DnsConfigStateQuery>;
+    createDnsRewrite(variables: CreateDnsRewriteMutationVariables, options?: C): Promise<CreateDnsRewriteMutation>;
+    deleteDnsRewrite(variables: DeleteDnsRewriteMutationVariables, options?: C): Promise<DeleteDnsRewriteMutation>;
+    updateDnsRewrite(variables: UpdateDnsRewriteMutationVariables, options?: C): Promise<UpdateDnsRewriteMutation>;
+    toggleDnsRewrite(variables: ToggleDnsRewriteMutationVariables, options?: C): Promise<ToggleDnsRewriteMutation>;
+    rankDnsRewrite(variables: RankDnsRewriteMutationVariables, options?: C): Promise<RankDnsRewriteMutation>;
+    createDnsUpstream(variables: CreateDnsUpstreamMutationVariables, options?: C): Promise<CreateDnsUpstreamMutation>;
+    deleteDnsUpstream(variables: DeleteDnsUpstreamMutationVariables, options?: C): Promise<DeleteDnsUpstreamMutation>;
+    updateDnsUpstream(variables: UpdateDnsUpstreamMutationVariables, options?: C): Promise<UpdateDnsUpstreamMutation>;
+    createdDnsRewrite(variables?: CreatedDnsRewriteSubscriptionVariables, options?: C): AsyncIterable<CreatedDnsRewriteSubscription>;
+    deletedDnsRewrite(variables?: DeletedDnsRewriteSubscriptionVariables, options?: C): AsyncIterable<DeletedDnsRewriteSubscription>;
+    updatedDnsRewrite(variables?: UpdatedDnsRewriteSubscriptionVariables, options?: C): AsyncIterable<UpdatedDnsRewriteSubscription>;
+    createdDnsUpstream(variables?: CreatedDnsUpstreamSubscriptionVariables, options?: C): AsyncIterable<CreatedDnsUpstreamSubscription>;
+    deletedDnsUpstream(variables?: DeletedDnsUpstreamSubscriptionVariables, options?: C): AsyncIterable<DeletedDnsUpstreamSubscription>;
+    updatedDnsUpstream(variables?: UpdatedDnsUpstreamSubscriptionVariables, options?: C): AsyncIterable<UpdatedDnsUpstreamSubscription>;
     environment(variables: EnvironmentQueryVariables, options?: C): Promise<EnvironmentQuery>;
     environments(variables?: EnvironmentsQueryVariables, options?: C): Promise<EnvironmentsQuery>;
     environmentContext(variables?: EnvironmentContextQueryVariables, options?: C): Promise<EnvironmentContextQuery>;
