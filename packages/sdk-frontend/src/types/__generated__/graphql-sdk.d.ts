@@ -87,8 +87,8 @@ export type Scalars = {
         output: JSONValue;
     };
     JsonObject: {
-        input: JSONValue;
-        output: JSONValue;
+        input: Record<string, unknown>;
+        output: Record<string, unknown>;
     };
     JsonRaw: {
         input: string;
@@ -1589,6 +1589,9 @@ export type MutationRoot = {
     testTamperRule: TestTamperRulePayload;
     testUpstreamProxyHttp: TestUpstreamProxyHttpPayload;
     testUpstreamProxySocks: TestUpstreamProxySocksPayload;
+    testWorkflowActive: TestWorkflowActivePayload;
+    testWorkflowConvert: TestWorkflowConvertPayload;
+    testWorkflowPassive: TestWorkflowPassivePayload;
     togglePlugin: TogglePluginPayload;
     toggleTamperRule: ToggleTamperRulePayload;
     toggleUpstreamProxyHttp: ToggleUpstreamProxyHttpPayload;
@@ -1902,6 +1905,18 @@ export type MutationRootTestUpstreamProxyHttpArgs = {
 };
 export type MutationRootTestUpstreamProxySocksArgs = {
     input: TestUpstreamProxySocksInput;
+};
+export type MutationRootTestWorkflowActiveArgs = {
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowActiveInput;
+};
+export type MutationRootTestWorkflowConvertArgs = {
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowConvertInput;
+};
+export type MutationRootTestWorkflowPassiveArgs = {
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowPassiveInput;
 };
 export type MutationRootTogglePluginArgs = {
     enabled: Scalars["Boolean"]["input"];
@@ -2772,6 +2787,9 @@ export type Response = {
     roundtripTime: Scalars["Int"]["output"];
     statusCode: Scalars["Int"]["output"];
 };
+export type ResponseRawInput = {
+    raw: Scalars["Blob"]["input"];
+};
 export type RestoreBackupError = NameTakenUserError | OtherUserError | PermissionDeniedUserError;
 export type RestoreBackupInput = {
     name: Scalars["String"]["input"];
@@ -2931,7 +2949,9 @@ export type SitemapEntryMetadataDomain = {
 export declare const Source: {
     readonly Automate: "AUTOMATE";
     readonly Intercept: "INTERCEPT";
+    readonly Plugin: "PLUGIN";
     readonly Replay: "REPLAY";
+    readonly Sample: "SAMPLE";
     readonly Workflow: "WORKFLOW";
 };
 export type Source = (typeof Source)[keyof typeof Source];
@@ -3679,6 +3699,33 @@ export type TestUpstreamProxySocksInput = {
 export type TestUpstreamProxySocksPayload = {
     success?: Maybe<Scalars["Boolean"]["output"]>;
 };
+export type TestWorkflowActiveError = OtherUserError | PermissionDeniedUserError | WorkflowUserError;
+export type TestWorkflowActiveInput = {
+    request: RequestRawInput;
+    response?: InputMaybe<ResponseRawInput>;
+};
+export type TestWorkflowActivePayload = {
+    error?: Maybe<TestWorkflowActiveError>;
+    runState?: Maybe<Scalars["JsonObject"]["output"]>;
+};
+export type TestWorkflowConvertError = OtherUserError | PermissionDeniedUserError | WorkflowUserError;
+export type TestWorkflowConvertInput = {
+    raw: Scalars["Blob"]["input"];
+};
+export type TestWorkflowConvertPayload = {
+    error?: Maybe<TestWorkflowConvertError>;
+    output?: Maybe<Scalars["Blob"]["output"]>;
+    runState?: Maybe<Scalars["JsonObject"]["output"]>;
+};
+export type TestWorkflowPassiveError = OtherUserError | PermissionDeniedUserError | WorkflowUserError;
+export type TestWorkflowPassiveInput = {
+    request: RequestRawInput;
+    response?: InputMaybe<ResponseRawInput>;
+};
+export type TestWorkflowPassivePayload = {
+    error?: Maybe<TestWorkflowPassiveError>;
+    runState?: Maybe<Scalars["JsonObject"]["output"]>;
+};
 export type TogglePluginError = OtherUserError | PluginUserError | UnknownIdUserError;
 export type TogglePluginPayload = {
     error?: Maybe<TogglePluginError>;
@@ -4032,6 +4079,7 @@ export declare const WorkflowErrorReason: {
     readonly ExecutionError: "EXECUTION_ERROR";
     readonly InvalidInput: "INVALID_INPUT";
     readonly InvalidProperty: "INVALID_PROPERTY";
+    readonly InvalidTrigger: "INVALID_TRIGGER";
     readonly InvalidWorkflow: "INVALID_WORKFLOW";
 };
 export type WorkflowErrorReason = (typeof WorkflowErrorReason)[keyof typeof WorkflowErrorReason];
@@ -19637,7 +19685,7 @@ export type WorkflowQueryVariables = Exact<{
 export type WorkflowQuery = {
     workflow?: {
         __typename: "Workflow";
-        definition: JSONValue;
+        definition: Record<string, unknown>;
         id: string;
         kind: WorkflowKind;
         name: string;
@@ -19646,13 +19694,13 @@ export type WorkflowQuery = {
         readOnly: boolean;
     } | undefined | null;
 };
-export type WorkflowsQueryVariables = Exact<{
+export type WorkflowsStateQueryVariables = Exact<{
     [key: string]: never;
 }>;
-export type WorkflowsQuery = {
+export type WorkflowsStateQuery = {
     workflows: Array<{
         __typename: "Workflow";
-        definition: JSONValue;
+        definition: Record<string, unknown>;
         id: string;
         kind: WorkflowKind;
         name: string;
@@ -19660,14 +19708,9 @@ export type WorkflowsQuery = {
         global: boolean;
         readOnly: boolean;
     }>;
-};
-export type WorkflowNodeDefinitionsQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type WorkflowNodeDefinitionsQuery = {
     workflowNodeDefinitions: Array<{
         __typename: "WorkflowNodeDefinition";
-        raw: JSONValue;
+        raw: Record<string, unknown>;
     }>;
 };
 export type CreatedWorkflowSubscriptionVariables = Exact<{
@@ -19679,7 +19722,7 @@ export type CreatedWorkflowSubscription = {
             cursor: string;
             node: {
                 __typename: "Workflow";
-                definition: JSONValue;
+                definition: Record<string, unknown>;
                 id: string;
                 kind: WorkflowKind;
                 name: string;
@@ -19707,7 +19750,7 @@ export type UpdatedWorkflowSubscription = {
             cursor: string;
             node: {
                 __typename: "Workflow";
-                definition: JSONValue;
+                definition: Record<string, unknown>;
                 id: string;
                 kind: WorkflowKind;
                 name: string;
@@ -19729,7 +19772,7 @@ export type WorkflowMetaFragment = {
 };
 export type WorkflowFullFragment = {
     __typename: "Workflow";
-    definition: JSONValue;
+    definition: Record<string, unknown>;
     id: string;
     kind: WorkflowKind;
     name: string;
@@ -19739,7 +19782,7 @@ export type WorkflowFullFragment = {
 };
 export type WorkflowNodeDefinitionFullFragment = {
     __typename: "WorkflowNodeDefinition";
-    raw: JSONValue;
+    raw: Record<string, unknown>;
 };
 export type WorkflowTaskMetaFragment = {
     __typename: "WorkflowTask";
@@ -19772,7 +19815,7 @@ export type CreateWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
@@ -19817,7 +19860,7 @@ export type ToggleWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
@@ -19846,7 +19889,7 @@ export type RenameWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
@@ -19881,7 +19924,7 @@ export type UpdateWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
@@ -19972,7 +20015,7 @@ export type GlobalizeWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
@@ -20006,13 +20049,83 @@ export type LocalizeWorkflowMutation = {
         } | undefined | null;
         workflow?: {
             __typename: "Workflow";
-            definition: JSONValue;
+            definition: Record<string, unknown>;
             id: string;
             kind: WorkflowKind;
             name: string;
             enabled: boolean;
             global: boolean;
             readOnly: boolean;
+        } | undefined | null;
+    };
+};
+export type TestWorkflowConvertMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowConvertInput;
+}>;
+export type TestWorkflowConvertMutation = {
+    testWorkflowConvert: {
+        output?: string | undefined | null;
+        runState?: Record<string, unknown> | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "WorkflowUserError";
+            node?: string | undefined | null;
+            message: string;
+            reason: WorkflowErrorReason;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type TestWorkflowActiveMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowActiveInput;
+}>;
+export type TestWorkflowActiveMutation = {
+    testWorkflowActive: {
+        runState?: Record<string, unknown> | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "WorkflowUserError";
+            node?: string | undefined | null;
+            message: string;
+            reason: WorkflowErrorReason;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type TestWorkflowPassiveMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: TestWorkflowPassiveInput;
+}>;
+export type TestWorkflowPassiveMutation = {
+    testWorkflowPassive: {
+        runState?: Record<string, unknown> | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "WorkflowUserError";
+            node?: string | undefined | null;
+            message: string;
+            reason: WorkflowErrorReason;
+            code: string;
         } | undefined | null;
     };
 };
@@ -20456,8 +20569,7 @@ export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewer
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    id\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    id\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
-export declare const WorkflowsDocument = "\n    query workflows {\n  workflows {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
-export declare const WorkflowNodeDefinitionsDocument = "\n    query workflowNodeDefinitions {\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
+export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeletedWorkflowDocument = "\n    subscription deletedWorkflow {\n  deletedWorkflow {\n    deletedWorkflowId\n  }\n}\n    ";
 export declare const UpdatedWorkflowDocument = "\n    subscription updatedWorkflow {\n  updatedWorkflow {\n    workflowEdge {\n      cursor\n      node {\n        ...workflowFull\n      }\n    }\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -20470,6 +20582,9 @@ export declare const RunConvertWorkflowDocument = "\n    mutation runConvertWork
 export declare const RunActiveWorkflowDocument = "\n    mutation runActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {\n  runActiveWorkflow(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const GlobalizeWorkflowDocument = "\n    mutation globalizeWorkflow($id: ID!) {\n  globalizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const LocalizeWorkflowDocument = "\n    mutation localizeWorkflow($id: ID!) {\n  localizeWorkflow(id: $id) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const TestWorkflowConvertDocument = "\n    mutation testWorkflowConvert($id: ID!, $input: TestWorkflowConvertInput!) {\n  testWorkflowConvert(id: $id, input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    output\n    runState\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const TestWorkflowActiveDocument = "\n    mutation testWorkflowActive($id: ID!, $input: TestWorkflowActiveInput!) {\n  testWorkflowActive(id: $id, input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    runState\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const TestWorkflowPassiveDocument = "\n    mutation testWorkflowPassive($id: ID!, $input: TestWorkflowPassiveInput!) {\n  testWorkflowPassive(id: $id, input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    runState\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export type Requester<C = {}> = <R, V>(doc: string, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
 export declare function getSdk<C>(requester: Requester<C>): {
     assistantSessions(variables?: AssistantSessionsQueryVariables, options?: C): Promise<AssistantSessionsQuery>;
@@ -20728,8 +20843,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
-    workflows(variables?: WorkflowsQueryVariables, options?: C): Promise<WorkflowsQuery>;
-    workflowNodeDefinitions(variables?: WorkflowNodeDefinitionsQueryVariables, options?: C): Promise<WorkflowNodeDefinitionsQuery>;
+    workflowsState(variables?: WorkflowsStateQueryVariables, options?: C): Promise<WorkflowsStateQuery>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
     deletedWorkflow(variables?: DeletedWorkflowSubscriptionVariables, options?: C): AsyncIterable<DeletedWorkflowSubscription>;
     updatedWorkflow(variables?: UpdatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<UpdatedWorkflowSubscription>;
@@ -20742,6 +20856,9 @@ export declare function getSdk<C>(requester: Requester<C>): {
     runActiveWorkflow(variables: RunActiveWorkflowMutationVariables, options?: C): Promise<RunActiveWorkflowMutation>;
     globalizeWorkflow(variables: GlobalizeWorkflowMutationVariables, options?: C): Promise<GlobalizeWorkflowMutation>;
     localizeWorkflow(variables: LocalizeWorkflowMutationVariables, options?: C): Promise<LocalizeWorkflowMutation>;
+    testWorkflowConvert(variables: TestWorkflowConvertMutationVariables, options?: C): Promise<TestWorkflowConvertMutation>;
+    testWorkflowActive(variables: TestWorkflowActiveMutationVariables, options?: C): Promise<TestWorkflowActiveMutation>;
+    testWorkflowPassive(variables: TestWorkflowPassiveMutationVariables, options?: C): Promise<TestWorkflowPassiveMutation>;
 };
 export type Sdk = ReturnType<typeof getSdk>;
 export {};
