@@ -22,6 +22,7 @@ import type { SitemapSDK } from "./sitemap";
 import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
+import type { WorkflowSDK } from "./workflows";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
@@ -31,6 +32,7 @@ export type { HTTPQL, ID } from "./utils";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceSection, MatchReplaceSectionRequestBody, MatchReplaceSectionRequestFirstLine, MatchReplaceSectionRequestHeader, MatchReplaceSectionRequestMethod, MatchReplaceSectionRequestPath, MatchReplaceSectionRequestQuery, MatchReplaceSectionResponseBody, MatchReplaceSectionResponseFirstLine, MatchReplaceSectionResponseHeader, MatchReplaceSectionResponseStatusCode, MatchReplaceOperationStatusCode, MatchReplaceOperationStatusCodeUpdate, MatchReplaceOperationQuery, MatchReplaceOperationQueryRaw, MatchReplaceOperationQueryAdd, MatchReplaceOperationQueryRemove, MatchReplaceOperationQueryUpdate, MatchReplaceOperationPath, MatchReplaceOperationPathRaw, MatchReplaceOperationMethod, MatchReplaceOperationMethodUpdate, MatchReplaceOperationHeader, MatchReplaceOperationHeaderRaw, MatchReplaceOperationHeaderAdd, MatchReplaceOperationHeaderRemove, MatchReplaceOperationHeaderUpdate, MatchReplaceOperationBody, MatchReplaceOperationBodyRaw, MatchReplaceOperationFirstLine, MatchReplaceOperationFirstLineRaw, MatchReplaceReplacer, MatchReplaceReplacerTerm, MatchReplaceReplacerWorkflow, MatchReplaceMatcherName, MatchReplaceMatcherRaw, MatchReplaceMatcherRawFull, MatchReplaceMatcherRawRegex, MatchReplaceMatcherRawValue, } from "./matchReplace";
 export type { Scope } from "./scopes";
 export type { EnvironmentVariable } from "./environment";
+export type { Workflow, WorkflowKind } from "./workflows";
 /**
  * Utilities for frontend plugins.
  * @category SDK
@@ -132,4 +134,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the runtime.
      */
     runtime: RuntimeSDK;
+    /**
+     * Utilities to interact with workflows.
+     */
+    workflows: WorkflowSDK;
 };
