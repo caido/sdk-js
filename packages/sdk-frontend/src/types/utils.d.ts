@@ -34,4 +34,13 @@ export type JSONCompatible<T> = unknown extends T ? never : {
     [P in keyof T]: T[P] extends JSONValue ? T[P] : T[P] extends NotAssignableToJson ? never : JSONCompatible<T[P]>;
 };
 export type PromisifiedReturnType<T extends (...args: unknown[]) => unknown> = ReturnType<T> extends Promise<infer U> ? Promise<U> : Promise<ReturnType<T>>;
+/**
+ * A handle for a listener.
+ */
+export type ListenerHandle = {
+    /**
+     * Stop the listener.
+     */
+    stop: () => void;
+};
 export {};

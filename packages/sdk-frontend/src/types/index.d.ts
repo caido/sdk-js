@@ -32,7 +32,8 @@ export type { HTTPQL, ID } from "./utils";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceSection, MatchReplaceSectionRequestBody, MatchReplaceSectionRequestFirstLine, MatchReplaceSectionRequestHeader, MatchReplaceSectionRequestMethod, MatchReplaceSectionRequestPath, MatchReplaceSectionRequestQuery, MatchReplaceSectionResponseBody, MatchReplaceSectionResponseFirstLine, MatchReplaceSectionResponseHeader, MatchReplaceSectionResponseStatusCode, MatchReplaceOperationStatusCode, MatchReplaceOperationStatusCodeUpdate, MatchReplaceOperationQuery, MatchReplaceOperationQueryRaw, MatchReplaceOperationQueryAdd, MatchReplaceOperationQueryRemove, MatchReplaceOperationQueryUpdate, MatchReplaceOperationPath, MatchReplaceOperationPathRaw, MatchReplaceOperationMethod, MatchReplaceOperationMethodUpdate, MatchReplaceOperationHeader, MatchReplaceOperationHeaderRaw, MatchReplaceOperationHeaderAdd, MatchReplaceOperationHeaderRemove, MatchReplaceOperationHeaderUpdate, MatchReplaceOperationBody, MatchReplaceOperationBodyRaw, MatchReplaceOperationFirstLine, MatchReplaceOperationFirstLineRaw, MatchReplaceReplacer, MatchReplaceReplacerTerm, MatchReplaceReplacerWorkflow, MatchReplaceMatcherName, MatchReplaceMatcherRaw, MatchReplaceMatcherRawFull, MatchReplaceMatcherRawRegex, MatchReplaceMatcherRawValue, } from "./matchReplace";
 export type { Scope } from "./scopes";
 export type { EnvironmentVariable } from "./environment";
-export type { Workflow, WorkflowKind } from "./workflows";
+export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./workflows";
+export type { ListenerHandle } from "./utils";
 /**
  * Utilities for frontend plugins.
  * @category SDK
