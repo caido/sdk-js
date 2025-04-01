@@ -58,6 +58,7 @@ type CommandContextRequestRow = {
         path: string;
         query: string;
         isTls: boolean;
+        streamId?: ID;
     }[];
 };
 /**
@@ -78,6 +79,7 @@ type CommandContextRequest = {
         query: string;
         isTls: boolean;
         raw: string;
+        streamId?: ID;
     };
     /**
      * The currently selected text in the request pane.
@@ -100,6 +102,7 @@ type CommandContextResponse = {
         path: string;
         query: string;
         isTls: boolean;
+        streamId?: ID;
     };
     /**
      * The response that is currently open in the response pane.
