@@ -1347,9 +1347,15 @@ export type FinishedTaskPayload = {
 export type ForwardInterceptMessageInput = {
     request: ForwardInterceptRequestMessageInput;
     response?: never;
+    streamWs?: never;
 } | {
     request?: never;
     response: ForwardInterceptResponseMessageInput;
+    streamWs?: never;
+} | {
+    request?: never;
+    response?: never;
+    streamWs: ForwardInterceptStreamWsMessageInput;
 };
 export type ForwardInterceptMessagePayload = {
     forwardedId?: Maybe<Scalars["ID"]["output"]>;
@@ -1360,6 +1366,9 @@ export type ForwardInterceptRequestMessageInput = {
 };
 export type ForwardInterceptResponseMessageInput = {
     updateContentLength: Scalars["Boolean"]["input"];
+    updateRaw: Scalars["Blob"]["input"];
+};
+export type ForwardInterceptStreamWsMessageInput = {
     updateRaw: Scalars["Blob"]["input"];
 };
 export type GlobalConfig = {
@@ -1445,6 +1454,7 @@ export type InterceptEntryOrderInput = {
 export declare const InterceptKind: {
     readonly Request: "REQUEST";
     readonly Response: "RESPONSE";
+    readonly StreamWs: "STREAM_WS";
 };
 export type InterceptKind = (typeof InterceptKind)[keyof typeof InterceptKind];
 export type InterceptMessage = {
@@ -1471,11 +1481,13 @@ export type InterceptOptions = {
     request: InterceptRequestOptions;
     response: InterceptResponseOptions;
     scope?: Maybe<InterceptScopeOptions>;
+    streamWs: InterceptStreamWsOptions;
 };
 export type InterceptOptionsInput = {
     request: InterceptRequestOptionsInput;
     response: InterceptResponseOptionsInput;
     scope?: InputMaybe<InterceptScopeOptionsInput>;
+    streamWs: InterceptStreamWsOptionsInput;
 };
 export type InterceptRequestMessage = InterceptMessage & {
     id: Scalars["ID"]["output"];
@@ -1513,6 +1525,16 @@ export declare const InterceptStatus: {
     readonly Running: "RUNNING";
 };
 export type InterceptStatus = (typeof InterceptStatus)[keyof typeof InterceptStatus];
+export type InterceptStreamWsMessage = InterceptMessage & {
+    id: Scalars["ID"]["output"];
+    message: StreamWsMessage;
+};
+export type InterceptStreamWsOptions = {
+    enabled: Scalars["Boolean"]["output"];
+};
+export type InterceptStreamWsOptionsInput = {
+    enabled: Scalars["Boolean"]["input"];
+};
 export type InternalUserError = UserError & {
     code: Scalars["String"]["output"];
     message: Scalars["String"]["output"];
@@ -2313,6 +2335,7 @@ export type QueryRoot = {
     store: Store;
     stream?: Maybe<Stream>;
     streamWsMessage?: Maybe<StreamWsMessage>;
+    streamWsMessageEdit?: Maybe<StreamWsMessageEdit>;
     streamWsMessages: StreamWsMessageConnection;
     streamWsMessagesByOffset: StreamWsMessageConnection;
     streams: StreamConnection;
@@ -2461,6 +2484,9 @@ export type QueryRootStreamArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootStreamWsMessageArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type QueryRootStreamWsMessageEditArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootStreamWsMessagesArgs = {
@@ -3181,15 +3207,10 @@ export declare const StreamProtocol: {
 };
 export type StreamProtocol = (typeof StreamProtocol)[keyof typeof StreamProtocol];
 export type StreamWsMessage = {
-    alteration: Alteration;
-    createdAt: Scalars["Timestamp"]["output"];
-    direction: StreamMessageDirection;
-    edited: Scalars["Boolean"]["output"];
-    format: StreamWsMessageFormat;
+    edits: Array<StreamWsMessageEditRef>;
+    head: StreamWsMessageEdit;
     id: Scalars["ID"]["output"];
-    length: Scalars["Int"]["output"];
-    raw: Scalars["Blob"]["output"];
-    streamId: Scalars["ID"]["output"];
+    stream: Stream;
 };
 export type StreamWsMessageConnection = {
     count: Count;
@@ -3207,6 +3228,19 @@ export type StreamWsMessageEdge = {
     cursor: Scalars["String"]["output"];
     /** The item at the end of the edge */
     node: StreamWsMessage;
+};
+export type StreamWsMessageEdit = {
+    alteration: Alteration;
+    createdAt: Scalars["Timestamp"]["output"];
+    direction: StreamMessageDirection;
+    format: StreamWsMessageFormat;
+    id: Scalars["ID"]["output"];
+    length: Scalars["Int"]["output"];
+    raw: Scalars["Blob"]["output"];
+};
+export type StreamWsMessageEditRef = {
+    alteration: Alteration;
+    id: Scalars["ID"]["output"];
 };
 export declare const StreamWsMessageFormat: {
     readonly Binary: "BINARY";
@@ -3318,6 +3352,7 @@ export type SubscriptionRoot = {
     updatedRequestMetadata: UpdatedRequestMetadataPayload;
     updatedScope: UpdatedScopePayload;
     updatedSitemapEntry: UpdatedSitemapEntryPayload;
+    updatedStreamWsMessage: UpdatedStreamWsMessagePayload;
     updatedTamperRule: UpdatedTamperRulePayload;
     updatedTamperRuleCollection: UpdatedTamperRuleCollectionPayload;
     updatedUpstreamProxyHttp: UpdatedUpstreamProxyHttpPayload;
@@ -4094,6 +4129,13 @@ export type UpdatedSitemapEntryPayload = {
 };
 export type UpdatedSitemapEntryPayloadRequestEdgeArgs = {
     order?: InputMaybe<RequestResponseOrderInput>;
+};
+export type UpdatedStreamWsMessagePayload = {
+    messageEdge: StreamWsMessageEdge;
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type UpdatedStreamWsMessagePayloadMessageEdgeArgs = {
+    order?: InputMaybe<StreamWsMessageOrderInput>;
 };
 export type UpdatedTamperRuleCollectionPayload = {
     collectionEdge: TamperRuleCollectionEdge;
@@ -9685,6 +9727,28 @@ export type InterceptResponseMessageMetaFragment = {
         } | undefined | null;
     };
 };
+export type InterceptStreamWsMessageMetaFragment = {
+    __typename: "InterceptStreamWsMessage";
+    id: string;
+    message: {
+        id: string;
+        stream: {
+            id: string;
+        };
+        edits: Array<{
+            id: string;
+            alteration: Alteration;
+        }>;
+        head: {
+            id: string;
+            length: number;
+            alteration: Alteration;
+            direction: StreamMessageDirection;
+            format: StreamWsMessageFormat;
+            createdAt: Date;
+        };
+    };
+};
 type InterceptMessageMeta_InterceptRequestMessage_Fragment = {
     __typename: "InterceptRequestMessage";
     id: string;
@@ -9773,7 +9837,29 @@ type InterceptMessageMeta_InterceptResponseMessage_Fragment = {
         } | undefined | null;
     };
 };
-export type InterceptMessageMetaFragment = InterceptMessageMeta_InterceptRequestMessage_Fragment | InterceptMessageMeta_InterceptResponseMessage_Fragment;
+type InterceptMessageMeta_InterceptStreamWsMessage_Fragment = {
+    __typename: "InterceptStreamWsMessage";
+    id: string;
+    message: {
+        id: string;
+        stream: {
+            id: string;
+        };
+        edits: Array<{
+            id: string;
+            alteration: Alteration;
+        }>;
+        head: {
+            id: string;
+            length: number;
+            alteration: Alteration;
+            direction: StreamMessageDirection;
+            format: StreamWsMessageFormat;
+            createdAt: Date;
+        };
+    };
+};
+export type InterceptMessageMetaFragment = InterceptMessageMeta_InterceptRequestMessage_Fragment | InterceptMessageMeta_InterceptResponseMessage_Fragment | InterceptMessageMeta_InterceptStreamWsMessage_Fragment;
 export type InterceptOptionsMetaFragment = {
     request: {
         enabled: boolean;
@@ -9782,6 +9868,9 @@ export type InterceptOptionsMetaFragment = {
     response: {
         enabled: boolean;
         filter?: string | undefined | null;
+    };
+    streamWs: {
+        enabled: boolean;
     };
     scope?: {
         scopeId: string;
@@ -9794,6 +9883,9 @@ export type InterceptRequestOptionsMetaFragment = {
 export type InterceptResponseOptionsMetaFragment = {
     enabled: boolean;
     filter?: string | undefined | null;
+};
+export type InterceptStreamWsOptionsMetaFragment = {
+    enabled: boolean;
 };
 export type InterceptScopeOptionsMetaFragment = {
     scopeId: string;
@@ -9828,6 +9920,9 @@ export type SetInterceptOptionsMutation = {
             response: {
                 enabled: boolean;
                 filter?: string | undefined | null;
+            };
+            streamWs: {
+                enabled: boolean;
             };
             scope?: {
                 scopeId: string;
@@ -9942,6 +10037,27 @@ export type InterceptRequestMessagesQuery = {
                     id: string;
                 } | undefined | null;
             };
+        } | {
+            __typename: "InterceptStreamWsMessage";
+            id: string;
+            message: {
+                id: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
+            };
         }>;
     };
 };
@@ -10036,6 +10152,136 @@ export type InterceptResponseMessagesQuery = {
                     id: string;
                 } | undefined | null;
             };
+        } | {
+            __typename: "InterceptStreamWsMessage";
+            id: string;
+            message: {
+                id: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
+            };
+        }>;
+    };
+};
+export type InterceptStreamWsMessagesQueryVariables = Exact<{
+    first: Scalars["Int"]["input"];
+}>;
+export type InterceptStreamWsMessagesQuery = {
+    interceptMessages: {
+        nodes: Array<{
+            __typename: "InterceptRequestMessage";
+            id: string;
+            request: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            };
+        } | {
+            __typename: "InterceptResponseMessage";
+            id: string;
+            response: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            };
+            request: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+            };
+        } | {
+            __typename: "InterceptStreamWsMessage";
+            id: string;
+            message: {
+                id: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
+            };
         }>;
     };
 };
@@ -10052,6 +10298,9 @@ export type InterceptOptionsQuery = {
             enabled: boolean;
             filter?: string | undefined | null;
         };
+        streamWs: {
+            enabled: boolean;
+        };
         scope?: {
             scopeId: string;
         } | undefined | null;
@@ -10062,6 +10311,14 @@ export type InterceptStatusQueryVariables = Exact<{
 }>;
 export type InterceptStatusQuery = {
     interceptStatus: InterceptStatus;
+};
+export type UpdatedInterceptStatusSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedInterceptStatusSubscription = {
+    updatedInterceptStatus: {
+        status: InterceptStatus;
+    };
 };
 export type CreatedInterceptMessageSubscriptionVariables = Exact<{
     [key: string]: never;
@@ -10156,6 +10413,27 @@ export type CreatedInterceptMessageSubscription = {
                         id: string;
                     } | undefined | null;
                 };
+            } | {
+                __typename: "InterceptStreamWsMessage";
+                id: string;
+                message: {
+                    id: string;
+                    stream: {
+                        id: string;
+                    };
+                    edits: Array<{
+                        id: string;
+                        alteration: Alteration;
+                    }>;
+                    head: {
+                        id: string;
+                        length: number;
+                        alteration: Alteration;
+                        direction: StreamMessageDirection;
+                        format: StreamWsMessageFormat;
+                        createdAt: Date;
+                    };
+                };
             };
         };
     };
@@ -10173,6 +10451,9 @@ export type UpdatedInterceptOptionsSubscription = {
             response: {
                 enabled: boolean;
                 filter?: string | undefined | null;
+            };
+            streamWs: {
+                enabled: boolean;
             };
             scope?: {
                 scopeId: string;
@@ -19223,37 +19504,63 @@ export type StreamEdgeMetaFragment = {
 };
 export type StreamWsMessageMetaFragment = {
     id: string;
-    length: number;
-    createdAt: Date;
-    direction: StreamMessageDirection;
-    edited: boolean;
-    alteration: Alteration;
-    format: StreamWsMessageFormat;
-    streamId: string;
+    stream: {
+        id: string;
+    };
+    edits: Array<{
+        id: string;
+        alteration: Alteration;
+    }>;
+    head: {
+        id: string;
+        length: number;
+        alteration: Alteration;
+        direction: StreamMessageDirection;
+        format: StreamWsMessageFormat;
+        createdAt: Date;
+    };
 };
-export type StreamWsMessageFullFragment = {
+export type StreamWsMessageEditRefFragment = {
+    id: string;
+    alteration: Alteration;
+};
+export type StreamWsMessageEditMetaFragment = {
+    id: string;
+    length: number;
+    alteration: Alteration;
+    direction: StreamMessageDirection;
+    format: StreamWsMessageFormat;
+    createdAt: Date;
+};
+export type StreamWsMessageEditFullFragment = {
     raw: string;
     id: string;
     length: number;
-    createdAt: Date;
-    direction: StreamMessageDirection;
-    edited: boolean;
     alteration: Alteration;
+    direction: StreamMessageDirection;
     format: StreamWsMessageFormat;
-    streamId: string;
+    createdAt: Date;
 };
 export type StreamWsMessageEdgeMetaFragment = {
     __typename: "StreamWsMessageEdge";
     cursor: string;
     node: {
         id: string;
-        length: number;
-        createdAt: Date;
-        direction: StreamMessageDirection;
-        edited: boolean;
-        alteration: Alteration;
-        format: StreamWsMessageFormat;
-        streamId: string;
+        stream: {
+            id: string;
+        };
+        edits: Array<{
+            id: string;
+            alteration: Alteration;
+        }>;
+        head: {
+            id: string;
+            length: number;
+            alteration: Alteration;
+            direction: StreamMessageDirection;
+            format: StreamWsMessageFormat;
+            createdAt: Date;
+        };
     };
 };
 export type WebsocketStreamsBeforeQueryVariables = Exact<{
@@ -19384,13 +19691,21 @@ export type WebsocketMessagesAfterQuery = {
             cursor: string;
             node: {
                 id: string;
-                length: number;
-                createdAt: Date;
-                direction: StreamMessageDirection;
-                edited: boolean;
-                alteration: Alteration;
-                format: StreamWsMessageFormat;
-                streamId: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
             };
         }>;
         pageInfo: {
@@ -19416,13 +19731,21 @@ export type WebsocketMessagesBeforeQuery = {
             cursor: string;
             node: {
                 id: string;
-                length: number;
-                createdAt: Date;
-                direction: StreamMessageDirection;
-                edited: boolean;
-                alteration: Alteration;
-                format: StreamWsMessageFormat;
-                streamId: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
             };
         }>;
         pageInfo: {
@@ -19448,13 +19771,21 @@ export type WebsocketMessagesByOffsetQuery = {
             cursor: string;
             node: {
                 id: string;
-                length: number;
-                createdAt: Date;
-                direction: StreamMessageDirection;
-                edited: boolean;
-                alteration: Alteration;
-                format: StreamWsMessageFormat;
-                streamId: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
             };
         }>;
         pageInfo: {
@@ -19483,15 +19814,36 @@ export type WebsocketMessageQueryVariables = Exact<{
 }>;
 export type WebsocketMessageQuery = {
     streamWsMessage?: {
+        id: string;
+        stream: {
+            id: string;
+        };
+        edits: Array<{
+            id: string;
+            alteration: Alteration;
+        }>;
+        head: {
+            id: string;
+            length: number;
+            alteration: Alteration;
+            direction: StreamMessageDirection;
+            format: StreamWsMessageFormat;
+            createdAt: Date;
+        };
+    } | undefined | null;
+};
+export type WebsocketMessageEditQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type WebsocketMessageEditQuery = {
+    streamWsMessageEdit?: {
         raw: string;
         id: string;
         length: number;
-        createdAt: Date;
-        direction: StreamMessageDirection;
-        edited: boolean;
         alteration: Alteration;
+        direction: StreamMessageDirection;
         format: StreamWsMessageFormat;
-        streamId: string;
+        createdAt: Date;
     } | undefined | null;
 };
 export type CreatedWsStreamSubscriptionVariables = Exact<{
@@ -19530,13 +19882,51 @@ export type CreatedStreamWsMessageSubscription = {
             cursor: string;
             node: {
                 id: string;
-                length: number;
-                createdAt: Date;
-                direction: StreamMessageDirection;
-                edited: boolean;
-                alteration: Alteration;
-                format: StreamWsMessageFormat;
-                streamId: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
+            };
+        };
+    };
+};
+export type UpdatedStreamWsMessageSubscriptionVariables = Exact<{
+    order: StreamWsMessageOrderInput;
+}>;
+export type UpdatedStreamWsMessageSubscription = {
+    updatedStreamWsMessage: {
+        snapshot: number;
+        messageEdge: {
+            __typename: "StreamWsMessageEdge";
+            cursor: string;
+            node: {
+                id: string;
+                stream: {
+                    id: string;
+                };
+                edits: Array<{
+                    id: string;
+                    alteration: Alteration;
+                }>;
+                head: {
+                    id: string;
+                    length: number;
+                    alteration: Alteration;
+                    direction: StreamMessageDirection;
+                    format: StreamWsMessageFormat;
+                    createdAt: Date;
+                };
             };
         };
     };
@@ -20900,11 +21290,16 @@ export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  updatedAt\n  createdAt\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptResponseMessageMetaFragmentDoc = "\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const InterceptMessageMetaFragmentDoc = "\n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    ";
+export declare const StreamWsMessageEditRefFragmentDoc = "\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    ";
+export declare const StreamWsMessageEditMetaFragmentDoc = "\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const StreamWsMessageMetaFragmentDoc = "\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    ";
+export declare const InterceptStreamWsMessageMetaFragmentDoc = "\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    ";
+export declare const InterceptMessageMetaFragmentDoc = "\n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    ";
 export declare const InterceptRequestOptionsMetaFragmentDoc = "\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    ";
 export declare const InterceptResponseOptionsMetaFragmentDoc = "\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    ";
+export declare const InterceptStreamWsOptionsMetaFragmentDoc = "\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    ";
 export declare const InterceptScopeOptionsMetaFragmentDoc = "\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
-export declare const InterceptOptionsMetaFragmentDoc = "\n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    ";
+export declare const InterceptOptionsMetaFragmentDoc = "\n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    ";
 export declare const TamperMatcherValueFullFragmentDoc = "\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    ";
 export declare const TamperMatcherRegexFullFragmentDoc = "\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    ";
 export declare const TamperMatcherRawFullFragmentDoc = "\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    ";
@@ -20974,8 +21369,7 @@ export declare const SitemapEntryMetaFragmentDoc = "\n    fragment sitemapEntryM
 export declare const SitemapEntryEdgeMetaFragmentDoc = "\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    ";
 export declare const StreamMetaFragmentDoc = "\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
 export declare const StreamEdgeMetaFragmentDoc = "\n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    ";
-export declare const StreamWsMessageMetaFragmentDoc = "\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
-export declare const StreamWsMessageFullFragmentDoc = "\n    fragment streamWsMessageFull on StreamWsMessage {\n  ...streamWsMessageMeta\n  raw\n}\n    ";
+export declare const StreamWsMessageEditFullFragmentDoc = "\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    ";
 export declare const StreamWsMessageEdgeMetaFragmentDoc = "\n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    ";
 export declare const UpstreamProxyAuthBasicFullFragmentDoc = "\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
 export declare const UpstreamProxyHttpFullFragmentDoc = "\n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    ";
@@ -21129,15 +21523,17 @@ export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  updatedAt\n  createdAt\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
-export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
+export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const PauseInterceptDocument = "\n    mutation pauseIntercept {\n  pauseIntercept {\n    status\n  }\n}\n    ";
 export declare const ResumeInterceptDocument = "\n    mutation resumeIntercept {\n  resumeIntercept {\n    status\n  }\n}\n    ";
-export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
+export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptStreamWsMessagesDocument = "\n    query interceptStreamWsMessages($first: Int!) {\n  interceptMessages(first: $first, kind: STREAM_WS) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
-export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const UpdatedInterceptOptionsDocument = "\n    subscription updatedInterceptOptions {\n  updatedInterceptOptions {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
+export declare const UpdatedInterceptStatusDocument = "\n    subscription updatedInterceptStatus {\n  updatedInterceptStatus {\n    status\n  }\n}\n    ";
+export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const UpdatedInterceptOptionsDocument = "\n    subscription updatedInterceptOptions {\n  updatedInterceptOptions {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    ...tamperRuleCollectionFull\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const RenameTamperRuleCollectionDocument = "\n    mutation renameTamperRuleCollection($id: ID!, $name: String!) {\n  renameTamperRuleCollection(id: $id, name: $name) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const CreateTamperRuleCollectionDocument = "\n    mutation createTamperRuleCollection($input: CreateTamperRuleCollectionInput!) {\n  createTamperRuleCollection(input: $input) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
@@ -21225,13 +21621,15 @@ export declare const WebsocketStreamsBeforeDocument = "\n    query websocketStre
 export declare const WebsocketStreamsAfterDocument = "\n    query websocketStreamsAfter($after: String, $first: Int!, $scopeId: ID, $order: StreamOrderInput!) {\n  streams(\n    after: $after\n    first: $first\n    scopeId: $scopeId\n    order: $order\n    protocol: WS\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamsByOffsetDocument = "\n    query websocketStreamsByOffset($offset: Int!, $limit: Int!, $scopeId: ID, $order: StreamOrderInput!) {\n  streamsByOffset(\n    offset: $offset\n    limit: $limit\n    scopeId: $scopeId\n    order: $order\n    protocol: WS\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamCountDocument = "\n    query websocketStreamCount($scopeId: ID) {\n  streams(first: 0, scopeId: $scopeId, protocol: WS) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const WebsocketMessagesAfterDocument = "\n    query websocketMessagesAfter($after: String, $first: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketMessagesBeforeDocument = "\n    query websocketMessagesBefore($before: String, $last: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketMessagesByOffsetDocument = "\n    query websocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesAfterDocument = "\n    query websocketMessagesAfter($after: String, $first: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesBeforeDocument = "\n    query websocketMessagesBefore($before: String, $last: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesByOffsetDocument = "\n    query websocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketMessageCountDocument = "\n    query websocketMessageCount($streamId: ID!) {\n  streamWsMessages(first: 0, streamId: $streamId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageFull\n  }\n}\n    \n    fragment streamWsMessageFull on StreamWsMessage {\n  ...streamWsMessageMeta\n  raw\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
+export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageMeta\n  }\n}\n    \n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const WebsocketMessageEditDocument = "\n    query websocketMessageEdit($id: ID!) {\n  streamWsMessageEdit(id: $id) {\n    ...streamWsMessageEditFull\n  }\n}\n    \n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
-export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  length\n  createdAt\n  direction\n  edited\n  alteration\n  format\n  streamId\n}\n    ";
+export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  updatedStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
@@ -21423,8 +21821,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     resumeIntercept(variables?: ResumeInterceptMutationVariables, options?: C): Promise<ResumeInterceptMutation>;
     interceptRequestMessages(variables: InterceptRequestMessagesQueryVariables, options?: C): Promise<InterceptRequestMessagesQuery>;
     interceptResponseMessages(variables: InterceptResponseMessagesQueryVariables, options?: C): Promise<InterceptResponseMessagesQuery>;
+    interceptStreamWsMessages(variables: InterceptStreamWsMessagesQueryVariables, options?: C): Promise<InterceptStreamWsMessagesQuery>;
     interceptOptions(variables?: InterceptOptionsQueryVariables, options?: C): Promise<InterceptOptionsQuery>;
     interceptStatus(variables?: InterceptStatusQueryVariables, options?: C): Promise<InterceptStatusQuery>;
+    updatedInterceptStatus(variables?: UpdatedInterceptStatusSubscriptionVariables, options?: C): AsyncIterable<UpdatedInterceptStatusSubscription>;
     createdInterceptMessage(variables?: CreatedInterceptMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedInterceptMessageSubscription>;
     updatedInterceptOptions(variables?: UpdatedInterceptOptionsSubscriptionVariables, options?: C): AsyncIterable<UpdatedInterceptOptionsSubscription>;
     tamperRuleCollections(variables?: TamperRuleCollectionsQueryVariables, options?: C): Promise<TamperRuleCollectionsQuery>;
@@ -21519,8 +21919,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     websocketMessagesByOffset(variables: WebsocketMessagesByOffsetQueryVariables, options?: C): Promise<WebsocketMessagesByOffsetQuery>;
     websocketMessageCount(variables: WebsocketMessageCountQueryVariables, options?: C): Promise<WebsocketMessageCountQuery>;
     websocketMessage(variables: WebsocketMessageQueryVariables, options?: C): Promise<WebsocketMessageQuery>;
+    websocketMessageEdit(variables: WebsocketMessageEditQueryVariables, options?: C): Promise<WebsocketMessageEditQuery>;
     createdWsStream(variables: CreatedWsStreamSubscriptionVariables, options?: C): AsyncIterable<CreatedWsStreamSubscription>;
     createdStreamWsMessage(variables: CreatedStreamWsMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedStreamWsMessageSubscription>;
+    updatedStreamWsMessage(variables: UpdatedStreamWsMessageSubscriptionVariables, options?: C): AsyncIterable<UpdatedStreamWsMessageSubscription>;
     getTasks(variables?: GetTasksQueryVariables, options?: C): Promise<GetTasksQuery>;
     cancelTask(variables: CancelTaskMutationVariables, options?: C): Promise<CancelTaskMutation>;
     startedTask(variables?: StartedTaskSubscriptionVariables, options?: C): AsyncIterable<StartedTaskSubscription>;
