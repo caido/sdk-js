@@ -1,3 +1,4 @@
+import type { Extension } from "@codemirror/state";
 import type { HTTPQL, ID } from "./utils";
 /**
  * Utilities to interact with the HTTP History page.
@@ -24,4 +25,9 @@ export type HTTPHistorySDK = {
      * @param id The ID of the scope to set.
      */
     setScope: (id: ID | undefined) => Promise<void>;
+    /**
+     * Add an extension to the request editor.
+     * @param extension The extension to add.
+     */
+    addRequestEditorExtension: (extension: Extension) => void;
 };
