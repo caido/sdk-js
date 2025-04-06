@@ -1,7 +1,3 @@
-type JSONPrimitive = string | number | boolean | null | undefined;
-type JSONValue = JSONPrimitive | JSONValue[] | {
-    [key: string]: JSONValue;
-};
 export type Maybe<T> = T | undefined | null;
 export type InputMaybe<T> = T | undefined | null;
 export type Exact<T extends {
@@ -83,8 +79,8 @@ export type Scalars = {
     };
     /** A scalar that can represent any JSON value. */
     JSON: {
-        input: JSONValue;
-        output: JSONValue;
+        input: unknown;
+        output: unknown;
     };
     JsonObject: {
         input: Record<string, unknown>;
@@ -2164,7 +2160,7 @@ export type Plugin = {
 export type PluginAuthor = {
     email?: Maybe<Scalars["String"]["output"]>;
     name?: Maybe<Scalars["String"]["output"]>;
-    url?: Maybe<Scalars["Url"]["output"]>;
+    url?: Maybe<Scalars["String"]["output"]>;
 };
 export type PluginBackend = Plugin & {
     enabled: Scalars["Boolean"]["output"];
@@ -10215,6 +10211,9 @@ export type InterceptStreamWsMessagesQuery = {
                     alteration: Alteration;
                     edited: boolean;
                 } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
             };
         } | {
             __typename: "InterceptResponseMessage";
@@ -10259,6 +10258,9 @@ export type InterceptStreamWsMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
                 } | undefined | null;
             };
         } | {
@@ -14697,7 +14699,7 @@ export type PluginFrontendFullFragment = {
     __typename: "PluginFrontend";
     entrypoint?: string | undefined | null;
     style?: string | undefined | null;
-    data?: JSONValue | undefined | null;
+    data?: unknown | undefined | null;
     id: string;
     name?: string | undefined | null;
     enabled: boolean;
@@ -14778,7 +14780,7 @@ export type PluginPackageFullFragment = {
         __typename: "PluginFrontend";
         entrypoint?: string | undefined | null;
         style?: string | undefined | null;
-        data?: JSONValue | undefined | null;
+        data?: unknown | undefined | null;
         id: string;
         name?: string | undefined | null;
         enabled: boolean;
@@ -14861,7 +14863,7 @@ export type PluginPackagesQuery = {
             __typename: "PluginFrontend";
             entrypoint?: string | undefined | null;
             style?: string | undefined | null;
-            data?: JSONValue | undefined | null;
+            data?: unknown | undefined | null;
             id: string;
             name?: string | undefined | null;
             enabled: boolean;
@@ -14953,7 +14955,7 @@ export type InstallPluginPackageMutation = {
                 __typename: "PluginFrontend";
                 entrypoint?: string | undefined | null;
                 style?: string | undefined | null;
-                data?: JSONValue | undefined | null;
+                data?: unknown | undefined | null;
                 id: string;
                 name?: string | undefined | null;
                 enabled: boolean;
@@ -15051,7 +15053,7 @@ export type TogglePluginMutation = {
             __typename: "PluginFrontend";
             entrypoint?: string | undefined | null;
             style?: string | undefined | null;
-            data?: JSONValue | undefined | null;
+            data?: unknown | undefined | null;
             id: string;
             name?: string | undefined | null;
             enabled: boolean;
@@ -15120,7 +15122,7 @@ export type SetPluginDataMutation = {
             __typename: "PluginFrontend";
             entrypoint?: string | undefined | null;
             style?: string | undefined | null;
-            data?: JSONValue | undefined | null;
+            data?: unknown | undefined | null;
             id: string;
             name?: string | undefined | null;
             enabled: boolean;
@@ -15195,7 +15197,7 @@ export type CreatedPluginPackageSubscription = {
                 __typename: "PluginFrontend";
                 entrypoint?: string | undefined | null;
                 style?: string | undefined | null;
-                data?: JSONValue | undefined | null;
+                data?: unknown | undefined | null;
                 id: string;
                 name?: string | undefined | null;
                 enabled: boolean;
@@ -15268,7 +15270,7 @@ export type UpdatedPluginSubscription = {
             __typename: "PluginFrontend";
             entrypoint?: string | undefined | null;
             style?: string | undefined | null;
-            data?: JSONValue | undefined | null;
+            data?: unknown | undefined | null;
             id: string;
             name?: string | undefined | null;
             enabled: boolean;
@@ -20674,8 +20676,8 @@ export type UserProfileFullFragment = {
 };
 export type UserSettingsFullFragment = {
     __typename: "UserSettings";
-    data: JSONValue;
-    migrations: JSONValue;
+    data: unknown;
+    migrations: unknown;
 };
 export type UpdateViewerSettingsMutationVariables = Exact<{
     input: UpdateViewerSettingsInput;
@@ -20684,8 +20686,8 @@ export type UpdateViewerSettingsMutation = {
     updateViewerSettings: {
         settings?: {
             __typename: "UserSettings";
-            data: JSONValue;
-            migrations: JSONValue;
+            data: unknown;
+            migrations: unknown;
         } | undefined | null;
     };
 };
@@ -20724,8 +20726,8 @@ export type UserSettingsQuery = {
         id: string;
         settings?: {
             __typename: "UserSettings";
-            data: JSONValue;
-            migrations: JSONValue;
+            data: unknown;
+            migrations: unknown;
         } | undefined | null;
     };
 };

@@ -28,7 +28,7 @@ export type { MenuItem } from "./menu";
 export type { ReplayTab, ReplaySession, ReplayCollection } from "./replay";
 export type { HostedFile } from "./files";
 export type { Filter } from "./filters";
-export type { HTTPQL, ID } from "./utils";
+export type { HTTPQL, ID, JSONValue, JSONCompatible } from "./utils";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceSection, MatchReplaceSectionRequestBody, MatchReplaceSectionRequestFirstLine, MatchReplaceSectionRequestHeader, MatchReplaceSectionRequestMethod, MatchReplaceSectionRequestPath, MatchReplaceSectionRequestQuery, MatchReplaceSectionResponseBody, MatchReplaceSectionResponseFirstLine, MatchReplaceSectionResponseHeader, MatchReplaceSectionResponseStatusCode, MatchReplaceOperationStatusCode, MatchReplaceOperationStatusCodeUpdate, MatchReplaceOperationQuery, MatchReplaceOperationQueryRaw, MatchReplaceOperationQueryAdd, MatchReplaceOperationQueryRemove, MatchReplaceOperationQueryUpdate, MatchReplaceOperationPath, MatchReplaceOperationPathRaw, MatchReplaceOperationMethod, MatchReplaceOperationMethodUpdate, MatchReplaceOperationHeader, MatchReplaceOperationHeaderRaw, MatchReplaceOperationHeaderAdd, MatchReplaceOperationHeaderRemove, MatchReplaceOperationHeaderUpdate, MatchReplaceOperationBody, MatchReplaceOperationBodyRaw, MatchReplaceOperationFirstLine, MatchReplaceOperationFirstLineRaw, MatchReplaceReplacer, MatchReplaceReplacerTerm, MatchReplaceReplacerWorkflow, MatchReplaceMatcherName, MatchReplaceMatcherRaw, MatchReplaceMatcherRawFull, MatchReplaceMatcherRawRegex, MatchReplaceMatcherRawValue, } from "./matchReplace";
 export type { Scope } from "./scopes";
 export type { EnvironmentVariable } from "./environment";
