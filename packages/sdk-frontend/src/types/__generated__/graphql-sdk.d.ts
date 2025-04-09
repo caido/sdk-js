@@ -634,6 +634,9 @@ export type CertificateUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: CertificateErrorReason;
 };
+export type ClearSitemapEntriesPayload = {
+    deletedIds: Array<Scalars["ID"]["output"]>;
+};
 export declare const CloudErrorReason: {
     readonly Unavailable: "UNAVAILABLE";
     readonly Unexpected: "UNEXPECTED";
@@ -1111,6 +1114,11 @@ export type DeleteReplaySessionsPayload = {
 export type DeleteScopePayload = {
     deletedId: Scalars["ID"]["output"];
 };
+export type DeleteSitemapEntriesError = OtherUserError | UnknownIdUserError;
+export type DeleteSitemapEntriesPayload = {
+    deletedIds: Array<Scalars["ID"]["output"]>;
+    errors: Array<DeleteSitemapEntriesError>;
+};
 export type DeleteTamperRuleCollectionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1203,6 +1211,10 @@ export type DeletedReplaySessionPayload = {
 };
 export type DeletedScopePayload = {
     deletedScopeId: Scalars["ID"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type DeletedSitemapEntriesPayload = {
+    deletedIds: Array<Scalars["ID"]["output"]>;
     snapshot: Scalars["Snapshot"]["output"];
 };
 export type DeletedTamperRuleCollectionPayload = {
@@ -1583,6 +1595,7 @@ export type MutationRoot = {
     cancelDataExportTask: CancelDataExportTaskPayload;
     cancelRestoreBackupTask: CancelRestoreBackupTaskPayload;
     cancelTask: CancelTaskPayload;
+    clearSitemapEntries: ClearSitemapEntriesPayload;
     createAssistantSession: CreateAssistantSessionPayload;
     createAutomateSession: CreateAutomateSessionPayload;
     createBackup: CreateBackupPayload;
@@ -1619,6 +1632,7 @@ export type MutationRoot = {
     deleteReplaySessionCollection: DeleteReplaySessionCollectionPayload;
     deleteReplaySessions: DeleteReplaySessionsPayload;
     deleteScope: DeleteScopePayload;
+    deleteSitemapEntries: DeleteSitemapEntriesPayload;
     deleteTamperRule: DeleteTamperRulePayload;
     deleteTamperRuleCollection: DeleteTamperRuleCollectionPayload;
     deleteUpstreamProxyHttp: DeleteUpstreamProxyHttpPayload;
@@ -1826,6 +1840,9 @@ export type MutationRootDeleteReplaySessionsArgs = {
 };
 export type MutationRootDeleteScopeArgs = {
     id: Scalars["ID"]["input"];
+};
+export type MutationRootDeleteSitemapEntriesArgs = {
+    ids: Array<Scalars["ID"]["input"]>;
 };
 export type MutationRootDeleteTamperRuleArgs = {
     id: Scalars["ID"]["input"];
@@ -3307,6 +3324,7 @@ export type SubscriptionRoot = {
     deletedReplaySession: DeletedReplaySessionPayload;
     deletedReplaySessionCollection: DeletedReplaySessionCollectionPayload;
     deletedScope: DeletedScopePayload;
+    deletedSitemapEntry: DeletedSitemapEntriesPayload;
     deletedTamperRule: DeletedTamperRulePayload;
     deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
     deletedUpstreamProxyHttp: DeletedUpstreamProxyHttpPayload;
@@ -19345,6 +19363,30 @@ export type SitemapEntryRequestsQuery = {
         } | undefined | null;
     } | undefined | null;
 };
+export type DeleteSitemapEntriesMutationVariables = Exact<{
+    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+}>;
+export type DeleteSitemapEntriesMutation = {
+    deleteSitemapEntries: {
+        deletedIds: Array<string>;
+        errors: Array<{
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        }>;
+    };
+};
+export type ClearSitemapEntriesMutationVariables = Exact<{
+    [key: string]: never;
+}>;
+export type ClearSitemapEntriesMutation = {
+    clearSitemapEntries: {
+        deletedIds: Array<string>;
+    };
+};
 export type CreatedSitemapEntrySubscriptionVariables = Exact<{
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
@@ -19474,6 +19516,15 @@ export type UpdatedSitemapEntrySubscription = {
                 } | undefined | null;
             };
         };
+    };
+};
+export type DeletedSitemapEntrySubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedSitemapEntrySubscription = {
+    deletedSitemapEntry: {
+        deletedIds: Array<string>;
+        snapshot: number;
     };
 };
 export type StreamMetaFragment = {
@@ -21617,8 +21668,11 @@ export declare const DeletedScopeDocument = "\n    subscription deletedScope {\n
 export declare const SitemapRootEntriesDocument = "\n    query sitemapRootEntries($scopeId: ID) {\n  sitemapRootEntries(scopeId: $scopeId) {\n    edges {\n      ...sitemapEntryEdgeMeta\n    }\n  }\n}\n    \n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryChildrenDocument = "\n    query sitemapEntryChildren($id: ID!) {\n  sitemapDescendantEntries(parentId: $id, depth: DIRECT) {\n    edges {\n      cursor\n      node {\n        ...sitemapEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryRequestsDocument = "\n    query sitemapEntryRequests($id: ID!, $after: String, $before: String, $first: Int, $last: Int) {\n  sitemapEntry(id: $id) {\n    ...sitemapEntryMeta\n    requests(after: $after, before: $before, first: $first, last: $last) {\n      edges {\n        cursor\n        node {\n          ...requestMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const DeleteSitemapEntriesDocument = "\n    mutation deleteSitemapEntries($ids: [ID!]!) {\n  deleteSitemapEntries(ids: $ids) {\n    deletedIds\n    errors {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const ClearSitemapEntriesDocument = "\n    mutation clearSitemapEntries {\n  clearSitemapEntries {\n    deletedIds\n  }\n}\n    ";
 export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
+export declare const DeletedSitemapEntryDocument = "\n    subscription deletedSitemapEntry {\n  deletedSitemapEntry {\n    deletedIds\n    snapshot\n  }\n}\n    ";
 export declare const WebsocketStreamsBeforeDocument = "\n    query websocketStreamsBefore($before: String, $last: Int!, $scopeId: ID, $order: StreamOrderInput!) {\n  streams(\n    before: $before\n    last: $last\n    scopeId: $scopeId\n    order: $order\n    protocol: WS\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamsAfterDocument = "\n    query websocketStreamsAfter($after: String, $first: Int!, $scopeId: ID, $order: StreamOrderInput!) {\n  streams(\n    after: $after\n    first: $first\n    scopeId: $scopeId\n    order: $order\n    protocol: WS\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamsByOffsetDocument = "\n    query websocketStreamsByOffset($offset: Int!, $limit: Int!, $scopeId: ID, $order: StreamOrderInput!) {\n  streamsByOffset(\n    offset: $offset\n    limit: $limit\n    scopeId: $scopeId\n    order: $order\n    protocol: WS\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
@@ -21910,8 +21964,11 @@ export declare function getSdk<C>(requester: Requester<C>): {
     sitemapRootEntries(variables?: SitemapRootEntriesQueryVariables, options?: C): Promise<SitemapRootEntriesQuery>;
     sitemapEntryChildren(variables: SitemapEntryChildrenQueryVariables, options?: C): Promise<SitemapEntryChildrenQuery>;
     sitemapEntryRequests(variables: SitemapEntryRequestsQueryVariables, options?: C): Promise<SitemapEntryRequestsQuery>;
+    deleteSitemapEntries(variables: DeleteSitemapEntriesMutationVariables, options?: C): Promise<DeleteSitemapEntriesMutation>;
+    clearSitemapEntries(variables?: ClearSitemapEntriesMutationVariables, options?: C): Promise<ClearSitemapEntriesMutation>;
     createdSitemapEntry(variables?: CreatedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<CreatedSitemapEntrySubscription>;
     updatedSitemapEntry(variables?: UpdatedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<UpdatedSitemapEntrySubscription>;
+    deletedSitemapEntry(variables?: DeletedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<DeletedSitemapEntrySubscription>;
     websocketStreamsBefore(variables: WebsocketStreamsBeforeQueryVariables, options?: C): Promise<WebsocketStreamsBeforeQuery>;
     websocketStreamsAfter(variables: WebsocketStreamsAfterQueryVariables, options?: C): Promise<WebsocketStreamsAfterQuery>;
     websocketStreamsByOffset(variables: WebsocketStreamsByOffsetQueryVariables, options?: C): Promise<WebsocketStreamsByOffsetQuery>;
