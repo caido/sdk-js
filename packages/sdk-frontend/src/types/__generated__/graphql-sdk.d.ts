@@ -222,6 +222,9 @@ export declare const AuthenticationScope: {
     readonly ProfileRead: "PROFILE_READ";
 };
 export type AuthenticationScope = (typeof AuthenticationScope)[keyof typeof AuthenticationScope];
+export type AuthenticationState = {
+    allowGuests: Scalars["Boolean"]["output"];
+};
 export type AuthenticationToken = {
     accessToken: Scalars["Token"]["output"];
     expiresAt: Scalars["DateTime"]["output"];
@@ -642,6 +645,13 @@ export declare const CloudErrorReason: {
     readonly Unexpected: "UNEXPECTED";
 };
 export type CloudErrorReason = (typeof CloudErrorReason)[keyof typeof CloudErrorReason];
+export type CloudUser = {
+    assistantUsage: AssistantUsage;
+    id: Scalars["ID"]["output"];
+    plugins: Array<PluginFrontend>;
+    profile: UserProfile;
+    settings?: Maybe<UserSettings>;
+};
 export type CloudUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: CloudErrorReason;
@@ -1393,6 +1403,16 @@ export type GlobalizeWorkflowPayload = {
     error?: Maybe<GlobalizeWorkflowError>;
     workflow?: Maybe<Workflow>;
 };
+export type GuestAuthenticationError = OtherUserError | PermissionDeniedUserError;
+export type GuestAuthenticationPayload = {
+    error?: Maybe<GuestAuthenticationError>;
+    token?: Maybe<AuthenticationToken>;
+};
+export type GuestUser = {
+    id: Scalars["ID"]["output"];
+    plugins: Array<PluginFrontend>;
+    settings?: Maybe<UserSettings>;
+};
 export type HostedFile = {
     createdAt: Scalars["DateTime"]["output"];
     id: Scalars["ID"]["output"];
@@ -1646,6 +1666,7 @@ export type MutationRoot = {
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
     localizeWorkflow: LocalizeWorkflowPayload;
+    loginAsGuest: GuestAuthenticationPayload;
     logout: LogoutPayload;
     moveReplaySession: MoveReplaySessionPayload;
     moveTamperRule: MoveTamperRulePayload;
@@ -2161,6 +2182,7 @@ export type PauseInterceptPayload = {
 };
 export declare const PermissionDeniedErrorReason: {
     readonly Entitlement: "ENTITLEMENT";
+    readonly GuestUser: "GUEST_USER";
 };
 export type PermissionDeniedErrorReason = (typeof PermissionDeniedErrorReason)[keyof typeof PermissionDeniedErrorReason];
 export type PermissionDeniedUserError = UserError & {
@@ -2297,6 +2319,7 @@ export type QueryRoot = {
     assistantModels: Array<AssistantModel>;
     assistantSession?: Maybe<AssistantSession>;
     assistantSessions: Array<AssistantSession>;
+    authenticationState: AuthenticationState;
     automateEntry?: Maybe<AutomateEntry>;
     automateSession?: Maybe<AutomateSession>;
     automateSessions: AutomateSessionConnection;
@@ -4218,13 +4241,7 @@ export type UpstreamProxySocks = {
     includeDns: Scalars["Boolean"]["output"];
     rank: Scalars["Rank"]["output"];
 };
-export type User = {
-    assistantUsage: AssistantUsage;
-    id: Scalars["ID"]["output"];
-    plugins: Array<PluginFrontend>;
-    profile: UserProfile;
-    settings?: Maybe<UserSettings>;
-};
+export type User = CloudUser | GuestUser;
 export type UserEntitlement = {
     name: Scalars["String"]["output"];
 };
@@ -4417,11 +4434,14 @@ export type AssistantCloudStateQueryVariables = Exact<{
 }>;
 export type AssistantCloudStateQuery = {
     viewer: {
+        __typename: "CloudUser";
         id: string;
         assistantUsage: {
             __typename: "AssistantUsage";
             balance: number;
         };
+    } | {
+        __typename: "GuestUser";
     };
     assistantModels: Array<{
         __typename: "AssistantModel";
@@ -4675,6 +4695,14 @@ export type AuthenticationTokenFullFragment = {
     refreshToken?: string | undefined | null;
     scopes: Array<AuthenticationScope>;
 };
+export type AuthenticationStateQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type AuthenticationStateQuery = {
+    authenticationState: {
+        allowGuests: boolean;
+    };
+};
 export type StartAuthenticationFlowMutationVariables = Exact<{
     [key: string]: never;
 }>;
@@ -4744,6 +4772,28 @@ export type LogoutMutation = {
         } | {
             __typename: "OtherUserError";
             code: string;
+        } | undefined | null;
+    };
+};
+export type LoginAsGuestMutationVariables = Exact<{
+    [key: string]: never;
+}>;
+export type LoginAsGuestMutation = {
+    loginAsGuest: {
+        token?: {
+            __typename: "AuthenticationToken";
+            accessToken: string;
+            expiresAt: Date;
+            refreshToken?: string | undefined | null;
+            scopes: Array<AuthenticationScope>;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
         } | undefined | null;
     };
 };
@@ -20747,6 +20797,7 @@ export type UserProfileQueryVariables = Exact<{
 }>;
 export type UserProfileQuery = {
     viewer: {
+        __typename: "CloudUser";
         id: string;
         profile: {
             __typename: "UserProfile";
@@ -20767,6 +20818,8 @@ export type UserProfileQuery = {
                 };
             };
         };
+    } | {
+        __typename: "GuestUser";
     };
 };
 export type UserSettingsQueryVariables = Exact<{
@@ -20774,6 +20827,15 @@ export type UserSettingsQueryVariables = Exact<{
 }>;
 export type UserSettingsQuery = {
     viewer: {
+        __typename: "CloudUser";
+        id: string;
+        settings?: {
+            __typename: "UserSettings";
+            data: unknown;
+            migrations: unknown;
+        } | undefined | null;
+    } | {
+        __typename: "GuestUser";
         id: string;
         settings?: {
             __typename: "UserSettings";
@@ -21435,7 +21497,7 @@ export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment wor
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantSessionDocument = "\n    query assistantSession($id: ID!) {\n  assistantSession(id: $id) {\n    ...assistantSessionFull\n  }\n}\n    \n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
-export declare const AssistantCloudStateDocument = "\n    query assistantCloudState {\n  viewer {\n    id\n    assistantUsage {\n      ...assistantUsageFull\n    }\n  }\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    \n\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
+export declare const AssistantCloudStateDocument = "\n    query assistantCloudState {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      assistantUsage {\n        ...assistantUsageFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n    }\n  }\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    \n\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
 export declare const SendAssistantMessageDocument = "\n    mutation sendAssistantMessage($sessionId: ID!, $message: String) {\n  sendAssistantMessage(sessionId: $sessionId, message: $message) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const CreateAssistantSessionDocument = "\n    mutation createAssistantSession($input: CreateAssistantSessionInput!) {\n  createAssistantSession(input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const DeleteAssistantSessionDocument = "\n    mutation deleteAssistantSession($id: ID!) {\n  deleteAssistantSession(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -21444,9 +21506,11 @@ export declare const CreatedAssistantMessageDocument = "\n    subscription creat
 export declare const CreatedAssistantMessageTaskDocument = "\n    subscription createdAssistantMessageTask {\n  createdAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UpdatedAssistantMessageTaskDocument = "\n    subscription updatedAssistantMessageTask {\n  updatedAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UpdatedViewerAssistantUsageDocument = "\n    subscription updatedViewerAssistantUsage {\n  updatedViewerAssistantUsage {\n    usage {\n      ...assistantUsageFull\n    }\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    ";
+export declare const AuthenticationStateDocument = "\n    query authenticationState {\n  authenticationState {\n    allowGuests\n  }\n}\n    ";
 export declare const StartAuthenticationFlowDocument = "\n    mutation startAuthenticationFlow {\n  startAuthenticationFlow {\n    request {\n      ...authenticationRequestFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on InternalUserError {\n        ...internalUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationRequestFull on AuthenticationRequest {\n  __typename\n  id\n  expiresAt\n  userCode\n  verificationUrl\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RefreshAuthenticationTokenDocument = "\n    mutation refreshAuthenticationToken($refreshToken: Token!) {\n  refreshAuthenticationToken(refreshToken: $refreshToken) {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const LogoutDocument = "\n    mutation logout {\n  logout {\n    success\n    error {\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const LoginAsGuestDocument = "\n    mutation loginAsGuest {\n  loginAsGuest {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedAuthenticationTokenDocument = "\n    subscription createdAuthenticationToken($requestId: ID!) {\n  createdAuthenticationToken(requestId: $requestId) {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on InternalUserError {\n        ...internalUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const AutomateEntryDocument = "\n    query automateEntry($id: ID!) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    ";
 export declare const AutomateEntryRequestsDocument = "\n    query automateEntryRequests($id: ID!, $after: String, $first: Int, $before: String, $last: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(\n      after: $after\n      before: $before\n      first: $first\n      last: $last\n      order: $order\n      filter: $filter\n    ) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
@@ -21708,8 +21772,8 @@ export declare const CreatedUpstreamProxySocksDocument = "\n    subscription cre
 export declare const UpdatedUpstreamProxySocksDocument = "\n    subscription updatedUpstreamProxySocks {\n  updatedUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeletedUpstreamProxySocksDocument = "\n    subscription deletedUpstreamProxySocks {\n  deletedUpstreamProxySocks {\n    deletedProxyId\n  }\n}\n    ";
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
-export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    id\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
-export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    id\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
+export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
+export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -21740,9 +21804,11 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdAssistantMessageTask(variables?: CreatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageTaskSubscription>;
     updatedAssistantMessageTask(variables?: UpdatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAssistantMessageTaskSubscription>;
     updatedViewerAssistantUsage(variables?: UpdatedViewerAssistantUsageSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerAssistantUsageSubscription>;
+    authenticationState(variables?: AuthenticationStateQueryVariables, options?: C): Promise<AuthenticationStateQuery>;
     startAuthenticationFlow(variables?: StartAuthenticationFlowMutationVariables, options?: C): Promise<StartAuthenticationFlowMutation>;
     refreshAuthenticationToken(variables: RefreshAuthenticationTokenMutationVariables, options?: C): Promise<RefreshAuthenticationTokenMutation>;
     logout(variables?: LogoutMutationVariables, options?: C): Promise<LogoutMutation>;
+    loginAsGuest(variables?: LoginAsGuestMutationVariables, options?: C): Promise<LoginAsGuestMutation>;
     createdAuthenticationToken(variables: CreatedAuthenticationTokenSubscriptionVariables, options?: C): AsyncIterable<CreatedAuthenticationTokenSubscription>;
     automateEntry(variables: AutomateEntryQueryVariables, options?: C): Promise<AutomateEntryQuery>;
     automateEntryRequests(variables: AutomateEntryRequestsQueryVariables, options?: C): Promise<AutomateEntryRequestsQuery>;
