@@ -30,4 +30,9 @@ export type HTTPHistorySDK = {
      * @param extension The extension to add.
      */
     addRequestEditorExtension: (extension: Extension) => void;
+    /**
+     * Add an extension to the response editor.
+     * @param extension The extension to add.
+     */
+    addResponseEditorExtension: (extension: Extension) => void;
 };
