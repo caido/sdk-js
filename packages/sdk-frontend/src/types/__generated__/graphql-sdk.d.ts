@@ -745,6 +745,7 @@ export type CreateFindingPayload = {
 };
 export type CreateProjectInput = {
     name: Scalars["String"]["input"];
+    temporary: Scalars["Boolean"]["input"];
 };
 export type CreateProjectPayload = {
     error?: Maybe<CreateProjectPayloadError>;
@@ -1677,6 +1678,7 @@ export type MutationRoot = {
     moveTamperRule: MoveTamperRulePayload;
     pauseAutomateTask: PauseAutomateTaskPayload;
     pauseIntercept: PauseInterceptPayload;
+    persistProject: PersistProjectPayload;
     rankDnsRewrite: RankDnsRewritePayload;
     rankTamperRule: RankTamperRulePayload;
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
@@ -1916,6 +1918,9 @@ export type MutationRootMoveTamperRuleArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootPauseAutomateTaskArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootPersistProjectArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootRankDnsRewriteArgs = {
@@ -2194,6 +2199,11 @@ export type PermissionDeniedUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: PermissionDeniedErrorReason;
 };
+export type PersistProjectPayload = {
+    error?: Maybe<PersistProjectPayloadError>;
+    project?: Maybe<Project>;
+};
+export type PersistProjectPayloadError = OtherUserError | PermissionDeniedUserError | UnknownIdUserError;
 export type Plugin = {
     enabled: Scalars["Boolean"]["output"];
     id: Scalars["ID"]["output"];
@@ -2284,6 +2294,7 @@ export type Project = {
     path: Scalars["String"]["output"];
     size: Scalars["Int"]["output"];
     status: ProjectStatus;
+    temporary: Scalars["Boolean"]["output"];
     updatedAt: Scalars["DateTime"]["output"];
     version: Scalars["String"]["output"];
 };
@@ -2652,7 +2663,7 @@ export type RenameProjectPayload = {
     error?: Maybe<RenameProjectPayloadError>;
     project?: Maybe<Project>;
 };
-export type RenameProjectPayloadError = NameTakenUserError | OtherUserError;
+export type RenameProjectPayloadError = NameTakenUserError | OtherUserError | UnknownIdUserError;
 export type RenameReplaySessionCollectionPayload = {
     collection?: Maybe<ReplaySessionCollection>;
 };
@@ -6633,6 +6644,7 @@ export type RestoreBackupTaskMetaFragment = {
         path: string;
         version: string;
         status: ProjectStatus;
+        temporary: boolean;
         size: number;
         createdAt: Date;
         updatedAt: Date;
@@ -6706,6 +6718,7 @@ export type FinishedRestoreBackupTaskSuccessFullFragment = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -6810,6 +6823,7 @@ export type RestoreBackupTasksQuery = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -6937,6 +6951,7 @@ export type RestoreBackupFromFileMutation = {
                 path: string;
                 version: string;
                 status: ProjectStatus;
+                temporary: boolean;
                 size: number;
                 createdAt: Date;
                 updatedAt: Date;
@@ -6988,6 +7003,7 @@ export type RestoreBackupMutation = {
                 path: string;
                 version: string;
                 status: ProjectStatus;
+                temporary: boolean;
                 size: number;
                 createdAt: Date;
                 updatedAt: Date;
@@ -7173,6 +7189,7 @@ export type StartedRestoreBackupTaskSubscription = {
                 path: string;
                 version: string;
                 status: ProjectStatus;
+                temporary: boolean;
                 size: number;
                 createdAt: Date;
                 updatedAt: Date;
@@ -7230,6 +7247,7 @@ export type FinishedRetoreBackupTaskSubscription = {
                 path: string;
                 version: string;
                 status: ProjectStatus;
+                temporary: boolean;
                 size: number;
                 createdAt: Date;
                 updatedAt: Date;
@@ -15421,6 +15439,7 @@ export type ProjectFullFragment = {
     path: string;
     version: string;
     status: ProjectStatus;
+    temporary: boolean;
     size: number;
     createdAt: Date;
     updatedAt: Date;
@@ -15436,6 +15455,7 @@ export type CurrentProjectFullFragment = {
         path: string;
         version: string;
         status: ProjectStatus;
+        temporary: boolean;
         size: number;
         createdAt: Date;
         updatedAt: Date;
@@ -15461,6 +15481,7 @@ export type CreatedProjectSubscription = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -15482,6 +15503,7 @@ export type UpdatedProjectSubscription = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -15511,6 +15533,7 @@ export type CreateProjectMutation = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -15549,6 +15572,7 @@ export type SelectProjectMutation = {
                 path: string;
                 version: string;
                 status: ProjectStatus;
+                temporary: boolean;
                 size: number;
                 createdAt: Date;
                 updatedAt: Date;
@@ -15609,6 +15633,7 @@ export type RenameProjectMutation = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -15622,6 +15647,44 @@ export type RenameProjectMutation = {
             code: string;
         } | {
             __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type PersistProjectMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type PersistProjectMutation = {
+    persistProject: {
+        project?: {
+            __typename: "Project";
+            id: string;
+            name: string;
+            path: string;
+            version: string;
+            status: ProjectStatus;
+            temporary: boolean;
+            size: number;
+            createdAt: Date;
+            updatedAt: Date;
+            backups: Array<{
+                id: string;
+            }>;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
             code: string;
         } | undefined | null;
     };
@@ -15638,6 +15701,7 @@ export type CurrentProjectQuery = {
             path: string;
             version: string;
             status: ProjectStatus;
+            temporary: boolean;
             size: number;
             createdAt: Date;
             updatedAt: Date;
@@ -15663,6 +15727,7 @@ export type ProjectsQuery = {
         path: string;
         version: string;
         status: ProjectStatus;
+        temporary: boolean;
         size: number;
         createdAt: Date;
         updatedAt: Date;
@@ -21387,7 +21452,7 @@ export declare const FinishedBackupTaskCancelledFullFragmentDoc = "\n    fragmen
 export declare const InternalUserErrorFullFragmentDoc = "\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    ";
 export declare const BackupUserErrorFullFragmentDoc = "\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const FinishedBackupTaskErrorFullFragmentDoc = "\n    fragment finishedBackupTaskErrorFull on FinishedBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
-export declare const ProjectFullFragmentDoc = "\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const ProjectFullFragmentDoc = "\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const RestoreBackupTaskMetaFragmentDoc = "\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    ";
 export declare const FinishedRestoreBackupTaskSuccessFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    ";
 export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    ";
@@ -21574,12 +21639,12 @@ export declare const DeletedAutomateSessionDocument = "\n    subscription delete
 export declare const BackupsDocument = "\n    query backups {\n  backups {\n    ...backupMeta\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const BackupUriDocument = "\n    query backupUri($id: ID!) {\n  backup(id: $id) {\n    downloadUri\n  }\n}\n    ";
 export declare const BackupTasksDocument = "\n    query backupTasks {\n  backupTasks {\n    ...backupTaskMeta\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupTasksDocument = "\n    query restoreBackupTasks {\n  restoreBackupTasks {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupTasksDocument = "\n    query restoreBackupTasks {\n  restoreBackupTasks {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const CreateBackupDocument = "\n    mutation createBackup($id: ID!) {\n  createBackup(projectId: $id) {\n    task {\n      ...backupTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const DeleteBackupDocument = "\n    mutation deleteBackup($id: ID!) {\n  deleteBackup(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const RenameBackupDocument = "\n    mutation renameBackup($id: ID!, $name: String!) {\n  renameBackup(id: $id, name: $name) {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupFromFileDocument = "\n    mutation restoreBackupFromFile($name: String!, $file: Upload!) {\n  restoreBackup(input: {name: $name, source: {file: $file}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupDocument = "\n    mutation restoreBackup($name: String!, $id: ID!) {\n  restoreBackup(input: {name: $name, source: {backupId: $id}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupFromFileDocument = "\n    mutation restoreBackupFromFile($name: String!, $file: Upload!) {\n  restoreBackup(input: {name: $name, source: {file: $file}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupDocument = "\n    mutation restoreBackup($name: String!, $id: ID!) {\n  restoreBackup(input: {name: $name, source: {backupId: $id}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const CancelBackupTaskDocument = "\n    mutation cancelBackupTask($id: ID!) {\n  cancelBackupTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CancelRestoreBackupTaskDocument = "\n    mutation cancelRestoreBackupTask($id: ID!) {\n  cancelRestoreBackupTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedBackupDocument = "\n    subscription createdBackup {\n  createdBackup {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
@@ -21587,8 +21652,8 @@ export declare const UpdatedBackupDocument = "\n    subscription updatedBackup {
 export declare const DeletedBackupDocument = "\n    subscription deletedBackup {\n  deletedBackup {\n    deletedBackupId\n  }\n}\n    ";
 export declare const StartedBackupTaskDocument = "\n    subscription startedBackupTask {\n  startedBackupTask {\n    task {\n      ...backupTaskMeta\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const FinishedBackupTaskDocument = "\n    subscription finishedBackupTask {\n  finishedBackupTask {\n    ... on FinishedBackupTaskSuccess {\n      ...finishedBackupTaskSuccessFull\n    }\n    ... on FinishedBackupTaskCancelled {\n      ...finishedBackupTaskCancelledFull\n    }\n    ... on FinishedBackupTaskError {\n      ...finishedBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedBackupTaskSuccessFull on FinishedBackupTaskSuccess {\n  __typename\n  task {\n    ...backupTaskMeta\n  }\n}\n    \n\n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment finishedBackupTaskCancelledFull on FinishedBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedBackupTaskErrorFull on FinishedBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const StartedRestoreBackupTaskDocument = "\n    subscription startedRestoreBackupTask {\n  startedRestoreBackupTask {\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
-export declare const FinishedRetoreBackupTaskDocument = "\n    subscription finishedRetoreBackupTask {\n  finishedRestoreBackupTask {\n    ... on FinishedRestoreBackupTaskSuccess {\n      ...finishedRestoreBackupTaskSuccessFull\n    }\n    ... on FinishedRestoreBackupTaskCancelled {\n      ...finishedRestoreBackupTaskCancelledFull\n    }\n    ... on FinishedRestoreBackupTaskError {\n      ...finishedRestoreBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const StartedRestoreBackupTaskDocument = "\n    subscription startedRestoreBackupTask {\n  startedRestoreBackupTask {\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const FinishedRetoreBackupTaskDocument = "\n    subscription finishedRetoreBackupTask {\n  finishedRestoreBackupTask {\n    ... on FinishedRestoreBackupTaskSuccess {\n      ...finishedRestoreBackupTaskSuccessFull\n    }\n    ... on FinishedRestoreBackupTaskCancelled {\n      ...finishedRestoreBackupTaskCancelledFull\n    }\n    ... on FinishedRestoreBackupTaskError {\n      ...finishedRestoreBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const BrowserDocument = "\n    query browser {\n  browser {\n    ...browserFull\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const DeleteBrowserDocument = "\n    mutation deleteBrowser {\n  deleteBrowser {\n    deletedId\n  }\n}\n    ";
 export declare const InstallBrowserDocument = "\n    mutation installBrowser {\n  installBrowser {\n    browser {\n      ...browserFull\n    }\n    error {\n      ... on UnsupportedPlatformUserError {\n        ...unsupportedPlatformUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    \n\n    fragment unsupportedPlatformUserErrorFull on UnsupportedPlatformUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -21706,15 +21771,16 @@ export declare const CreatedPluginPackageDocument = "\n    subscription createdP
 export declare const DeletedPluginPackageDocument = "\n    subscription deletedPluginPackage {\n  deletedPluginPackage {\n    deletedPackageId\n  }\n}\n    ";
 export declare const UpdatedPluginDocument = "\n    subscription updatedPlugin {\n  updatedPlugin {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CreatedPluginEventDocument = "\n    subscription createdPluginEvent {\n  createdPluginEvent {\n    pluginId\n    eventArgs\n    eventName\n  }\n}\n    ";
-export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
-export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
-export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
-export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
+export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const PersistProjectDocument = "\n    mutation persistProject($id: ID!) {\n  persistProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
+export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
 export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -22011,6 +22077,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     selectProject(variables: SelectProjectMutationVariables, options?: C): Promise<SelectProjectMutation>;
     deleteProject(variables: DeleteProjectMutationVariables, options?: C): Promise<DeleteProjectMutation>;
     renameProject(variables: RenameProjectMutationVariables, options?: C): Promise<RenameProjectMutation>;
+    persistProject(variables: PersistProjectMutationVariables, options?: C): Promise<PersistProjectMutation>;
     currentProject(variables?: CurrentProjectQueryVariables, options?: C): Promise<CurrentProjectQuery>;
     projects(variables?: ProjectsQueryVariables, options?: C): Promise<ProjectsQuery>;
     setProjectConfigStream(variables: SetProjectConfigStreamMutationVariables, options?: C): Promise<SetProjectConfigStreamMutation>;
