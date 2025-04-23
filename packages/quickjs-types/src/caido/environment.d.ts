@@ -44,6 +44,11 @@ declare module "caido:utils" {
      * @default true
      */
     global: boolean;
+    /**
+     * The `name` of the Environment to set the variable on.
+     * This will take precedence over the `global` flag if provided.
+     */
+    env?: string;
   };
 
   /**
