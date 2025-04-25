@@ -24,9 +24,9 @@ export type CommandsSDK = {
      */
     register: (id: CommandID, options: {
         name: string;
-        run: (context: CommandContext) => void;
+        run: (context: CommandContext) => Promise<void> | void;
         group?: string;
-        when?: (context: CommandContext) => boolean;
+        when?: (context: CommandContext) => Promise<boolean> | boolean;
     }) => void;
 };
 /**
