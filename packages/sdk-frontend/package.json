@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-frontend",
-  "version": "0.48.2-beta.0",
+  "version": "0.48.2-beta.1",
   "description": "Typing for the Caido Frontend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -15,7 +15,8 @@
   },
   "peerDependencies": {
     "@codemirror/view": "^6.0.0",
-    "@codemirror/state": "^6.0.0"
+    "@codemirror/state": "^6.0.0",
+    "vue": "^3.0.0"
   },
   "peerDependenciesMeta": {}
 }

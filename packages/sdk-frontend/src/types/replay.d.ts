@@ -1,4 +1,9 @@
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type DefineAddToSlotFn } from "./slots";
 import type { ID } from "./utils";
+export declare const ReplaySlot: {
+    readonly SessionToolbar: "session-toolbar";
+};
+export type ReplaySlot = (typeof ReplaySlot)[keyof typeof ReplaySlot];
 /**
  * A replay tab.
  * @category Replay
@@ -112,4 +117,12 @@ export type ReplaySDK = {
      * @returns Whether the collection was deleted.
      */
     deleteCollection: (id: ID) => Promise<boolean>;
+    /**
+     * Add a component to a slot.
+     * @param slot The slot to add the component to.
+     * @param content The content to add to the slot.
+     */
+    addToSlot: DefineAddToSlotFn<{
+        [ReplaySlot.SessionToolbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    }>;
 };
