@@ -649,6 +649,9 @@ export declare const CloudErrorReason: {
     readonly Unexpected: "UNEXPECTED";
 };
 export type CloudErrorReason = (typeof CloudErrorReason)[keyof typeof CloudErrorReason];
+export type CloudStatus = {
+    sync: Scalars["Boolean"]["output"];
+};
 export type CloudUser = {
     assistantUsage: AssistantUsage;
     id: Scalars["ID"]["output"];
@@ -1467,6 +1470,10 @@ export type InterceptEntryEdge = {
     cursor: Scalars["String"]["output"];
     /** The item at the end of the edge */
     node: InterceptEntry;
+};
+export type InterceptEntryOffset = {
+    offset: Scalars["Int"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
 };
 export declare const InterceptEntryOrderBy: {
     readonly Id: "ID";
@@ -2364,6 +2371,7 @@ export type QueryRoot = {
     interceptEntries: InterceptEntryConnection;
     interceptEntriesByOffset: InterceptEntryConnection;
     interceptEntry?: Maybe<InterceptEntry>;
+    interceptEntryOffset?: Maybe<InterceptEntryOffset>;
     interceptMessages: InterceptMessageConnection;
     interceptOptions: InterceptOptions;
     interceptStatus: InterceptStatus;
@@ -2374,6 +2382,7 @@ export type QueryRoot = {
     replaySessionCollections: ReplaySessionCollectionConnection;
     replaySessions: ReplaySessionConnection;
     request?: Maybe<Request>;
+    requestOffset?: Maybe<RequestOffset>;
     requests: RequestConnection;
     requestsByOffset: RequestConnection;
     response?: Maybe<Response>;
@@ -2472,6 +2481,12 @@ export type QueryRootInterceptEntriesByOffsetArgs = {
 export type QueryRootInterceptEntryArgs = {
     id: Scalars["ID"]["input"];
 };
+export type QueryRootInterceptEntryOffsetArgs = {
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+    id: Scalars["ID"]["input"];
+    order?: InputMaybe<InterceptEntryOrderInput>;
+    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
 export type QueryRootInterceptMessagesArgs = {
     after?: InputMaybe<Scalars["String"]["input"]>;
     before?: InputMaybe<Scalars["String"]["input"]>;
@@ -2499,6 +2514,12 @@ export type QueryRootReplaySessionsArgs = {
 };
 export type QueryRootRequestArgs = {
     id: Scalars["ID"]["input"];
+};
+export type QueryRootRequestOffsetArgs = {
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+    id: Scalars["ID"]["input"];
+    order?: InputMaybe<RequestResponseOrderInput>;
+    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 export type QueryRootRequestsArgs = {
     after?: InputMaybe<Scalars["String"]["input"]>;
@@ -2927,6 +2948,10 @@ export type RequestMetadata = {
     color?: Maybe<Scalars["String"]["output"]>;
     id: Scalars["ID"]["output"];
 };
+export type RequestOffset = {
+    offset: Scalars["Int"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
+};
 export type RequestRawInput = {
     connectionInfo: ConnectionInfoInput;
     raw: Scalars["Blob"]["input"];
@@ -3009,6 +3034,7 @@ export type RunConvertWorkflowPayload = {
 export type Runtime = {
     availableUpdate?: Maybe<Release>;
     certificate: Certificate;
+    cloudStatus: CloudStatus;
     logs: Scalars["Uri"]["output"];
     platform: Scalars["String"]["output"];
     version: Scalars["String"]["output"];
@@ -3411,6 +3437,7 @@ export type SubscriptionRoot = {
     updatedUpstreamProxyHttp: UpdatedUpstreamProxyHttpPayload;
     updatedUpstreamProxySocks: UpdatedUpstreamProxySocksPayload;
     updatedViewerAssistantUsage: UpdatedViewerAssistantUsagePayload;
+    updatedViewerProfile: UpdatedViewerProfilePayload;
     updatedViewerSettings: UpdatedViewerSettingsPayload;
     updatedWorkflow: UpdatedWorkflowPayload;
     uploadedHostedFile: UploadedHostedFilePayload;
@@ -4206,6 +4233,9 @@ export type UpdatedUpstreamProxySocksPayload = {
 };
 export type UpdatedViewerAssistantUsagePayload = {
     usage: AssistantUsage;
+};
+export type UpdatedViewerProfilePayload = {
+    profile: UserProfile;
 };
 export type UpdatedViewerSettingsPayload = {
     settings: UserSettings;
@@ -15846,16 +15876,6 @@ export type ReplayEntryFullFragment = {
             }>;
         }>;
     };
-    connection: {
-        __typename: "ConnectionInfo";
-        host: string;
-        port: number;
-        isTLS: boolean;
-        SNI?: string | undefined | null;
-    };
-    session: {
-        id: string;
-    };
     request?: {
         __typename: "Request";
         id: string;
@@ -15872,6 +15892,7 @@ export type ReplayEntryFullFragment = {
         fileExtension?: string | undefined | null;
         source: Source;
         createdAt: Date;
+        raw: string;
         metadata: {
             __typename: "RequestMetadata";
             id: string;
@@ -15890,7 +15911,52 @@ export type ReplayEntryFullFragment = {
         stream?: {
             id: string;
         } | undefined | null;
+        edits: Array<{
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            sni?: string | undefined | null;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+            stream?: {
+                id: string;
+            } | undefined | null;
+        }>;
     } | undefined | null;
+    connection: {
+        __typename: "ConnectionInfo";
+        host: string;
+        port: number;
+        isTLS: boolean;
+        SNI?: string | undefined | null;
+    };
+    session: {
+        id: string;
+    };
 };
 export type ReplaySessionMetaFragment = {
     __typename: "ReplaySession";
@@ -16000,18 +16066,6 @@ export type ReplaySessionMetaFragment = {
                 } | undefined | null;
             } | undefined | null;
         }>;
-        pageInfo: {
-            __typename: "PageInfo";
-            hasPreviousPage: boolean;
-            hasNextPage: boolean;
-            startCursor?: string | undefined | null;
-            endCursor?: string | undefined | null;
-        };
-        count: {
-            __typename: "Count";
-            value: number;
-            snapshot: number;
-        };
     };
 };
 export type ReplaySessionCollectionMetaFragment = {
@@ -16126,18 +16180,6 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | undefined | null;
                 } | undefined | null;
             }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
         };
     }>;
 };
@@ -16147,17 +16189,41 @@ export type ReplayTaskMetaFragment = {
     createdAt: Date;
     replayEntry: {
         __typename: "ReplayEntry";
+        raw: string;
         id: string;
         error?: string | undefined | null;
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTLS: boolean;
-            SNI?: string | undefined | null;
-        };
-        session: {
-            id: string;
+        settings: {
+            placeholders: Array<{
+                __typename: "ReplayPlaceholder";
+                inputRange: {
+                    start: number;
+                    end: number;
+                };
+                outputRange: {
+                    start: number;
+                    end: number;
+                };
+                preprocessors: Array<{
+                    __typename: "ReplayPreprocessor";
+                    options: {
+                        __typename: "ReplayEnvironmentPreprocessor";
+                        variableName: string;
+                    } | {
+                        __typename: "ReplayPrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplaySuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplayUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "ReplayWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
         };
         request?: {
             __typename: "Request";
@@ -16175,6 +16241,7 @@ export type ReplayTaskMetaFragment = {
             fileExtension?: string | undefined | null;
             source: Source;
             createdAt: Date;
+            raw: string;
             metadata: {
                 __typename: "RequestMetadata";
                 id: string;
@@ -16193,7 +16260,52 @@ export type ReplayTaskMetaFragment = {
             stream?: {
                 id: string;
             } | undefined | null;
+            edits: Array<{
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            }>;
         } | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTLS: boolean;
+            SNI?: string | undefined | null;
+        };
+        session: {
+            id: string;
+        };
     };
 };
 export type ReplayPrefixPreprocessorFullFragment = {
@@ -16310,16 +16422,6 @@ export type ReplayEntryQuery = {
                 }>;
             }>;
         };
-        connection: {
-            __typename: "ConnectionInfo";
-            host: string;
-            port: number;
-            isTLS: boolean;
-            SNI?: string | undefined | null;
-        };
-        session: {
-            id: string;
-        };
         request?: {
             __typename: "Request";
             id: string;
@@ -16336,6 +16438,7 @@ export type ReplayEntryQuery = {
             fileExtension?: string | undefined | null;
             source: Source;
             createdAt: Date;
+            raw: string;
             metadata: {
                 __typename: "RequestMetadata";
                 id: string;
@@ -16354,7 +16457,52 @@ export type ReplayEntryQuery = {
             stream?: {
                 id: string;
             } | undefined | null;
+            edits: Array<{
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            }>;
         } | undefined | null;
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTLS: boolean;
+            SNI?: string | undefined | null;
+        };
+        session: {
+            id: string;
+        };
     } | undefined | null;
 };
 export type ActiveReplayEntryBySessionQueryVariables = Exact<{
@@ -16469,18 +16617,6 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | undefined | null;
                 } | undefined | null;
             }>;
-            pageInfo: {
-                __typename: "PageInfo";
-                hasPreviousPage: boolean;
-                hasNextPage: boolean;
-                startCursor?: string | undefined | null;
-                endCursor?: string | undefined | null;
-            };
-            count: {
-                __typename: "Count";
-                value: number;
-                snapshot: number;
-            };
         };
     } | undefined | null;
 };
@@ -16906,18 +17042,6 @@ export type ReplaySessionCollectionsQuery = {
                                 } | undefined | null;
                             } | undefined | null;
                         }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
                     };
                 }>;
             };
@@ -17042,18 +17166,6 @@ export type RenameReplaySessionCollectionMutation = {
                             } | undefined | null;
                         } | undefined | null;
                     }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
                 };
             }>;
         } | undefined | null;
@@ -17176,18 +17288,6 @@ export type CreateReplaySessionCollectionMutation = {
                             } | undefined | null;
                         } | undefined | null;
                     }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
                 };
             }>;
         } | undefined | null;
@@ -17315,18 +17415,6 @@ export type RenameReplaySessionMutation = {
                         } | undefined | null;
                     } | undefined | null;
                 }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
             };
         } | undefined | null;
     };
@@ -17445,18 +17533,6 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | undefined | null;
                     } | undefined | null;
                 }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
             };
         } | undefined | null;
     };
@@ -17590,18 +17666,6 @@ export type CreateReplaySessionMutation = {
                                 } | undefined | null;
                             } | undefined | null;
                         }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
                     };
                 }>;
             };
@@ -17706,18 +17770,6 @@ export type CreateReplaySessionMutation = {
                         } | undefined | null;
                     } | undefined | null;
                 }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
             };
         } | undefined | null;
     };
@@ -17836,18 +17888,6 @@ export type MoveReplaySessionMutation = {
                         } | undefined | null;
                     } | undefined | null;
                 }>;
-                pageInfo: {
-                    __typename: "PageInfo";
-                    hasPreviousPage: boolean;
-                    hasNextPage: boolean;
-                    startCursor?: string | undefined | null;
-                    endCursor?: string | undefined | null;
-                };
-                count: {
-                    __typename: "Count";
-                    value: number;
-                    snapshot: number;
-                };
             };
         } | undefined | null;
     };
@@ -17864,17 +17904,41 @@ export type StartReplayTaskMutation = {
             createdAt: Date;
             replayEntry: {
                 __typename: "ReplayEntry";
+                raw: string;
                 id: string;
                 error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTLS: boolean;
-                    SNI?: string | undefined | null;
-                };
-                session: {
-                    id: string;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
                 };
                 request?: {
                     __typename: "Request";
@@ -17892,6 +17956,7 @@ export type StartReplayTaskMutation = {
                     fileExtension?: string | undefined | null;
                     source: Source;
                     createdAt: Date;
+                    raw: string;
                     metadata: {
                         __typename: "RequestMetadata";
                         id: string;
@@ -17910,7 +17975,52 @@ export type StartReplayTaskMutation = {
                     stream?: {
                         id: string;
                     } | undefined | null;
+                    edits: Array<{
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    }>;
                 } | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                session: {
+                    id: string;
+                };
             };
         } | undefined | null;
         error?: {
@@ -18045,18 +18155,6 @@ export type CreatedReplaySessionSubscription = {
                             } | undefined | null;
                         } | undefined | null;
                     }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
                 };
             };
         };
@@ -18177,18 +18275,6 @@ export type UpdatedReplaySessionSubscription = {
                             } | undefined | null;
                         } | undefined | null;
                     }>;
-                    pageInfo: {
-                        __typename: "PageInfo";
-                        hasPreviousPage: boolean;
-                        hasNextPage: boolean;
-                        startCursor?: string | undefined | null;
-                        endCursor?: string | undefined | null;
-                    };
-                    count: {
-                        __typename: "Count";
-                        value: number;
-                        snapshot: number;
-                    };
                 };
             };
         };
@@ -18320,18 +18406,6 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | undefined | null;
                             } | undefined | null;
                         }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
                     };
                 }>;
             };
@@ -18456,18 +18530,6 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | undefined | null;
                             } | undefined | null;
                         }>;
-                        pageInfo: {
-                            __typename: "PageInfo";
-                            hasPreviousPage: boolean;
-                            hasNextPage: boolean;
-                            startCursor?: string | undefined | null;
-                            endCursor?: string | undefined | null;
-                        };
-                        count: {
-                            __typename: "Count";
-                            value: number;
-                            snapshot: number;
-                        };
                     };
                 }>;
             };
@@ -20153,17 +20215,41 @@ export type GetTasksQuery = {
         createdAt: Date;
         replayEntry: {
             __typename: "ReplayEntry";
+            raw: string;
             id: string;
             error?: string | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTLS: boolean;
-                SNI?: string | undefined | null;
-            };
-            session: {
-                id: string;
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
             };
             request?: {
                 __typename: "Request";
@@ -20181,6 +20267,7 @@ export type GetTasksQuery = {
                 fileExtension?: string | undefined | null;
                 source: Source;
                 createdAt: Date;
+                raw: string;
                 metadata: {
                     __typename: "RequestMetadata";
                     id: string;
@@ -20199,7 +20286,52 @@ export type GetTasksQuery = {
                 stream?: {
                     id: string;
                 } | undefined | null;
+                edits: Array<{
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                }>;
             } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            session: {
+                id: string;
+            };
         };
     } | {
         __typename: "WorkflowTask";
@@ -20243,17 +20375,41 @@ export type StartedTaskSubscription = {
             createdAt: Date;
             replayEntry: {
                 __typename: "ReplayEntry";
+                raw: string;
                 id: string;
                 error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTLS: boolean;
-                    SNI?: string | undefined | null;
-                };
-                session: {
-                    id: string;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
                 };
                 request?: {
                     __typename: "Request";
@@ -20271,6 +20427,7 @@ export type StartedTaskSubscription = {
                     fileExtension?: string | undefined | null;
                     source: Source;
                     createdAt: Date;
+                    raw: string;
                     metadata: {
                         __typename: "RequestMetadata";
                         id: string;
@@ -20289,7 +20446,52 @@ export type StartedTaskSubscription = {
                     stream?: {
                         id: string;
                     } | undefined | null;
+                    edits: Array<{
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    }>;
                 } | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                session: {
+                    id: string;
+                };
             };
         } | {
             __typename: "WorkflowTask";
@@ -20318,17 +20520,41 @@ export type FinishedTaskSubscription = {
             createdAt: Date;
             replayEntry: {
                 __typename: "ReplayEntry";
+                raw: string;
                 id: string;
                 error?: string | undefined | null;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTLS: boolean;
-                    SNI?: string | undefined | null;
-                };
-                session: {
-                    id: string;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
                 };
                 request?: {
                     __typename: "Request";
@@ -20346,6 +20572,7 @@ export type FinishedTaskSubscription = {
                     fileExtension?: string | undefined | null;
                     source: Source;
                     createdAt: Date;
+                    raw: string;
                     metadata: {
                         __typename: "RequestMetadata";
                         id: string;
@@ -20364,7 +20591,52 @@ export type FinishedTaskSubscription = {
                     stream?: {
                         id: string;
                     } | undefined | null;
+                    edits: Array<{
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    }>;
                 } | undefined | null;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                session: {
+                    id: string;
+                };
             };
         } | {
             __typename: "WorkflowTask";
@@ -21543,6 +21815,8 @@ export declare const TamperOperationStatusCodeFullFragmentDoc = "\n    fragment 
 export declare const TamperSectionFullFragmentDoc = "\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    ";
 export declare const TamperRuleFullFragmentDoc = "\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    ";
 export declare const TamperRuleCollectionFullFragmentDoc = "\n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    ";
+export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const CountFullFragmentDoc = "\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const PluginAuthorFullFragmentDoc = "\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    ";
 export declare const PluginLinksFullFragmentDoc = "\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    ";
 export declare const PluginPackageMetaFragmentDoc = "\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    ";
@@ -21558,6 +21832,9 @@ export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projec
 export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
 export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
+export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    ";
+export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
 export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplayUrlEncodePreprocessorFullFragmentDoc = "\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    ";
@@ -21565,13 +21842,8 @@ export declare const ReplayWorkflowPreprocessorFullFragmentDoc = "\n    fragment
 export declare const ReplayEnvironmentPreprocessorFullFragmentDoc = "\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
 export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    ";
 export declare const ReplayPlaceholderFullFragmentDoc = "\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    ";
-export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    ";
-export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const CountFullFragmentDoc = "\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    ";
-export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
-export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
-export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    ";
+export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    ";
+export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
@@ -21782,25 +22054,25 @@ export declare const PersistProjectDocument = "\n    mutation persistProject($id
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  backups {\n    id\n  }\n}\n    ";
 export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    activeEntry {\n      ...replayEntryMeta\n    }\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {\n  startReplayTask(sessionId: $sessionId, input: $input) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {\n  startReplayTask(sessionId: $sessionId, input: $input) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    count {\n      ...countFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQL) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -21849,10 +22121,10 @@ export declare const WebsocketMessageEditDocument = "\n    query websocketMessag
 export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  updatedStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryMeta\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
