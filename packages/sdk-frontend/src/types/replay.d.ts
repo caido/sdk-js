@@ -1,3 +1,4 @@
+import { type Extension } from "@codemirror/state";
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type DefineAddToSlotFn } from "./slots";
 import type { ID } from "./utils";
 export declare const ReplaySlot: {
@@ -125,4 +126,9 @@ export type ReplaySDK = {
     addToSlot: DefineAddToSlotFn<{
         [ReplaySlot.SessionToolbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     }>;
+    /**
+     * Add an extension to the request editor.
+     * @param extension The extension to add.
+     */
+    addRequestEditorExtension: (extension: Extension) => void;
 };
