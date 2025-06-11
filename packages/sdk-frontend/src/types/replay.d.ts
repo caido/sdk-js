@@ -126,18 +126,18 @@ export type ReplaySDK = {
      * @param content The content to add to the slot.
      * @example
      * ```ts
-     * addToSlot(ReplaySlot.SessionToolbar, {
+     * addToSlot(ReplaySlot.SessionToolbarPrimary, {
      *   kind: "Command",
      *   commandId: "my-command",
      *   icon: "my-icon",
      * });
      *
-     * addToSlot(ReplaySlot.SessionToolbar, {
+     * addToSlot(ReplaySlot.SessionToolbarSecondary, {
      *   kind: "Custom",
      *   component: MyComponent,
      * });
      *
-     * addToSlot(ReplaySlot.SessionToolbar, {
+     * addToSlot(ReplaySlot.Topbar, {
      *   kind: "Button",
      *   label: "My Button",
      *   icon: "my-icon",
