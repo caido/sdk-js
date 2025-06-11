@@ -2,7 +2,9 @@ import { type Extension } from "@codemirror/state";
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type DefineAddToSlotFn } from "./slots";
 import type { ID } from "./utils";
 export declare const ReplaySlot: {
-    readonly SessionToolbar: "session-toolbar";
+    readonly SessionToolbarPrimary: "session-toolbar-primary";
+    readonly SessionToolbarSecondary: "session-toolbar-secondary";
+    readonly Topbar: "topbar";
 };
 export type ReplaySlot = (typeof ReplaySlot)[keyof typeof ReplaySlot];
 /**
@@ -122,9 +124,33 @@ export type ReplaySDK = {
      * Add a component to a slot.
      * @param slot The slot to add the component to.
      * @param content The content to add to the slot.
+     * @example
+     * ```ts
+     * addToSlot(ReplaySlot.SessionToolbar, {
+     *   kind: "Command",
+     *   commandId: "my-command",
+     *   icon: "my-icon",
+     * });
+     *
+     * addToSlot(ReplaySlot.SessionToolbar, {
+     *   kind: "Custom",
+     *   component: MyComponent,
+     * });
+     *
+     * addToSlot(ReplaySlot.SessionToolbar, {
+     *   kind: "Button",
+     *   label: "My Button",
+     *   icon: "my-icon",
+     *   onClick: () => {
+     *     console.log("Button clicked");
+     *   },
+     * });
+     * ```
      */
     addToSlot: DefineAddToSlotFn<{
-        [ReplaySlot.SessionToolbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+        [ReplaySlot.SessionToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+        [ReplaySlot.SessionToolbarSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+        [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     }>;
     /**
      * Add an extension to the request editor.
