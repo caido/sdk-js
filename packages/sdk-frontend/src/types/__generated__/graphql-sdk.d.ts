@@ -1444,6 +1444,7 @@ export type InstallBrowserPayload = {
 };
 export type InstallPluginPackageError = CloudUserError | OtherUserError | PluginUserError | StoreUserError;
 export type InstallPluginPackageInput = {
+    force?: InputMaybe<Scalars["Boolean"]["input"]>;
     source: PluginPackageSource;
 };
 export type InstallPluginPackagePayload = {
@@ -19229,6 +19230,10 @@ export type ReleaseFullFragment = {
         platform: string;
     }>;
 };
+export type CloudStatusFullFragment = {
+    __typename: "CloudStatus";
+    sync: boolean;
+};
 export type LogLineFullFragment = {
     __typename: "LogLine";
     level: LogLevel;
@@ -19270,6 +19275,17 @@ export type GetLogsQueryVariables = Exact<{
 export type GetLogsQuery = {
     runtime: {
         logs: string;
+    };
+};
+export type GetCloudStatusQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type GetCloudStatusQuery = {
+    runtime: {
+        cloudStatus: {
+            __typename: "CloudStatus";
+            sync: boolean;
+        };
     };
 };
 export type GetCertificateQueryVariables = Exact<{
@@ -21214,6 +21230,32 @@ export type UserSettingsQuery = {
         } | undefined | null;
     };
 };
+export type UpdatedViewerProfileSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedViewerProfileSubscription = {
+    updatedViewerProfile: {
+        profile: {
+            __typename: "UserProfile";
+            identity: {
+                __typename: "UserIdentity";
+                name: string;
+                email: string;
+            };
+            subscription: {
+                __typename: "UserSubscription";
+                entitlements: Array<{
+                    __typename: "UserEntitlement";
+                    name: string;
+                }>;
+                plan: {
+                    __typename: "UserSubscriptionPlan";
+                    name: string;
+                };
+            };
+        };
+    };
+};
 export type WorkflowQueryVariables = Exact<{
     id: Scalars["ID"]["input"];
 }>;
@@ -21848,6 +21890,7 @@ export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMet
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const ReleaseFullFragmentDoc = "\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
+export declare const CloudStatusFullFragmentDoc = "\n    fragment cloudStatusFull on CloudStatus {\n  __typename\n  sync\n}\n    ";
 export declare const LogLineFullFragmentDoc = "\n    fragment logLineFull on LogLine {\n  __typename\n  level\n  message\n  target\n  timestamp\n}\n    ";
 export declare const ScopeFullFragmentDoc = "\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const SitemapEntryMetaFragmentDoc = "\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
@@ -22089,6 +22132,7 @@ export declare const ResponseDocument = "\n    query response($id: ID!) {\n  res
 export declare const GetUpdateStateDocument = "\n    query getUpdateState {\n  runtime {\n    availableUpdate {\n      ...releaseFull\n    }\n  }\n}\n    \n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const GetInstanceStateDocument = "\n    query getInstanceState {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";
+export declare const GetCloudStatusDocument = "\n    query getCloudStatus {\n  runtime {\n    cloudStatus {\n      ...cloudStatusFull\n    }\n  }\n}\n    \n    fragment cloudStatusFull on CloudStatus {\n  __typename\n  sync\n}\n    ";
 export declare const GetCertificateDocument = "\n    query getCertificate($password: Sensitive) {\n  runtime {\n    certificate {\n      p12(password: $password)\n    }\n  }\n}\n    ";
 export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RegenerateCertificateDocument = "\n    mutation regenerateCertificate {\n  regenerateCertificate {\n    success\n  }\n}\n    ";
@@ -22145,6 +22189,7 @@ export declare const DeletedUpstreamProxySocksDocument = "\n    subscription del
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
+export declare const UpdatedViewerProfileDocument = "\n    subscription updatedViewerProfile {\n  updatedViewerProfile {\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -22388,6 +22433,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     getUpdateState(variables?: GetUpdateStateQueryVariables, options?: C): Promise<GetUpdateStateQuery>;
     getInstanceState(variables?: GetInstanceStateQueryVariables, options?: C): Promise<GetInstanceStateQuery>;
     getLogs(variables?: GetLogsQueryVariables, options?: C): Promise<GetLogsQuery>;
+    getCloudStatus(variables?: GetCloudStatusQueryVariables, options?: C): Promise<GetCloudStatusQuery>;
     getCertificate(variables?: GetCertificateQueryVariables, options?: C): Promise<GetCertificateQuery>;
     importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
     regenerateCertificate(variables?: RegenerateCertificateMutationVariables, options?: C): Promise<RegenerateCertificateMutation>;
@@ -22444,6 +22490,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     updateViewerSettings(variables: UpdateViewerSettingsMutationVariables, options?: C): Promise<UpdateViewerSettingsMutation>;
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
+    updatedViewerProfile(variables?: UpdatedViewerProfileSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerProfileSubscription>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
     workflowsState(variables?: WorkflowsStateQueryVariables, options?: C): Promise<WorkflowsStateQuery>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
