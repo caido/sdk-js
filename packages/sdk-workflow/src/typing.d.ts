@@ -9,6 +9,7 @@ declare module "caido:workflow" {
     ProjectsSDK,
     EnvironmentSDK,
     RuntimeSDK,
+    ScopeSDK,
   } from "caido:utils";
 
   /**
@@ -73,6 +74,10 @@ declare module "caido:workflow" {
      * The SDK for the Projects service.
      */
     projects: ProjectsSDK;
+    /**
+     * The SDK for the Scope service.
+     */
+    scope: ScopeSDK;
     /**
      * The SDK for the Environment service.
      */

@@ -11,6 +11,7 @@ declare module "caido:plugin" {
     Project,
     EnvironmentSDK,
     RuntimeSDK,
+    ScopeSDK,
   } from "caido:utils";
 
   /**
@@ -170,6 +171,10 @@ declare module "caido:plugin" {
      * The SDK for the Projects service.
      */
     projects: ProjectsSDK;
+    /**
+     * The SDK for the Scope service.
+     */
+    scope: ScopeSDK;
     /**
      * The SDK for the Environment service.
      */
