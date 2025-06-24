@@ -24,6 +24,10 @@ declare module "caido:utils" {
      * The deduplication key of the finding.
      */
     getDedupeKey(): DedupeKey | undefined;
+    /**
+     * The ID of the associated {@link Request}.
+     */
+    getRequestId(): string;
   };
 
   /**
