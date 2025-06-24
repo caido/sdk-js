@@ -21429,6 +21429,16 @@ export type UpdatedViewerProfileSubscription = {
         };
     };
 };
+export type UpdatedViewerSettingsSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedViewerSettingsSubscription = {
+    updatedViewerSettings: {
+        settings: {
+            data: unknown;
+        };
+    };
+};
 export type WorkflowQueryVariables = Exact<{
     id: Scalars["ID"]["input"];
 }>;
@@ -22366,6 +22376,7 @@ export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewer
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UpdatedViewerProfileDocument = "\n    subscription updatedViewerProfile {\n  updatedViewerProfile {\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
+export declare const UpdatedViewerSettingsDocument = "\n    subscription updatedViewerSettings {\n  updatedViewerSettings {\n    settings {\n      data\n    }\n  }\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -22670,6 +22681,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
     updatedViewerProfile(variables?: UpdatedViewerProfileSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerProfileSubscription>;
+    updatedViewerSettings(variables?: UpdatedViewerSettingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerSettingsSubscription>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
     workflowsState(variables?: WorkflowsStateQueryVariables, options?: C): Promise<WorkflowsStateQuery>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
