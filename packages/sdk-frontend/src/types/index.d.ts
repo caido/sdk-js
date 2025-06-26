@@ -23,6 +23,7 @@ import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
 import type { WorkflowSDK } from "./workflows";
+export type { DialogOptions } from "./window";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export { type ReplayTab, type ReplaySession, type ReplayCollection, ReplaySlot, } from "./replay";
