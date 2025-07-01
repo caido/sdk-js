@@ -1,5 +1,4 @@
 import type { Editor } from "./editor";
-import type { CustomSlotContent } from "./slots";
 /**
  * Utilities to interact with the active page.
  * @category Window
@@ -21,24 +20,4 @@ export type WindowSDK = {
         variant?: "success" | "error" | "warning" | "info";
         duration?: number;
     }) => void;
-    /**
-     * Show a dialog component.
-     * @param component The custom slot content to display in the dialog.
-     * @param options Options for the dialog.
-     * @param options.title The title text for the dialog. Defaults to ""
-     * @param options.draggable Whether the dialog is draggable. Defaults to false
-     * @param options.closeOnEscape Whether the dialog closes when pressing Escape. Defaults to true
-     * @param options.modal Whether the dialog is modal. Defaults to true
-     * @param options.position The position of the dialog on the screen. Defaults to center
-     * @param options.closable Whether the close icon is hidden . Defaults to false
-     */
-    showDialog: (component: CustomSlotContent, options?: DialogOptions) => void;
-};
-export type DialogOptions = {
-    title?: string;
-    draggable?: boolean;
-    closeOnEscape?: boolean;
-    closable?: boolean;
-    modal?: boolean;
-    position?: "left" | "right" | "top" | "bottom" | "center" | "topleft" | "topright" | "bottomleft" | "bottomright";
 };

@@ -7,7 +7,6 @@ import type { EnvironmentSDK } from "./environment";
 import type { FilesSDK } from "./files";
 import type { FiltersSDK } from "./filters";
 import type { FindingsSDK } from "./findings";
-import type { FooterSDK } from "./footer";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { InterceptSDK } from "./intercept";
 import type { MatchReplaceSDK } from "./matchReplace";
@@ -24,8 +23,6 @@ import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
 import type { WindowSDK } from "./window";
 import type { WorkflowSDK } from "./workflows";
-export { FooterSlot } from "./footer";
-export type { DialogOptions } from "./window";
 export type { CommandContext } from "./commands";
 export type { MenuItem } from "./menu";
 export { type ReplayTab, type ReplaySession, type ReplayCollection, ReplaySlot, } from "./replay";
@@ -143,8 +140,4 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with workflows.
      */
     workflows: WorkflowSDK;
-    /**
-     * Utilities to interact with the footer.
-     */
-    footer: FooterSDK;
 };
