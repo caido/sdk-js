@@ -1098,6 +1098,13 @@ export type DeleteEnvironmentPayload = {
 export type DeleteFilterPresetPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
+export type DeleteFindingsInput = {
+    ids: Array<Scalars["ID"]["input"]>;
+    reporter?: never;
+} | {
+    ids?: never;
+    reporter: Scalars["String"]["input"];
+};
 export type DeleteFindingsPayload = {
     deletedIds?: Maybe<Array<Scalars["ID"]["output"]>>;
 };
@@ -1304,6 +1311,7 @@ export type Finding = {
     createdAt: Scalars["Timestamp"]["output"];
     dedupeKey?: Maybe<Scalars["String"]["output"]>;
     description?: Maybe<Scalars["String"]["output"]>;
+    hidden: Scalars["Boolean"]["output"];
     host: Scalars["String"]["output"];
     id: Scalars["ID"]["output"];
     path: Scalars["String"]["output"];
@@ -1421,6 +1429,16 @@ export type GuestUser = {
     id: Scalars["ID"]["output"];
     plugins: Array<PluginFrontend>;
     settings?: Maybe<UserSettings>;
+};
+export type HideFindingsInput = {
+    ids: Array<Scalars["ID"]["input"]>;
+    reporter?: never;
+} | {
+    ids?: never;
+    reporter: Scalars["String"]["input"];
+};
+export type HideFindingsPayload = {
+    findings?: Maybe<Array<Finding>>;
 };
 export type HostedFile = {
     createdAt: Scalars["DateTime"]["output"];
@@ -1676,6 +1694,7 @@ export type MutationRoot = {
     duplicateAutomateSession: DuplicateAutomateSessionPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
+    hideFindings: HideFindingsPayload;
     importCertificate: ImportCertificatePayload;
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
@@ -1746,6 +1765,7 @@ export type MutationRoot = {
     updateDnsUpstream: UpdateDnsUpstreamPayload;
     updateEnvironment: UpdateEnvironmentPayload;
     updateFilterPreset: UpdateFilterPresetPayload;
+    updateFinding: UpdateFindingPayload;
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
     updateTamperRule: UpdateTamperRulePayload;
@@ -1853,7 +1873,7 @@ export type MutationRootDeleteFilterPresetArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootDeleteFindingsArgs = {
-    ids: Array<Scalars["ID"]["input"]>;
+    input?: InputMaybe<DeleteFindingsInput>;
 };
 export type MutationRootDeleteHostedFileArgs = {
     id: Scalars["ID"]["input"];
@@ -1907,6 +1927,9 @@ export type MutationRootForwardInterceptMessageArgs = {
 };
 export type MutationRootGlobalizeWorkflowArgs = {
     id: Scalars["ID"]["input"];
+};
+export type MutationRootHideFindingsArgs = {
+    input?: InputMaybe<HideFindingsInput>;
 };
 export type MutationRootImportCertificateArgs = {
     input: ImportCertificateInput;
@@ -2127,6 +2150,10 @@ export type MutationRootUpdateEnvironmentArgs = {
 export type MutationRootUpdateFilterPresetArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateFilterPresetInput;
+};
+export type MutationRootUpdateFindingArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateFindingInput;
 };
 export type MutationRootUpdateRequestMetadataArgs = {
     id: Scalars["ID"]["input"];
@@ -3419,6 +3446,7 @@ export type SubscriptionRoot = {
     updatedEnvironment: UpdatedEnvironmentPayload;
     updatedEnvironmentContext: UpdatedEnvironmentContextPayload;
     updatedFilterPreset: UpdatedFilterPresetPayload;
+    updatedFindings: UpdatedFindingsPayload;
     updatedHostedFile: UpdatedHostedFilePayload;
     updatedInterceptEntry: UpdatedInterceptEntryPayload;
     updatedInterceptOptions: UpdatedInterceptOptionsPayload;
@@ -4041,6 +4069,16 @@ export type UpdateFilterPresetPayload = {
     error?: Maybe<UpdateFilterPresetError>;
     filter?: Maybe<FilterPreset>;
 };
+export type UpdateFindingError = OtherUserError | UnknownIdUserError;
+export type UpdateFindingInput = {
+    description?: InputMaybe<Scalars["String"]["input"]>;
+    hidden?: InputMaybe<Scalars["Boolean"]["input"]>;
+    title?: InputMaybe<Scalars["String"]["input"]>;
+};
+export type UpdateFindingPayload = {
+    error?: Maybe<UpdateFindingError>;
+    finding?: Maybe<Finding>;
+};
 export type UpdateRequestMetadataInput = {
     color?: InputMaybe<Scalars["String"]["input"]>;
 };
@@ -4152,6 +4190,16 @@ export type UpdatedEnvironmentPayload = {
 };
 export type UpdatedFilterPresetPayload = {
     filterEdge: FilterPresetEdge;
+};
+export type UpdatedFindingPayload = {
+    findingEdge: FindingEdge;
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type UpdatedFindingPayloadFindingEdgeArgs = {
+    order?: InputMaybe<FindingOrderInput>;
+};
+export type UpdatedFindingsPayload = {
+    findings: Array<UpdatedFindingPayload>;
 };
 export type UpdatedHostedFilePayload = {
     hostedFile: HostedFile;
@@ -9075,6 +9123,63 @@ export type DeletedFindingsSubscription = {
         snapshot: number;
     };
 };
+export type UpdatedFindingsSubscriptionVariables = Exact<{
+    order?: InputMaybe<FindingOrderInput>;
+}>;
+export type UpdatedFindingsSubscription = {
+    updatedFindings: {
+        findings: Array<{
+            snapshot: number;
+            findingEdge: {
+                cursor: string;
+                node: {
+                    id: string;
+                    title: string;
+                    description?: string | undefined | null;
+                    reporter: string;
+                    host: string;
+                    path: string;
+                    createdAt: Date;
+                    request: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    };
+                };
+            };
+        }>;
+    };
+};
 export type CreateFindingMutationVariables = Exact<{
     requestId: Scalars["ID"]["input"];
     input: CreateFindingInput;
@@ -9136,11 +9241,71 @@ export type CreateFindingMutation = {
     };
 };
 export type DeleteFindingsMutationVariables = Exact<{
-    ids: Array<Scalars["ID"]["input"]> | Scalars["ID"]["input"];
+    input: DeleteFindingsInput;
 }>;
 export type DeleteFindingsMutation = {
     deleteFindings: {
         deletedIds?: Array<string> | undefined | null;
+    };
+};
+export type UpdateFindingMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateFindingInput;
+}>;
+export type UpdateFindingMutation = {
+    updateFinding: {
+        finding?: {
+            id: string;
+            title: string;
+            description?: string | undefined | null;
+            reporter: string;
+            host: string;
+            path: string;
+            createdAt: Date;
+            request: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            };
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
     };
 };
 export type InterceptEntryFullFragment = {
@@ -21264,6 +21429,16 @@ export type UpdatedViewerProfileSubscription = {
         };
     };
 };
+export type UpdatedViewerSettingsSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedViewerSettingsSubscription = {
+    updatedViewerSettings: {
+        settings: {
+            data: unknown;
+        };
+    };
+};
 export type WorkflowQueryVariables = Exact<{
     id: Scalars["ID"]["input"];
 }>;
@@ -22041,8 +22216,10 @@ export declare const GetFindingsCountDocument = "\n    query getFindingsCount($f
 export declare const FindingReportersDocument = "\n    query findingReporters {\n  findingReporters\n}\n    ";
 export declare const CreatedFindingDocument = "\n    subscription createdFinding($order: FindingOrderInput) {\n  createdFinding {\n    findingEdge(order: $order) {\n      ...findingEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedFindingsDocument = "\n    subscription deletedFindings {\n  deletedFindings {\n    deletedFindingIds\n    snapshot\n  }\n}\n    ";
+export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($ids: [ID!]!) {\n  deleteFindings(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
+export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput!) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
+export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
@@ -22199,6 +22376,7 @@ export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewer
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    ... on CloudUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      __typename\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UpdatedViewerProfileDocument = "\n    subscription updatedViewerProfile {\n  updatedViewerProfile {\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
+export declare const UpdatedViewerSettingsDocument = "\n    subscription updatedViewerSettings {\n  updatedViewerSettings {\n    settings {\n      data\n    }\n  }\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -22343,8 +22521,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     findingReporters(variables?: FindingReportersQueryVariables, options?: C): Promise<FindingReportersQuery>;
     createdFinding(variables?: CreatedFindingSubscriptionVariables, options?: C): AsyncIterable<CreatedFindingSubscription>;
     deletedFindings(variables?: DeletedFindingsSubscriptionVariables, options?: C): AsyncIterable<DeletedFindingsSubscription>;
+    updatedFindings(variables?: UpdatedFindingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedFindingsSubscription>;
     createFinding(variables: CreateFindingMutationVariables, options?: C): Promise<CreateFindingMutation>;
     deleteFindings(variables: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
+    updateFinding(variables: UpdateFindingMutationVariables, options?: C): Promise<UpdateFindingMutation>;
     interceptEntries(variables?: InterceptEntriesQueryVariables, options?: C): Promise<InterceptEntriesQuery>;
     interceptEntriesByOffset(variables?: InterceptEntriesByOffsetQueryVariables, options?: C): Promise<InterceptEntriesByOffsetQuery>;
     interceptEntry(variables: InterceptEntryQueryVariables, options?: C): Promise<InterceptEntryQuery>;
@@ -22501,6 +22681,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
     updatedViewerProfile(variables?: UpdatedViewerProfileSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerProfileSubscription>;
+    updatedViewerSettings(variables?: UpdatedViewerSettingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerSettingsSubscription>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
     workflowsState(variables?: WorkflowsStateQueryVariables, options?: C): Promise<WorkflowsStateQuery>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
