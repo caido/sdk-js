@@ -9689,6 +9689,28 @@ export type InterceptEntryCountQuery = {
         };
     };
 };
+export type RequestOffsetQueryVariables = Exact<{
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+    id: Scalars["ID"]["input"];
+    order?: InputMaybe<RequestResponseOrderInput>;
+    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+}>;
+export type RequestOffsetQuery = {
+    requestOffset?: {
+        offset: number;
+    } | undefined | null;
+};
+export type InterceptEntryOffsetQueryVariables = Exact<{
+    filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+    id: Scalars["ID"]["input"];
+    order?: InputMaybe<InterceptEntryOrderInput>;
+    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+}>;
+export type InterceptEntryOffsetQuery = {
+    interceptEntryOffset?: {
+        offset: number;
+    } | undefined | null;
+};
 export type DeleteInterceptEntriesMutationVariables = Exact<{
     filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -22224,6 +22246,8 @@ export declare const InterceptEntriesDocument = "\n    query interceptEntries($a
 export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptEntryCountDocument = "\n    query interceptEntryCount($filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(first: 0, filter: $filter, scopeId: $scopeId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const RequestOffsetDocument = "\n    query RequestOffset($filter: HTTPQL, $id: ID!, $order: RequestResponseOrderInput, $scopeId: ID) {\n  requestOffset(filter: $filter, id: $id, order: $order, scopeId: $scopeId) {\n    offset\n  }\n}\n    ";
+export declare const InterceptEntryOffsetDocument = "\n    query InterceptEntryOffset($filter: HTTPQL, $id: ID!, $order: InterceptEntryOrderInput, $scopeId: ID) {\n  interceptEntryOffset(filter: $filter, id: $id, order: $order, scopeId: $scopeId) {\n    offset\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesDocument = "\n    mutation deleteInterceptEntries($filter: HTTPQL, $scopeId: ID) {\n  deleteInterceptEntries(filter: $filter, scopeId: $scopeId) {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n    error: userError {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteInterceptEntryDocument = "\n    mutation deleteInterceptEntry($id: ID!) {\n  deleteInterceptEntry(id: $id) {\n    deletedId\n    error: userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedInterceptEntryDocument = "\n    subscription createdInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  createdInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
@@ -22529,6 +22553,8 @@ export declare function getSdk<C>(requester: Requester<C>): {
     interceptEntriesByOffset(variables?: InterceptEntriesByOffsetQueryVariables, options?: C): Promise<InterceptEntriesByOffsetQuery>;
     interceptEntry(variables: InterceptEntryQueryVariables, options?: C): Promise<InterceptEntryQuery>;
     interceptEntryCount(variables?: InterceptEntryCountQueryVariables, options?: C): Promise<InterceptEntryCountQuery>;
+    RequestOffset(variables: RequestOffsetQueryVariables, options?: C): Promise<RequestOffsetQuery>;
+    InterceptEntryOffset(variables: InterceptEntryOffsetQueryVariables, options?: C): Promise<InterceptEntryOffsetQuery>;
     deleteInterceptEntries(variables?: DeleteInterceptEntriesMutationVariables, options?: C): Promise<DeleteInterceptEntriesMutation>;
     deleteInterceptEntry(variables: DeleteInterceptEntryMutationVariables, options?: C): Promise<DeleteInterceptEntryMutation>;
     createdInterceptEntry(variables?: CreatedInterceptEntrySubscriptionVariables, options?: C): AsyncIterable<CreatedInterceptEntrySubscription>;
