@@ -2,6 +2,7 @@
 
 echo "[*] Copying llrt typing"
 rsync -av --exclude=node_modules \
+      --include="fs/" \
       --include='fs/*.d.ts' \
       --include='buffer.d.ts' \
       --include='child_process.d.ts' \
@@ -13,6 +14,10 @@ rsync -av --exclude=node_modules \
       --include='path.d.ts' \
       --include='abort.d.ts' \
       --include='url.d.ts' \
+      --include='string_decoder.d.ts' \
+      --include="stream/" \
+      --include='stream/*.d.ts' \
+      --include='stream.d.ts' \
       --exclude='*' \
       ../../../dependency-llrt-ng/types/ \
       ./src/llrt/

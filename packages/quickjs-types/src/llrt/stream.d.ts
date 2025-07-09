@@ -150,6 +150,11 @@ declare module "stream" {
     removeListener(event: "end", listener: () => void): this;
     removeListener(event: "error", listener: (err: Error) => void): this;
     removeListener(event: "readable", listener: () => void): this;
+
+    /**
+     * Calls `readable.destroy()`.
+     */
+    [Symbol.dispose](): void;
   }
 
   class WritableStreamInner
