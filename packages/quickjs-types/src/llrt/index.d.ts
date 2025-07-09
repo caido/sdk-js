@@ -11,3 +11,4 @@
 /// <reference types="./path.d.ts" />
 /// <reference types="./process.d.ts" />
 /// <reference types="./stream.d.ts" />
+/// <reference types="./url.d.ts" />

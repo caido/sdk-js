@@ -12,8 +12,9 @@ rsync -av --exclude=node_modules \
       --include='net.d.ts' \
       --include='path.d.ts' \
       --include='abort.d.ts' \
+      --include='url.d.ts' \
       --exclude='*' \
-      ../../../dependency-llrt/types/ \
+      ../../../dependency-llrt-ng/types/ \
       ./src/llrt/
 
 echo "[*] Copying rquickjs-extra typing"
@@ -21,7 +22,6 @@ rsync -av --exclude=node_modules \
       --include='globals.d.ts' \
       --include='os.d.ts' \
       --include='timers.d.ts' \
-      --include='url.d.ts' \
       --exclude='*' \
       ../../../rquickjs-extra/types/ \
       ./src/extra/
