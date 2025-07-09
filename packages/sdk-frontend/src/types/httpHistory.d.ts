@@ -1,4 +1,5 @@
 import type { Extension } from "@codemirror/state";
+import type { RequestViewModeOptions } from "./request";
 import type { HTTPQL, ID } from "./utils";
 /**
  * Utilities to interact with the HTTP History page.
@@ -35,4 +36,9 @@ export type HTTPHistorySDK = {
      * @param extension The extension to add.
      */
     addResponseEditorExtension: (extension: Extension) => void;
+    /**
+     * Add a custom request view mode.
+     * @param options The view mode options.
+     */
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
 };
