@@ -23,6 +23,10 @@ declare module "caido:utils" {
      * Get the raw body as an array of bytes.
      */
     toRaw(): Uint8Array;
+    /**
+     * The length of the body in bytes.
+     */
+    readonly length: number;
   }
 
   /**
@@ -395,7 +399,7 @@ declare module "caido:utils" {
     setRaw(raw: Bytes): void;
     /**
      * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
-     * 
+     *
      * @throws {Error} If the bytes are not a valid HTTP request.
      * @see {@link RequestSpec.parse}
      */
@@ -606,6 +610,71 @@ declare module "caido:utils" {
   };
 
   /**
+   * Timeouts for sending a request and receiving a response.
+   * @category Requests
+   */
+  export type RequestSendTimeouts = {
+    /**
+     * The timeout to open the TCP connection to the target host
+     * and perform the TLS handshake.
+     *
+     * Defaults to 30s.
+     */
+    connect?: number;
+    /**
+     * The timeout between each read attempt for the response.
+     * On a slow connection, this is important to increase.
+     *
+     * Defaults to 5s.
+     */
+    partial?: number;
+    /**
+     * The timeout to read data after we have a read the full response.
+     *
+     * This is useful if you believe the server will send more data
+     * than implied by the Content-Length header.
+     *
+     * Defaults to 0s (no timeout).
+     */
+    extra?: number;
+    /**
+     * The timeout to receive the first byte of the response.
+     *
+     * After the first byte is received, the partial timeout will be used.
+     *
+     * Defaults to 30s.
+     */
+    response?: number;
+    /**
+     * The global timeout for sending a request and receiving a response.
+     *
+     * No default value.
+     */
+    global?: number;
+  };
+
+  export type RequestSendOptions = {
+    /**
+     * The timeouts to use for sending a request and receiving a response.
+     *
+     * If a number is provided, it will be used as the global timeout and
+     * the other timeouts will be set to infinity.
+     *
+     * See the {@link RequestSendTimeouts} for the default values.
+     */
+    timeouts?: RequestSendTimeouts | number;
+    /**
+     * If true, the request and response will be saved to the database
+     * and the user will see them in the Search tab.
+     *
+     * If you do not save, the request and response IDs will be set to 0.
+     *
+     * @default true
+     */
+    save?: boolean;
+  };
+
+  /**
    * The SDK for the Requests service.
    * @category Requests
    */
@@ -643,6 +712,7 @@ declare module "caido:utils" {
      * This respects the upstream proxy settings.
      *
      * @throws {Error} If the request cannot be sent.
+     * If the request times out, the error message will contain the word "Timeout".
      *
      * @example
      * ```js
@@ -656,7 +726,10 @@ declare module "caido:utils" {
      * }
      * ```
      */
-    send(request: RequestSpec | RequestSpecRaw): Promise<RequestResponse>;
+    send(
+      request: RequestSpec | RequestSpecRaw,
+      options?: RequestSendOptions,
+    ): Promise<RequestResponse>;
     /**
      * Checks if a request is in scope.
      *
