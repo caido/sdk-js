@@ -1,6 +1,6 @@
 import { type Extension } from "@codemirror/state";
-import { type ReplayCollection, type ReplaySession, type ReplaySlot, type ReplayTab } from "../types/replay";
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type DefineAddToSlotFn } from "../types/slots";
+import { type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab } from "../types/replay";
+import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with Replay.
@@ -96,11 +96,7 @@ export type ReplaySDK = {
      * });
      * ```
      */
-    addToSlot: DefineAddToSlotFn<{
-        [ReplaySlot.SessionToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
-        [ReplaySlot.SessionToolbarSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
-        [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
-    }>;
+    addToSlot: DefineAddToSlotFn<ReplaySlotContent>;
     /**
      * Add an extension to the request editor.
      * @param extension The extension to add.

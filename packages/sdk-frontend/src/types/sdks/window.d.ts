@@ -1,5 +1,5 @@
 import type { Editor } from "../types/editor";
-import type { CustomSlotContent } from "../types/slots";
+import type { ComponentDefinition } from "../types/utils";
 import { type DialogOptions } from "../types/window";
 /**
  * Utilities to interact with the active page.
@@ -33,5 +33,5 @@ export type WindowSDK = {
      * @param options.position The position of the dialog on the screen. Defaults to center
      * @param options.closable Whether the close icon is hidden . Defaults to false
      */
-    showDialog: (component: CustomSlotContent, options?: DialogOptions) => void;
+    showDialog: (component: ComponentDefinition, options?: DialogOptions) => void;
 };

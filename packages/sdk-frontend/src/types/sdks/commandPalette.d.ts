@@ -6,7 +6,6 @@ import { type CommandID } from "../types/commands";
 export type CommandPaletteSDK = {
     /**
      * Register a command.
-     * @deprecated Use `sdk.commandPalette.addToSlot` instead.
      * @param commandId The id of the command to register.
      */
     register: (commandId: CommandID) => void;

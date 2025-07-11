@@ -1,11 +1,11 @@
-export { FooterSlot } from "./types/footer";
+export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions } from "./types/window";
 export type { CommandContext } from "./types/commands";
 export type { MenuItem } from "./types/menu";
-export { type ReplayTab, type ReplaySession, type ReplayCollection, ReplaySlot, } from "./types/replay";
+export { type ReplayTab, type ReplaySession, type ReplayCollection, ReplaySlot, type ReplaySlotContent, } from "./types/replay";
 export type { HostedFile } from "./types/files";
 export type { Filter } from "./types/filter";
-export type { HTTPQL, ID } from "./types/utils";
+export type { HTTPQL, ID, ComponentDefinition } from "./types/utils";
 export type { JSONValue, JSONCompatible } from "./types/json";
 export type { SlotContent, ButtonSlotContent, CustomSlotContent, CommandSlotContent, } from "./types/slots";
 export type { RequestViewModeOptions } from "./types/request";

@@ -1,3 +1,4 @@
+import { type Component as VueComponent } from "vue";
 /**
  * A unique Caido identifier per type.
  */
@@ -17,6 +18,15 @@ export type HTTPQL = string & {
  */
 export type Icon = string & {
     __icon?: never;
+};
+/**
+ * A custom component that will be rendered in the UI.
+ *
+ */
+export type ComponentDefinition = {
+    component: VueComponent;
+    props?: Record<string, unknown>;
+    events?: Record<string, (...args: unknown[]) => void>;
 };
 export type PromisifiedReturnType<T extends (...args: unknown[]) => unknown> = ReturnType<T> extends Promise<infer U> ? Promise<U> : Promise<ReturnType<T>>;
 /**

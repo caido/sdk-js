@@ -1,4 +1,4 @@
-import { type Component } from "vue";
+import { type ComponentDefinition } from "./utils";
 export type RequestViewModeOptions = {
     /**
      * The label of the view mode.
@@ -7,5 +7,5 @@ export type RequestViewModeOptions = {
     /**
      * The component to render when the view mode is selected.
      */
-    component: Component;
+    view: ComponentDefinition;
 };

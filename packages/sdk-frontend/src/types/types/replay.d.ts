@@ -1,3 +1,4 @@
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type ID } from "./utils";
 export declare const ReplaySlot: {
     readonly SessionToolbarPrimary: "session-toolbar-primary";
@@ -5,6 +6,11 @@ export declare const ReplaySlot: {
     readonly Topbar: "topbar";
 };
 export type ReplaySlot = (typeof ReplaySlot)[keyof typeof ReplaySlot];
+export type ReplaySlotContent = {
+    [ReplaySlot.SessionToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [ReplaySlot.SessionToolbarSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+};
 /**
  * A replay tab.
  * @category Replay

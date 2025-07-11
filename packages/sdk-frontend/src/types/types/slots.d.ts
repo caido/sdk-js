@@ -1,5 +1,5 @@
-import { type Component } from "vue";
 import { type CommandID } from "./commands";
+import { type ComponentDefinition } from "./utils";
 type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = {
     type: TType;
 } & P;
@@ -8,8 +8,8 @@ export type ButtonSlotContent = DefineSlotContent<"Button", {
     icon?: string;
     onClick: () => void;
 }>;
-export type CustomSlotContent<TProps extends Record<string, unknown> = Record<string, unknown>> = DefineSlotContent<"Custom", {
-    component: Component<TProps>;
+export type CustomSlotContent = DefineSlotContent<"Custom", {
+    definition: ComponentDefinition;
 }>;
 export type CommandSlotContent = DefineSlotContent<"Command", {
     commandId: CommandID;
