@@ -12,6 +12,17 @@ export type ReplaySlotContent = {
     [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
+ * Options for opening a tab.
+ * @category Replay
+ */
+export type OpenTabOptions = {
+    /**
+     * Whether to select the tab after opening it.
+     * Defaults to true.
+     */
+    select?: boolean;
+};
+/**
  * A replay tab.
  * @category Replay
  */

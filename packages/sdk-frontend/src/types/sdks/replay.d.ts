@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab } from "../types/replay";
+import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab } from "../types/replay";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
@@ -10,8 +10,9 @@ export type ReplaySDK = {
     /**
      * Open a replay tab for the given session.
      * @param sessionId The ID of the session to open.
+     * @param options The options for opening the tab.
      */
-    openTab: (sessionId: ID) => void;
+    openTab: (sessionId: ID, options?: OpenTabOptions) => void;
     /**
      * Close a replay tab for the given session.
      * @param sessionId The ID of the session to close.
