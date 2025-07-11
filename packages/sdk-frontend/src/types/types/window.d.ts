@@ -6,3 +6,6 @@ export type DialogOptions = {
     modal?: boolean;
     position?: "left" | "right" | "top" | "bottom" | "center" | "topleft" | "topright" | "bottomleft" | "bottomright";
 };
+export type Dialog = {
+    close: () => void;
+};
