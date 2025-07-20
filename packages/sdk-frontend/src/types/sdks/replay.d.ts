@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab } from "../types/replay";
+import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type SendRequestOptions } from "../types/replay";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
@@ -103,4 +103,22 @@ export type ReplaySDK = {
      * @param extension The extension to add.
      */
     addRequestEditorExtension: (extension: Extension) => void;
+    /**
+     * Send a request to the Replay backend.
+     * @param request The request to send.
+     * @param options The options for sending the request.
+     * @example
+     * ```ts
+     * sendRequest(sessionId, {
+     *   connectionInfo: {
+     *     SNI: "example.com",
+     *     host: "example.com",
+     *     isTLS: true,
+     *     port: 443,
+     *   },
+     *   raw: "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n",
+     *   updateContentLength: false,
+     * });
+     */
+    sendRequest: (sessionId: ID, options: SendRequestOptions) => Promise<void>;
 };

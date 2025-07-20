@@ -2,7 +2,7 @@ export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions } from "./types/window";
 export type { CommandContext } from "./types/commands";
 export type { MenuItem } from "./types/menu";
-export { type ReplayTab, type ReplaySession, type ReplayCollection, ReplaySlot, type ReplaySlotContent, } from "./types/replay";
+export { type ReplayTab, type ReplaySession, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, } from "./types/replay";
 export type { HostedFile } from "./types/files";
 export type { Filter } from "./types/filter";
 export type { HTTPQL, ID, ComponentDefinition } from "./types/utils";
