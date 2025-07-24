@@ -602,6 +602,11 @@ export type CancelBackupTaskPayload = {
     cancelledId?: Maybe<Scalars["ID"]["output"]>;
     error?: Maybe<CancelBackupTaskError>;
 };
+export type CancelDataExportTaskPayload = {
+    cancelledId?: Maybe<Scalars["ID"]["output"]>;
+    userError?: Maybe<CancelExportTaskError>;
+};
+export type CancelExportTaskError = OtherUserError | UnknownIdUserError;
 export type CancelRestoreBackupTaskError = OtherUserError | UnknownIdUserError;
 export type CancelRestoreBackupTaskPayload = {
     cancelledId?: Maybe<Scalars["ID"]["output"]>;
@@ -815,7 +820,7 @@ export type CreateUpstreamProxySocksInput = {
 export type CreateUpstreamProxySocksPayload = {
     proxy?: Maybe<UpstreamProxySocks>;
 };
-export type CreateWorkflowError = OtherUserError | PermissionDeniedUserError | WorkflowUserError;
+export type CreateWorkflowError = OtherUserError | WorkflowUserError;
 export type CreateWorkflowInput = {
     definition: Scalars["JsonObject"]["input"];
     global: Scalars["Boolean"]["input"];
@@ -871,6 +876,9 @@ export type CreatedDnsUpstreamPayload = {
 export type CreatedDataExportPayload = {
     dataExportEdge: DataExportEdge;
     snapshot: Scalars["Snapshot"]["output"];
+};
+export type CreatedDataExportTaskPayload = {
+    exportTaskEdge: DataExportTaskEdge;
 };
 export type CreatedEnvironmentPayload = {
     environment: Environment;
@@ -1009,7 +1017,15 @@ export type DnsUpstreamResolverInput = {
     id: Scalars["ID"]["input"];
 };
 export type DataExport = {
+    createdAt: Scalars["DateTime"]["output"];
+    downloadUri?: Maybe<Scalars["Uri"]["output"]>;
+    error?: Maybe<Scalars["String"]["output"]>;
+    format: DataExportFormat;
     id: Scalars["ID"]["output"];
+    name: Scalars["String"]["output"];
+    path: Scalars["String"]["output"];
+    size: Scalars["Int"]["output"];
+    status: DataExportStatus;
 };
 /** An edge in a connection. */
 export type DataExportEdge = {
@@ -1023,9 +1039,8 @@ export declare const DataExportFormat: {
     readonly Json: "JSON";
 };
 export type DataExportFormat = (typeof DataExportFormat)[keyof typeof DataExportFormat];
-export type DataExportOnDemand = DataExport & {
-    downloadUri: Scalars["Uri"]["output"];
-    id: Scalars["ID"]["output"];
+export type DataExportSettings = {
+    includeRaw: Scalars["Boolean"]["input"];
 };
 export declare const DataExportStatus: {
     readonly Cancelled: "CANCELLED";
@@ -1034,21 +1049,16 @@ export declare const DataExportStatus: {
     readonly Processing: "PROCESSING";
 };
 export type DataExportStatus = (typeof DataExportStatus)[keyof typeof DataExportStatus];
-export type DataExportStored = DataExport & {
-    createdAt: Scalars["DateTime"]["output"];
-    downloadUri?: Maybe<Scalars["Uri"]["output"]>;
-    error?: Maybe<Scalars["String"]["output"]>;
-    format: DataExportFormat;
-    id: Scalars["ID"]["output"];
-    name: Scalars["String"]["output"];
-    path: Scalars["String"]["output"];
-    size: Scalars["Int"]["output"];
-    status: DataExportStatus;
-};
-export type DataExportTask = Task & {
-    createdAt: Scalars["DateTime"]["output"];
+export type DataExportTask = {
     export: DataExport;
     id: Scalars["ID"]["output"];
+};
+/** An edge in a connection. */
+export type DataExportTaskEdge = {
+    /** A cursor for use in pagination */
+    cursor: Scalars["String"]["output"];
+    /** The item at the end of the edge */
+    node: DataExportTask;
 };
 export type DeleteAssistantSessionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
@@ -1186,6 +1196,9 @@ export type DeletedDataExportPayload = {
     deletedDataExportId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type DeletedDataExportTaskPayload = {
+    deletedExportTaskId: Scalars["ID"]["output"];
+};
 export type DeletedEnvironmentPayload = {
     deletedEnvironmentId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
@@ -1278,18 +1291,6 @@ export declare const EnvironmentVariableKind: {
     readonly Secret: "SECRET";
 };
 export type EnvironmentVariableKind = (typeof EnvironmentVariableKind)[keyof typeof EnvironmentVariableKind];
-export type ExportFindingsError = OtherUserError | PermissionDeniedUserError;
-export type ExportFindingsInput = {
-    filter: FilterClauseFindingInput;
-    ids?: never;
-} | {
-    filter?: never;
-    ids: Array<Scalars["ID"]["input"]>;
-};
-export type ExportFindingsPayload = {
-    error?: Maybe<ExportFindingsError>;
-    export?: Maybe<DataExportOnDemand>;
-};
 export type FilterClauseFindingInput = {
     reporter?: InputMaybe<Scalars["String"]["input"]>;
 };
@@ -1643,6 +1644,7 @@ export type MoveTamperRulePayload = {
 export type MutationRoot = {
     cancelAutomateTask: CancelAutomateTaskPayload;
     cancelBackupTask: CancelBackupTaskPayload;
+    cancelDataExportTask: CancelDataExportTaskPayload;
     cancelRestoreBackupTask: CancelRestoreBackupTaskPayload;
     cancelTask: CancelTaskPayload;
     clearSitemapEntries: ClearSitemapEntriesPayload;
@@ -1690,7 +1692,6 @@ export type MutationRoot = {
     deleteWorkflow: DeleteWorkflowPayload;
     dropInterceptMessage: DropInterceptMessagePayload;
     duplicateAutomateSession: DuplicateAutomateSessionPayload;
-    exportFindings: ExportFindingsPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
     hideFindings: HideFindingsPayload;
@@ -1778,6 +1779,9 @@ export type MutationRootCancelAutomateTaskArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootCancelBackupTaskArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type MutationRootCancelDataExportTaskArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootCancelRestoreBackupTaskArgs = {
@@ -1916,9 +1920,6 @@ export type MutationRootDropInterceptMessageArgs = {
 };
 export type MutationRootDuplicateAutomateSessionArgs = {
     id: Scalars["ID"]["input"];
-};
-export type MutationRootExportFindingsArgs = {
-    input: ExportFindingsInput;
 };
 export type MutationRootForwardInterceptMessageArgs = {
     id: Scalars["ID"]["input"];
@@ -2380,6 +2381,7 @@ export type QueryRoot = {
     browser?: Maybe<Browser>;
     currentProject?: Maybe<CurrentProject>;
     dataExport?: Maybe<DataExport>;
+    dataExportTasks: Array<DataExportTask>;
     dataExports: Array<DataExport>;
     dnsRewrites: Array<DnsRewrite>;
     dnsUpstreams: Array<DnsUpstream>;
@@ -3198,8 +3200,8 @@ export type StartAutomateTaskPayload = {
 export type StartExportRequestsTaskInput = {
     filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
     format: DataExportFormat;
-    includeRaw: Scalars["Boolean"]["input"];
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+    settings: DataExportSettings;
 };
 export type StartExportRequestsTaskPayload = {
     error?: Maybe<StartExportRequestsTaskPayloadError>;
@@ -3370,6 +3372,7 @@ export type SubscriptionRoot = {
     createdAutomateTask: CreatedAutomateTaskPayload;
     createdBackup: CreatedBackupPayload;
     createdDataExport: CreatedDataExportPayload;
+    createdDataExportTask: CreatedDataExportTaskPayload;
     createdDnsRewrite: CreatedDnsRewritePayload;
     createdDnsUpstream: CreatedDnsUpstreamPayload;
     createdEnvironment: CreatedEnvironmentPayload;
@@ -3400,6 +3403,7 @@ export type SubscriptionRoot = {
     deletedBackup: DeletedBackupPayload;
     deletedBrowser: DeletedBrowserPayload;
     deletedDataExport: DeletedDataExportPayload;
+    deletedDataExportTask: DeletedDataExportTaskPayload;
     deletedDnsRewrite: DeletedDnsRewritePayload;
     deletedDnsUpstream: DeletedDnsUpstreamPayload;
     deletedEnvironment: DeletedEnvironmentPayload;
@@ -8302,8 +8306,8 @@ export type AuthorizationUserErrorFullFragment = {
     reason: AuthorizationErrorReason;
     code: string;
 };
-export type DataExportStoredMetaFragment = {
-    __typename: "DataExportStored";
+export type DataExportMetaFragment = {
+    __typename: "DataExport";
     id: string;
     name: string;
     path: string;
@@ -8313,8 +8317,8 @@ export type DataExportStoredMetaFragment = {
     error?: string | undefined | null;
     createdAt: Date;
 };
-export type DataExportStoredMetaFieldsFragment = {
-    __typename: "DataExportStored";
+export type DataExportMetaFieldsFragment = {
+    __typename: "DataExport";
     id: string;
     name: string;
     path: string;
@@ -8324,8 +8328,9 @@ export type DataExportStoredMetaFieldsFragment = {
     error?: string | undefined | null;
     createdAt: Date;
 };
-export type DataExportStoredFullFragment = {
-    __typename: "DataExportStored";
+export type DataExportFullFragment = {
+    __typename: "DataExport";
+    downloadUri?: string | undefined | null;
     id: string;
     name: string;
     path: string;
@@ -8334,10 +8339,10 @@ export type DataExportStoredFullFragment = {
     format: DataExportFormat;
     error?: string | undefined | null;
     createdAt: Date;
-    fileDownloadUrl?: string | undefined | null;
 };
-export type DataExportStoredFullFieldsFragment = {
-    __typename: "DataExportStored";
+export type DataExportFullFieldsFragment = {
+    __typename: "DataExport";
+    downloadUri?: string | undefined | null;
     id: string;
     name: string;
     path: string;
@@ -8346,18 +8351,12 @@ export type DataExportStoredFullFieldsFragment = {
     format: DataExportFormat;
     error?: string | undefined | null;
     createdAt: Date;
-    fileDownloadUrl?: string | undefined | null;
 };
 export type DataExportTaskMetaFragment = {
     __typename: "DataExportTask";
     id: string;
-    createdAt: Date;
     export: {
-        __typename: "DataExportOnDemand";
-        downloadUri: string;
-        id: string;
-    } | {
-        __typename: "DataExportStored";
+        __typename: "DataExport";
         id: string;
         name: string;
         path: string;
@@ -8368,20 +8367,11 @@ export type DataExportTaskMetaFragment = {
         createdAt: Date;
     };
 };
-export type DataExportOnDemandMetaFragment = {
-    downloadUri: string;
-    id: string;
-};
 export type DataExportTaskMetaFieldsFragment = {
     __typename: "DataExportTask";
     id: string;
-    createdAt: Date;
     export: {
-        __typename: "DataExportOnDemand";
-        downloadUri: string;
-        id: string;
-    } | {
-        __typename: "DataExportStored";
+        __typename: "DataExport";
         id: string;
         name: string;
         path: string;
@@ -8399,9 +8389,7 @@ export type RenameDataExportMutationVariables = Exact<{
 export type RenameDataExportMutation = {
     renameDataExport: {
         export?: {
-            __typename: "DataExportOnDemand";
-        } | {
-            __typename: "DataExportStored";
+            __typename: "DataExport";
             id: string;
             name: string;
             path: string;
@@ -8410,7 +8398,6 @@ export type RenameDataExportMutation = {
             format: DataExportFormat;
             error?: string | undefined | null;
             createdAt: Date;
-            fileDownloadUrl?: string | undefined | null;
         } | undefined | null;
     };
 };
@@ -8430,16 +8417,28 @@ export type DeleteDataExportMutation = {
         } | undefined | null;
     };
 };
+export type CancelDataExportTaskMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type CancelDataExportTaskMutation = {
+    cancelDataExportTask: {
+        cancelledId?: string | undefined | null;
+        userError?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
 export type DataExportsQueryVariables = Exact<{
     [key: string]: never;
 }>;
 export type DataExportsQuery = {
     dataExports: Array<{
-        __typename: "DataExportOnDemand";
-        downloadUri: string;
-        id: string;
-    } | {
-        __typename: "DataExportStored";
+        __typename: "DataExport";
         id: string;
         name: string;
         path: string;
@@ -8455,11 +8454,8 @@ export type DataExportQueryVariables = Exact<{
 }>;
 export type DataExportQuery = {
     dataExport?: {
-        __typename: "DataExportOnDemand";
-        downloadUri: string;
-        id: string;
-    } | {
-        __typename: "DataExportStored";
+        __typename: "DataExport";
+        downloadUri?: string | undefined | null;
         id: string;
         name: string;
         path: string;
@@ -8468,8 +8464,58 @@ export type DataExportQuery = {
         format: DataExportFormat;
         error?: string | undefined | null;
         createdAt: Date;
-        fileDownloadUrl?: string | undefined | null;
     } | undefined | null;
+};
+export type DataExportTasksQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DataExportTasksQuery = {
+    dataExportTasks: Array<{
+        __typename: "DataExportTask";
+        id: string;
+        export: {
+            __typename: "DataExport";
+            id: string;
+            name: string;
+            path: string;
+            size: number;
+            status: DataExportStatus;
+            format: DataExportFormat;
+            error?: string | undefined | null;
+            createdAt: Date;
+        };
+    }>;
+};
+export type DataExportStateQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DataExportStateQuery = {
+    dataExports: Array<{
+        __typename: "DataExport";
+        id: string;
+        name: string;
+        path: string;
+        size: number;
+        status: DataExportStatus;
+        format: DataExportFormat;
+        error?: string | undefined | null;
+        createdAt: Date;
+    }>;
+    dataExportTasks: Array<{
+        __typename: "DataExportTask";
+        id: string;
+        export: {
+            __typename: "DataExport";
+            id: string;
+            name: string;
+            path: string;
+            size: number;
+            status: DataExportStatus;
+            format: DataExportFormat;
+            error?: string | undefined | null;
+            createdAt: Date;
+        };
+    }>;
 };
 export type CreatedDataExportSubscriptionVariables = Exact<{
     [key: string]: never;
@@ -8480,9 +8526,7 @@ export type CreatedDataExportSubscription = {
         dataExportEdge: {
             cursor: string;
             node: {
-                __typename: "DataExportOnDemand";
-            } | {
-                __typename: "DataExportStored";
+                __typename: "DataExport";
                 id: string;
                 name: string;
                 path: string;
@@ -8491,7 +8535,6 @@ export type CreatedDataExportSubscription = {
                 format: DataExportFormat;
                 error?: string | undefined | null;
                 createdAt: Date;
-                fileDownloadUrl?: string | undefined | null;
             };
         };
     };
@@ -8505,9 +8548,7 @@ export type UpdatedDataExportSubscription = {
         dataExportEdge: {
             cursor: string;
             node: {
-                __typename: "DataExportOnDemand";
-            } | {
-                __typename: "DataExportStored";
+                __typename: "DataExport";
                 id: string;
                 name: string;
                 path: string;
@@ -8516,7 +8557,6 @@ export type UpdatedDataExportSubscription = {
                 format: DataExportFormat;
                 error?: string | undefined | null;
                 createdAt: Date;
-                fileDownloadUrl?: string | undefined | null;
             };
         };
     };
@@ -8528,6 +8568,39 @@ export type DeletedDataExportSubscription = {
     deletedDataExport: {
         deletedDataExportId: string;
         snapshot: number;
+    };
+};
+export type CreatedDataExportTaskSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedDataExportTaskSubscription = {
+    createdDataExportTask: {
+        exportTaskEdge: {
+            cursor: string;
+            node: {
+                __typename: "DataExportTask";
+                id: string;
+                export: {
+                    __typename: "DataExport";
+                    id: string;
+                    name: string;
+                    path: string;
+                    size: number;
+                    status: DataExportStatus;
+                    format: DataExportFormat;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                };
+            };
+        };
+    };
+};
+export type DeletedDataExportTaskSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedDataExportTaskSubscription = {
+    deletedDataExportTask: {
+        deletedExportTaskId: string;
     };
 };
 export type FilterPresetFullFragment = {
@@ -9232,25 +9305,6 @@ export type UpdateFindingMutation = {
             __typename: "UnknownIdUserError";
             id: string;
             code: string;
-        } | undefined | null;
-    };
-};
-export type ExportFindingsMutationVariables = Exact<{
-    input: ExportFindingsInput;
-}>;
-export type ExportFindingsMutation = {
-    exportFindings: {
-        export?: {
-            downloadUri: string;
-            id: string;
-        } | undefined | null;
-        error?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "PermissionDeniedUserError";
-            code: string;
-            permissionDeniedReason: PermissionDeniedErrorReason;
         } | undefined | null;
     };
 };
@@ -19148,13 +19202,8 @@ export type StartExportRequestsTaskMutation = {
         task?: {
             __typename: "DataExportTask";
             id: string;
-            createdAt: Date;
             export: {
-                __typename: "DataExportOnDemand";
-                downloadUri: string;
-                id: string;
-            } | {
-                __typename: "DataExportStored";
+                __typename: "DataExport";
                 id: string;
                 name: string;
                 path: string;
@@ -20356,11 +20405,6 @@ export type UpdatedStreamWsMessageSubscription = {
         };
     };
 };
-type TaskMeta_DataExportTask_Fragment = {
-    __typename: "DataExportTask";
-    id: string;
-    createdAt: Date;
-};
 type TaskMeta_ReplayTask_Fragment = {
     __typename: "ReplayTask";
     id: string;
@@ -20371,31 +20415,12 @@ type TaskMeta_WorkflowTask_Fragment = {
     id: string;
     createdAt: Date;
 };
-export type TaskMetaFragment = TaskMeta_DataExportTask_Fragment | TaskMeta_ReplayTask_Fragment | TaskMeta_WorkflowTask_Fragment;
+export type TaskMetaFragment = TaskMeta_ReplayTask_Fragment | TaskMeta_WorkflowTask_Fragment;
 export type GetTasksQueryVariables = Exact<{
     [key: string]: never;
 }>;
 export type GetTasksQuery = {
     tasks: Array<{
-        __typename: "DataExportTask";
-        id: string;
-        createdAt: Date;
-        export: {
-            __typename: "DataExportOnDemand";
-            downloadUri: string;
-            id: string;
-        } | {
-            __typename: "DataExportStored";
-            id: string;
-            name: string;
-            path: string;
-            size: number;
-            status: DataExportStatus;
-            format: DataExportFormat;
-            error?: string | undefined | null;
-            createdAt: Date;
-        };
-    } | {
         __typename: "ReplayTask";
         id: string;
         createdAt: Date;
@@ -20556,25 +20581,6 @@ export type StartedTaskSubscriptionVariables = Exact<{
 export type StartedTaskSubscription = {
     startedTask: {
         task: {
-            __typename: "DataExportTask";
-            id: string;
-            createdAt: Date;
-            export: {
-                __typename: "DataExportOnDemand";
-                downloadUri: string;
-                id: string;
-            } | {
-                __typename: "DataExportStored";
-                id: string;
-                name: string;
-                path: string;
-                size: number;
-                status: DataExportStatus;
-                format: DataExportFormat;
-                error?: string | undefined | null;
-                createdAt: Date;
-            };
-        } | {
             __typename: "ReplayTask";
             id: string;
             createdAt: Date;
@@ -20720,25 +20726,6 @@ export type FinishedTaskSubscriptionVariables = Exact<{
 export type FinishedTaskSubscription = {
     finishedTask: {
         task: {
-            __typename: "DataExportTask";
-            id: string;
-            createdAt: Date;
-            export: {
-                __typename: "DataExportOnDemand";
-                downloadUri: string;
-                id: string;
-            } | {
-                __typename: "DataExportStored";
-                id: string;
-                name: string;
-                path: string;
-                size: number;
-                status: DataExportStatus;
-                format: DataExportFormat;
-                error?: string | undefined | null;
-                createdAt: Date;
-            };
-        } | {
             __typename: "ReplayTask";
             id: string;
             createdAt: Date;
@@ -21615,10 +21602,6 @@ export type CreateWorkflowMutation = {
             __typename: "OtherUserError";
             code: string;
         } | {
-            __typename: "PermissionDeniedUserError";
-            code: string;
-            permissionDeniedReason: PermissionDeniedErrorReason;
-        } | {
             __typename: "WorkflowUserError";
             node?: string | undefined | null;
             message: string;
@@ -22020,12 +22003,11 @@ export declare const ProjectUserErrorFullFragmentDoc = "\n    fragment projectUs
 export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    ";
 export declare const NewerVersionUserErrorFullFragmentDoc = "\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    ";
 export declare const AuthorizationUserErrorFullFragmentDoc = "\n    fragment authorizationUserErrorFull on AuthorizationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const DataExportStoredMetaFieldsFragmentDoc = "\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
-export declare const DataExportStoredMetaFragmentDoc = "\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    ";
-export declare const DataExportStoredFullFieldsFragmentDoc = "\n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    ";
-export declare const DataExportStoredFullFragmentDoc = "\n    fragment dataExportStoredFull on DataExportStored {\n  ...dataExportStoredFullFields\n}\n    ";
-export declare const DataExportOnDemandMetaFragmentDoc = "\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    ";
-export declare const DataExportTaskMetaFieldsFragmentDoc = "\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    ";
+export declare const DataExportMetaFieldsFragmentDoc = "\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DataExportMetaFragmentDoc = "\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    ";
+export declare const DataExportFullFieldsFragmentDoc = "\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    ";
+export declare const DataExportFullFragmentDoc = "\n    fragment dataExportFull on DataExport {\n  ...dataExportFullFields\n}\n    ";
+export declare const DataExportTaskMetaFieldsFragmentDoc = "\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    ";
 export declare const DataExportTaskMetaFragmentDoc = "\n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    ";
 export declare const FilterPresetFullFragmentDoc = "\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    ";
 export declare const FilterPresetEdgeFullFragmentDoc = "\n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    ";
@@ -22229,13 +22211,18 @@ export declare const CreatedEnvironmentDocument = "\n    subscription createdEnv
 export declare const UpdatedEnvironmentDocument = "\n    subscription updatedEnvironment {\n  updatedEnvironment {\n    environment {\n      ...environmentMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
 export declare const DeletedEnvironmentDocument = "\n    subscription deletedEnvironment {\n  deletedEnvironment {\n    deletedEnvironmentId\n    snapshot\n  }\n}\n    ";
 export declare const UpdatedEnvironmentContextDocument = "\n    subscription updatedEnvironmentContext {\n  updatedEnvironmentContext {\n    environmentContext {\n      ...environmentContextFull\n    }\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
-export declare const RenameDataExportDocument = "\n    mutation renameDataExport($id: ID!, $name: String!) {\n  renameDataExport(id: $id, name: $name) {\n    export {\n      __typename\n      ... on DataExportStored {\n        ...dataExportStoredFullFields\n      }\n    }\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const RenameDataExportDocument = "\n    mutation renameDataExport($id: ID!, $name: String!) {\n  renameDataExport(id: $id, name: $name) {\n    export {\n      ...dataExportMeta\n    }\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DeleteDataExportDocument = "\n    mutation deleteDataExport($id: ID!) {\n  deleteDataExport(id: $id) {\n    deletedId\n    userError {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const DataExportsDocument = "\n    query dataExports {\n  dataExports {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    ";
-export declare const DataExportDocument = "\n    query dataExport($id: ID!) {\n  dataExport(id: $id) {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredFull\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n    fragment dataExportStoredFull on DataExportStored {\n  ...dataExportStoredFullFields\n}\n    \n\n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    ";
-export declare const CreatedDataExportDocument = "\n    subscription createdDataExport {\n  createdDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        __typename\n        ... on DataExportStored {\n          ...dataExportStoredFullFields\n        }\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
-export declare const UpdatedDataExportDocument = "\n    subscription updatedDataExport {\n  updatedDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        __typename\n        ... on DataExportStored {\n          ...dataExportStoredFullFields\n        }\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const CancelDataExportTaskDocument = "\n    mutation cancelDataExportTask($id: ID!) {\n  cancelDataExportTask(id: $id) {\n    cancelledId\n    userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const DataExportsDocument = "\n    query dataExports {\n  dataExports {\n    ...dataExportMeta\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DataExportDocument = "\n    query dataExport($id: ID!) {\n  dataExport(id: $id) {\n    ...dataExportFull\n  }\n}\n    \n    fragment dataExportFull on DataExport {\n  ...dataExportFullFields\n}\n    \n\n    fragment dataExportFullFields on DataExport {\n  ...dataExportMeta\n  downloadUri\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DataExportTasksDocument = "\n    query dataExportTasks {\n  dataExportTasks {\n    ...dataExportTaskMeta\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DataExportStateDocument = "\n    query dataExportState {\n  dataExports {\n    ...dataExportMeta\n  }\n  dataExportTasks {\n    ...dataExportTaskMeta\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    ";
+export declare const CreatedDataExportDocument = "\n    subscription createdDataExport {\n  createdDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        ...dataExportMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const UpdatedDataExportDocument = "\n    subscription updatedDataExport {\n  updatedDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        ...dataExportMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DeletedDataExportDocument = "\n    subscription deletedDataExport {\n  deletedDataExport {\n    deletedDataExportId\n    snapshot\n  }\n}\n    ";
+export declare const CreatedDataExportTaskDocument = "\n    subscription createdDataExportTask {\n  createdDataExportTask {\n    exportTaskEdge {\n      cursor\n      node {\n        ...dataExportTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
+export declare const DeletedDataExportTaskDocument = "\n    subscription deletedDataExportTask {\n  deletedDataExportTask {\n    deletedExportTaskId\n  }\n}\n    ";
 export declare const CreateFilterPresetDocument = "\n    mutation createFilterPreset($input: CreateFilterPresetInput!) {\n  createFilterPreset(input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const UpdateFilterPresetDocument = "\n    mutation updateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {\n  updateFilterPreset(id: $id, input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteFilterPresetDocument = "\n    mutation deleteFilterPreset($id: ID!) {\n  deleteFilterPreset(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -22255,7 +22242,6 @@ export declare const UpdatedFindingsDocument = "\n    subscription updatedFindin
 export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput!) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
 export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const ExportFindingsDocument = "\n    mutation exportFindings($input: ExportFindingsInput!) {\n  exportFindings(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
@@ -22347,7 +22333,7 @@ export declare const RequestDocument = "\n    query request($id: ID!) {\n  reque
 export declare const RequestBrowserUrlDocument = "\n    query requestBrowserUrl($id: ID!) {\n  request(id: $id) {\n    browser {\n      replay\n      showResponse\n    }\n  }\n}\n    ";
 export declare const RequestsByOffsetDocument = "\n    query requestsByOffset($limit: Int, $offset: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requestsByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const UpdateRequestMetadataDocument = "\n    mutation updateRequestMetadata($id: ID!, $input: UpdateRequestMetadataInput!) {\n  updateRequestMetadata(id: $id, input: $input) {\n    snapshot\n    metadata {\n      ...requestMetadataFull\n    }\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
-export declare const StartExportRequestsTaskDocument = "\n    mutation startExportRequestsTask($input: StartExportRequestsTaskInput!) {\n  startExportRequestsTask(input: $input) {\n    task {\n      ...dataExportTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const StartExportRequestsTaskDocument = "\n    mutation startExportRequestsTask($input: StartExportRequestsTaskInput!) {\n  startExportRequestsTask(input: $input) {\n    task {\n      ...dataExportTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  export {\n    ...dataExportMeta\n  }\n}\n    \n\n    fragment dataExportMeta on DataExport {\n  ...dataExportMetaFields\n}\n    \n\n    fragment dataExportMetaFields on DataExport {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const RenderRequestDocument = "\n    mutation renderRequest($id: ID!, $input: RenderRequestInput!) {\n  renderRequest(id: $id, input: $input) {\n    render\n    error {\n      ... on RenderFailedUserError {\n        ...renderFailedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment renderFailedUserErrorFull on RenderFailedUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedRequestDocument = "\n    subscription createdRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  createdRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
@@ -22389,10 +22375,10 @@ export declare const WebsocketMessageEditDocument = "\n    query websocketMessag
 export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  updatedStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
@@ -22420,7 +22406,7 @@ export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  w
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeletedWorkflowDocument = "\n    subscription deletedWorkflow {\n  deletedWorkflow {\n    deletedWorkflowId\n  }\n}\n    ";
 export declare const UpdatedWorkflowDocument = "\n    subscription updatedWorkflow {\n  updatedWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
-export declare const CreateWorkflowDocument = "\n    mutation createWorkflow($input: CreateWorkflowInput!) {\n  createWorkflow(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
+export declare const CreateWorkflowDocument = "\n    mutation createWorkflow($input: CreateWorkflowInput!) {\n  createWorkflow(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const DeleteWorkflowDocument = "\n    mutation deleteWorkflow($id: ID!) {\n  deleteWorkflow(id: $id) {\n    deletedId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const ToggleWorkflowDocument = "\n    mutation toggleWorkflow($id: ID!, $enabled: Boolean!) {\n  toggleWorkflow(id: $id, enabled: $enabled) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const RenameWorkflowDocument = "\n    mutation renameWorkflow($id: ID!, $name: String!) {\n  renameWorkflow(id: $id, name: $name) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n    }\n    workflow {\n      ...workflowFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -22534,11 +22520,16 @@ export declare function getSdk<C>(requester: Requester<C>): {
     updatedEnvironmentContext(variables?: UpdatedEnvironmentContextSubscriptionVariables, options?: C): AsyncIterable<UpdatedEnvironmentContextSubscription>;
     renameDataExport(variables: RenameDataExportMutationVariables, options?: C): Promise<RenameDataExportMutation>;
     deleteDataExport(variables: DeleteDataExportMutationVariables, options?: C): Promise<DeleteDataExportMutation>;
+    cancelDataExportTask(variables: CancelDataExportTaskMutationVariables, options?: C): Promise<CancelDataExportTaskMutation>;
     dataExports(variables?: DataExportsQueryVariables, options?: C): Promise<DataExportsQuery>;
     dataExport(variables: DataExportQueryVariables, options?: C): Promise<DataExportQuery>;
+    dataExportTasks(variables?: DataExportTasksQueryVariables, options?: C): Promise<DataExportTasksQuery>;
+    dataExportState(variables?: DataExportStateQueryVariables, options?: C): Promise<DataExportStateQuery>;
     createdDataExport(variables?: CreatedDataExportSubscriptionVariables, options?: C): AsyncIterable<CreatedDataExportSubscription>;
     updatedDataExport(variables?: UpdatedDataExportSubscriptionVariables, options?: C): AsyncIterable<UpdatedDataExportSubscription>;
     deletedDataExport(variables?: DeletedDataExportSubscriptionVariables, options?: C): AsyncIterable<DeletedDataExportSubscription>;
+    createdDataExportTask(variables?: CreatedDataExportTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedDataExportTaskSubscription>;
+    deletedDataExportTask(variables?: DeletedDataExportTaskSubscriptionVariables, options?: C): AsyncIterable<DeletedDataExportTaskSubscription>;
     createFilterPreset(variables: CreateFilterPresetMutationVariables, options?: C): Promise<CreateFilterPresetMutation>;
     updateFilterPreset(variables: UpdateFilterPresetMutationVariables, options?: C): Promise<UpdateFilterPresetMutation>;
     deleteFilterPreset(variables: DeleteFilterPresetMutationVariables, options?: C): Promise<DeleteFilterPresetMutation>;
@@ -22558,7 +22549,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createFinding(variables: CreateFindingMutationVariables, options?: C): Promise<CreateFindingMutation>;
     deleteFindings(variables: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
     updateFinding(variables: UpdateFindingMutationVariables, options?: C): Promise<UpdateFindingMutation>;
-    exportFindings(variables: ExportFindingsMutationVariables, options?: C): Promise<ExportFindingsMutation>;
     interceptEntries(variables?: InterceptEntriesQueryVariables, options?: C): Promise<InterceptEntriesQuery>;
     interceptEntriesByOffset(variables?: InterceptEntriesByOffsetQueryVariables, options?: C): Promise<InterceptEntriesByOffsetQuery>;
     interceptEntry(variables: InterceptEntryQueryVariables, options?: C): Promise<InterceptEntryQuery>;
