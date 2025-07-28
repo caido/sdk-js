@@ -119,6 +119,7 @@ export type ReplaySDK = {
      *   raw: "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n",
      *   updateContentLength: false,
      * });
+     * ```
      */
     sendRequest: (sessionId: ID, options: SendRequestOptions) => Promise<void>;
 };
