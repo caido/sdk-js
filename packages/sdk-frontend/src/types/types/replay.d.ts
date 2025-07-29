@@ -117,4 +117,18 @@ export type SendRequestOptions = {
      * Defaults to true.
      */
     updateContentLength?: boolean;
+    /**
+     * Whether to overwrite the editor's draft content.
+     * If true, draft content will be overwritten with the new request.
+     * If false, the draft will be kept.
+     * Defaults to true.
+     */
+    overwriteDraft?: boolean;
+    /**
+     * Whether to send the request in the background without updating the UI.
+     * If true, the request will not update the UI.
+     * If false, the UI will be updated to display the session and the new request.
+     * Defaults to false.
+     */
+    background?: boolean;
 };
