@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type SendRequestOptions } from "../types/replay";
+import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
@@ -47,6 +47,12 @@ export type ReplaySDK = {
      * @param sessionIds The IDs of the sessions to delete.
      */
     deleteSessions: (sessionIds: ID[]) => Promise<ID[]>;
+    /**
+     * Create a session.
+     * @param sessionId The ID of the request to add.
+     * @param collectionId The ID of the collection to add the request.
+     */
+    createSession: (source: RequestSource, collectionId?: ID) => Promise<void>;
     /**
      * Get the list of all replay collections.
      * @returns The list of all replay collections.

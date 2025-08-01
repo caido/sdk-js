@@ -132,3 +132,32 @@ export type SendRequestOptions = {
      */
     background?: boolean;
 };
+/**
+ * @category Replay
+ *
+ * @remarks
+ * This type is a discriminated union with two possible shapes:
+ * - A raw request, containing the raw HTTP request string and connection information.
+ * - A reference to an existing request ID.
+ *
+ * @example
+ * // Using a raw request
+ * const source: RequestSource = {
+ *   type: "Raw",
+ *   raw: "GET /api/data HTTP/1.1",
+ *   connectionInfo: { ... }
+ * };
+ * // Using an ID
+ * const source: RequestSource = {
+ *   type: "ID",
+ *   id: "request-123"
+ * };
+ */
+export type RequestSource = {
+    type: "Raw";
+    raw: string;
+    connectionInfo: SendRequestOptions["connectionInfo"];
+} | {
+    type: "ID";
+    id: string;
+};
