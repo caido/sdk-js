@@ -16,6 +16,10 @@ export type HostedFile = {
      */
     size: number;
     /**
+     * The status of the file.
+     */
+    status: "ready" | "error";
+    /**
      * The path of the file.
      */
     path: string;
