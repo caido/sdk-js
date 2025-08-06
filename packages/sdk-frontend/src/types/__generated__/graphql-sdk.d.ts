@@ -1278,6 +1278,9 @@ export declare const EnvironmentVariableKind: {
     readonly Secret: "SECRET";
 };
 export type EnvironmentVariableKind = (typeof EnvironmentVariableKind)[keyof typeof EnvironmentVariableKind];
+export type ExpiredViewerProfilePayload = {
+    expiredAt: Scalars["Timestamp"]["output"];
+};
 export type ExportFindingsError = OtherUserError | PermissionDeniedUserError;
 export type ExportFindingsInput = {
     filter: FilterClauseFindingInput;
@@ -3256,6 +3259,7 @@ export type StorePluginPackage = {
     license: Scalars["String"]["output"];
     manifestId: Scalars["ID"]["output"];
     name?: Maybe<Scalars["String"]["output"]>;
+    official: Scalars["Boolean"]["output"];
     repository: Scalars["Url"]["output"];
     version: Scalars["Version"]["output"];
 };
@@ -3429,6 +3433,7 @@ export type SubscriptionRoot = {
     deletedUpstreamProxyHttp: DeletedUpstreamProxyHttpPayload;
     deletedUpstreamProxySocks: DeletedUpstreamProxySocksPayload;
     deletedWorkflow: DeletedWorkflowPayload;
+    expiredViewerProfile: ExpiredViewerProfilePayload;
     finishedBackupTask: FinishedBackupTaskPayload;
     finishedDeleteInterceptEntriesTask: FinishedDeleteInterceptEntriesTaskPayload;
     finishedRestoreBackupTask: FinishedRestoreBackupTaskPayload;
@@ -21494,6 +21499,14 @@ export type UpdatedViewerSettingsSubscription = {
         };
     };
 };
+export type ExpiredViewerProfileSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type ExpiredViewerProfileSubscription = {
+    expiredViewerProfile: {
+        expiredAt: Date;
+    };
+};
 export type WorkflowQueryVariables = Exact<{
     id: Scalars["ID"]["input"];
 }>;
@@ -22435,6 +22448,7 @@ export declare const UserProfileDocument = "\n    query userProfile {\n  viewer 
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UpdatedViewerProfileDocument = "\n    subscription updatedViewerProfile {\n  updatedViewerProfile {\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UpdatedViewerSettingsDocument = "\n    subscription updatedViewerSettings {\n  updatedViewerSettings {\n    settings {\n      data\n    }\n  }\n}\n    ";
+export declare const ExpiredViewerProfileDocument = "\n    subscription expiredViewerProfile {\n  expiredViewerProfile {\n    expiredAt\n  }\n}\n    ";
 export declare const WorkflowDocument = "\n    query workflow($id: ID!) {\n  workflow(id: $id) {\n    ...workflowFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const WorkflowsStateDocument = "\n    query workflowsState {\n  workflows {\n    ...workflowFull\n  }\n  workflowNodeDefinitions {\n    ...workflowNodeDefinitionFull\n  }\n}\n    \n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const CreatedWorkflowDocument = "\n    subscription createdWorkflow {\n  createdWorkflow {\n    workflowEdge {\n      ...workflowEdgeFull\n    }\n  }\n}\n    \n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    \n\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
@@ -22738,6 +22752,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;
     updatedViewerProfile(variables?: UpdatedViewerProfileSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerProfileSubscription>;
     updatedViewerSettings(variables?: UpdatedViewerSettingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedViewerSettingsSubscription>;
+    expiredViewerProfile(variables?: ExpiredViewerProfileSubscriptionVariables, options?: C): AsyncIterable<ExpiredViewerProfileSubscription>;
     workflow(variables: WorkflowQueryVariables, options?: C): Promise<WorkflowQuery>;
     workflowsState(variables?: WorkflowsStateQueryVariables, options?: C): Promise<WorkflowsStateQuery>;
     createdWorkflow(variables?: CreatedWorkflowSubscriptionVariables, options?: C): AsyncIterable<CreatedWorkflowSubscription>;
