@@ -132,47 +132,6 @@ export type Scalars = {
         output: string;
     };
 };
-export declare const AiErrorReason: {
-    readonly InvalidAuthentication: "INVALID_AUTHENTICATION";
-    readonly ProviderNotConfigured: "PROVIDER_NOT_CONFIGURED";
-    readonly RequestMalformed: "REQUEST_MALFORMED";
-};
-export type AiErrorReason = (typeof AiErrorReason)[keyof typeof AiErrorReason];
-export type AiProviderAnthropic = {
-    apiKey: Scalars["Sensitive"]["output"];
-};
-export type AiProviderAnthropicInput = {
-    apiKey: Scalars["Sensitive"]["input"];
-};
-export type AiProviderGoogle = {
-    apiKey: Scalars["Sensitive"]["output"];
-};
-export type AiProviderGoogleInput = {
-    apiKey: Scalars["Sensitive"]["input"];
-};
-export type AiProviderOpenAi = {
-    apiKey: Scalars["Sensitive"]["output"];
-};
-export type AiProviderOpenAiInput = {
-    apiKey: Scalars["Sensitive"]["input"];
-};
-export type AiProviderOpenRouter = {
-    apiKey: Scalars["Sensitive"]["output"];
-};
-export type AiProviderOpenRouterInput = {
-    apiKey: Scalars["Sensitive"]["input"];
-};
-export type AiProviders = {
-    anthropic?: Maybe<AiProviderAnthropic>;
-    google?: Maybe<AiProviderGoogle>;
-    openai?: Maybe<AiProviderOpenAi>;
-    openrouter?: Maybe<AiProviderOpenRouter>;
-};
-export type AiUserError = UserError & {
-    code: Scalars["String"]["output"];
-    message: Scalars["String"]["output"];
-    reason: AiErrorReason;
-};
 export type AliasTakenUserError = UserError & {
     alias: Scalars["String"]["output"];
     code: Scalars["String"]["output"];
@@ -1518,9 +1477,6 @@ export type InstallPluginPackagePayload = {
     error?: Maybe<InstallPluginPackageError>;
     package?: Maybe<PluginPackage>;
 };
-export type InstanceSettings = {
-    aiProviders: AiProviders;
-};
 export type InterceptEntry = {
     id: Scalars["ID"]["output"];
     request: Request;
@@ -1791,7 +1747,6 @@ export type MutationRoot = {
     setGlobalConfigOnboarding: SetConfigOnboardingPayload;
     setGlobalConfigPort: SetConfigPortPayload;
     setGlobalConfigProject: SetConfigProjectPayload;
-    setInstanceSettings: SetInstanceSettingsPayload;
     setInterceptOptions: SetInterceptOptionsPayload;
     setPluginData: SetPluginDataPayload;
     setProjectConfigStream: SetProjectConfigStreamPayload;
@@ -1799,7 +1754,6 @@ export type MutationRoot = {
     startAutomateTask: StartAutomateTaskPayload;
     startExportRequestsTask: StartExportRequestsTaskPayload;
     startReplayTask: StartReplayTaskPayload;
-    testAiProvider: TestAiProviderPayload;
     testTamperRule: TestTamperRulePayload;
     testUpstreamProxyHttp: TestUpstreamProxyHttpPayload;
     testUpstreamProxySocks: TestUpstreamProxySocksPayload;
@@ -2120,9 +2074,6 @@ export type MutationRootSetGlobalConfigPortArgs = {
 export type MutationRootSetGlobalConfigProjectArgs = {
     input: SetConfigProjectInput;
 };
-export type MutationRootSetInstanceSettingsArgs = {
-    input: SetInstanceSettingsInput;
-};
 export type MutationRootSetInterceptOptionsArgs = {
     input: InterceptOptionsInput;
 };
@@ -2142,9 +2093,6 @@ export type MutationRootStartExportRequestsTaskArgs = {
 export type MutationRootStartReplayTaskArgs = {
     input: StartReplayTaskInput;
     sessionId: Scalars["ID"]["input"];
-};
-export type MutationRootTestAiProviderArgs = {
-    input: TestAiProviderInput;
 };
 export type MutationRootTestTamperRuleArgs = {
     input: TestTamperRuleInput;
@@ -2288,7 +2236,7 @@ export type PauseInterceptPayload = {
 export declare const PermissionDeniedErrorReason: {
     readonly Entitlement: "ENTITLEMENT";
     readonly GuestUser: "GUEST_USER";
-    readonly ScriptUser: "SCRIPT_USER";
+    readonly PluginUser: "PLUGIN_USER";
 };
 export type PermissionDeniedErrorReason = (typeof PermissionDeniedErrorReason)[keyof typeof PermissionDeniedErrorReason];
 export type PermissionDeniedUserError = UserError & {
@@ -2358,15 +2306,9 @@ export type PluginPackage = {
 export type PluginPackageSource = {
     file: Scalars["Upload"]["input"];
     manifestId?: never;
-    url?: never;
 } | {
     file?: never;
     manifestId: Scalars["ID"]["input"];
-    url?: never;
-} | {
-    file?: never;
-    manifestId?: never;
-    url: Scalars["Url"]["input"];
 };
 export declare const PluginRuntime: {
     readonly Javascript: "JAVASCRIPT";
@@ -2462,7 +2404,6 @@ export type QueryRoot = {
     findingsByOffset: FindingConnection;
     globalConfig: GlobalConfig;
     hostedFiles: Array<HostedFile>;
-    instanceSettings: InstanceSettings;
     interceptEntries: InterceptEntryConnection;
     interceptEntriesByOffset: InterceptEntryConnection;
     interceptEntry?: Maybe<InterceptEntry>;
@@ -3187,12 +3128,6 @@ export type SetConfigProjectInput = {
 export type SetConfigProjectPayload = {
     config: GlobalConfig;
 };
-export type SetInstanceSettingsInput = {
-    aiProvider: SettingsAiProviderInput;
-};
-export type SetInstanceSettingsPayload = {
-    settings: InstanceSettings;
-};
 export type SetInterceptOptionsPayload = {
     options: InterceptOptions;
 };
@@ -3203,27 +3138,6 @@ export type SetPluginDataPayload = {
 };
 export type SetProjectConfigStreamPayload = {
     config: ProjectConfigStream;
-};
-export type SettingsAiProviderInput = {
-    anthropic: AiProviderAnthropicInput;
-    google?: never;
-    openai?: never;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google: AiProviderGoogleInput;
-    openai?: never;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google?: never;
-    openai: AiProviderOpenAiInput;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google?: never;
-    openai?: never;
-    openrouter: AiProviderOpenRouterInput;
 };
 export declare const SitemapDescendantsDepth: {
     readonly All: "ALL";
@@ -3545,7 +3459,6 @@ export type SubscriptionRoot = {
     updatedFilterPreset: UpdatedFilterPresetPayload;
     updatedFindings: UpdatedFindingsPayload;
     updatedHostedFile: UpdatedHostedFilePayload;
-    updatedInstanceSettings: UpdatedInstanceSettingsPayload;
     updatedInterceptEntry: UpdatedInterceptEntryPayload;
     updatedInterceptOptions: UpdatedInterceptOptionsPayload;
     updatedInterceptStatus: UpdatedInterceptStatusPayload;
@@ -4025,32 +3938,6 @@ export type TaskInProgressUserError = UserError & {
     code: Scalars["String"]["output"];
     taskId: Scalars["ID"]["output"];
 };
-export type TestAiProviderError = AiUserError | OtherUserError;
-export type TestAiProviderInput = {
-    anthropic: AiProviderAnthropicInput;
-    google?: never;
-    openai?: never;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google: AiProviderGoogleInput;
-    openai?: never;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google?: never;
-    openai: AiProviderOpenAiInput;
-    openrouter?: never;
-} | {
-    anthropic?: never;
-    google?: never;
-    openai?: never;
-    openrouter: AiProviderOpenRouterInput;
-};
-export type TestAiProviderPayload = {
-    error?: Maybe<TestAiProviderError>;
-    success?: Maybe<Scalars["Boolean"]["output"]>;
-};
 export type TestTamperRuleError = InvalidRegexUserError | OtherUserError;
 export type TestTamperRuleInput = {
     raw: Scalars["Blob"]["input"];
@@ -4327,9 +4214,6 @@ export type UpdatedFindingsPayload = {
 };
 export type UpdatedHostedFilePayload = {
     hostedFile: HostedFile;
-};
-export type UpdatedInstanceSettingsPayload = {
-    settings: InstanceSettings;
 };
 export type UpdatedInterceptEntryPayload = {
     interceptEntryEdge: InterceptEntryEdge;
@@ -8290,10 +8174,6 @@ export type InvalidGlobTermsUserErrorFullFragment = {
     terms: Array<string>;
     code: string;
 };
-type UserErrorFull_AiUserError_Fragment = {
-    __typename: "AIUserError";
-    code: string;
-};
 type UserErrorFull_AliasTakenUserError_Fragment = {
     __typename: "AliasTakenUserError";
     code: string;
@@ -8398,7 +8278,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AiUserError_Fragment | UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -10058,118 +9938,6 @@ export type HostedFilesQuery = {
         updatedAt: Date;
         createdAt: Date;
     }>;
-};
-export type InstanceSettingsFullFragment = {
-    __typename: "InstanceSettings";
-    aiProviders: {
-        anthropic?: {
-            apiKey: string;
-        } | undefined | null;
-        google?: {
-            apiKey: string;
-        } | undefined | null;
-        openai?: {
-            apiKey: string;
-        } | undefined | null;
-        openrouter?: {
-            apiKey: string;
-        } | undefined | null;
-    };
-};
-export type TestAiProviderPayloadFullFragment = {
-    success?: boolean | undefined | null;
-    error?: {
-        code: string;
-        message: string;
-        reason: AiErrorReason;
-    } | {
-        code: string;
-    } | undefined | null;
-};
-export type SetInstanceSettingsMutationVariables = Exact<{
-    input: SetInstanceSettingsInput;
-}>;
-export type SetInstanceSettingsMutation = {
-    setInstanceSettings: {
-        settings: {
-            __typename: "InstanceSettings";
-            aiProviders: {
-                anthropic?: {
-                    apiKey: string;
-                } | undefined | null;
-                google?: {
-                    apiKey: string;
-                } | undefined | null;
-                openai?: {
-                    apiKey: string;
-                } | undefined | null;
-                openrouter?: {
-                    apiKey: string;
-                } | undefined | null;
-            };
-        };
-    };
-};
-export type TestAiProviderMutationVariables = Exact<{
-    input: TestAiProviderInput;
-}>;
-export type TestAiProviderMutation = {
-    testAiProvider: {
-        success?: boolean | undefined | null;
-        error?: {
-            code: string;
-            message: string;
-            reason: AiErrorReason;
-        } | {
-            code: string;
-        } | undefined | null;
-    };
-};
-export type InstanceSettingsQueryVariables = Exact<{
-    [key: string]: never;
-}>;
-export type InstanceSettingsQuery = {
-    instanceSettings: {
-        __typename: "InstanceSettings";
-        aiProviders: {
-            anthropic?: {
-                apiKey: string;
-            } | undefined | null;
-            google?: {
-                apiKey: string;
-            } | undefined | null;
-            openai?: {
-                apiKey: string;
-            } | undefined | null;
-            openrouter?: {
-                apiKey: string;
-            } | undefined | null;
-        };
-    };
-};
-export type UpdatedInstanceSettingsSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type UpdatedInstanceSettingsSubscription = {
-    updatedInstanceSettings: {
-        settings: {
-            __typename: "InstanceSettings";
-            aiProviders: {
-                anthropic?: {
-                    apiKey: string;
-                } | undefined | null;
-                google?: {
-                    apiKey: string;
-                } | undefined | null;
-                openai?: {
-                    apiKey: string;
-                } | undefined | null;
-                openrouter?: {
-                    apiKey: string;
-                } | undefined | null;
-            };
-        };
-    };
 };
 export type InterceptRequestMessageMetaFragment = {
     __typename: "InterceptRequestMessage";
@@ -15372,7 +15140,6 @@ export type StorePluginPackageFullFragment = {
     name?: string | undefined | null;
     repository: string;
     version: string;
-    official: boolean;
     author?: {
         email?: string | undefined | null;
         name?: string | undefined | null;
@@ -15462,7 +15229,6 @@ export type StorePluginPackagesQuery = {
             name?: string | undefined | null;
             repository: string;
             version: string;
-            official: boolean;
             author?: {
                 email?: string | undefined | null;
                 name?: string | undefined | null;
@@ -21183,8 +20949,6 @@ export type FinishedTaskSubscription = {
             code: string;
         } | {
             code: string;
-        } | {
-            code: string;
         } | undefined | null;
     };
 };
@@ -22307,8 +22071,6 @@ export declare const InterceptEntryFullFragmentDoc = "\n    fragment interceptEn
 export declare const InterceptEntryEdgeMetaFragmentDoc = "\n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptResponseMessageMetaFragmentDoc = "\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const StreamWsMessageEditRefFragmentDoc = "\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    ";
@@ -22363,7 +22125,7 @@ export declare const PluginBackendFullFragmentDoc = "\n    fragment pluginBacken
 export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
-export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n}\n    ";
+export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
 export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
@@ -22545,10 +22307,6 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
-export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
@@ -22576,7 +22334,7 @@ export declare const ToggleTamperRuleDocument = "\n    mutation toggleTamperRule
 export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
-export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n}\n    ";
+export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n}\n    ";
 export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UninstallPluginPackageDocument = "\n    mutation uninstallPluginPackage($id: ID!) {\n  uninstallPluginPackage(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const TogglePluginDocument = "\n    mutation togglePlugin($id: ID!, $enabled: Boolean!) {\n  togglePlugin(id: $id, enabled: $enabled) {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    ";
@@ -22853,10 +22611,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     renameHostedFile(variables: RenameHostedFileMutationVariables, options?: C): Promise<RenameHostedFileMutation>;
     uploadHostedFile(variables: UploadHostedFileMutationVariables, options?: C): Promise<UploadHostedFileMutation>;
     hostedFiles(variables?: HostedFilesQueryVariables, options?: C): Promise<HostedFilesQuery>;
-    setInstanceSettings(variables: SetInstanceSettingsMutationVariables, options?: C): Promise<SetInstanceSettingsMutation>;
-    testAiProvider(variables: TestAiProviderMutationVariables, options?: C): Promise<TestAiProviderMutation>;
-    instanceSettings(variables?: InstanceSettingsQueryVariables, options?: C): Promise<InstanceSettingsQuery>;
-    updatedInstanceSettings(variables?: UpdatedInstanceSettingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedInstanceSettingsSubscription>;
     forwardInterceptMessage(variables: ForwardInterceptMessageMutationVariables, options?: C): Promise<ForwardInterceptMessageMutation>;
     dropInterceptMesage(variables: DropInterceptMesageMutationVariables, options?: C): Promise<DropInterceptMesageMutation>;
     setInterceptOptions(variables: SetInterceptOptionsMutationVariables, options?: C): Promise<SetInterceptOptionsMutation>;
