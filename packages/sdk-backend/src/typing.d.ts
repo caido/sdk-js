@@ -12,6 +12,7 @@ declare module "caido:plugin" {
     EnvironmentSDK,
     RuntimeSDK,
     ScopeSDK,
+    GraphQLSDK,
   } from "caido:utils";
 
   /**
@@ -195,5 +196,9 @@ declare module "caido:plugin" {
      * The SDK for the runtime information.
      */
     runtime: RuntimeSDK;
+    /**
+     * The SDK for the GraphQL service.
+     */
+    graphql: GraphQLSDK;
   }
 }
