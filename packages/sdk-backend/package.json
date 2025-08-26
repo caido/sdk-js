@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-backend",
-  "version": "0.50.2",
+  "version": "0.51.0",
   "description": "Typing for the Caido Backend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
