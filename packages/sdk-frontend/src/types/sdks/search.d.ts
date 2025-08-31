@@ -1,5 +1,3 @@
-import type { Extension } from "@codemirror/state";
-import type { RequestViewModeOptions } from "../types/request";
 import type { HTTPQL, ID } from "../types/utils";
 /**
  * Utilities to interact with the Search page.
@@ -26,14 +24,4 @@ export type SearchSDK = {
      * @param id The ID of the scope to set.
      */
     setScope: (id: ID | undefined) => Promise<void>;
-    /**
-     * Add an extension to the request editor.
-     * @param extension The extension to add.
-     */
-    addRequestEditorExtension: (extension: Extension) => void;
-    /**
-     * Add a custom request view mode.
-     * @param options The view mode options.
-     */
-    addRequestViewMode: (options: RequestViewModeOptions) => void;
 };

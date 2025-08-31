@@ -38,9 +38,3 @@ export type ListenerHandle = {
      */
     stop: () => void;
 };
-export type Prettify<T> = {
-    [K in keyof T]: T[K];
-} & {};
-export type As<TType extends string> = {
-    type: TType;
-};

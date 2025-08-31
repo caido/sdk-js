@@ -1,4 +1,3 @@
-import { type RequestDraft, type RequestFull, type RequestMeta } from "./request";
 import { type ID } from "./utils";
 /**
  * A unique command identifier.
@@ -17,31 +16,48 @@ export type CommandContext = CommandContextBase | CommandContextRequestRow | Com
  * This context is used for commands that are not executed in a specific context, such as via shortcuts and the command palette.
  * @category Commands
  */
-export type CommandContextBase = {
+type CommandContextBase = {
     type: "BaseContext";
 };
 /**
  * The context for a command that is executed on a row in the request table.
  * @category Commands
  */
-export type CommandContextRequestRow = {
+type CommandContextRequestRow = {
     type: "RequestRowContext";
     /**
      * The requests that are selected in the request table.
      */
-    requests: RequestMeta[];
+    requests: {
+        id: ID;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        isTls: boolean;
+        streamId?: ID;
+    }[];
 };
 /**
  * The context for a command that is executed on a request pane.
  * @category Commands
  */
-export type CommandContextRequest = {
+type CommandContextRequest = {
     type: "RequestContext";
     /**
      * The request that is currently open in the request pane.
      * If the request has not yet been saved in the database, the id will be undefined.
      */
-    request: RequestDraft | RequestFull;
+    request: {
+        id: ID | undefined;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        isTls: boolean;
+        raw: string;
+        streamId?: ID;
+    };
     /**
      * The currently selected text in the request pane.
      */
@@ -51,12 +67,20 @@ export type CommandContextRequest = {
  * The context for a command that is executed on a response pane.
  * @category Commands
  */
-export type CommandContextResponse = {
+type CommandContextResponse = {
     type: "ResponseContext";
     /**
      * The request that is associated with the response.
      */
-    request: RequestMeta;
+    request: {
+        id: ID;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        isTls: boolean;
+        streamId?: ID;
+    };
     /**
      * The response that is currently open in the response pane.
      */
@@ -71,3 +95,4 @@ export type CommandContextResponse = {
      */
     selection: string;
 };
+export {};
