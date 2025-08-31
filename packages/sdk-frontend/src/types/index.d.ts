@@ -1,6 +1,6 @@
 export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions } from "./types/window";
-export type { CommandContext } from "./types/commands";
+export type { CommandContext, CommandContextRequest, CommandContextRequestRow, CommandContextResponse, CommandContextBase, } from "./types/commands";
 export type { MenuItem } from "./types/menu";
 export { type ReplayTab, type ReplaySession, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, } from "./types/replay";
 export type { HostedFile } from "./types/files";
@@ -8,7 +8,7 @@ export type { Filter } from "./types/filter";
 export type { HTTPQL, ID, ComponentDefinition } from "./types/utils";
 export type { JSONValue, JSONCompatible } from "./types/json";
 export type { SlotContent, ButtonSlotContent, CustomSlotContent, CommandSlotContent, } from "./types/slots";
-export type { RequestViewModeOptions } from "./types/request";
+export type { RequestViewModeOptions, RequestFull, RequestDraft, RequestMeta, } from "./types/request";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceSection, MatchReplaceSectionRequestBody, MatchReplaceSectionRequestFirstLine, MatchReplaceSectionRequestHeader, MatchReplaceSectionRequestMethod, MatchReplaceSectionRequestPath, MatchReplaceSectionRequestQuery, MatchReplaceSectionResponseBody, MatchReplaceSectionResponseFirstLine, MatchReplaceSectionResponseHeader, MatchReplaceSectionResponseStatusCode, MatchReplaceOperationStatusCode, MatchReplaceOperationStatusCodeUpdate, MatchReplaceOperationQuery, MatchReplaceOperationQueryRaw, MatchReplaceOperationQueryAdd, MatchReplaceOperationQueryRemove, MatchReplaceOperationQueryUpdate, MatchReplaceOperationPath, MatchReplaceOperationPathRaw, MatchReplaceOperationMethod, MatchReplaceOperationMethodUpdate, MatchReplaceOperationHeader, MatchReplaceOperationHeaderRaw, MatchReplaceOperationHeaderAdd, MatchReplaceOperationHeaderRemove, MatchReplaceOperationHeaderUpdate, MatchReplaceOperationBody, MatchReplaceOperationBodyRaw, MatchReplaceOperationFirstLine, MatchReplaceOperationFirstLineRaw, MatchReplaceReplacer, MatchReplaceReplacerTerm, MatchReplaceReplacerWorkflow, MatchReplaceMatcherName, MatchReplaceMatcherRaw, MatchReplaceMatcherRawFull, MatchReplaceMatcherRawRegex, MatchReplaceMatcherRawValue, } from "./types/matchReplace";
 export type { Scope } from "./types/scopes";
 export type { EnvironmentVariable } from "./types/environment";
