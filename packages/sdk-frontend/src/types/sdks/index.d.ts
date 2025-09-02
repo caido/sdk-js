@@ -1,6 +1,7 @@
 import type { Sdk as GraphqlSDK } from "../__generated__/graphql-sdk";
 import { type BackendEndpoints, type BackendEvents } from "../types/backend";
 import type { AssetsSDK } from "./assets";
+import type { AutomateSDK } from "./automate";
 import type { BackendSDK } from "./backend";
 import type { CommandPaletteSDK } from "./commandPalette";
 import type { CommandsSDK } from "./commands";
@@ -98,6 +99,10 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the HTTP History page.
      */
     httpHistory: HTTPHistorySDK;
+    /**
+     * Utilities to interact with the Automate page.
+     */
+    automate: AutomateSDK;
     /**
      * Utilities to interact with the Files page.
      */
