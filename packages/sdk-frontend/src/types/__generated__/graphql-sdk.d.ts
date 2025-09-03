@@ -2859,6 +2859,7 @@ export type ReplayEntrySettings = {
     placeholders: Array<ReplayPlaceholder>;
 };
 export type ReplayEntrySettingsInput = {
+    connectionClose: Scalars["Boolean"]["input"];
     placeholders: Array<ReplayPlaceholderInput>;
     updateContentLength: Scalars["Boolean"]["input"];
 };

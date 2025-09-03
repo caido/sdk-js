@@ -118,6 +118,11 @@ export type SendRequestOptions = {
      */
     updateContentLength?: boolean;
     /**
+     * Whether to force close the connection by setting Connection: close header.
+     * Defaults to true.
+     */
+    connectionClose?: boolean;
+    /**
      * Whether to overwrite the editor's draft content.
      * If true, draft content will be overwritten with the new request.
      * If false, the draft will be kept.
