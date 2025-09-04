@@ -1,4 +1,6 @@
+import type { Extension } from "@codemirror/state";
 import { type Finding } from "../types/findings";
+import type { RequestViewModeOptions } from "../types/request";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with findings
@@ -21,4 +23,14 @@ export type FindingsSDK = {
         reporter: string;
         dedupeKey?: string;
     }) => Promise<Finding | undefined>;
+    /**
+     * Add an extension to the request editor.
+     * @param extension The extension to add.
+     */
+    addRequestEditorExtension: (extension: Extension) => void;
+    /**
+     * Add a custom request view mode.
+     * @param options The view mode options.
+     */
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
 };
