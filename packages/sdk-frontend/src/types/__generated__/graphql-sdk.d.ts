@@ -8831,7 +8831,6 @@ export type DeletedFilterPresetSubscription = {
 export type FindingMetaFragment = {
     id: string;
     title: string;
-    description?: string | undefined | null;
     reporter: string;
     host: string;
     path: string;
@@ -8877,7 +8876,6 @@ export type FindingEdgeMetaFragment = {
     node: {
         id: string;
         title: string;
-        description?: string | undefined | null;
         reporter: string;
         host: string;
         path: string;
@@ -8919,6 +8917,99 @@ export type FindingEdgeMetaFragment = {
         };
     };
 };
+export type FindingFullFragment = {
+    description?: string | undefined | null;
+    id: string;
+    title: string;
+    reporter: string;
+    host: string;
+    path: string;
+    createdAt: Date;
+    request: {
+        __typename: "Request";
+        id: string;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        method: string;
+        edited: boolean;
+        isTls: boolean;
+        sni?: string | undefined | null;
+        length: number;
+        alteration: Alteration;
+        fileExtension?: string | undefined | null;
+        source: Source;
+        createdAt: Date;
+        metadata: {
+            __typename: "RequestMetadata";
+            id: string;
+            color?: string | undefined | null;
+        };
+        response?: {
+            __typename: "Response";
+            id: string;
+            statusCode: number;
+            roundtripTime: number;
+            length: number;
+            createdAt: Date;
+            alteration: Alteration;
+            edited: boolean;
+        } | undefined | null;
+        stream?: {
+            id: string;
+        } | undefined | null;
+    };
+};
+export type GetFindingQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type GetFindingQuery = {
+    finding?: {
+        description?: string | undefined | null;
+        id: string;
+        title: string;
+        reporter: string;
+        host: string;
+        path: string;
+        createdAt: Date;
+        request: {
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            sni?: string | undefined | null;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+            stream?: {
+                id: string;
+            } | undefined | null;
+        };
+    } | undefined | null;
+};
 export type GetFindingsBeforeQueryVariables = Exact<{
     before: Scalars["String"]["input"];
     last: Scalars["Int"]["input"];
@@ -8933,7 +9024,6 @@ export type GetFindingsBeforeQuery = {
             node: {
                 id: string;
                 title: string;
-                description?: string | undefined | null;
                 reporter: string;
                 host: string;
                 path: string;
@@ -8998,7 +9088,6 @@ export type GetFindingsAfterQuery = {
             node: {
                 id: string;
                 title: string;
-                description?: string | undefined | null;
                 reporter: string;
                 host: string;
                 path: string;
@@ -9063,7 +9152,6 @@ export type GetFindingsByOffsetQuery = {
             node: {
                 id: string;
                 title: string;
-                description?: string | undefined | null;
                 reporter: string;
                 host: string;
                 path: string;
@@ -9143,7 +9231,6 @@ export type CreatedFindingSubscription = {
             node: {
                 id: string;
                 title: string;
-                description?: string | undefined | null;
                 reporter: string;
                 host: string;
                 path: string;
@@ -9208,7 +9295,6 @@ export type UpdatedFindingsSubscription = {
                 node: {
                     id: string;
                     title: string;
-                    description?: string | undefined | null;
                     reporter: string;
                     host: string;
                     path: string;
@@ -9260,9 +9346,9 @@ export type CreateFindingMutationVariables = Exact<{
 export type CreateFindingMutation = {
     createFinding: {
         finding?: {
+            description?: string | undefined | null;
             id: string;
             title: string;
-            description?: string | undefined | null;
             reporter: string;
             host: string;
             path: string;
@@ -9330,7 +9416,6 @@ export type UpdateFindingMutation = {
         finding?: {
             id: string;
             title: string;
-            description?: string | undefined | null;
             reporter: string;
             host: string;
             path: string;
@@ -22317,8 +22402,9 @@ export declare const DataExportTaskMetaFieldsFragmentDoc = "\n    fragment dataE
 export declare const DataExportTaskMetaFragmentDoc = "\n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    ";
 export declare const FilterPresetFullFragmentDoc = "\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    ";
 export declare const FilterPresetEdgeFullFragmentDoc = "\n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    ";
-export declare const FindingMetaFragmentDoc = "\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    ";
+export declare const FindingMetaFragmentDoc = "\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const FindingEdgeMetaFragmentDoc = "\n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    ";
+export declare const FindingFullFragmentDoc = "\n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    ";
 export declare const InterceptEntryMetaFragmentDoc = "\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const RequestFullFieldsFragmentDoc = "\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const RequestFullFragmentDoc = "\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    ";
@@ -22534,17 +22620,18 @@ export declare const FilterPresetDocument = "\n    query filterPreset($id: ID!) 
 export declare const CreatedFilterPresetDocument = "\n    subscription createdFilterPreset {\n  createdFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    ";
 export declare const UpdatedFilterPresetDocument = "\n    subscription updatedFilterPreset {\n  updatedFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause\n}\n    ";
 export declare const DeletedFilterPresetDocument = "\n    subscription deletedFilterPreset {\n  deletedFilterPreset {\n    deletedFilterId\n  }\n}\n    ";
-export declare const GetFindingsBeforeDocument = "\n    query getFindingsBefore($before: String!, $last: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(before: $before, last: $last, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const GetFindingsAfterDocument = "\n    query getFindingsAfter($after: String!, $first: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(after: $after, first: $first, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const GetFindingsByOffsetDocument = "\n    query getFindingsByOffset($offset: Int!, $limit: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findingsByOffset(offset: $offset, limit: $limit, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingDocument = "\n    query getFinding($id: ID!) {\n  finding(id: $id) {\n    ...findingFull\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const GetFindingsBeforeDocument = "\n    query getFindingsBefore($before: String!, $last: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(before: $before, last: $last, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingsAfterDocument = "\n    query getFindingsAfter($after: String!, $first: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(after: $after, first: $first, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingsByOffsetDocument = "\n    query getFindingsByOffset($offset: Int!, $limit: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findingsByOffset(offset: $offset, limit: $limit, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const GetFindingsCountDocument = "\n    query getFindingsCount($filter: FilterClauseFindingInput!) {\n  findings(first: 0, filter: $filter) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const FindingReportersDocument = "\n    query findingReporters {\n  findingReporters\n}\n    ";
-export declare const CreatedFindingDocument = "\n    subscription createdFinding($order: FindingOrderInput) {\n  createdFinding {\n    findingEdge(order: $order) {\n      ...findingEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedFindingDocument = "\n    subscription createdFinding($order: FindingOrderInput) {\n  createdFinding {\n    findingEdge(order: $order) {\n      ...findingEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedFindingsDocument = "\n    subscription deletedFindings {\n  deletedFindings {\n    deletedFindingIds\n    snapshot\n  }\n}\n    ";
-export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput!) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
-export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  description\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const ExportFindingsDocument = "\n    mutation exportFindings($input: ExportFindingsInput!) {\n  exportFindings(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
@@ -22842,6 +22929,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdFilterPreset(variables?: CreatedFilterPresetSubscriptionVariables, options?: C): AsyncIterable<CreatedFilterPresetSubscription>;
     updatedFilterPreset(variables?: UpdatedFilterPresetSubscriptionVariables, options?: C): AsyncIterable<UpdatedFilterPresetSubscription>;
     deletedFilterPreset(variables?: DeletedFilterPresetSubscriptionVariables, options?: C): AsyncIterable<DeletedFilterPresetSubscription>;
+    getFinding(variables: GetFindingQueryVariables, options?: C): Promise<GetFindingQuery>;
     getFindingsBefore(variables: GetFindingsBeforeQueryVariables, options?: C): Promise<GetFindingsBeforeQuery>;
     getFindingsAfter(variables: GetFindingsAfterQueryVariables, options?: C): Promise<GetFindingsAfterQuery>;
     getFindingsByOffset(variables: GetFindingsByOffsetQueryVariables, options?: C): Promise<GetFindingsByOffsetQuery>;
