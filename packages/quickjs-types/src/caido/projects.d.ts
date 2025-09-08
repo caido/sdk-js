@@ -19,6 +19,10 @@ declare module "caido:utils" {
      */
     getName(): string;
     /**
+      * The directory where the project is located.
+      */
+    getPath(): string;
+    /**
      * The version of the project.
      * The format is `MAJOR.MINOR.PATCH`.
      */
