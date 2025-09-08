@@ -1,5 +1,6 @@
 import type { Sdk as GraphqlSDK } from "../__generated__/graphql-sdk";
 import { type BackendEndpoints, type BackendEvents } from "../types/backend";
+import type { AiSDK } from "./ai";
 import type { AssetsSDK } from "./assets";
 import type { AutomateSDK } from "./automate";
 import type { BackendSDK } from "./backend";
@@ -43,6 +44,10 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to create UI components.
      */
     ui: UISDK;
+    /**
+     * Utilities to interact with AI.
+     */
+    ai: AiSDK;
     /**
      * Utilities to interact with scopes
      */
