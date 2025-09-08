@@ -36,4 +36,9 @@ export type SearchSDK = {
      * @param options The view mode options.
      */
     addRequestViewMode: (options: RequestViewModeOptions) => void;
+    /**
+     * Scrolls the Search table to a specific request.
+     * @param id The ID of the request to scroll to.
+     */
+    scrollTo: (id: ID) => void;
 };

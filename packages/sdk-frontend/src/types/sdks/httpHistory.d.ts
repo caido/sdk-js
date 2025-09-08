@@ -41,4 +41,9 @@ export type HTTPHistorySDK = {
      * @param options The view mode options.
      */
     addRequestViewMode: (options: RequestViewModeOptions) => void;
+    /**
+     * Scrolls the HTTP History table to a specific entry.
+     * @param id The ID of the entry to scroll to.
+     */
+    scrollTo: (id: ID) => void;
 };
