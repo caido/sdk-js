@@ -10299,6 +10299,81 @@ export type InterceptRequestMessageMetaFragment = {
         } | undefined | null;
     };
 };
+export type InterceptRequestMessageFullFragment = {
+    __typename: "InterceptRequestMessage";
+    id: string;
+    request: {
+        __typename: "Request";
+        raw: string;
+        id: string;
+        host: string;
+        port: number;
+        path: string;
+        query: string;
+        method: string;
+        edited: boolean;
+        isTls: boolean;
+        sni?: string | undefined | null;
+        length: number;
+        alteration: Alteration;
+        fileExtension?: string | undefined | null;
+        source: Source;
+        createdAt: Date;
+        edits: Array<{
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            sni?: string | undefined | null;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+            stream?: {
+                id: string;
+            } | undefined | null;
+        }>;
+        metadata: {
+            __typename: "RequestMetadata";
+            id: string;
+            color?: string | undefined | null;
+        };
+        response?: {
+            __typename: "Response";
+            id: string;
+            statusCode: number;
+            roundtripTime: number;
+            length: number;
+            createdAt: Date;
+            alteration: Alteration;
+            edited: boolean;
+        } | undefined | null;
+        stream?: {
+            id: string;
+        } | undefined | null;
+    };
+};
 export type InterceptResponseMessageMetaFragment = {
     __typename: "InterceptResponseMessage";
     id: string;
@@ -22409,6 +22484,7 @@ export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
 export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
+export declare const InterceptRequestMessageFullFragmentDoc = "\n    fragment interceptRequestMessageFull on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptResponseMessageMetaFragmentDoc = "\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const StreamWsMessageEditRefFragmentDoc = "\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    ";
