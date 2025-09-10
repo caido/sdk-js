@@ -730,7 +730,7 @@ export type CreateAutomateSessionInput = {
 export type CreateAutomateSessionPayload = {
     session?: Maybe<AutomateSession>;
 };
-export type CreateBackupError = CloudUserError | OtherUserError | PermissionDeniedUserError | TaskInProgressUserError;
+export type CreateBackupError = OtherUserError | TaskInProgressUserError;
 export type CreateBackupPayload = {
     error?: Maybe<CreateBackupError>;
     task?: Maybe<BackupTask>;
@@ -1015,6 +1015,8 @@ export type CreatedWorkflowPayload = {
 export type CurrentProject = {
     config: ProjectConfig;
     project: Project;
+    /** Defines if the selected project is read-only */
+    readOnly: Scalars["Boolean"]["output"];
 };
 export type DnsIpResolver = {
     ip: Scalars["String"]["output"];
@@ -2394,6 +2396,7 @@ export type Project = {
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
     path: Scalars["String"]["output"];
+    /** Defines if the project would be read-only if selected by the caller */
     readOnly: Scalars["Boolean"]["output"];
     size: Scalars["Int"]["output"];
     status: ProjectStatus;
@@ -7069,16 +7072,8 @@ export type CreateBackupMutation = {
             };
         } | undefined | null;
         error?: {
-            __typename: "CloudUserError";
-            code: string;
-            cloudReason: CloudErrorReason;
-        } | {
             __typename: "OtherUserError";
             code: string;
-        } | {
-            __typename: "PermissionDeniedUserError";
-            code: string;
-            permissionDeniedReason: PermissionDeniedErrorReason;
         } | {
             __typename: "TaskInProgressUserError";
             taskId: string;
@@ -22554,7 +22549,7 @@ export declare const BackupsDocument = "\n    query backups {\n  backups {\n    
 export declare const BackupUriDocument = "\n    query backupUri($id: ID!) {\n  backup(id: $id) {\n    downloadUri\n  }\n}\n    ";
 export declare const BackupTasksDocument = "\n    query backupTasks {\n  backupTasks {\n    ...backupTaskMeta\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const RestoreBackupTasksDocument = "\n    query restoreBackupTasks {\n  restoreBackupTasks {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
-export declare const CreateBackupDocument = "\n    mutation createBackup($id: ID!) {\n  createBackup(projectId: $id) {\n    task {\n      ...backupTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const CreateBackupDocument = "\n    mutation createBackup($id: ID!) {\n  createBackup(projectId: $id) {\n    task {\n      ...backupTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const DeleteBackupDocument = "\n    mutation deleteBackup($id: ID!) {\n  deleteBackup(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const RenameBackupDocument = "\n    mutation renameBackup($id: ID!, $name: String!) {\n  renameBackup(id: $id, name: $name) {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const RestoreBackupFromFileDocument = "\n    mutation restoreBackupFromFile($name: String!, $file: Upload!) {\n  restoreBackup(input: {name: $name, source: {file: $file}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
