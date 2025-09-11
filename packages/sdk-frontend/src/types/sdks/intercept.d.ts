@@ -1,3 +1,4 @@
+import type { RequestViewModeOptions } from "../types/request";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with the Intercept page.
@@ -14,4 +15,9 @@ export type InterceptSDK = {
      * @param scopeId The ID of the scope to set.
      */
     setScope: (id: ID | undefined) => void;
+    /**
+     * Add a custom request view mode.
+     * @param options The view mode options.
+     */
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
 };
