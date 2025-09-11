@@ -30,7 +30,21 @@ export type MatchReplaceRule = {
      */
     collectionId: ID;
 };
-export type MatchReplaceSection = MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
+export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
+export type MatchReplaceSectionRequestAll = {
+    kind: "SectionRequestAll";
+    operation: MatchReplaceOperationAll;
+};
+export type MatchReplaceSectionResponseAll = {
+    kind: "SectionResponseAll";
+    operation: MatchReplaceOperationAll;
+};
+export type MatchReplaceOperationAll = KeepOperation<MatchReplaceOperationAllRaw>;
+export type MatchReplaceOperationAllRaw = {
+    kind: "OperationAllRaw";
+    matcher: MatchReplaceMatcherRaw;
+    replacer: MatchReplaceReplacer;
+};
 export type MatchReplaceSectionResponseStatusCode = {
     kind: "SectionResponseStatusCode";
     operation: MatchReplaceOperationStatusCode;
