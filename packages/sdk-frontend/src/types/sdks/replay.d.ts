@@ -1,5 +1,6 @@
 import { type Extension } from "@codemirror/state";
 import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
@@ -109,6 +110,11 @@ export type ReplaySDK = {
      * @param extension The extension to add.
      */
     addRequestEditorExtension: (extension: Extension) => void;
+    /**
+     * Add a custom view mode for requests.
+     * @param options The view mode options.
+     */
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
     /**
      * Send a request to the Replay backend.
      * @param request The request to send.
