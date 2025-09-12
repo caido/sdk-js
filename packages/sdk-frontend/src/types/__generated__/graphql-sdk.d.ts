@@ -1214,6 +1214,7 @@ export type DeletedAutomateTaskPayload = {
     deletedAutomateTaskId: Scalars["ID"]["output"];
     error?: Maybe<DeletedAutomateTaskError>;
     snapshot: Scalars["Snapshot"]["output"];
+    status: TaskStatus;
 };
 export type DeletedBackupPayload = {
     deletedBackupId: Scalars["ID"]["output"];
@@ -1424,6 +1425,7 @@ export type FinishedRestoreBackupTaskSuccess = {
 };
 export type FinishedTaskPayload = {
     error?: Maybe<UserError>;
+    status: TaskStatus;
     task: Task;
 };
 export type ForwardInterceptMessageInput = {
@@ -4102,6 +4104,12 @@ export type TaskInProgressUserError = UserError & {
     code: Scalars["String"]["output"];
     taskId: Scalars["ID"]["output"];
 };
+export declare const TaskStatus: {
+    readonly Cancelled: "CANCELLED";
+    readonly Done: "DONE";
+    readonly Error: "ERROR";
+};
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
 export type TestAiProviderError = AiUserError | OtherUserError;
 export type TestAiProviderInput = {
     anthropic: AiProviderAnthropicInput;
@@ -6749,6 +6757,7 @@ export type DeletedAutomateTaskSubscription = {
     deletedAutomateTask: {
         deletedAutomateTaskId: string;
         snapshot: number;
+        status: TaskStatus;
     };
 };
 export type UpdatedAutomateTaskSubscriptionVariables = Exact<{
@@ -23231,7 +23240,7 @@ export declare const ResumeAutomateTaskDocument = "\n    mutation resumeAutomate
 export declare const StartAutomateTaskDocument = "\n    mutation startAutomateTask($automateSessionId: ID!) {\n  startAutomateTask(automateSessionId: $automateSessionId) {\n    automateTask {\n      ...automateTaskMeta\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedAutomateEntryRequestDocument = "\n    subscription createdAutomateEntryRequest($order: AutomateEntryRequestOrderInput, $filter: HTTPQL) {\n  createdAutomateEntryRequest(filter: $filter) {\n    automateEntryRequestEdge(order: $order) {\n      ...automateEntryRequestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
 export declare const CreatedAutomateTaskDocument = "\n    subscription createdAutomateTask {\n  createdAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
-export declare const DeletedAutomateTaskDocument = "\n    subscription deletedAutomateTask {\n  deletedAutomateTask {\n    deletedAutomateTaskId\n    snapshot\n  }\n}\n    ";
+export declare const DeletedAutomateTaskDocument = "\n    subscription deletedAutomateTask {\n  deletedAutomateTask {\n    deletedAutomateTaskId\n    snapshot\n    status\n  }\n}\n    ";
 export declare const UpdatedAutomateTaskDocument = "\n    subscription updatedAutomateTask {\n  updatedAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedAutomateEntryDocument = "\n    subscription createdAutomateEntry {\n  createdAutomateEntry {\n    automateEntryEdge {\n      ...automateEntryEdgeMeta\n    }\n  }\n}\n    \n    fragment automateEntryEdgeMeta on AutomateEntryEdge {\n  node {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const UpdatedAutomateEntryDocument = "\n    subscription updatedAutomateEntry {\n  updatedAutomateEntry {\n    automateEntryEdge {\n      ...automateEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryEdgeMeta on AutomateEntryEdge {\n  node {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
