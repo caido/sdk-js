@@ -10240,6 +10240,7 @@ export type InstanceSettingsFullFragment = {
         } | undefined | null;
         openai?: {
             apiKey: string;
+            url?: string | undefined | null;
         } | undefined | null;
         openrouter?: {
             apiKey: string;
@@ -10272,6 +10273,7 @@ export type SetInstanceSettingsMutation = {
                 } | undefined | null;
                 openai?: {
                     apiKey: string;
+                    url?: string | undefined | null;
                 } | undefined | null;
                 openrouter?: {
                     apiKey: string;
@@ -10310,6 +10312,7 @@ export type InstanceSettingsQuery = {
             } | undefined | null;
             openai?: {
                 apiKey: string;
+                url?: string | undefined | null;
             } | undefined | null;
             openrouter?: {
                 apiKey: string;
@@ -10333,6 +10336,7 @@ export type UpdatedInstanceSettingsSubscription = {
                 } | undefined | null;
                 openai?: {
                     apiKey: string;
+                    url?: string | undefined | null;
                 } | undefined | null;
                 openrouter?: {
                     apiKey: string;
@@ -23107,7 +23111,7 @@ export declare const InterceptEntryFullFragmentDoc = "\n    fragment interceptEn
 export declare const InterceptEntryEdgeMetaFragmentDoc = "\n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
 export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InterceptRequestMessageFullFragmentDoc = "\n    fragment interceptRequestMessageFull on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
@@ -23349,10 +23353,10 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
-export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
