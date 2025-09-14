@@ -1,18 +1,23 @@
+import { type Routes } from "../types/navigation";
 /**
  * Utilities to interact with navigation.
  * @category Navigation
  */
 export type NavigationSDK = {
     /**
-     * Navigate to a path.
-     * @param path The path to navigate to.
+     * Navigate to a route or path.
+     * @param route The route to navigate to. Can be a route ID object or a custom path string.
      *
      * @example
      * ```ts
+     * sdk.navigation.goTo({ id: Routes.Replay });
+     * sdk.navigation.goTo({ id: Routes.Projects });
      * sdk.navigation.goTo("/my-plugin-page");
      * ```
      */
-    goTo: (path: string) => void;
+    goTo: (route: string | {
+        id: Routes;
+    }) => void;
     /**
      * Add a page to the navigation.
      * @param path The path of the page.

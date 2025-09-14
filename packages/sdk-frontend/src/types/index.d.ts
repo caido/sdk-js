@@ -16,3 +16,4 @@ export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkfl
 export type { ListenerHandle } from "./types/utils";
 export type { AIProvider } from "./types/ai";
 export type { API } from "./sdks";
+export { Routes } from "./types/navigation";
