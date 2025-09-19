@@ -23,3 +23,11 @@ export declare const Routes: {
     readonly Settings: "Settings";
 };
 export type Routes = (typeof Routes)[keyof typeof Routes];
+export type PageChangeEvent = {
+    type: "Core";
+    routeId: Routes;
+    path: string;
+} | {
+    type: "Plugin";
+    path: string;
+};

@@ -1,4 +1,5 @@
-import { type Routes } from "../types/navigation";
+import { type PageChangeEvent, type Routes } from "../types/navigation";
+import { type ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with navigation.
  * @category Navigation
@@ -31,4 +32,21 @@ export type NavigationSDK = {
         topbar?: HTMLElement;
         onEnter?: () => void;
     }) => void;
+    /**
+     * Subscribe to page changes.
+     * @param callback The callback to call when the page changes.
+     * @returns An object with a `stop` method that can be called to stop listening to page changes.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.navigation.onPageChange((event) => {
+     *   console.log('Page changed to:', event.routeId);
+     *   console.log('- path:', event.path);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onPageChange: (callback: (route: PageChangeEvent) => void) => ListenerHandle;
 };
