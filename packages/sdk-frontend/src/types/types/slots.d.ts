@@ -1,8 +1,8 @@
 import { type CommandID } from "./commands";
-import { type ComponentDefinition } from "./utils";
-type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = {
+import { type ComponentDefinition, type Prettify } from "./utils";
+type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = Prettify<{
     type: TType;
-} & P;
+} & P>;
 export type ButtonSlotContent = DefineSlotContent<"Button", {
     label: string;
     icon?: string;

@@ -16,5 +16,6 @@ export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkfl
 export type { ListenerHandle } from "./types/utils";
 export type { AIProvider } from "./types/ai";
 export type { SelectedProjectChangeEvent } from "./types/projects";
+export type { CommandPaletteView } from "./sdks/commandPalette";
 export type { API } from "./sdks";
 export { Routes } from "./types/navigation";
