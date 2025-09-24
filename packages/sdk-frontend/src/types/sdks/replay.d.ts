@@ -1,8 +1,8 @@
 import { type Extension } from "@codemirror/state";
-import { type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { ID } from "../types/utils";
+import type { ID, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -134,4 +134,20 @@ export type ReplaySDK = {
      * ```
      */
     sendRequest: (sessionId: ID, options: SendRequestOptions) => Promise<void>;
+    /**
+     * Subscribe to current replay session changes.
+     * @param callback The callback to call when the selected session changes.
+     * @returns An object with a `stop` method that can be called to stop listening to session changes.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.replay.onCurrentSessionChange((event) => {
+     *   console.log(`Session ${event.sessionId} got selected!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onCurrentSessionChange: (callback: (event: CurrentReplaySessionChangeEvent) => void) => ListenerHandle;
 };

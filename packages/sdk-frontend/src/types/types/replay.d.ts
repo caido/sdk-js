@@ -166,3 +166,13 @@ export type RequestSource = {
     type: "ID";
     id: string;
 };
+/**
+ * Event fired when the current replay session changes.
+ * @category Replay
+ */
+export type CurrentReplaySessionChangeEvent = {
+    /**
+     * The ID of the newly selected session, or undefined if no session is selected.
+     */
+    sessionId: ID | undefined;
+};
