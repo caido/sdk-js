@@ -16,7 +16,6 @@ import type { InterceptSDK } from "./intercept";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
 import type { NavigationSDK } from "./navigation";
-import type { ProjectsSDK } from "./projects";
 import type { ReplaySDK } from "./replay";
 import type { RuntimeSDK } from "./runtime";
 import type { ScopesSDK } from "./scopes";
@@ -69,10 +68,6 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with navigation.
      */
     navigation: NavigationSDK;
-    /**
-     * Utilities to interact with projects.
-     */
-    projects: ProjectsSDK;
     /**
      * Utilities to interact with the active page.
      */
