@@ -9,25 +9,12 @@ env:
   CAIDO_REF: ${{ github.ref }}
   CAIDO_GITHUB_TOKEN: ${{ github.token }}
   CAIDO_DOC_RW_TOKEN: ${{ secrets.CI__DOC__RW }}
-  CAIDO_NODE_VERSION: 20
-  CAIDO_PNPM_VERSION: 9
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.CAIDO_NODE_VERSION }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3.0.0
-        with:
-          version: ${{ env.CAIDO_PNPM_VERSION }}
-          run_install: false
-
       - name: Checkout sdk-js
         uses: actions/checkout@v4
         with:
@@ -44,9 +31,21 @@ jobs:
           path: ./doc-developer
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
 
+      - name: Install Mise
+        uses: caido/action-mise-action@v3.2.0
+        with:
+          working_directory: ./sdk-js
+          version: ${{ vars.CI__MISE_VERSION }}
+
+      - name: Install Mise
+        uses: caido/action-mise-action@v3.2.0
+        with:
+          working_directory: ./doc-developer
+          version: ${{ vars.CI__MISE_VERSION }}
+
       - name: Install dependencies
         working-directory: ./sdk-js
-        run: pnpm i --frozen-lockfile
+        run: pnpm install
 
       - name: Run script
         working-directory: ./doc-developer
