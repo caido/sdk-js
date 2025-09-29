@@ -730,16 +730,30 @@ declare module "caido:utils" {
       request: RequestSpec | RequestSpecRaw,
       options?: RequestSendOptions,
     ): Promise<RequestResponse>;
-    /**
-     * Checks if a request is in scope.
-     *
-     * @example
-     * ```js
-     * if (sdk.requests.inScope(request)) {
-     *  sdk.console.log("In scope");
-     * }
-     * ```
-     */
-    inScope(request: Request | RequestSpec): boolean;
+     /**
+      * Checks if a request is in scope.
+      *
+      * @example
+      * ```js
+      * if (sdk.requests.inScope(request)) {
+      *  sdk.console.log("In scope");
+      * }
+      * ```
+      */
+     inScope(request: Request | RequestSpec): boolean;
+     /**
+      * Checks if a request is in any of the provided scopes.
+      *
+      * @param request The request to check
+      * @param scopes The scopes or scope IDs to check against
+      * @returns True if the request is in any of the scopes
+      *
+      * @example
+      * ```js
+      * const isInScope = sdk.requests.inScopes(request, [scope1, scope2]);
+      * sdk.console.log(isInScope); // true or false
+      * ```
+      */
+     inScopes(request: Request | RequestSpec, scopes: Array<Scope> | Array<ID>): boolean;
   };
 }
