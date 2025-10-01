@@ -730,30 +730,25 @@ declare module "caido:utils" {
       request: RequestSpec | RequestSpecRaw,
       options?: RequestSendOptions,
     ): Promise<RequestResponse>;
-     /**
-      * Checks if a request is in scope.
-      *
-      * @example
-      * ```js
-      * if (sdk.requests.inScope(request)) {
-      *  sdk.console.log("In scope");
-      * }
-      * ```
-      */
-     inScope(request: Request | RequestSpec): boolean;
-     /**
-      * Checks if a request is in any of the provided scopes.
-      *
-      * @param request The request to check
-      * @param scopes The scopes or scope IDs to check against
-      * @returns True if the request is in any of the scopes
-      *
-      * @example
-      * ```js
-      * const isInScope = sdk.requests.inScopes(request, [scope1, scope2]);
-      * sdk.console.log(isInScope); // true or false
-      * ```
-      */
-     inScopes(request: Request | RequestSpec, scopes: Array<Scope> | Array<ID>): boolean;
+      /**
+       * Checks if a request is in scope.
+       *
+       * @param request The request to check
+       * @param scopes Optional scopes or scope IDs to check against. If not provided, checks against the default scope.
+       * @returns True if the request is in scope
+       *
+       * @example
+       * ```js
+       * // Check against default scope
+       * if (sdk.requests.inScope(request)) {
+       *  sdk.console.log("In scope");
+       * }
+       *
+       * // Check against specific scopes
+       * const isInScope = sdk.requests.inScope(request, [scope1, scope2]);
+       * sdk.console.log(isInScope); // true or false
+       * ```
+       */
+      inScope(request: Request | RequestSpec, scopes?: Array<Scope> | Array<ID>): boolean;
   };
 }
