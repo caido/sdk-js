@@ -13,6 +13,7 @@ import type { FindingsSDK } from "./findings";
 import type { FooterSDK } from "./footer";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { InterceptSDK } from "./intercept";
+import type { LogSDK } from "./log";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
 import type { NavigationSDK } from "./navigation";
@@ -149,4 +150,8 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the footer.
      */
     footer: FooterSDK;
+    /**
+     * Utilities for logging messages to the console.
+     */
+    log: LogSDK;
 };

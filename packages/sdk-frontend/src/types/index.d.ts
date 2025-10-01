@@ -17,5 +17,6 @@ export type { ListenerHandle } from "./types/utils";
 export type { AIProvider } from "./types/ai";
 export type { SelectedProjectChangeEvent } from "./types/projects";
 export type { CommandPaletteView } from "./sdks/commandPalette";
+export type { LogSDK } from "./sdks/log";
 export type { API } from "./sdks";
 export { Routes } from "./types/navigation";
