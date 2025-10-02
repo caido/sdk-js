@@ -1,6 +1,9 @@
 {
   "name": "@caido/sdk-js",
   "private": true,
+  "scripts": {
+    "generate:doc": "pnpm -r generate:doc"
+  },
   "engines": {
     "node": ">=20",
     "pnpm": ">=10.17"

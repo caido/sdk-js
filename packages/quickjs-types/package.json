@@ -9,7 +9,7 @@
     "src/*"
   ],
   "scripts": {
-    "documentation": "typedoc",
+    "generate:doc": "typedoc",
     "typing": "./scripts/typing.sh"
   }
 }

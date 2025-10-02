@@ -9,7 +9,7 @@
     "src/*"
   ],
   "scripts": {
-    "documentation": "typedoc"
+    "generate:doc": "typedoc"
   },
   "dependencies": {
     "@caido/quickjs-types": "^0.21.1"
