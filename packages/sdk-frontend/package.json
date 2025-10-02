@@ -11,7 +11,7 @@
     "src/*"
   ],
   "scripts": {
-    "documentation": "typedoc"
+    "generate:doc": "typedoc"
   },
   "peerDependencies": {
     "@ai-sdk/provider": "^2.0.0",
