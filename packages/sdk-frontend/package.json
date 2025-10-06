@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-frontend",
-  "version": "0.52.1-beta.1",
+  "version": "0.52.1-beta.2",
   "description": "Typing for the Caido Frontend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "src/*"
   ],
   "scripts": {
-    "generate:doc": "typedoc"
+    "documentation": "typedoc"
   },
   "peerDependencies": {
     "@ai-sdk/provider": "^2.0.0",

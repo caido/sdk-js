@@ -1,9 +1,7 @@
 {
   "extends": ["../../typedoc.base.json"],
   "entryPoints": ["src/index.d.ts"],
-  "exclude": [
-    "src/types/__generated__/graphql-sdk.d.ts"
-  ],
+  "exclude": ["src/types/__generated__/graphql-sdk.d.ts"],
   "categoryOrder": [
     "SDK",
     "Backend",
