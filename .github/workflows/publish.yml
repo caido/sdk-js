@@ -31,7 +31,6 @@ jobs:
         with:
           package: quickjs-types
           internal: true
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-backend
