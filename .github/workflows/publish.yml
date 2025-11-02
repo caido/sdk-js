@@ -21,6 +21,7 @@ jobs:
       - name: Install Mise
         uses: caido/action-mise-action@v3.2.0
         with:
+          working_directory: .
           version: ${{ vars.CI__MISE_VERSION }}
 
       - name: Install dependencies
