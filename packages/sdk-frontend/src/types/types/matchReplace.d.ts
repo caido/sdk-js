@@ -30,6 +30,15 @@ export type MatchReplaceRule = {
      */
     collectionId: ID;
 };
+export declare const Source: {
+    readonly Automate: "AUTOMATE";
+    readonly Intercept: "INTERCEPT";
+    readonly Plugin: "PLUGIN";
+    readonly Replay: "REPLAY";
+    readonly Sample: "SAMPLE";
+    readonly Workflow: "WORKFLOW";
+};
+export type Source = (typeof Source)[keyof typeof Source];
 export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionRequestSNI | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
 export type MatchReplaceSectionRequestAll = {
     kind: "SectionRequestAll";
