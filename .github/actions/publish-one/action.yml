@@ -10,10 +10,6 @@ inputs:
     description: Publish internally
     required: true
 
-  secret-npm-token:
-    description: NPM Token
-    required: true
-
   secret-github-token:
     description: Github Token
     required: true
@@ -23,8 +19,6 @@ runs:
   steps:
     - name: Publish
       shell: bash
-      env:
-        NPM_TOKEN: ${{ inputs.secret-npm-token }}
       run: |
         # Read the current version from package.json
         CURRENT_VERSION=$(jq -r '.version' ./packages/${{ inputs.package }}/package.json)

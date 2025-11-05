@@ -5,6 +5,10 @@ on:
     branches:
       - 'main'
 
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
 jobs:
   publish-js:
     runs-on: ubuntu-latest
@@ -17,6 +21,7 @@ jobs:
       - name: Install Mise
         uses: caido/action-mise-action@v3.2.0
         with:
+          working_directory: .
           version: ${{ vars.CI__MISE_VERSION }}
 
       - name: Install dependencies
@@ -27,7 +32,6 @@ jobs:
         with:
           package: quickjs-types
           internal: true
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-backend
@@ -35,7 +39,6 @@ jobs:
         with:
           package: sdk-backend
           internal: false
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-frontend
@@ -43,7 +46,6 @@ jobs:
         with:
           package: sdk-frontend
           internal: false
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-shared
@@ -51,7 +53,6 @@ jobs:
         with:
           package: sdk-shared
           internal: true
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-workflow
@@ -59,5 +60,4 @@ jobs:
         with:
           package: sdk-workflow
           internal: true
-          secret-npm-token: ${{ secrets.NPM_BOT_TOKEN }}
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
