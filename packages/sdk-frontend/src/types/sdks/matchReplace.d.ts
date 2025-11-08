@@ -1,4 +1,4 @@
-import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type Source } from "../types/matchReplace";
+import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection } from "../types/matchReplace";
 import type { HTTPQL, ID } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
@@ -53,14 +53,12 @@ export type MatchReplaceSDK = {
      * @param options.name - The name of the rule.
      * @param options.query - The HTTPQL query to match the rule against.
      * @param options.collectionId - The ID of the collection the rule belongs to.
-     * @param options.sources - The sources the rule belongs to.
      */
     createRule: (options: {
         name: string;
         query: HTTPQL;
         section: MatchReplaceSection;
         collectionId: ID;
-        sources: Array<Source>;
     }) => Promise<MatchReplaceRule>;
     /**
      * Update a rule.
@@ -69,13 +67,11 @@ export type MatchReplaceSDK = {
      * @param options.name - The new name of the rule.
      * @param options.query - The new HTTPQL query of the rule.
      * @param options.section - The new section of the rule.
-     * @param options.sources - The new sources of the rule.
      */
     updateRule: (id: ID, options: {
         name: string;
         query?: HTTPQL;
         section: MatchReplaceSection;
-        sources: Array<Source>;
     }) => Promise<MatchReplaceRule>;
     /**
      * Toggle a rule.
