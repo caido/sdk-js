@@ -62,6 +62,28 @@ export type ReplaySession = {
      * The ID of the collection the session belongs to.
      */
     collectionId: ID;
+    /**
+     * The IDs of all entries in this session.
+     */
+    entryIds: ID[];
+};
+/**
+ * A replay entry.
+ * @category Replay
+ */
+export type ReplayEntry = {
+    /**
+     * The ID of the entry.
+     */
+    id: ID;
+    /**
+     * The ID of the session this entry belongs to.
+     */
+    sessionId: ID;
+    /**
+     * The ID of the request associated with this entry, if any.
+     */
+    requestId?: ID;
 };
 /**
  * A collection in Replay.
