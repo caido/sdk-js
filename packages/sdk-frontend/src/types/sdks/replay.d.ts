@@ -30,6 +30,20 @@ export type ReplaySDK = {
      */
     getSessions: () => ReplaySession[];
     /**
+     * Get the currently selected replay session.
+     * @returns The currently selected replay session, or undefined if no session is selected.
+     * @example
+     * ```ts
+     * const currentSession = sdk.replay.getCurrentSession();
+     * if (currentSession) {
+     *   console.log(`Current session: ${currentSession.name}`);
+     * } else {
+     *   console.log("No session is currently selected");
+     * }
+     * ```
+     */
+    getCurrentSession: () => ReplaySession | undefined;
+    /**
      * Rename a session.
      * @param id The ID of the session to rename.
      * @param name The new name of the session.
