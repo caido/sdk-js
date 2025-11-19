@@ -11,6 +11,7 @@ declare module "caido:workflow" {
     RuntimeSDK,
     ScopeSDK,
     GraphQLSDK,
+    HostedFileSDK,
   } from "caido:utils";
 
   /**
@@ -91,6 +92,10 @@ declare module "caido:workflow" {
      * The SDK for the GraphQL service.
      */
     graphql: GraphQLSDK;
+    /**
+     * The SDK for the HostedFile service.
+     */
+    hostedFile: HostedFileSDK;
     /**
      * Converts bytes to a string.
      *

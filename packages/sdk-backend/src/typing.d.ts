@@ -13,6 +13,7 @@ declare module "caido:plugin" {
     RuntimeSDK,
     ScopeSDK,
     GraphQLSDK,
+    HostedFileSDK,
   } from "caido:utils";
 
   /**
@@ -200,5 +201,9 @@ declare module "caido:plugin" {
      * The SDK for the GraphQL service.
      */
     graphql: GraphQLSDK;
+    /**
+     * The SDK for the HostedFile service.
+     */
+    hostedFile: HostedFileSDK;
   }
 }
