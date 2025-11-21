@@ -49,6 +49,24 @@ declare module "caido:workflow" {
   export type Decision = boolean;
 
   /**
+   * The input for the JavaScript V2+ Nodes.
+   * @category Data
+   */
+  export type NodeInput = {
+    data?: Bytes;
+    extra?: Record<string, any>;
+  };
+
+  /**
+   * The result for the JavaScript V2+ Nodes.
+   * @category Data
+   */
+  export type NodeResult = {
+    data?: Bytes;
+    extra?: Record<string, any>;
+  };
+
+  /**
    * The SDK object available to all scripts.
    * @category SDK
    */
