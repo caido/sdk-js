@@ -1,15 +1,16 @@
 {
   "name": "@caido/quickjs-types",
-  "version": "0.21.1",
+  "version": "0.24.0",
   "description": "Typing for the QuickJS Engine",
   "author": "Caido Labs Inc. <dev@caido.io>",
+  "repository": "https://github.com/caido/sdk-js/",
   "license": "MIT",
   "types": "./src/index.d.ts",
   "files": [
     "src/*"
   ],
   "scripts": {
-    "documentation": "typedoc",
+    "generate:doc": "typedoc",
     "typing": "./scripts/typing.sh"
   }
 }

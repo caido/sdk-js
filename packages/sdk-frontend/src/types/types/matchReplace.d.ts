@@ -30,7 +30,16 @@ export type MatchReplaceRule = {
      */
     collectionId: ID;
 };
-export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
+export declare const Source: {
+    readonly Automate: "AUTOMATE";
+    readonly Intercept: "INTERCEPT";
+    readonly Plugin: "PLUGIN";
+    readonly Replay: "REPLAY";
+    readonly Sample: "SAMPLE";
+    readonly Workflow: "WORKFLOW";
+};
+export type Source = (typeof Source)[keyof typeof Source];
+export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionRequestSNI | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
 export type MatchReplaceSectionRequestAll = {
     kind: "SectionRequestAll";
     operation: MatchReplaceOperationAll;
@@ -158,6 +167,23 @@ export type MatchReplaceOperationBodyRaw = {
 export type MatchReplaceSectionRequestFirstLine = {
     kind: "SectionRequestFirstLine";
     operation: MatchReplaceOperationFirstLine;
+};
+/**
+ * A section for the request SNI.
+ * @category Match and Replace
+ */
+export type MatchReplaceSectionRequestSNI = {
+    kind: "SectionRequestSNI";
+    operation: MatchReplaceOperationSNI;
+};
+export type MatchReplaceOperationSNI = KeepOperation<MatchReplaceOperationSNIRaw>;
+/**
+ * A raw operation for the request SNI.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationSNIRaw = {
+    kind: "OperationSNIRaw";
+    replacer: MatchReplaceReplacer;
 };
 /**
  * A section for the response first line.

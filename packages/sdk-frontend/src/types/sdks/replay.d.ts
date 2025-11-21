@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayEntry, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID, ListenerHandle } from "../types/utils";
@@ -29,6 +29,20 @@ export type ReplaySDK = {
      * @returns The list of all replay sessions.
      */
     getSessions: () => ReplaySession[];
+    /**
+     * Get the currently selected replay session.
+     * @returns The currently selected replay session, or undefined if no session is selected.
+     * @example
+     * ```ts
+     * const currentSession = sdk.replay.getCurrentSession();
+     * if (currentSession) {
+     *   console.log(`Current session: ${currentSession.name}`);
+     * } else {
+     *   console.log("No session is currently selected");
+     * }
+     * ```
+     */
+    getCurrentSession: () => ReplaySession | undefined;
     /**
      * Rename a session.
      * @param id The ID of the session to rename.
@@ -134,6 +148,34 @@ export type ReplaySDK = {
      * ```
      */
     sendRequest: (sessionId: ID, options: SendRequestOptions) => Promise<void>;
+    /**
+     * Show a specific entry in a replay session.
+     * This will open the session tab if not already open, set it as the selected session, and display the specified entry.
+     * @param sessionId The ID of the session containing the entry.
+     * @param entryId The ID of the entry to show.
+     * @param options The options for showing the entry.
+     * @param options.overwriteDraft Whether to overwrite the request draft. If true, the draft will be removed and the entry's raw request will be shown. If false, the draft will be kept.
+     * @example
+     * ```ts
+     * await sdk.replay.showEntry(sessionId, entryId, {
+     *   overwriteDraft: true,
+     * });
+     * ```
+     */
+    showEntry: (sessionId: ID, entryId: ID, options?: {
+        overwriteDraft?: boolean;
+    }) => Promise<void>;
+    /**
+     * Get a replay entry by its ID.
+     * @param entryId The ID of the entry to get.
+     * @returns The replay entry.
+     * @example
+     * ```ts
+     * const entry = await sdk.replay.getEntry(entryId);
+     * console.log(entry.id, entry.sessionId, entry.requestId);
+     * ```
+     */
+    getEntry: (entryId: ID) => ReplayEntry;
     /**
      * Subscribe to current replay session changes.
      * @param callback The callback to call when the selected session changes.

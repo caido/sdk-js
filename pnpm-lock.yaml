@@ -26,8 +26,8 @@ importers:
   packages/sdk-backend:
     dependencies:
       '@caido/quickjs-types':
-        specifier: ^0.21.1
-        version: 0.21.1
+        specifier: ^0.24.0
+        version: 0.24.0
       '@caido/sdk-shared':
         specifier: ^0.1.0
         version: 0.1.1
@@ -52,8 +52,8 @@ importers:
   packages/sdk-workflow:
     dependencies:
       '@caido/quickjs-types':
-        specifier: ^0.21.1
-        version: 0.21.1
+        specifier: ^0.24.0
+        version: 0.24.0
 
 packages:
 
@@ -78,8 +78,8 @@ packages:
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
 
-  '@caido/quickjs-types@0.21.1':
-    resolution: {integrity: sha512-efLd1W92xun+E8/hdLBJD+pdDdf7TQ85zI28ZyYP3EfiQljq5zOyt9Sco45oWHyDGxvezUXeyee/NJ0NWxv3hg==}
+  '@caido/quickjs-types@0.24.0':
+    resolution: {integrity: sha512-BKkvkVbaZtm9b3qp2R0T4gp0dExstuExIlRaKQSnC5RgATsR+mEQUU0TK8oFjJwCCQsdVoSkQGnDnK8XeaCfHA==}
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
@@ -266,7 +266,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@caido/quickjs-types@0.21.1': {}
+  '@caido/quickjs-types@0.24.0': {}
 
   '@caido/sdk-shared@0.1.1': {}
 

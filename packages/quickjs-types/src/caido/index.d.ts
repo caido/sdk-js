@@ -1,6 +1,7 @@
 /// <reference path="environment.d.ts" />
 /// <reference path="findings.d.ts" />
 /// <reference path="graphql.d.ts" />
+/// <reference path="hostedFile.d.ts" />
 /// <reference path="http.d.ts" />
 /// <reference path="projects.d.ts" />
 /// <reference path="replay.d.ts" />

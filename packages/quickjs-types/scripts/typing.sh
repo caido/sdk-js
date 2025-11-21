@@ -7,6 +7,7 @@ rsync -av --exclude=node_modules \
       --include='buffer.d.ts' \
       --include='child_process.d.ts' \
       --include='crypto.d.ts' \
+      --include='dns.d.ts' \
       --include='dom-events.d.ts' \
       --include='events.d.ts' \
       --include='fs.d.ts' \

@@ -47,6 +47,24 @@ declare module "caido:utils" {
   };
 
   /**
+   * Options for getting a header value.
+   * @category Requests
+   */
+  export type GetHeaderOptions = {
+    /**
+     * The name of the header to get.
+     * Header name is case-insensitive.
+     */
+    name: string;
+    /**
+     * Whether to split the header value on commas.
+     *
+     * @default false
+     */
+    split?: boolean;
+  };
+
+  /**
    * An immutable saved Request.
    *
    * To modify, use `toSpec` to get a `RequestSpec` object.
@@ -109,7 +127,7 @@ declare module "caido:utils" {
      * Header name is case-insensitive.
      * The header might have multiple values.
      */
-    getHeader(name: string): Array<string> | undefined;
+    getHeader(name: string | GetHeaderOptions): Array<string> | undefined;
     /**
      * The body of the request.
      */
@@ -287,7 +305,7 @@ declare module "caido:utils" {
      * Header name is case-insensitive.
      * The header might have multiple values.
      */
-    getHeader(name: string): Array<string> | undefined;
+    getHeader(name: string | GetHeaderOptions): Array<string> | undefined;
     /**
      * Set a header value.
      *
@@ -457,7 +475,7 @@ declare module "caido:utils" {
      * Header name is case-insensitive.
      * The header might have multiple values.
      */
-    getHeader(name: string): Array<string> | undefined;
+    getHeader(name: string | GetHeaderOptions): Array<string> | undefined;
     /**
      * The body of the response
      */
@@ -733,13 +751,25 @@ declare module "caido:utils" {
     /**
      * Checks if a request is in scope.
      *
+     * @param request The request to check
+     * @param scopes Optional scopes or scope IDs to check against. If not provided, checks against the default scope.
+     * @returns True if the request is in scope
+     *
      * @example
      * ```js
+     * // Check against default scope
      * if (sdk.requests.inScope(request)) {
      *  sdk.console.log("In scope");
      * }
+     *
+     * // Check against specific scopes
+     * const isInScope = sdk.requests.inScope(request, [scope1, scope2]);
+     * sdk.console.log(isInScope); // true or false
      * ```
      */
-    inScope(request: Request | RequestSpec): boolean;
+    inScope(
+      request: Request | RequestSpec,
+      scopes?: Array<Scope> | Array<ID>,
+    ): boolean;
   };
 }

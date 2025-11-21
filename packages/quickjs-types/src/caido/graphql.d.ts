@@ -1,11 +1,23 @@
 declare module "caido:utils" {
+  /**
+   * A segment of a path in a GraphQL query.
+   * @category GraphQL
+   */
   export type GraphQLPathSegment = string | number;
 
+  /**
+   * A location in a GraphQL query.
+   * @category GraphQL
+   */
   export type GraphQLLocation = {
     line: number;
     column: number;
   };
 
+  /**
+   * An error from a GraphQL query.
+   * @category GraphQL
+   */
   export type GraphQLError = {
     message: string;
     locations: GraphQLLocation[];
@@ -13,6 +25,10 @@ declare module "caido:utils" {
     extensions: Record<string, any>;
   };
 
+  /**
+   * The response from a GraphQL query.
+   * @category GraphQL
+   */
   export type GraphQLResponse<T> = {
     data?: T;
     errors?: GraphQLError[];
