@@ -68,6 +68,16 @@ declare module "caido:workflow" {
   };
 
   /**
+   * The input for HTTP JavaScript Nodes.
+   * @category Data
+   */
+  export type NodeInputHTTP = {
+    request?: Request;
+    response?: Response;
+    extra?: Record<string, any>;
+  };
+
+  /**
    * The SDK object available to all scripts.
    * @category SDK
    */
