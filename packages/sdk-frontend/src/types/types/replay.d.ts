@@ -198,3 +198,23 @@ export type CurrentReplaySessionChangeEvent = {
      */
     sessionId: ID | undefined;
 };
+/**
+ * Event fired when a replay session is created.
+ * @category Replay
+ */
+export type ReplaySessionCreatedEvent = {
+    /**
+     * The newly created replay session.
+     */
+    session: ReplaySession;
+};
+/**
+ * Event fired when a replay collection is created.
+ * @category Replay
+ */
+export type ReplayCollectionCreatedEvent = {
+    /**
+     * The newly created replay collection.
+     */
+    collection: ReplayCollection;
+};
