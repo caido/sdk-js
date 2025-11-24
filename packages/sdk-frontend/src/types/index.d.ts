@@ -14,7 +14,7 @@ export type { Scope } from "./types/scopes";
 export type { EnvironmentVariable } from "./types/environment";
 export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./types/workflows";
 export type { ListenerHandle } from "./types/utils";
-export type { AIProvider } from "./types/ai";
+export type { AIProvider, AILanguageModelSettings, AIReasoningSettings, } from "./types/ai";
 export type { SelectedProjectChangeEvent } from "./types/projects";
 export type { CommandPaletteView } from "./sdks/commandPalette";
 export type { LogSDK } from "./sdks/log";
