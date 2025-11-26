@@ -1,5 +1,6 @@
 import type { Extension } from "@codemirror/state";
 import type { RequestViewModeOptions } from "../types/request";
+import type { SearchSlot, SearchSlotContent } from "../types/search";
 import type { HTTPQL, ID } from "../types/utils";
 /**
  * Utilities to interact with the Search page.
@@ -41,4 +42,10 @@ export type SearchSDK = {
      * @param id The ID of the request to scroll to.
      */
     scrollTo: (id: ID) => void;
+    /**
+     * Add content to a slot in the Search UI.
+     * @param slot The slot to add content to.
+     * @param content The content to add.
+     */
+    addToSlot: <T extends SearchSlot>(slot: T, content: SearchSlotContent[T]) => void;
 };

@@ -3,6 +3,7 @@ export type { DialogOptions } from "./types/window";
 export type { CommandContext, CommandContextRequest, CommandContextRequestRow, CommandContextResponse, CommandContextBase, } from "./types/commands";
 export type { MenuItem } from "./types/menu";
 export { type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";
+export { SearchSlot, type SearchSlotContent } from "./types/search";
 export type { HostedFile } from "./types/files";
 export { FilterSlot, type Filter, type FilterSlotContent, } from "./types/filter";
 export type { HTTPQL, ID, ComponentDefinition } from "./types/utils";
