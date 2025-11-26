@@ -1,4 +1,5 @@
-import { type Scope } from "../types/scopes";
+import { type Scope, type ScopeSlotContent } from "../types/scopes";
+import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with scopes
@@ -52,4 +53,32 @@ export type ScopesSDK = {
      * @returns Whether the scope was deleted.
      */
     deleteScope: (id: ID) => Promise<boolean>;
+    /**
+     * Add a component to a slot.
+     * @param slot The slot to add the component to.
+     * @param content The content to add to the slot.
+     * @example
+     * ```ts
+     * sdk.scopes.addToSlot(ScopeSlot.UpdateHeader, {
+     *   type: "Button",
+     *   label: "My Button",
+     *   icon: "my-icon",
+     *   onClick: () => {
+     *     console.log("Button clicked");
+     *   },
+     * });
+     *
+     * sdk.scopes.addToSlot(ScopeSlot.CreateHeader, {
+     *   type: "Custom",
+     *   definition: MyComponent,
+     * });
+     *
+     * sdk.scopes.addToSlot(ScopeSlot.UpdateHeader, {
+     *   type: "Command",
+     *   commandId: "my-command",
+     *   icon: "my-icon",
+     * });
+     * ```
+     */
+    addToSlot: DefineAddToSlotFn<ScopeSlotContent>;
 };

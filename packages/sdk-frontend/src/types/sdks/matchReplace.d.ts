@@ -1,4 +1,5 @@
-import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type Source } from "../types/matchReplace";
+import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
+import { type DefineAddToSlotFn } from "../types/slots";
 import type { HTTPQL, ID } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
@@ -88,4 +89,32 @@ export type MatchReplaceSDK = {
      * @param id - The ID of the rule.
      */
     deleteRule: (id: ID) => Promise<void>;
+    /**
+     * Add a component to a slot.
+     * @param slot The slot to add the component to.
+     * @param content The content to add to the slot.
+     * @example
+     * ```ts
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.UpdateHeader, {
+     *   type: "Button",
+     *   label: "My Button",
+     *   icon: "my-icon",
+     *   onClick: () => {
+     *     console.log("Button clicked");
+     *   },
+     * });
+     *
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.CreateHeader, {
+     *   type: "Custom",
+     *   definition: MyComponent,
+     * });
+     *
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.UpdateHeader, {
+     *   type: "Command",
+     *   commandId: "my-command",
+     *   icon: "my-icon",
+     * });
+     * ```
+     */
+    addToSlot: DefineAddToSlotFn<MatchReplaceSlotContent>;
 };

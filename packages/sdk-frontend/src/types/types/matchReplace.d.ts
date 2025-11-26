@@ -1,3 +1,4 @@
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type HTTPQL, type ID } from "./utils";
 /**
  * A rule in Match and Replace.
@@ -269,5 +270,24 @@ export type MatchReplaceCollection = {
 };
 type KeepOperation<T> = T & {
     __operation?: never;
+};
+/**
+ * The slots in the Match and Replace UI.
+ * @category Match and Replace
+ */
+export declare const MatchReplaceSlot: {
+    /**
+     * The header area of the rule form update component.
+     */
+    readonly UpdateHeader: "update-header";
+    /**
+     * The header area of the rule form create component.
+     */
+    readonly CreateHeader: "create-header";
+};
+export type MatchReplaceSlot = (typeof MatchReplaceSlot)[keyof typeof MatchReplaceSlot];
+export type MatchReplaceSlotContent = {
+    [MatchReplaceSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [MatchReplaceSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 export {};

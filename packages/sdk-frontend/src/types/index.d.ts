@@ -4,13 +4,15 @@ export type { CommandContext, CommandContextRequest, CommandContextRequestRow, C
 export type { MenuItem } from "./types/menu";
 export { type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";
 export type { HostedFile } from "./types/files";
-export type { Filter } from "./types/filter";
+export { FilterSlot, type Filter, type FilterSlotContent, } from "./types/filter";
 export type { HTTPQL, ID, ComponentDefinition } from "./types/utils";
 export type { JSONValue, JSONCompatible } from "./types/json";
 export type { SlotContent, ButtonSlotContent, CustomSlotContent, CommandSlotContent, } from "./types/slots";
 export type { RequestViewModeOptions, RequestFull, RequestDraft, RequestMeta, } from "./types/request";
 export type { MatchReplaceRule, MatchReplaceCollection, MatchReplaceSection, MatchReplaceSectionRequestAll, MatchReplaceSectionRequestBody, MatchReplaceSectionRequestFirstLine, MatchReplaceSectionRequestHeader, MatchReplaceSectionRequestMethod, MatchReplaceSectionRequestPath, MatchReplaceSectionRequestQuery, MatchReplaceSectionRequestSNI, MatchReplaceSectionResponseAll, MatchReplaceSectionResponseBody, MatchReplaceSectionResponseFirstLine, MatchReplaceSectionResponseHeader, MatchReplaceSectionResponseStatusCode, MatchReplaceOperationStatusCode, MatchReplaceOperationStatusCodeUpdate, MatchReplaceOperationQuery, MatchReplaceOperationQueryRaw, MatchReplaceOperationQueryAdd, MatchReplaceOperationQueryRemove, MatchReplaceOperationQueryUpdate, MatchReplaceOperationPath, MatchReplaceOperationPathRaw, MatchReplaceOperationAll, MatchReplaceOperationAllRaw, MatchReplaceOperationMethod, MatchReplaceOperationMethodUpdate, MatchReplaceOperationHeader, MatchReplaceOperationHeaderRaw, MatchReplaceOperationHeaderAdd, MatchReplaceOperationHeaderRemove, MatchReplaceOperationHeaderUpdate, MatchReplaceOperationBody, MatchReplaceOperationBodyRaw, MatchReplaceOperationFirstLine, MatchReplaceOperationFirstLineRaw, MatchReplaceOperationSNI, MatchReplaceOperationSNIRaw, MatchReplaceReplacer, MatchReplaceReplacerTerm, MatchReplaceReplacerWorkflow, MatchReplaceMatcherName, MatchReplaceMatcherRaw, MatchReplaceMatcherRawFull, MatchReplaceMatcherRawRegex, MatchReplaceMatcherRawValue, } from "./types/matchReplace";
-export type { Scope } from "./types/scopes";
+export { MatchReplaceSlot, type MatchReplaceSlotContent, } from "./types/matchReplace";
+export { ScopeSlot, type Scope, type ScopeSlotContent } from "./types/scopes";
+export { HTTPHistorySlot, type HTTPHistorySlotContent, } from "./types/httpHistory";
 export type { EnvironmentVariable } from "./types/environment";
 export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./types/workflows";
 export type { ListenerHandle } from "./types/utils";
