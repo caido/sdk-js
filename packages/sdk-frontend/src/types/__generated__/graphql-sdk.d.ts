@@ -3160,6 +3160,7 @@ export type Runtime = {
     logs: Scalars["Uri"]["output"];
     platform: Scalars["String"]["output"];
     version: Scalars["String"]["output"];
+    workspace?: Maybe<Workspace>;
 };
 export type Scope = {
     allowlist: Array<Scalars["String"]["output"]>;
@@ -3563,6 +3564,7 @@ export type SubscriptionRoot = {
     updatedAutomateTask: UpdatedAutomateTaskPayload;
     updatedBackup: UpdatedBackupPayload;
     updatedBrowser: UpdatedBrowserPayload;
+    updatedCloudStatus: UpdatedCloudStatusPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
     updatedDnsRewrite: UpdatedDnsRewritePayload;
@@ -4438,6 +4440,9 @@ export type UpdatedBackupPayload = {
 export type UpdatedBrowserPayload = {
     browser: Browser;
 };
+export type UpdatedCloudStatusPayload = {
+    cloudStatus: CloudStatus;
+};
 export type UpdatedDnsRewritePayload = {
     rewrite: DnsRewrite;
 };
@@ -4681,6 +4686,11 @@ export type WorkflowUserError = UserError & {
     message: Scalars["String"]["output"];
     node?: Maybe<Scalars["String"]["output"]>;
     reason: WorkflowErrorReason;
+};
+export type Workspace = {
+    generation: Scalars["Int"]["output"];
+    id: Scalars["ID"]["output"];
+    name: Scalars["String"]["output"];
 };
 export type AssistantMessageFullFragment = {
     __typename: "AssistantMessage";
@@ -9603,7 +9613,7 @@ export type CreateFindingMutation = {
     };
 };
 export type DeleteFindingsMutationVariables = Exact<{
-    input: DeleteFindingsInput;
+    input?: InputMaybe<DeleteFindingsInput>;
 }>;
 export type DeleteFindingsMutation = {
     deleteFindings: {
@@ -23681,7 +23691,7 @@ export declare const CreatedFindingDocument = "\n    subscription createdFinding
 export declare const DeletedFindingsDocument = "\n    subscription deletedFindings {\n  deletedFindings {\n    deletedFindingIds\n    snapshot\n  }\n}\n    ";
 export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput!) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
+export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
 export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const ExportFindingsDocument = "\n    mutation exportFindings($input: ExportFindingsInput!) {\n  exportFindings(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
@@ -23990,7 +24000,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedFindings(variables?: DeletedFindingsSubscriptionVariables, options?: C): AsyncIterable<DeletedFindingsSubscription>;
     updatedFindings(variables?: UpdatedFindingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedFindingsSubscription>;
     createFinding(variables: CreateFindingMutationVariables, options?: C): Promise<CreateFindingMutation>;
-    deleteFindings(variables: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
+    deleteFindings(variables?: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
     updateFinding(variables: UpdateFindingMutationVariables, options?: C): Promise<UpdateFindingMutation>;
     exportFindings(variables: ExportFindingsMutationVariables, options?: C): Promise<ExportFindingsMutation>;
     interceptEntries(variables?: InterceptEntriesQueryVariables, options?: C): Promise<InterceptEntriesQuery>;
