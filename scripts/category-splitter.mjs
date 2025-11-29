@@ -1,4 +1,4 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 import { RendererEvent } from "typedoc";
 
@@ -10,167 +10,229 @@ import { RendererEvent } from "typedoc";
  */
 export function load(app) {
   // After all pages are rendered, split index.md by categories
-  app.renderer.on(RendererEvent.END, () => {
-    const outputDir = app.options.getValue("out");
-    const indexPath = path.join(outputDir, "index.md");
-    
-    if (!fs.existsSync(indexPath)) return;
-    
-    const indexContent = fs.readFileSync(indexPath, "utf8");
-    
-    // Get category order from config
-    const categoryOrder = app.options.getValue("categoryOrder") || [];
-    
-    // Split content by category sections (## Category Name)
-    const categorySections = new Map();
-    const lines = indexContent.split("\n");
-    let currentCategory = null;
-    let currentContent = [];
-    let preCategoryContent = [];
-    let inCategory = false;
-    
-    for (const line of lines) {
-      // Check if this is a category header (## Category, but not ###)
-      if (line.match(/^##\s+[^#]/)) {
-        // Save previous category
-        if (currentCategory) {
-          categorySections.set(currentCategory, currentContent.join("\n"));
-        }
-        // Start new category
-        currentCategory = line.substring(3).trim();
-        currentContent = [line];
-        inCategory = true;
-      } else if (inCategory) {
-        currentContent.push(line);
-      } else {
-        // Content before first category
-        preCategoryContent.push(line);
+  app.renderer.on(RendererEvent.END, async () => {
+    const logger = app.logger;
+
+    try {
+      const outputDir = app.options.getValue("out");
+      const indexPath = path.join(outputDir, "index.md");
+
+      // Ensure index.md exists before doing any work
+      try {
+        await fs.access(indexPath);
+      } catch {
+        logger.warn("[category-splitter] index.md not found, skipping split.");
+        return;
       }
-    }
-    
-    // Save last category
-    if (currentCategory) {
-      categorySections.set(currentCategory, currentContent.join("\n"));
-    }
-    
-    // Order categories according to categoryOrder
-    const orderedCategories = [];
-    const unorderedCategories = [];
-    
-    categorySections.forEach((content, category) => {
-      if (categoryOrder.includes(category)) {
-        orderedCategories.push({ category, content, index: categoryOrder.indexOf(category) });
-      } else {
-        unorderedCategories.push({ category, content });
+
+      const indexContent = await fs.readFile(indexPath, "utf8");
+      const categoryOrder = app.options.getValue("categoryOrder") || [];
+      const orderMap = buildCategoryOrderMap(categoryOrder);
+      const { preContent, categories } = parseIndexFile(indexContent);
+
+      if (!categories.length) {
+        logger.warn("[category-splitter] No category headings found, skipping split.");
+        return;
       }
-    });
-    
-    orderedCategories.sort((a, b) => a.index - b.index);
-    const allCategories = [...orderedCategories, ...unorderedCategories];
-    
-    // Ensure "Other" category exists (for uncategorized items)
-    // TypeDoc uses "*" in categoryOrder to represent uncategorized items, which becomes "Other"
-    const hasOtherCategory = allCategories.some(({ category }) => 
-      category === "Other" || category === "*"
-    );
-    
-    // If no "Other" category exists, create an empty one
-    if (!hasOtherCategory) {
-      allCategories.push({ category: "Other", content: "## Other\n\n", index: Infinity });
+
+      const normalizedCategories = normalizeCategories(categories, orderMap);
+      const sdkCategory = normalizedCategories.find(cat => cat.name === "SDK") || null;
+      const otherCategories = normalizedCategories.filter(cat => cat.name !== "SDK");
+      const anchorIndex = buildAnchorIndex(sdkCategory, otherCategories);
+      const reportedMissing = new Set();
+      const reportMissingAnchor = (anchor, fileName) => {
+        const key = `${fileName}:${anchor}`;
+        if (reportedMissing.has(key)) return;
+        reportedMissing.add(key);
+        logger.warn(`[category-splitter] Unable to resolve anchor "${anchor}" referenced from ${fileName}.`);
+      };
+
+      await writeCategoryFiles(otherCategories, outputDir, anchorIndex, reportMissingAnchor);
+      await writeIndexFile({
+        indexPath,
+        preContent,
+        sdkCategory,
+        categories: otherCategories,
+        anchorIndex,
+        reportMissingAnchor,
+      });
+    } catch (error) {
+      logger.error(`[category-splitter] Failed to split categories: ${error instanceof Error ? error.stack || error.message : String(error)}`);
     }
-    
-    // Normalize "*" to "Other" if it exists
-    allCategories.forEach(cat => {
-      if (cat.category === "*") {
-        cat.category = "Other";
-      }
-    });
-    
-    // Separate SDK category from others (SDK stays in index, others get separate files)
-    const sdkCategory = allCategories.find(({ category }) => category === "SDK");
-    const otherCategories = allCategories.filter(({ category }) => category !== "SDK");
-    
-    // Build a map of anchor names to category file names
-    // This will be used to fix links later
-    const anchorToCategoryFile = new Map();
-    
-    // Extract anchors from each category and map them to their category file
-    // If an anchor appears in multiple categories, prefer "Other" since it's for uncategorized items
-    allCategories.forEach(({ category, content }) => {
-      if (category === "SDK") {
-        // SDK items stay in index.md
-        const anchors = extractAnchors(content);
-        anchors.forEach(anchor => {
-          // Only set if not already mapped (SDK takes precedence)
-          if (!anchorToCategoryFile.has(anchor)) {
-            anchorToCategoryFile.set(anchor, "index.md");
-          }
-        });
-      } else {
-        const fileName = category.toLowerCase().replace(/\s+/g, "-") + ".md";
-        const anchors = extractAnchors(content);
-        anchors.forEach(anchor => {
-          const existingFile = anchorToCategoryFile.get(anchor);
-          // If anchor already exists, prefer "Other" category (for uncategorized items)
-          if (existingFile) {
-            if (category === "Other" || fileName === "other.md") {
-              // "Other" takes precedence for uncategorized items
-              anchorToCategoryFile.set(anchor, fileName);
-            }
-            // Otherwise keep the existing mapping
-          } else {
-            anchorToCategoryFile.set(anchor, fileName);
-          }
-        });
-      }
-    });
-    
-    // Generate category pages for all categories except SDK
-    otherCategories.forEach(({ category, content }) => {
-      const fileName = category.toLowerCase().replace(/\s+/g, "-") + ".md";
-      const filePath = path.join(outputDir, fileName);
-      
-      // Convert ## Category to # Category for the category page
-      let categoryContent = content.replace(/^##\s+/, "# ");
-      
-      // Fix links in this category file
-      categoryContent = fixLinks(categoryContent, fileName, anchorToCategoryFile);
-      
-      fs.writeFileSync(filePath, categoryContent);
-    });
-    
-    // Build index content: pre-category content + SDK category (if exists) + links to other categories
-    let newIndexContent = preCategoryContent.join("\n").trim();
-    
-    // Add SDK category content to index (keep it in the index)
-    if (sdkCategory) {
-      // Convert ## SDK to ## SDK for consistency in index
-      let sdkContent = sdkCategory.content;
-      
-      // Fix links in SDK content (should point to index.md or other category files)
-      sdkContent = fixLinks(sdkContent, "index.md", anchorToCategoryFile);
-      
-      newIndexContent += "\n\n" + sdkContent;
-    }
-    
-    // Fix links in pre-category content as well
-    newIndexContent = fixLinks(newIndexContent, "index.md", anchorToCategoryFile);
-    
-    // Build category links (excluding SDK since it's in the index)
-    const categoryLinks = otherCategories
-      .map(({ category }) => {
-        const fileName = category.toLowerCase().replace(/\s+/g, "-") + ".md";
-        return `- [${category}](${fileName})`;
-      })
-      .join("\n");
-    
-    // Add category links section
-    if (categoryLinks) {
-      newIndexContent += "\n\n## API Reference\n\n" + categoryLinks;
-    }
-    
-    fs.writeFileSync(indexPath, newIndexContent);
   });
+}
+
+/**
+ * Build a map of category names to their configured order index.
+ * @param {string[]} categoryOrder
+ */
+function buildCategoryOrderMap(categoryOrder) {
+  return categoryOrder.reduce((map, name, index) => {
+    map.set(normalizeCategoryName(name), index);
+    return map;
+  }, new Map());
+}
+
+/**
+ * @typedef {{ name: string, content: string }} ParsedCategory
+ */
+
+/**
+ * Parse the rendered index into preamble content and category blocks.
+ * @param {string} content
+ * @returns {{ preContent: string, categories: ParsedCategory[] }}
+ */
+function parseIndexFile(content) {
+  const headingPattern = /^##\s+(?!#)(.+)$/gm;
+  const matches = [];
+  let match;
+
+  while ((match = headingPattern.exec(content)) !== null) {
+    matches.push({ name: match[1].trim(), start: match.index });
+  }
+
+  if (!matches.length) {
+    return { preContent: content, categories: [] };
+  }
+
+  const categories = matches.map((entry, index) => {
+    const end = matches[index + 1]?.start ?? content.length;
+    return {
+      name: entry.name,
+      content: content.slice(entry.start, end).trim(),
+    };
+  });
+
+  return {
+    preContent: content.slice(0, matches[0].start).trim(),
+    categories,
+  };
+}
+
+/**
+ * Normalize the categories, respecting configured order and ensuring "Other" exists.
+ * @param {ParsedCategory[]} categories
+ * @param {Map<string, number>} orderMap
+ */
+function normalizeCategories(categories, orderMap) {
+  /** @type {Array<ParsedCategory & { fileName: string, orderIndex?: number, originalIndex: number }>} */
+  const ordered = [];
+  const unordered = [];
+
+  categories.forEach((category, index) => {
+    const name = normalizeCategoryName(category.name);
+    const normalized = {
+      ...category,
+      name,
+      fileName: name === "SDK" ? "index.md" : categoryToFileName(name),
+      originalIndex: index,
+    };
+    const orderIndex = orderMap.get(name);
+
+    if (typeof orderIndex === "number") {
+      ordered.push({ ...normalized, orderIndex });
+    } else {
+      unordered.push(normalized);
+    }
+  });
+
+  if (!ordered.length && !unordered.length) {
+    return [];
+  }
+
+  if (![...ordered, ...unordered].some(cat => cat.name === "Other")) {
+    const otherCategory = {
+      name: "Other",
+      content: "## Other\n",
+      fileName: categoryToFileName("Other"),
+      originalIndex: Number.MAX_SAFE_INTEGER,
+    };
+    const otherOrderIndex = orderMap.get("Other");
+    if (typeof otherOrderIndex === "number") {
+      ordered.push({ ...otherCategory, orderIndex: otherOrderIndex });
+    } else {
+      unordered.push(otherCategory);
+    }
+  }
+
+  ordered.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0));
+  unordered.sort((a, b) => a.originalIndex - b.originalIndex);
+
+  return [...ordered, ...unordered];
+}
+
+/**
+ * Extract anchor map across SDK + category files.
+ * @param {{ content: string } | null} sdkCategory
+ * @param {Array<{ name: string, content: string, fileName: string }>} categories
+ */
+function buildAnchorIndex(sdkCategory, categories) {
+  const anchorIndex = new Map();
+
+  if (sdkCategory) {
+    registerAnchors(anchorIndex, sdkCategory.content, "index.md");
+  }
+
+  categories.forEach(category => {
+    registerAnchors(anchorIndex, category.content, category.fileName, category.name === "Other");
+  });
+
+  return anchorIndex;
+}
+
+/**
+ * Write category files with rewritten links.
+ * @param {Array<{ name: string, content: string, fileName: string }>} categories
+ * @param {string} outputDir
+ * @param {Map<string, string>} anchorIndex
+ * @param {(anchor: string, fileName: string) => void} reportMissingAnchor
+ */
+async function writeCategoryFiles(categories, outputDir, anchorIndex, reportMissingAnchor) {
+  await Promise.all(
+    categories.map(async category => {
+      const filePath = path.join(outputDir, category.fileName);
+      const headingPromoted = promoteCategoryHeading(category.content);
+      const rewritten = fixLinks(headingPromoted, category.fileName, anchorIndex, reportMissingAnchor);
+      await fs.writeFile(filePath, ensureTrailingNewline(rewritten.trim()));
+    })
+  );
+}
+
+/**
+ * Write the rebuilt index.md file.
+ * @param {{
+ *   indexPath: string;
+ *   preContent: string;
+ *   sdkCategory: { content: string } | null;
+ *   categories: Array<{ name: string, fileName: string }>;
+ *   anchorIndex: Map<string, string>;
+ *   reportMissingAnchor: (anchor: string, fileName: string) => void;
+ * }} params
+ */
+async function writeIndexFile({ indexPath, preContent, sdkCategory, categories, anchorIndex, reportMissingAnchor }) {
+  const sections = [];
+  const normalizedPreContent = preContent.trim();
+
+  if (normalizedPreContent) {
+    sections.push(fixLinks(normalizedPreContent, "index.md", anchorIndex, reportMissingAnchor));
+  }
+
+  if (sdkCategory) {
+    sections.push(fixLinks(sdkCategory.content.trim(), "index.md", anchorIndex, reportMissingAnchor));
+  }
+
+  if (categories.length) {
+    const categoryLinks = categories
+      .map(category => `- [${category.name}](${category.fileName})`)
+      .join("\n");
+
+    if (categoryLinks) {
+      sections.push("## API Reference\n\n" + categoryLinks);
+    }
+  }
+
+  const content = ensureTrailingNewline(sections.filter(Boolean).join("\n\n"));
+  await fs.writeFile(indexPath, content);
 }
 
 /**
@@ -221,25 +283,73 @@ function extractAnchors(content) {
 /**
  * Fix links in markdown content to point to the correct category files.
  */
-function fixLinks(content, currentFile, anchorToCategoryFile) {
-  // Replace links like [Text](index.md#anchor) with the correct file
-  // Also handle escaped pipes and other markdown edge cases
-  return content.replace(/\[([^\]]+)\]\(index\.md#([^)]+)\)/g, (match, text, anchor) => {
+function fixLinks(content, currentFile, anchorToCategoryFile, reportMissingAnchor) {
+  if (!content) return content;
+
+  const linkPattern = /\[([^\]]+)\]\((?:\.\/)?([^)#\s]+\.md)#([^)]+)\)/gi;
+
+  return content.replace(linkPattern, (match, text, _file, anchor) => {
     const normalizedAnchor = anchor.toLowerCase();
     const targetFile = anchorToCategoryFile.get(normalizedAnchor);
-    
+
     if (targetFile) {
-      // If target is in the same file, use relative anchor
       if (targetFile === currentFile) {
         return `[${text}](#${anchor})`;
       }
-      // Otherwise point to the correct category file
       return `[${text}](${targetFile}#${anchor})`;
     }
-    
-    // If we don't know where it is, keep it pointing to index.md
-    // (might be an external reference or something we couldn't map)
+
+    reportMissingAnchor?.(normalizedAnchor, currentFile);
     return match;
   });
+}
+
+/**
+ * Register anchors for a given category in the shared anchor map.
+ * @param {Map<string, string>} anchorIndex
+ * @param {string} content
+ * @param {string} fileName
+ * @param {boolean} [prefer]
+ */
+function registerAnchors(anchorIndex, content, fileName, prefer = false) {
+  const anchors = extractAnchors(content);
+  anchors.forEach(anchor => {
+    if (!anchorIndex.has(anchor) || prefer) {
+      anchorIndex.set(anchor, fileName);
+    }
+  });
+}
+
+/**
+ * Promote the leading category heading from H2 to H1 for standalone files.
+ * @param {string} content
+ */
+function promoteCategoryHeading(content) {
+  return content.replace(/^##\s+/m, "# ");
+}
+
+/**
+ * Normalize category names.
+ * @param {string} name
+ */
+function normalizeCategoryName(name) {
+  const trimmed = name.trim();
+  return trimmed === "*" ? "Other" : trimmed;
+}
+
+/**
+ * Build a safe file name from a category name.
+ * @param {string} name
+ */
+function categoryToFileName(name) {
+  return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "category"}.md`;
+}
+
+/**
+ * Ensure all generated files end with a newline.
+ * @param {string} content
+ */
+function ensureTrailingNewline(content) {
+  return content.endsWith("\n") ? content : `${content}\n`;
 }
 
