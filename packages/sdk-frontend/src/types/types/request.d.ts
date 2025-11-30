@@ -1,4 +1,8 @@
 import { type As, type ComponentDefinition, type ID, type Prettify } from "./utils";
+/**
+ * A draft request that has not yet been saved to the database.
+ * @category Request
+ */
 export type RequestDraft = Prettify<As<"RequestDraft"> & {
     host: string;
     port: number;
@@ -7,6 +11,10 @@ export type RequestDraft = Prettify<As<"RequestDraft"> & {
     isTls: boolean;
     raw: string;
 }>;
+/**
+ * Metadata about a request without the raw content.
+ * @category Request
+ */
 export type RequestMeta = Prettify<As<"RequestMeta"> & {
     id: ID;
     host: string;
@@ -16,6 +24,10 @@ export type RequestMeta = Prettify<As<"RequestMeta"> & {
     isTls: boolean;
     streamId: ID | undefined;
 }>;
+/**
+ * A complete request with all metadata and raw content.
+ * @category Request
+ */
 export type RequestFull = Prettify<As<"RequestFull"> & {
     id: ID;
     host: string;
@@ -26,6 +38,10 @@ export type RequestFull = Prettify<As<"RequestFull"> & {
     streamId: ID | undefined;
     raw: string;
 }>;
+/**
+ * Options for defining a custom request view mode.
+ * @category Request
+ */
 export type RequestViewModeOptions = {
     /**
      * The label of the view mode.

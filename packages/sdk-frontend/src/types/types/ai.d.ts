@@ -1,7 +1,15 @@
 import { type LanguageModelV2, type ProviderV2 } from "@ai-sdk/provider";
+/**
+ * Settings for AI reasoning.
+ * @category AI
+ */
 export type AIReasoningSettings = {
     effort: "low" | "medium" | "high";
 };
+/**
+ * Settings for AI language model.
+ * @category AI
+ */
 export type AILanguageModelSettings = {
     reasoning?: AIReasoningSettings;
 };

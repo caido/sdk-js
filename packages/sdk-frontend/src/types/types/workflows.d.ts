@@ -14,12 +14,24 @@ export type Workflow = {
  * @category Workflows
  */
 export type WorkflowKind = "Convert" | "Active" | "Passive";
+/**
+ * Callback function called when a workflow is created.
+ * @category Workflows
+ */
 export type OnCreatedWorkflowCallback = (event: {
     workflow: Workflow;
 }) => void;
+/**
+ * Callback function called when a workflow is updated.
+ * @category Workflows
+ */
 export type OnUpdatedWorkflowCallback = (event: {
     workflow: Workflow;
 }) => void;
+/**
+ * Callback function called when a workflow is deleted.
+ * @category Workflows
+ */
 export type OnDeletedWorkflowCallback = (event: {
     id: ID;
 }) => void;

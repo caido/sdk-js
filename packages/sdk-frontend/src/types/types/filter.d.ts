@@ -38,6 +38,10 @@ export declare const FilterSlot: {
     readonly CreateHeader: "create-header";
 };
 export type FilterSlot = (typeof FilterSlot)[keyof typeof FilterSlot];
+/**
+ * Content that can be added to filter slots.
+ * @category Filter
+ */
 export type FilterSlotContent = {
     [FilterSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     [FilterSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;

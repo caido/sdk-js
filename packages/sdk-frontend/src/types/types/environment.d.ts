@@ -1,3 +1,7 @@
+/**
+ * Represents an environment variable.
+ * @category Environment
+ */
 export type EnvironmentVariable = {
     /**
      * The name of the environment variable.
