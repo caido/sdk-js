@@ -94,13 +94,51 @@ export function load(app) {
     
     logger.info(`[category-router] Creating ${categoryPages.length} category pages.`);
     
-    // Write category files
+    // Build anchor index: map anchor -> fileName
+    // Also track anchor metadata: map anchor -> { fileName, level, heading }
+    const anchorIndex = new Map();
+    const anchorMetadata = new Map(); // anchor -> { fileName, level, heading }
+    
+    // First, extract anchors from category files (definitions take precedence)
+    categoryPages.forEach(category => {
+      const fileName = categoryToFileName(category.name);
+      const anchors = extractAnchors(category.content);
+      anchors.forEach((metadata, anchor) => {
+        const existing = anchorMetadata.get(anchor);
+        // Prefer H3 headings (type definitions) over deeper headings
+        // If same level, category files take precedence over SDK category
+        if (!existing || (metadata.level === 3 && existing.level > 3) || 
+            (metadata.level === existing.level && existing.fileName === "index.md")) {
+          anchorIndex.set(anchor, fileName);
+          anchorMetadata.set(anchor, { fileName, ...metadata });
+        }
+      });
+    });
+    
+    // Then, extract anchors from SDK category (stays in index.md)
+    // Only add anchors that aren't already in category files, or if they're type definitions (H3)
+    if (sdkCategory) {
+      const anchors = extractAnchors(sdkCategory.content);
+      anchors.forEach((metadata, anchor) => {
+        const existing = anchorMetadata.get(anchor);
+        // Add if not exists, or if this is a type definition (H3) and existing is not
+        if (!existing || (metadata.level === 3 && existing.level > 3)) {
+          anchorIndex.set(anchor, "index.md");
+          anchorMetadata.set(anchor, { fileName: "index.md", ...metadata });
+        }
+      });
+    }
+    
+    // Write category files with fixed links
     for (const category of categoryPages) {
       const fileName = categoryToFileName(category.name);
       const filePath = path.join(outputDir, fileName);
       
       // Promote H2 to H1 for standalone category pages
-      const content = category.content.replace(/^##\s+/m, "# ");
+      let content = category.content.replace(/^##\s+/m, "# ");
+      
+      // Fix links to point to correct category files
+      content = fixLinks(content, fileName, anchorIndex);
       
       await fs.writeFile(filePath, content + "\n", "utf8");
     }
@@ -109,11 +147,11 @@ export function load(app) {
     const sections = [];
     
     if (preContent) {
-      sections.push(preContent);
+      sections.push(fixLinks(preContent, "index.md", anchorIndex));
     }
     
     if (sdkCategory) {
-      sections.push(sdkCategory.content);
+      sections.push(fixLinks(sdkCategory.content, "index.md", anchorIndex));
     }
     
     if (categoryPages.length > 0) {
@@ -127,6 +165,119 @@ export function load(app) {
     await fs.writeFile(indexPath, newIndexContent, "utf8");
     
     logger.info(`[category-router] Created ${categoryPages.length} category pages and updated index.md`);
+  });
+}
+
+/**
+ * Extract anchor names from markdown content.
+ * Returns a Map of anchor -> { level, heading } where level is the heading depth (3 = H3, 4 = H4, etc.)
+ * TypeDoc generates anchors by lowercasing the heading text and removing special characters.
+ */
+function extractAnchors(content) {
+  const anchors = new Map(); // anchor -> { level, heading }
+  
+  // Extract from headings (### TypeName becomes typename)
+  const headingMatches = content.matchAll(/^(###+)\s+(.+)$/gm);
+  for (const match of headingMatches) {
+    const level = match[1].length; // Number of # characters
+    const heading = match[2].trim();
+    // Remove markdown formatting (links, code, HTML tags, etc.)
+    let cleanHeading = heading
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove link formatting, keep text
+      .replace(/`([^`]+)`/g, '$1') // Remove code formatting, keep text
+      .replace(/<[^>]+>/g, '') // Remove HTML tags
+      .replace(/\*\*/g, '') // Remove bold markers
+      .replace(/\*/g, ''); // Remove italic markers
+    
+    // Extract the actual type/name (might have generics like Type<T>)
+    // For generics, take the part before <
+    const baseName = cleanHeading.split('<')[0].trim();
+    
+    // Convert to anchor format (lowercase, remove special chars, spaces to dashes)
+    const anchor = baseName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '');
+    
+    if (anchor) {
+      // Prefer H3 headings (type definitions) over deeper headings (properties/parameters)
+      const existing = anchors.get(anchor);
+      if (!existing || (level === 3 && existing.level > 3)) {
+        anchors.set(anchor, { level, heading: cleanHeading });
+      }
+    }
+  }
+  
+  // Also extract from existing links to catch all anchors (but don't override type definitions)
+  const linkMatches = content.matchAll(/\[([^\]]+)\]\([^)]*#([^)]+)\)/g);
+  for (const match of linkMatches) {
+    const anchor = match[2].toLowerCase();
+    if (!anchors.has(anchor)) {
+      anchors.set(anchor, { level: 999, heading: '' }); // Unknown level, lowest priority
+    }
+  }
+  
+  return anchors;
+}
+
+/**
+ * Normalize text to match anchor format (lowercase, remove special chars).
+ */
+function normalizeToAnchor(text) {
+  return text
+    .replace(/[`*]/g, '') // Remove markdown formatting
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
+}
+
+/**
+ * Fix links in markdown content to point to the correct category files.
+ */
+function fixLinks(content, currentFile, anchorIndex) {
+  if (!content) return content;
+  
+  // Pattern: [text](file.md#anchor) or [text](#anchor)
+  const linkPattern = /\[([^\]]+)\]\((?:\.\/)?([^)#\s]*\.md)?#([^)]+)\)/gi;
+  
+  return content.replace(linkPattern, (match, text, file, anchor) => {
+    const normalizedAnchor = anchor.toLowerCase();
+    const linkText = normalizeToAnchor(text);
+    
+    // Check if this is a numbered anchor (e.g., "id-3", "workflowkind-1")
+    // TypeDoc creates numbered anchors when there are conflicts, but the actual
+    // type definition usually has the base anchor (e.g., "id", "workflowkind")
+    const numberedAnchorMatch = normalizedAnchor.match(/^(.+)-(\d+)$/);
+    if (numberedAnchorMatch) {
+      const baseAnchor = numberedAnchorMatch[1];
+      const baseFile = anchorIndex.get(baseAnchor);
+      
+      // If the link text matches the base anchor name, prefer the base anchor
+      // This handles cases where TypeDoc links to a numbered anchor but the
+      // actual type definition is in another file with the base anchor
+      if (baseFile && linkText === baseAnchor) {
+        if (baseFile === currentFile) {
+          return `[${text}](#${baseAnchor})`;
+        } else {
+          return `[${text}](${baseFile}#${baseAnchor})`;
+        }
+      }
+    }
+    
+    // Try the exact anchor match
+    const targetFile = anchorIndex.get(normalizedAnchor);
+    
+    if (targetFile) {
+      if (targetFile === currentFile) {
+        // Same file, use anchor only
+        return `[${text}](#${anchor})`;
+      } else {
+        // Different file, include file path
+        return `[${text}](${targetFile}#${anchor})`;
+      }
+    }
+    
+    // Anchor not found, keep original link
+    return match;
   });
 }
 
