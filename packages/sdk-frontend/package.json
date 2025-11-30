@@ -12,7 +12,7 @@
     "src/*"
   ],
   "scripts": {
-    "generate:doc": "typedoc"
+    "generate:doc": "typedoc --router category"
   },
   "peerDependencies": {
     "@ai-sdk/provider": "^2.0.0",
