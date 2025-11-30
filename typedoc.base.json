@@ -3,7 +3,7 @@
     "typedoc-plugin-markdown",
     "typedoc-plugin-missing-exports",
     "./scripts/documentation-prepend.mjs",
-    "./scripts/category-splitter.mjs"
+    "./scripts/category-router.mjs"
   ],
   "cleanOutputDir": true,
   "outputFileStrategy": "modules",
