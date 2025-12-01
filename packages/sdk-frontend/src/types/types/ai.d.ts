@@ -12,6 +12,10 @@ export type AIReasoningSettings = {
  */
 export type AILanguageModelSettings = {
     reasoning?: AIReasoningSettings;
+    capabilities?: {
+        reasoning: boolean;
+        structured_output: boolean;
+    };
 };
 /**
  * Official AI Provider to be used by the [ai](https://ai-sdk.dev/) library.
