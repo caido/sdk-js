@@ -1,6 +1,6 @@
-import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
+import { type CurrentMatchReplaceRuleChangeEvent, type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { HTTPQL, ID } from "../types/utils";
+import type { HTTPQL, ID, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
  * @category Match and Replace
@@ -48,6 +48,27 @@ export type MatchReplaceSDK = {
      * @param id - The ID of the rule, or undefined to clear the selection.
      */
     selectRule: (id: ID | undefined) => void;
+    /**
+     * Get the currently selected rule.
+     * @returns The currently selected rule, or undefined if no rule is selected.
+     */
+    getCurrentRule: () => MatchReplaceRule | undefined;
+    /**
+     * Subscribe to current rule changes.
+     * @param callback The callback to call when the selected rule changes.
+     * @returns An object with a `stop` method that can be called to stop listening to rule changes.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.matchReplace.onCurrentRuleChange((event) => {
+     *   console.log(`Rule ${event.ruleId} got selected!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onCurrentRuleChange: (callback: (event: CurrentMatchReplaceRuleChangeEvent) => void) => ListenerHandle;
     /**
      * Create a rule.
      * @param options - The options for the rule.

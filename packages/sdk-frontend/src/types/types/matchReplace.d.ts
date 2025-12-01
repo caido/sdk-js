@@ -422,4 +422,14 @@ export type MatchReplaceSlotContent = {
     [MatchReplaceSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     [MatchReplaceSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
+/**
+ * Event fired when the current match and replace rule changes.
+ * @category Match and Replace
+ */
+export type CurrentMatchReplaceRuleChangeEvent = {
+    /**
+     * The ID of the newly selected rule, or undefined if no rule is selected.
+     */
+    ruleId: ID | undefined;
+};
 export {};

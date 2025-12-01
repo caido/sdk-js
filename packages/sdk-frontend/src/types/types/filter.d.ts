@@ -46,3 +46,13 @@ export type FilterSlotContent = {
     [FilterSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     [FilterSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
+/**
+ * Event fired when the current filter changes.
+ * @category Filters
+ */
+export type CurrentFilterChangeEvent = {
+    /**
+     * The ID of the newly selected filter, or undefined if no filter is selected.
+     */
+    filterId: ID | undefined;
+};

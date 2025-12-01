@@ -41,3 +41,13 @@ export type ScopeSlotContent = {
     [ScopeSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
     [ScopeSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
+/**
+ * Event fired when the current scope changes.
+ * @category Scopes
+ */
+export type CurrentScopeChangeEvent = {
+    /**
+     * The ID of the newly selected scope, or undefined if no scope is selected.
+     */
+    scopeId: ID | undefined;
+};
