@@ -13,7 +13,7 @@ export declare const Routes: {
     readonly Automate: "Automate";
     readonly Projects: "Projects";
     readonly Backups: "Backups";
-    readonly MatchReplace: "Tamper";
+    readonly MatchReplace: "MatchReplace";
     readonly Assistant: "Assistant";
     readonly Environment: "Environment";
     readonly Scope: "Scope";
