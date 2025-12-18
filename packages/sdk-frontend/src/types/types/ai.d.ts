@@ -22,3 +22,23 @@ export type AILanguageModelSettings = {
  * @category AI
  */
 export type AIProvider = ProviderV2 & ((modelId: string, settings?: AILanguageModelSettings) => LanguageModelV2);
+/**
+ * AI upstream provider ID.
+ * @category AI
+ */
+export type AIUpstreamProviderId = "anthropic" | "google" | "openai" | "openrouter";
+/**
+ * AI upstream provider information.
+ * @category AI
+ */
+export type AIUpstreamProvider = {
+    id: AIUpstreamProviderId;
+    status: AIUpstreamProviderStatus;
+};
+/**
+ * AI upstream provider status.
+ * Ready: The upstream provider is ready to use.
+ * Missing: The upstream provider is not configured.
+ * @category AI
+ */
+export type AIUpstreamProviderStatus = "Ready" | "Missing";
