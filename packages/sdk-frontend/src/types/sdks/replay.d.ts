@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions, type SessionIndicator } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID, ListenerHandle } from "../types/utils";
@@ -224,4 +224,22 @@ export type ReplaySDK = {
      * ```
      */
     onCollectionCreate: (callback: (event: ReplayCollectionCreatedEvent) => void) => ListenerHandle;
+    /**
+     * Add an indicator to a replay session.
+     * Indicators are displayed next to the session name in the collections tree.
+     * @param sessionId The ID of the session to add the indicator to.
+     * @param indicator The indicator configuration.
+     * @returns A handle object with a `remove` method to remove the indicator.
+     * @example
+     *
+     * const indicator = sdk.replay.addSessionIndicator(sessionId, {
+     *   icon: "fas fa-exclamation-triangle",
+     *   description: "Security warning",
+     * });
+     *
+     * // Later, remove the indicator
+     * indicator.remove();
+     *
+     */
+    addSessionIndicator: (sessionId: ID, indicator: AddSessionIndicatorOptions) => SessionIndicator;
 };

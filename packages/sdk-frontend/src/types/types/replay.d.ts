@@ -218,3 +218,19 @@ export type ReplayCollectionCreatedEvent = {
      */
     collection: ReplayCollection;
 };
+/**
+ * Visual indicator displayed next to a session label in the replay tree component.
+ * Includes an icon and an associated description.
+ * @category Replay
+ */
+export type AddSessionIndicatorOptions = {
+    icon: string;
+    description: string;
+};
+/**
+ * Providing operations that can be performed on a session indicator.
+ * @category Replay
+ */
+export type SessionIndicator = {
+    remove: () => void;
+};
