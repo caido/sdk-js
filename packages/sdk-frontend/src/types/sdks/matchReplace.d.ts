@@ -1,6 +1,6 @@
 import { type CurrentMatchReplaceRuleChangeEvent, type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { HTTPQL, ID, ListenerHandle } from "../types/utils";
+import type { AddIndicatorOptions, HTTPQL, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
  * @category Match and Replace
@@ -138,4 +138,22 @@ export type MatchReplaceSDK = {
      * ```
      */
     addToSlot: DefineAddToSlotFn<MatchReplaceSlotContent>;
+    /**
+     * Add an indicator to a rule.
+     * Indicators are displayed next to the session name in the collections tree.
+     * @param ruleId The ID of the rule to add the indicator to.
+     * @param indicator The indicator configuration.
+     * @returns A handle object with a `remove` method to remove the indicator.
+     * @example
+     *
+     * const indicator = sdk.matchReplace.addRuleIndicator(ruleId, {
+     *   icon: "fas fa-exclamation-triangle",
+     *   description: "Security warning",
+     * });
+     *
+     * // Later, remove the indicator
+     * indicator.remove();
+     *
+     */
+    addRuleIndicator: (ruleId: ID, indicator: AddIndicatorOptions) => Indicator;
 };

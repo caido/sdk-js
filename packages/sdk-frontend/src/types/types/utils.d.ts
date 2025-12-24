@@ -60,3 +60,19 @@ export type Prettify<T> = {
 export type As<TType extends string> = {
     type: TType;
 };
+/**
+ * Visual indicator displayed next to a item label in a tree component.
+ * Includes an icon and an associated description.
+ * @category Utils
+ */
+export type AddIndicatorOptions = {
+    icon: Icon;
+    description: string;
+};
+/**
+ * Providing operations that can be performed on a item indicator.
+ * @category Utils
+ */
+export type Indicator = {
+    remove: () => void;
+};

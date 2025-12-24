@@ -1,8 +1,8 @@
 import { type Extension } from "@codemirror/state";
-import { type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions, type SessionIndicator } from "../types/replay";
+import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { ID, ListenerHandle } from "../types/utils";
+import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -241,5 +241,5 @@ export type ReplaySDK = {
      * indicator.remove();
      *
      */
-    addSessionIndicator: (sessionId: ID, indicator: AddSessionIndicatorOptions) => SessionIndicator;
+    addSessionIndicator: (sessionId: ID, indicator: AddIndicatorOptions) => Indicator;
 };
