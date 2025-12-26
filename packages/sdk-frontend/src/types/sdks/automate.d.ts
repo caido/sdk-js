@@ -2,6 +2,7 @@ import type { Extension } from "@codemirror/state";
 import type { AutomateEntry, AutomateSession } from "src/types/automate";
 import type { AddIndicatorOptions, ID, Indicator } from "src/types/utils";
 import type { RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions } from "../types/response";
 /**
  * Utilities to interact with the Automate page.
  * @category Automate
@@ -17,6 +18,11 @@ export type AutomateSDK = {
      * @param options The view mode options.
      */
     addRequestViewMode: (options: RequestViewModeOptions) => void;
+    /**
+     * Add a custom response view mode.
+     * @param options The view mode options.
+     */
+    addResponseViewMode: (options: ResponseViewModeOptions) => void;
     /**
      * Get the list of all automate sessions.
      * @returns The list of all automate sessions.
