@@ -35,3 +35,10 @@ export type OnUpdatedWorkflowCallback = (event: {
 export type OnDeletedWorkflowCallback = (event: {
     id: ID;
 }) => void;
+/**
+ * Workflows page context.
+ * @category Workflows
+ */
+export type WorkflowsPageContext = {
+    kind: "Workflows";
+};

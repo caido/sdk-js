@@ -1,5 +1,5 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
-import { type HTTPQL, type ID } from "./utils";
+import { type HTTPQL, type ID, type Selection } from "./utils";
 /**
  * Represents a filter.
  * @category Filters
@@ -55,4 +55,12 @@ export type CurrentFilterChangeEvent = {
      * The ID of the newly selected filter, or undefined if no filter is selected.
      */
     filterId: ID | undefined;
+};
+/**
+ * Filter page context.
+ * @category Filters
+ */
+export type FilterPageContext = {
+    kind: "Filter";
+    selection: Selection<ID>;
 };

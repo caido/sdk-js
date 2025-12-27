@@ -61,6 +61,18 @@ export type As<TType extends string> = {
     type: TType;
 };
 /**
+ * Generic selection type with main and secondary items.
+ * Main represents the primary selected item, secondary represents additional selected items.
+ * @category Utils
+ */
+export type Selection<TId> = {
+    kind: "Empty";
+} | {
+    kind: "Selected";
+    main: TId;
+    secondary: TId[];
+};
+/**
  * Visual indicator displayed next to a item label in a tree component.
  * Includes an icon and an associated description.
  * @category Utils

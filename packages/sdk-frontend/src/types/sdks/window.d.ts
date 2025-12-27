@@ -1,6 +1,6 @@
 import type { Editor } from "../types/editor";
-import type { ComponentDefinition } from "../types/utils";
-import { type Dialog, type DialogOptions } from "../types/window";
+import type { ComponentDefinition, ListenerHandle } from "../types/utils";
+import { type Dialog, type DialogOptions, type GlobalContext } from "../types/window";
 /**
  * Utilities to interact with the active page.
  * @category Window
@@ -35,4 +35,15 @@ export type WindowSDK = {
      * @returns A dialog object that can be used to close the dialog.
      */
     showDialog: (component: ComponentDefinition, options?: DialogOptions) => Dialog;
+    /**
+     * Get the current global context.
+     * @returns The current global context.
+     */
+    getContext: () => GlobalContext;
+    /**
+     * Subscribe to global context changes.
+     * @param callback The callback to call when the context changes.
+     * @returns An object with a `stop` method that can be called to stop listening to context changes.
+     */
+    onContextChange: (callback: (context: GlobalContext) => void) => ListenerHandle;
 };

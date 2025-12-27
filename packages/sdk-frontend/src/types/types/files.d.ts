@@ -32,3 +32,10 @@ export type HostedFile = {
      */
     updatedAt: Date;
 };
+/**
+ * Files page context.
+ * @category Files
+ */
+export type FilesPageContext = {
+    kind: "Files";
+};

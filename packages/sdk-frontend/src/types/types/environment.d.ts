@@ -1,3 +1,4 @@
+import { type ID, type Selection } from "./utils";
 /**
  * Represents an environment variable.
  * @category Environment
@@ -15,4 +16,12 @@ export type EnvironmentVariable = {
      * Whether the environment variable is a secret.
      */
     isSecret: boolean;
+};
+/**
+ * Environment page context.
+ * @category Environment
+ */
+export type EnvironmentPageContext = {
+    kind: "Environment";
+    selection: Selection<ID>;
 };

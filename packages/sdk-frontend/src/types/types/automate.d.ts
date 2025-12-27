@@ -1,4 +1,4 @@
-import type { ID } from "./utils";
+import { type ID, type Selection } from "./utils";
 /**
  * A automate session.
  * @category Automate
@@ -38,4 +38,19 @@ export type AutomateEntry = {
      * The date the entry was created.
      */
     createdAt: Date;
+};
+/**
+ * Automate page context.
+ * @category Automate
+ */
+export type AutomatePageContext = {
+    kind: "Automate";
+    requestSelection: Selection<ID>;
+    selection: Selection<{
+        kind: "AutomateSession";
+        id: ID;
+    } | {
+        kind: "AutomateEntry";
+        id: ID;
+    }>;
 };

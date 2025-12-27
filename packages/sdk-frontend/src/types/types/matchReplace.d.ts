@@ -1,5 +1,5 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
-import { type HTTPQL, type ID } from "./utils";
+import { type HTTPQL, type ID, type Selection } from "./utils";
 /**
  * A rule in Match and Replace.
  * @category Match and Replace
@@ -431,5 +431,13 @@ export type CurrentMatchReplaceRuleChangeEvent = {
      * The ID of the newly selected rule, or undefined if no rule is selected.
      */
     ruleId: ID | undefined;
+};
+/**
+ * Match and Replace page context.
+ * @category Match and Replace
+ */
+export type MatchReplacePageContext = {
+    kind: "MatchReplace";
+    selection: Selection<ID>;
 };
 export {};

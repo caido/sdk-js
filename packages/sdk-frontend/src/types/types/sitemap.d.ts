@@ -1,4 +1,4 @@
-import { type ID } from "./utils";
+import { type ID, type Selection } from "./utils";
 /**
  * An entry in sitemap.
  * @category Sitemap
@@ -84,4 +84,13 @@ export type SitemapEntryChildStateUpdateEvent = {
      * The new child state of the entry.
      */
     newChildState: ChildState;
+};
+/**
+ * Sitemap page context.
+ * @category Sitemap
+ */
+export type SitemapPageContext = {
+    kind: "Sitemap";
+    entrySelection: Selection<ID>;
+    requestSelection: Selection<ID>;
 };

@@ -13,3 +13,10 @@ export type SearchSlot = (typeof SearchSlot)[keyof typeof SearchSlot];
 export type SearchSlotContent = {
     [SearchSlot.ToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
+/**
+ * Search page context.
+ * @category Search
+ */
+export type SearchPageContext = {
+    kind: "Search";
+};

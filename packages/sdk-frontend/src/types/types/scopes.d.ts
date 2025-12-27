@@ -1,5 +1,5 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
-import { type ID } from "./utils";
+import { type ID, type Selection } from "./utils";
 /**
  * Represents a scope.
  * @category Scopes
@@ -50,4 +50,12 @@ export type CurrentScopeChangeEvent = {
      * The ID of the newly selected scope, or undefined if no scope is selected.
      */
     scopeId: ID | undefined;
+};
+/**
+ * Scope page context.
+ * @category Scopes
+ */
+export type ScopePageContext = {
+    kind: "Scope";
+    selection: Selection<ID>;
 };
