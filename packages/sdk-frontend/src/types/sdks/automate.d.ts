@@ -1,8 +1,8 @@
 import type { Extension } from "@codemirror/state";
-import type { AutomateEntry, AutomateSession } from "src/types/automate";
-import type { AddIndicatorOptions, ID, Indicator } from "src/types/utils";
+import type { AutomateEntry, AutomateSession } from "../types/automate";
 import type { RequestViewModeOptions } from "../types/request";
 import type { ResponseViewModeOptions } from "../types/response";
+import type { AddIndicatorOptions, ID, Indicator } from "../types/utils";
 /**
  * Utilities to interact with the Automate page.
  * @category Automate
