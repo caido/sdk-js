@@ -212,6 +212,11 @@ declare module "caido:utils" {
      */
     static parse(raw: RequestSpecRaw): RequestSpec;
     /**
+     * Get the connection information of the request.
+     * @returns The connection information.
+     */
+    getInfo(): ConnectionInfo;
+    /**
      * Get the host of the request.
      */
     getHost(): string;
@@ -379,6 +384,11 @@ declare module "caido:utils" {
      * ```
      */
     constructor(url: string);
+    /**
+     * Get the connection information of the request.
+     * @returns The connection information.
+     */
+    getInfo(): ConnectionInfo;
     /**
      * Get the host of the request.
      */
@@ -690,6 +700,33 @@ declare module "caido:utils" {
      * @default true
      */
     save?: boolean;
+    /**
+     * If true, the request will be sent through the upstream plugins.
+     *
+     * It defaults to to true most of the time except when called from
+     * a `doUpstream` callback.
+     *
+     * @default true
+     */
+    plugins?: boolean;
+    /**
+     * The connection to use for the request.
+     *
+     * If provided, the request will be sent through the connection.
+     *
+     * If not provided, the engine will open a new connection to the target.
+     *
+     * @default undefined
+     */
+    connection?: Connection;
+  };
+
+  /**
+   * A saved Request and Response pair with the connection used to send the request.
+   * @category Requests
+   */
+  export type RequestSendPayload = RequestResponse & {
+    connection: Connection;
   };
 
   /**
@@ -747,7 +784,7 @@ declare module "caido:utils" {
     send(
       request: RequestSpec | RequestSpecRaw,
       options?: RequestSendOptions,
-    ): Promise<RequestResponse>;
+    ): Promise<RequestSendPayload>;
     /**
      * Checks if a request is in scope.
      *

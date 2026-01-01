@@ -3,6 +3,7 @@
 /// <reference path="graphql.d.ts" />
 /// <reference path="hostedFile.d.ts" />
 /// <reference path="http.d.ts" />
+/// <reference path="net.d.ts" />
 /// <reference path="projects.d.ts" />
 /// <reference path="replay.d.ts" />
 /// <reference path="requests.d.ts" />
