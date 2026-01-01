@@ -428,10 +428,18 @@ declare module "caido:utils" {
     /**
      * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
      *
+     * @deprecated Use `toSpec` instead.
      * @throws {Error} If the bytes are not a valid HTTP request.
      * @see {@link RequestSpec.parse}
      */
     getSpec(): RequestSpec;
+    /**
+     * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
+     *
+     * @throws {Error} If the bytes are not a valid HTTP request.
+     * @see {@link RequestSpec.parse}
+     */
+    toSpec(): RequestSpec;
   }
 
   /**
@@ -710,7 +718,7 @@ declare module "caido:utils" {
      */
     plugins?: boolean;
     /**
-     * The connection to use for the request.
+     * The {@link Connection} to use for the request.
      *
      * If provided, the request will be sent through the connection.
      *
