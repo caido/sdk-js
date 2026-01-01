@@ -704,7 +704,7 @@ declare module "caido:utils" {
      * If true, the request will be sent through the upstream plugins.
      *
      * It defaults to to true most of the time except when called from
-     * a `doUpstream` callback.
+     * a `onUpstream` callback.
      *
      * @default true
      */
