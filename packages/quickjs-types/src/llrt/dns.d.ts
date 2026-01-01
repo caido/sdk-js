@@ -90,7 +90,7 @@ declare module "dns" {
     hostname: string,
     family: number,
     callback: (
-      err: Error | null,
+      err: DOMException | null,
       address: string,
       family: number
     ) => void
