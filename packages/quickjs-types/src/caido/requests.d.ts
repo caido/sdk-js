@@ -289,6 +289,10 @@ declare module "caido:utils" {
      */
     setQuery(query: Bytes): void;
     /**
+     * The full URL of the request.
+     */
+    getUrl(): string;
+    /**
      * The headers of the request.
      *
      * Header names are case-insensitive.
