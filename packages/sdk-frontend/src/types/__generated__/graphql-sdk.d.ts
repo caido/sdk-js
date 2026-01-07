@@ -185,6 +185,11 @@ export declare const Alteration: {
     readonly Tamper: "TAMPER";
 };
 export type Alteration = (typeof Alteration)[keyof typeof Alteration];
+export type AnalyticStatus = {
+    cloud: Scalars["Boolean"]["output"];
+    enabled: Scalars["Boolean"]["output"];
+    local: Scalars["Boolean"]["output"];
+};
 export declare const AssistantErrorReason: {
     readonly ContextExceeded: "CONTEXT_EXCEEDED";
     readonly InvalidModel: "INVALID_MODEL";
@@ -848,6 +853,15 @@ export type CreateTamperRulePayload = {
     error?: Maybe<CreateTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
+export type CreateUpstreamPluginInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    pluginId: Scalars["ID"]["input"];
+};
+export type CreateUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
+};
 export type CreateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
     auth?: InputMaybe<UpstreamProxyAuthInput>;
@@ -1016,6 +1030,9 @@ export type CreatedTamperRulePayload = {
     rule: TamperRule;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type CreatedUpstreamPluginPayload = {
+    upstream: UpstreamPlugin;
+};
 export type CreatedUpstreamProxyHttpPayload = {
     proxy: UpstreamProxyHttp;
 };
@@ -1106,6 +1123,12 @@ export type DataExportTask = Task & {
     export: DataExport;
     id: Scalars["ID"]["output"];
 };
+export type DataImportResult = {
+    errors: Array<Scalars["String"]["output"]>;
+    id: Scalars["ID"]["output"];
+    summary?: Maybe<DataImportSummary>;
+};
+export type DataImportSummary = TamperSummary;
 export type DeleteAssistantSessionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1195,6 +1218,9 @@ export type DeleteTamperRuleCollectionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type DeleteTamperRulePayload = {
+    deletedId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type DeleteUpstreamPluginPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type DeleteUpstreamProxyHttpPayload = {
@@ -1295,6 +1321,9 @@ export type DeletedTamperRulePayload = {
     deletedRuleId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type DeletedUpstreamPluginPayload = {
+    deletedUpstreamId: Scalars["ID"]["output"];
+};
 export type DeletedUpstreamProxyHttpPayload = {
     deletedProxyId: Scalars["ID"]["output"];
 };
@@ -1348,6 +1377,14 @@ export type ExportFindingsInput = {
 };
 export type ExportFindingsPayload = {
     error?: Maybe<ExportFindingsError>;
+    export?: Maybe<DataExportOnDemand>;
+};
+export type ExportTamperError = OtherUserError | PermissionDeniedUserError;
+export type ExportTamperInput = {
+    target: TamperExportScopeInput;
+};
+export type ExportTamperPayload = {
+    error?: Maybe<ExportTamperError>;
     export?: Maybe<DataExportOnDemand>;
 };
 export type FilterClauseFindingInput = {
@@ -1468,7 +1505,6 @@ export type ForwardInterceptStreamWsMessageInput = {
 };
 export type GlobalConfig = {
     address: Scalars["String"]["output"];
-    onboarding: OnboardingState;
     project: GlobalConfigProject;
 };
 export type GlobalConfigProject = {
@@ -1521,6 +1557,12 @@ export type ImportCertificateInput = {
 export type ImportCertificatePayload = {
     error?: Maybe<ImportCertificateError>;
 };
+export type ImportDataInput = {
+    tamper: ImportTamperRuleInput;
+};
+export type ImportTamperRuleInput = {
+    file: Scalars["Upload"]["input"];
+};
 export type InstallBrowserError = CloudUserError | OtherUserError | UnsupportedPlatformUserError;
 export type InstallBrowserPayload = {
     browser?: Maybe<Browser>;
@@ -1537,6 +1579,8 @@ export type InstallPluginPackagePayload = {
 };
 export type InstanceSettings = {
     aiProviders: AiProviders;
+    analytic: AnalyticStatus;
+    onboarding: OnboardingState;
 };
 export type InterceptEntry = {
     id: Scalars["ID"]["output"];
@@ -1731,6 +1775,7 @@ export type MutationRoot = {
     createSitemapEntries: CreateSitemapEntriesPayload;
     createTamperRule: CreateTamperRulePayload;
     createTamperRuleCollection: CreateTamperRuleCollectionPayload;
+    createUpstreamPlugin: CreateUpstreamPluginPayload;
     createUpstreamProxyHttp: CreateUpstreamProxyHttpPayload;
     createUpstreamProxySocks: CreateUpstreamProxySocksPayload;
     createWorkflow: CreateWorkflowPayload;
@@ -1755,16 +1800,19 @@ export type MutationRoot = {
     deleteSitemapEntries: DeleteSitemapEntriesPayload;
     deleteTamperRule: DeleteTamperRulePayload;
     deleteTamperRuleCollection: DeleteTamperRuleCollectionPayload;
+    deleteUpstreamPlugin: DeleteUpstreamPluginPayload;
     deleteUpstreamProxyHttp: DeleteUpstreamProxyHttpPayload;
     deleteUpstreamProxySocks: DeleteUpstreamProxySocksPayload;
     deleteWorkflow: DeleteWorkflowPayload;
     dropInterceptMessage: DropInterceptMessagePayload;
     duplicateAutomateSession: DuplicateAutomateSessionPayload;
     exportFindings: ExportFindingsPayload;
+    exportTamper: ExportTamperPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
     hideFindings: HideFindingsPayload;
     importCertificate: ImportCertificatePayload;
+    importData: DataImportResult;
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
     localizeWorkflow: LocalizeWorkflowPayload;
@@ -1777,6 +1825,7 @@ export type MutationRoot = {
     persistProject: PersistProjectPayload;
     rankDnsRewrite: RankDnsRewritePayload;
     rankTamperRule: RankTamperRulePayload;
+    rankUpstreamPlugin: RankUpstreamPluginPayload;
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
     rankUpstreamProxySocks: RankUpstreamProxySocksPayload;
     refreshAuthenticationToken: RefreshAuthenticationTokenPayload;
@@ -1805,7 +1854,6 @@ export type MutationRoot = {
     sendAssistantMessage: SendAssistantMessagePayload;
     /** @deprecated Remove usage, no replacement */
     setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
-    setGlobalConfigOnboarding: SetConfigOnboardingPayload;
     setGlobalConfigPort: SetConfigPortPayload;
     setGlobalConfigProject: SetConfigProjectPayload;
     setInstanceSettings: SetInstanceSettingsPayload;
@@ -1826,9 +1874,11 @@ export type MutationRoot = {
     toggleDnsRewrite: ToggleDnsRewritePayload;
     togglePlugin: TogglePluginPayload;
     toggleTamperRule: ToggleTamperRulePayload;
+    toggleUpstreamPlugin: ToggleUpstreamPluginPayload;
     toggleUpstreamProxyHttp: ToggleUpstreamProxyHttpPayload;
     toggleUpstreamProxySocks: ToggleUpstreamProxySocksPayload;
     toggleWorkflow: ToggleWorkflowPayload;
+    track: TrackPayload;
     uninstallPluginPackage: UninstallPluginPackagePayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
     updateBrowser: UpdateBrowserPayload;
@@ -1840,6 +1890,7 @@ export type MutationRoot = {
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
     updateTamperRule: UpdateTamperRulePayload;
+    updateUpstreamPlugin: UpdateUpstreamPluginPayload;
     updateUpstreamProxyHttp: UpdateUpstreamProxyHttpPayload;
     updateUpstreamProxySocks: UpdateUpstreamProxySocksPayload;
     updateViewerSettings: UpdateViewerSettingsPayload;
@@ -1903,6 +1954,9 @@ export type MutationRootCreateTamperRuleArgs = {
 };
 export type MutationRootCreateTamperRuleCollectionArgs = {
     input: CreateTamperRuleCollectionInput;
+};
+export type MutationRootCreateUpstreamPluginArgs = {
+    input: CreateUpstreamPluginInput;
 };
 export type MutationRootCreateUpstreamProxyHttpArgs = {
     input: CreateUpstreamProxyHttpInput;
@@ -1974,6 +2028,9 @@ export type MutationRootDeleteTamperRuleArgs = {
 export type MutationRootDeleteTamperRuleCollectionArgs = {
     id: Scalars["ID"]["input"];
 };
+export type MutationRootDeleteUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootDeleteUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
 };
@@ -1992,6 +2049,9 @@ export type MutationRootDuplicateAutomateSessionArgs = {
 export type MutationRootExportFindingsArgs = {
     input: ExportFindingsInput;
 };
+export type MutationRootExportTamperArgs = {
+    input: ExportTamperInput;
+};
 export type MutationRootForwardInterceptMessageArgs = {
     id: Scalars["ID"]["input"];
     input?: InputMaybe<ForwardInterceptMessageInput>;
@@ -2004,6 +2064,9 @@ export type MutationRootHideFindingsArgs = {
 };
 export type MutationRootImportCertificateArgs = {
     input: ImportCertificateInput;
+};
+export type MutationRootImportDataArgs = {
+    input: ImportDataInput;
 };
 export type MutationRootInstallPluginPackageArgs = {
     input: InstallPluginPackageInput;
@@ -2032,6 +2095,10 @@ export type MutationRootRankDnsRewriteArgs = {
 export type MutationRootRankTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: RankTamperRuleInput;
+};
+export type MutationRootRankUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+    input: RankInput;
 };
 export type MutationRootRankUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
@@ -2128,9 +2195,6 @@ export type MutationRootSetActiveReplaySessionEntryArgs = {
     entryId: Scalars["ID"]["input"];
     id: Scalars["ID"]["input"];
 };
-export type MutationRootSetGlobalConfigOnboardingArgs = {
-    input: SetConfigOnboardingInput;
-};
 export type MutationRootSetGlobalConfigPortArgs = {
     input: Scalars["Int"]["input"];
 };
@@ -2193,6 +2257,10 @@ export type MutationRootToggleTamperRuleArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
 };
+export type MutationRootToggleUpstreamPluginArgs = {
+    enabled: Scalars["Boolean"]["input"];
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootToggleUpstreamProxyHttpArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
@@ -2204,6 +2272,9 @@ export type MutationRootToggleUpstreamProxySocksArgs = {
 export type MutationRootToggleWorkflowArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
+};
+export type MutationRootTrackArgs = {
+    input: TrackInput;
 };
 export type MutationRootUninstallPluginPackageArgs = {
     id: Scalars["ID"]["input"];
@@ -2244,6 +2315,10 @@ export type MutationRootUpdateTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateTamperRuleInput;
 };
+export type MutationRootUpdateUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamPluginInput;
+};
 export type MutationRootUpdateUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateUpstreamProxyHttpInput;
@@ -2271,9 +2346,7 @@ export type NewerVersionUserError = UserError & {
     version: Scalars["Int"]["output"];
 };
 export type OnboardingState = {
-    caCertificate: Scalars["Boolean"]["output"];
-    license: Scalars["Boolean"]["output"];
-    project: Scalars["Boolean"]["output"];
+    analytic: Scalars["Boolean"]["output"];
 };
 export declare const Ordering: {
     readonly Asc: "ASC";
@@ -2519,6 +2592,7 @@ export type QueryRoot = {
     tamperRuleCollection?: Maybe<TamperRuleCollection>;
     tamperRuleCollections: Array<TamperRuleCollection>;
     tasks: Array<Task>;
+    upstreamPlugins: Array<UpstreamPlugin>;
     upstreamProxiesHttp: Array<UpstreamProxyHttp>;
     upstreamProxiesSocks: Array<UpstreamProxySocks>;
     viewer: User;
@@ -2744,6 +2818,9 @@ export type RankTamperRuleInput = {
 export type RankTamperRulePayload = {
     error?: Maybe<RankTamperRuleError>;
     rule?: Maybe<TamperRule>;
+};
+export type RankUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
 };
 export type RankUpstreamProxyHttpPayload = {
     proxy?: Maybe<UpstreamProxyHttp>;
@@ -3197,14 +3274,6 @@ export type SendAssistantMessagePayload = {
 export type SetActiveReplaySessionEntryPayload = {
     session?: Maybe<ReplaySession>;
 };
-export type SetConfigOnboardingInput = {
-    caCertificate: Scalars["Boolean"]["input"];
-    license: Scalars["Boolean"]["input"];
-    project: Scalars["Boolean"]["input"];
-};
-export type SetConfigOnboardingPayload = {
-    config: GlobalConfig;
-};
 export type SetConfigPortPayload = {
     config: GlobalConfig;
 };
@@ -3217,6 +3286,16 @@ export type SetConfigProjectPayload = {
 };
 export type SetInstanceSettingsInput = {
     aiProvider: SettingsAiProviderInput;
+    analytics?: never;
+    onboarding?: never;
+} | {
+    aiProvider?: never;
+    analytics: SettingsAnalyticInput;
+    onboarding?: never;
+} | {
+    aiProvider?: never;
+    analytics?: never;
+    onboarding: SettingsOnboardingInput;
 };
 export type SetInstanceSettingsPayload = {
     settings: InstanceSettings;
@@ -3252,6 +3331,12 @@ export type SettingsAiProviderInput = {
     google?: never;
     openai?: never;
     openrouter: AiProviderOpenRouterInput;
+};
+export type SettingsAnalyticInput = {
+    enabled: Scalars["Boolean"]["input"];
+};
+export type SettingsOnboardingInput = {
+    analytic: Scalars["Boolean"]["input"];
 };
 export declare const SitemapDescendantsDepth: {
     readonly All: "ALL";
@@ -3518,6 +3603,7 @@ export type SubscriptionRoot = {
     createdStreamWsMessage: CreatedStreamWsMessagePayload;
     createdTamperRule: CreatedTamperRulePayload;
     createdTamperRuleCollection: CreatedTamperRuleCollectionPayload;
+    createdUpstreamPlugin: CreatedUpstreamPluginPayload;
     createdUpstreamProxyHttp: CreatedUpstreamProxyHttpPayload;
     createdUpstreamProxySocks: CreatedUpstreamProxySocksPayload;
     createdWorkflow: CreatedWorkflowPayload;
@@ -3544,6 +3630,7 @@ export type SubscriptionRoot = {
     deletedSitemapEntry: DeletedSitemapEntriesPayload;
     deletedTamperRule: DeletedTamperRulePayload;
     deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
+    deletedUpstreamPlugin: DeletedUpstreamPluginPayload;
     deletedUpstreamProxyHttp: DeletedUpstreamProxyHttpPayload;
     deletedUpstreamProxySocks: DeletedUpstreamProxySocksPayload;
     deletedWorkflow: DeletedWorkflowPayload;
@@ -3590,6 +3677,7 @@ export type SubscriptionRoot = {
     updatedStreamWsMessage: UpdatedStreamWsMessagePayload;
     updatedTamperRule: UpdatedTamperRulePayload;
     updatedTamperRuleCollection: UpdatedTamperRuleCollectionPayload;
+    updatedUpstreamPlugin: UpdatedUpstreamPluginPayload;
     updatedUpstreamProxyHttp: UpdatedUpstreamProxyHttpPayload;
     updatedUpstreamProxySocks: UpdatedUpstreamProxySocksPayload;
     updatedViewerAssistantUsage: UpdatedViewerAssistantUsagePayload;
@@ -3632,6 +3720,13 @@ export type SubscriptionRootUpdatedRequestArgs = {
 };
 export type SubscriptionRootUpdatedSitemapEntryArgs = {
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type TamperExportScopeInput = {
+    collections: Array<Scalars["ID"]["input"]>;
+    rules?: never;
+} | {
+    collections?: never;
+    rules: Array<Scalars["ID"]["input"]>;
 };
 export type TamperMatcherFull = {
     full: Scalars["Boolean"]["output"];
@@ -4159,6 +4254,10 @@ export type TamperSectionResponseStatusCode = {
 export type TamperSectionResponseStatusCodeInput = {
     operation: TamperOperationStatusCodeInput;
 };
+export type TamperSummary = {
+    collectionsCreated: Scalars["Int"]["output"];
+    rulesImported: Scalars["Int"]["output"];
+};
 export type Task = {
     createdAt: Scalars["DateTime"]["output"];
     id: Scalars["ID"]["output"];
@@ -4266,6 +4365,9 @@ export type ToggleTamperRulePayload = {
     error?: Maybe<ToggleTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
+export type ToggleUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
+};
 export type ToggleUpstreamProxyHttpPayload = {
     proxy?: Maybe<UpstreamProxyHttp>;
 };
@@ -4276,6 +4378,14 @@ export type ToggleWorkflowError = OtherUserError | UnknownIdUserError;
 export type ToggleWorkflowPayload = {
     error?: Maybe<ToggleWorkflowError>;
     workflow?: Maybe<Workflow>;
+};
+export type TrackInput = {
+    createdAt: Scalars["Timestamp"]["input"];
+    name: Scalars["String"]["input"];
+    value: Scalars["JsonObject"]["input"];
+};
+export type TrackPayload = {
+    success: Scalars["Boolean"]["output"];
 };
 export type UninstallPluginPackageError = OtherUserError | UnknownIdUserError;
 export type UninstallPluginPackagePayload = {
@@ -4371,13 +4481,22 @@ export type UpdateScopePayload = {
 export type UpdateTamperRuleError = InvalidHttpqlUserError | InvalidRegexUserError | OtherUserError | UnknownIdUserError;
 export type UpdateTamperRuleInput = {
     condition?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-    name?: InputMaybe<Scalars["String"]["input"]>;
-    section?: InputMaybe<TamperSectionInput>;
-    sources?: InputMaybe<Array<Source>>;
+    name: Scalars["String"]["input"];
+    section: TamperSectionInput;
+    sources: Array<Source>;
 };
 export type UpdateTamperRulePayload = {
     error?: Maybe<UpdateTamperRuleError>;
     rule?: Maybe<TamperRule>;
+};
+export type UpdateUpstreamPluginInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    pluginId: Scalars["ID"]["input"];
+};
+export type UpdateUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
 };
 export type UpdateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
@@ -4553,6 +4672,9 @@ export type UpdatedTamperRulePayload = {
     rule: TamperRule;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type UpdatedUpstreamPluginPayload = {
+    upstream: UpstreamPlugin;
+};
 export type UpdatedUpstreamProxyHttpPayload = {
     proxy: UpstreamProxyHttp;
 };
@@ -4583,6 +4705,14 @@ export type UploadedBrowserPayload = {
 };
 export type UploadedHostedFilePayload = {
     hostedFile: HostedFile;
+};
+export type UpstreamPlugin = {
+    allowlist: Array<Scalars["String"]["output"]>;
+    denylist: Array<Scalars["String"]["output"]>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    plugin: PluginBackend;
+    rank: Scalars["Rank"]["output"];
 };
 export type UpstreamProxyAuth = UpstreamProxyAuthBasic;
 export type UpstreamProxyAuthBasic = {
@@ -7817,31 +7947,10 @@ export type UpdatedBrowserSubscription = {
         };
     };
 };
-export type OnboardingFullFragment = {
-    __typename: "OnboardingState";
-    caCertificate: boolean;
-    license: boolean;
-    project: boolean;
-};
 export type GlobalConfigProjectFullFragment = {
     __typename: "GlobalConfigProject";
     selectOnStart: ProjectSelectOnStart;
     selectProjectId?: string | undefined | null;
-};
-export type UpdateOnboardingMutationVariables = Exact<{
-    input: SetConfigOnboardingInput;
-}>;
-export type UpdateOnboardingMutation = {
-    setGlobalConfigOnboarding: {
-        config: {
-            onboarding: {
-                __typename: "OnboardingState";
-                caCertificate: boolean;
-                license: boolean;
-                project: boolean;
-            };
-        };
-    };
 };
 export type UpdateGlobalConfigProjectMutationVariables = Exact<{
     input: SetConfigProjectInput;
@@ -7863,12 +7972,6 @@ export type GlobalConfigQueryVariables = Exact<{
 export type GlobalConfigQuery = {
     globalConfig: {
         address: string;
-        onboarding: {
-            __typename: "OnboardingState";
-            caCertificate: boolean;
-            license: boolean;
-            project: boolean;
-        };
         project: {
             __typename: "GlobalConfigProject";
             selectOnStart: ProjectSelectOnStart;
@@ -10383,6 +10486,16 @@ export type InstanceSettingsFullFragment = {
             apiKey: string;
         } | undefined | null;
     };
+    onboarding: {
+        __typename: "OnboardingState";
+        analytic: boolean;
+    };
+    analytic: {
+        __typename: "AnalyticStatus";
+        enabled: boolean;
+        local: boolean;
+        cloud: boolean;
+    };
 };
 export type TestAiProviderPayloadFullFragment = {
     success?: boolean | undefined | null;
@@ -10415,6 +10528,16 @@ export type SetInstanceSettingsMutation = {
                 openrouter?: {
                     apiKey: string;
                 } | undefined | null;
+            };
+            onboarding: {
+                __typename: "OnboardingState";
+                analytic: boolean;
+            };
+            analytic: {
+                __typename: "AnalyticStatus";
+                enabled: boolean;
+                local: boolean;
+                cloud: boolean;
             };
         };
     };
@@ -10455,6 +10578,16 @@ export type InstanceSettingsQuery = {
                 apiKey: string;
             } | undefined | null;
         };
+        onboarding: {
+            __typename: "OnboardingState";
+            analytic: boolean;
+        };
+        analytic: {
+            __typename: "AnalyticStatus";
+            enabled: boolean;
+            local: boolean;
+            cloud: boolean;
+        };
     };
 };
 export type UpdatedInstanceSettingsSubscriptionVariables = Exact<{
@@ -10478,6 +10611,16 @@ export type UpdatedInstanceSettingsSubscription = {
                 openrouter?: {
                     apiKey: string;
                 } | undefined | null;
+            };
+            onboarding: {
+                __typename: "OnboardingState";
+                analytic: boolean;
+            };
+            analytic: {
+                __typename: "AnalyticStatus";
+                enabled: boolean;
+                local: boolean;
+                cloud: boolean;
             };
         };
     };
@@ -23423,7 +23566,6 @@ export declare const FinishedRestoreBackupTaskSuccessFullFragmentDoc = "\n    fr
 export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    ";
 export declare const FinishedRestoreBackupTaskErrorFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
 export declare const BrowserFullFragmentDoc = "\n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
-export declare const OnboardingFullFragmentDoc = "\n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
 export declare const GlobalConfigProjectFullFragmentDoc = "\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const DnsRewriteFullFragmentDoc = "\n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
 export declare const DnsUpstreamFullFragmentDoc = "\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
@@ -23468,7 +23610,7 @@ export declare const InterceptEntryFullFragmentDoc = "\n    fragment interceptEn
 export declare const InterceptEntryEdgeMetaFragmentDoc = "\n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InterceptRequestMessageFullFragmentDoc = "\n    fragment interceptRequestMessageFull on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
@@ -23636,9 +23778,8 @@ export declare const UpdateBrowserDocument = "\n    mutation updateBrowser {\n  
 export declare const DeletedBrowserDocument = "\n    subscription deletedBrowser {\n  deletedBrowser {\n    deletedBrowserId\n  }\n}\n    ";
 export declare const InstalledBrowserDocument = "\n    subscription installedBrowser {\n  installedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdatedBrowserDocument = "\n    subscription updatedBrowser {\n  updatedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
-export declare const UpdateOnboardingDocument = "\n    mutation updateOnboarding($input: SetConfigOnboardingInput!) {\n  setGlobalConfigOnboarding(input: $input) {\n    config {\n      onboarding {\n        ...onboardingFull\n      }\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
 export declare const UpdateGlobalConfigProjectDocument = "\n    mutation updateGlobalConfigProject($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...globalConfigProjectFull\n      }\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
-export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const GlobalConfigProjectDocument = "\n    query globalConfigProject {\n  globalConfig {\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const DnsConfigStateDocument = "\n    query DnsConfigState {\n  dnsRewrites {\n    ...dnsRewriteFull\n  }\n  dnsUpstreams {\n    ...dnsUpstreamFull\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
 export declare const CreateDnsRewriteDocument = "\n    mutation createDnsRewrite($input: CreateDNSRewriteInput!) {\n  createDnsRewrite(input: $input) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -23712,10 +23853,10 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
-export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
+export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
@@ -23945,7 +24086,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedBrowser(variables?: DeletedBrowserSubscriptionVariables, options?: C): AsyncIterable<DeletedBrowserSubscription>;
     installedBrowser(variables?: InstalledBrowserSubscriptionVariables, options?: C): AsyncIterable<InstalledBrowserSubscription>;
     updatedBrowser(variables?: UpdatedBrowserSubscriptionVariables, options?: C): AsyncIterable<UpdatedBrowserSubscription>;
-    updateOnboarding(variables: UpdateOnboardingMutationVariables, options?: C): Promise<UpdateOnboardingMutation>;
     updateGlobalConfigProject(variables: UpdateGlobalConfigProjectMutationVariables, options?: C): Promise<UpdateGlobalConfigProjectMutation>;
     globalConfig(variables?: GlobalConfigQueryVariables, options?: C): Promise<GlobalConfigQuery>;
     globalConfigProject(variables?: GlobalConfigProjectQueryVariables, options?: C): Promise<GlobalConfigProjectQuery>;
