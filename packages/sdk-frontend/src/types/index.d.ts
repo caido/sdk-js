@@ -1,5 +1,6 @@
 export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions } from "./types/window";
+export type { _AnalyticsSDK } from "./private/analytics";
 export type { CommandContext, CommandContextRequest, CommandContextRequestRow, CommandContextResponse, CommandContextBase, } from "./types/commands";
 export type { MenuItem } from "./types/menu";
 export { type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";

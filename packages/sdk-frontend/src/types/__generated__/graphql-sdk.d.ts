@@ -4822,6 +4822,14 @@ export type Workspace = {
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
 };
+export type TrackMutationVariables = Exact<{
+    input: TrackInput;
+}>;
+export type TrackMutation = {
+    track: {
+        success: boolean;
+    };
+};
 export type AssistantMessageFullFragment = {
     __typename: "AssistantMessage";
     id: string;
@@ -23890,6 +23898,7 @@ export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on W
 export declare const WorkflowEdgeFullFragmentDoc = "\n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
+export declare const TrackDocument = "\n    mutation track($input: TrackInput!) {\n  track(input: $input) {\n    success\n  }\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantSessionDocument = "\n    query assistantSession($id: ID!) {\n  assistantSession(id: $id) {\n    ...assistantSessionFull\n  }\n}\n    \n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const AssistantCloudStateDocument = "\n    query assistantCloudState {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      assistantUsage {\n        ...assistantUsageFull\n      }\n    }\n  }\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    \n\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
@@ -24205,6 +24214,7 @@ export declare const TestWorkflowActiveDocument = "\n    mutation testWorkflowAc
 export declare const TestWorkflowPassiveDocument = "\n    mutation testWorkflowPassive($input: TestWorkflowPassiveInput!) {\n  testWorkflowPassive(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    runState\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export type Requester<C = {}> = <R, V>(doc: string, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
 export declare function getSdk<C>(requester: Requester<C>): {
+    track(variables: TrackMutationVariables, options?: C): Promise<TrackMutation>;
     assistantSessions(variables?: AssistantSessionsQueryVariables, options?: C): Promise<AssistantSessionsQuery>;
     assistantSession(variables: AssistantSessionQueryVariables, options?: C): Promise<AssistantSessionQuery>;
     assistantCloudState(variables?: AssistantCloudStateQueryVariables, options?: C): Promise<AssistantCloudStateQuery>;

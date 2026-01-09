@@ -1,4 +1,5 @@
 import type { Sdk as GraphqlSDK } from "../__generated__/graphql-sdk";
+import type { _AnalyticsSDK } from "../private/analytics";
 import { type BackendEndpoints, type BackendEvents } from "../types/backend";
 import type { AiSDK } from "./ai";
 import type { AssetsSDK } from "./assets";
@@ -154,4 +155,9 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities for logging messages to the console.
      */
     log: LogSDK;
+    /**
+     * @private
+     * Utilities to track analytics events.
+     */
+    _analytics: _AnalyticsSDK;
 };
