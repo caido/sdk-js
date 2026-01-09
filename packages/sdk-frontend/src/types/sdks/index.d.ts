@@ -23,6 +23,7 @@ import type { ReplaySDK } from "./replay";
 import type { RuntimeSDK } from "./runtime";
 import type { ScopesSDK } from "./scopes";
 import type { SearchSDK } from "./search";
+import type { SettingsSDK } from "./settings";
 import type { ShortcutsSDK } from "./shortcuts";
 import type { SidebarSDK } from "./sidebar";
 import type { SitemapSDK } from "./sitemap";
@@ -155,6 +156,10 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities for logging messages to the console.
      */
     log: LogSDK;
+    /**
+     * Utilities to interact with the settings page.
+     */
+    settings: SettingsSDK;
     /**
      * @private
      * Utilities to track analytics events.

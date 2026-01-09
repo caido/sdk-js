@@ -18,6 +18,7 @@ export type { CurrentMatchReplaceRuleChangeEvent, MatchReplaceRule, MatchReplace
 export { MatchReplaceSlot, type MatchReplaceSlotContent, } from "./types/matchReplace";
 export { ScopeSlot, type CurrentScopeChangeEvent, type Scope, type ScopeSlotContent, } from "./types/scopes";
 export { HTTPHistorySlot, type HTTPHistorySlotContent, } from "./types/httpHistory";
+export { SettingsSlot, type SettingsSlotContent, type SettingsPluginSlotContent, } from "./types/settings";
 export type { EnvironmentVariable } from "./types/environment";
 export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./types/workflows";
 export type { ListenerHandle, AddIndicatorOptions, Indicator, } from "./types/utils";
