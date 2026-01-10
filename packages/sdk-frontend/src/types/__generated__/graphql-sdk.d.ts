@@ -1128,7 +1128,7 @@ export type DataImportResult = {
     id: Scalars["ID"]["output"];
     summary?: Maybe<DataImportSummary>;
 };
-export type DataImportSummary = TamperSummary;
+export type DataImportSummary = FindingsSummary | TamperSummary;
 export type DeleteAssistantSessionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1445,6 +1445,9 @@ export type FindingOrderInput = {
     by: FindingOrderBy;
     ordering: Ordering;
 };
+export type FindingsSummary = {
+    findingsImported: Scalars["Int"]["output"];
+};
 export type FinishedBackupTaskCancelled = {
     taskId: Scalars["ID"]["output"];
 };
@@ -1558,7 +1561,14 @@ export type ImportCertificatePayload = {
     error?: Maybe<ImportCertificateError>;
 };
 export type ImportDataInput = {
+    findings: ImportFindingsInput;
+    tamper?: never;
+} | {
+    findings?: never;
     tamper: ImportTamperRuleInput;
+};
+export type ImportFindingsInput = {
+    file: Scalars["Upload"]["input"];
 };
 export type ImportTamperRuleInput = {
     file: Scalars["Upload"]["input"];
@@ -3392,6 +3402,7 @@ export type SitemapEntryMetadataDomain = {
 };
 export declare const Source: {
     readonly Automate: "AUTOMATE";
+    readonly Import: "IMPORT";
     readonly Intercept: "INTERCEPT";
     readonly Plugin: "PLUGIN";
     readonly Replay: "REPLAY";
@@ -16434,6 +16445,774 @@ export type MoveTamperRuleMutation = {
         } | undefined | null;
     };
 };
+export type ExportTamperMutationVariables = Exact<{
+    input: ExportTamperInput;
+}>;
+export type ExportTamperMutation = {
+    exportTamper: {
+        export?: {
+            downloadUri: string;
+            id: string;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | undefined | null;
+    };
+};
+export type ImportTamperMutationVariables = Exact<{
+    input: ImportTamperRuleInput;
+}>;
+export type ImportTamperMutation = {
+    importData: {
+        id: string;
+        errors: Array<string>;
+        summary?: {
+            collectionsCreated: number;
+            rulesImported: number;
+        } | {} | undefined | null;
+    };
+};
+export type CreatedTamperRuleCollectionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedTamperRuleCollectionSubscription = {
+    createdTamperRuleCollection: {
+        snapshot: number;
+        collectionEdge: {
+            cursor: string;
+            node: {
+                __typename: "TamperRuleCollection";
+                id: string;
+                name: string;
+                rules: Array<{
+                    __typename: "TamperRule";
+                    id: string;
+                    name: string;
+                    condition?: string | undefined | null;
+                    sources: Array<Source>;
+                    section: {
+                        __typename: "TamperSectionRequestAll";
+                        operation: {
+                            __typename: "TamperOperationAllRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestBody";
+                        operation: {
+                            __typename: "TamperOperationBodyRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestFirstLine";
+                        operation: {
+                            __typename: "TamperOperationFirstLineRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestHeader";
+                        operation: {
+                            __typename: "TamperOperationHeaderAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestMethod";
+                        operation: {
+                            __typename: "TamperOperationMethodUpdate";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestPath";
+                        operation: {
+                            __typename: "TamperOperationPathRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestQuery";
+                        operation: {
+                            __typename: "TamperOperationQueryAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestSNI";
+                        operation: {
+                            __typename: "TamperOperationSNIRaw";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseAll";
+                        operation: {
+                            __typename: "TamperOperationAllRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseBody";
+                        operation: {
+                            __typename: "TamperOperationBodyRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseFirstLine";
+                        operation: {
+                            __typename: "TamperOperationFirstLineRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseHeader";
+                        operation: {
+                            __typename: "TamperOperationHeaderAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseStatusCode";
+                        operation: {
+                            __typename: "TamperOperationStatusCodeUpdate";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    };
+                    enable?: {
+                        rank: string;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type CreatedTamperRuleSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedTamperRuleSubscription = {
+    createdTamperRule: {
+        snapshot: number;
+        rule: {
+            __typename: "TamperRule";
+            id: string;
+            name: string;
+            condition?: string | undefined | null;
+            sources: Array<Source>;
+            section: {
+                __typename: "TamperSectionRequestAll";
+                operation: {
+                    __typename: "TamperOperationAllRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestBody";
+                operation: {
+                    __typename: "TamperOperationBodyRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestFirstLine";
+                operation: {
+                    __typename: "TamperOperationFirstLineRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestHeader";
+                operation: {
+                    __typename: "TamperOperationHeaderAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestMethod";
+                operation: {
+                    __typename: "TamperOperationMethodUpdate";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestPath";
+                operation: {
+                    __typename: "TamperOperationPathRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestQuery";
+                operation: {
+                    __typename: "TamperOperationQueryAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestSNI";
+                operation: {
+                    __typename: "TamperOperationSNIRaw";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseAll";
+                operation: {
+                    __typename: "TamperOperationAllRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseBody";
+                operation: {
+                    __typename: "TamperOperationBodyRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseFirstLine";
+                operation: {
+                    __typename: "TamperOperationFirstLineRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseHeader";
+                operation: {
+                    __typename: "TamperOperationHeaderAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseStatusCode";
+                operation: {
+                    __typename: "TamperOperationStatusCodeUpdate";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            };
+            enable?: {
+                rank: string;
+            } | undefined | null;
+            collection: {
+                id: string;
+            };
+        };
+    };
+};
 export type PageInfoFullFragment = {
     __typename: "PageInfo";
     hasPreviousPage: boolean;
@@ -24072,6 +24851,10 @@ export declare const TestTamperRuleDocument = "\n    mutation testTamperRule($in
 export declare const ToggleTamperRuleDocument = "\n    mutation toggleTamperRule($id: ID!, $enabled: Boolean!) {\n  toggleTamperRule(id: $id, enabled: $enabled) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
+export declare const ExportTamperDocument = "\n    mutation exportTamper($input: ExportTamperInput!) {\n  exportTamper(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const ImportTamperDocument = "\n    mutation importTamper($input: ImportTamperRuleInput!) {\n  importData(input: {tamper: $input}) {\n    id\n    errors\n    summary {\n      ... on TamperSummary {\n        collectionsCreated\n        rulesImported\n      }\n    }\n  }\n}\n    ";
+export declare const CreatedTamperRuleCollectionDocument = "\n    subscription createdTamperRuleCollection {\n  createdTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
+export declare const CreatedTamperRuleDocument = "\n    subscription createdTamperRule {\n  createdTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n}\n    ";
 export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
@@ -24388,6 +25171,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     toggleTamperRule(variables: ToggleTamperRuleMutationVariables, options?: C): Promise<ToggleTamperRuleMutation>;
     rankTamperRule(variables: RankTamperRuleMutationVariables, options?: C): Promise<RankTamperRuleMutation>;
     moveTamperRule(variables: MoveTamperRuleMutationVariables, options?: C): Promise<MoveTamperRuleMutation>;
+    exportTamper(variables: ExportTamperMutationVariables, options?: C): Promise<ExportTamperMutation>;
+    importTamper(variables: ImportTamperMutationVariables, options?: C): Promise<ImportTamperMutation>;
+    createdTamperRuleCollection(variables?: CreatedTamperRuleCollectionSubscriptionVariables, options?: C): AsyncIterable<CreatedTamperRuleCollectionSubscription>;
+    createdTamperRule(variables?: CreatedTamperRuleSubscriptionVariables, options?: C): AsyncIterable<CreatedTamperRuleSubscription>;
     pluginPackages(variables?: PluginPackagesQueryVariables, options?: C): Promise<PluginPackagesQuery>;
     storePluginPackages(variables?: StorePluginPackagesQueryVariables, options?: C): Promise<StorePluginPackagesQuery>;
     installPluginPackage(variables: InstallPluginPackageMutationVariables, options?: C): Promise<InstallPluginPackageMutation>;
