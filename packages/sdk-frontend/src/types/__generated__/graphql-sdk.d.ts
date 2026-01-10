@@ -21822,6 +21822,17 @@ export type CreatedLogLinesSubscription = {
         }>;
     };
 };
+export type UpdatedCloudStatusSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedCloudStatusSubscription = {
+    updatedCloudStatus: {
+        cloudStatus: {
+            __typename: "CloudStatus";
+            sync: boolean;
+        };
+    };
+};
 export type ScopeFullFragment = {
     __typename: "Scope";
     id: string;
@@ -24916,6 +24927,7 @@ export declare const GetCertificateDocument = "\n    query getCertificate($passw
 export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RegenerateCertificateDocument = "\n    mutation regenerateCertificate {\n  regenerateCertificate {\n    success\n  }\n}\n    ";
 export declare const CreatedLogLinesDocument = "\n    subscription createdLogLines($duration: Duration!) {\n  createdLogLines(duration: $duration) {\n    lines {\n      ...logLineFull\n    }\n  }\n}\n    \n    fragment logLineFull on LogLine {\n  __typename\n  level\n  message\n  target\n  timestamp\n}\n    ";
+export declare const UpdatedCloudStatusDocument = "\n    subscription updatedCloudStatus {\n  updatedCloudStatus {\n    cloudStatus {\n      ...cloudStatusFull\n    }\n  }\n}\n    \n    fragment cloudStatusFull on CloudStatus {\n  __typename\n  sync\n}\n    ";
 export declare const CreateScopeDocument = "\n    mutation createScope($input: CreateScopeInput!) {\n  createScope(input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdateScopeDocument = "\n    mutation updateScope($id: ID!, $input: UpdateScopeInput!) {\n  updateScope(id: $id, input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!) {\n  deleteScope(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -25236,6 +25248,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
     regenerateCertificate(variables?: RegenerateCertificateMutationVariables, options?: C): Promise<RegenerateCertificateMutation>;
     createdLogLines(variables: CreatedLogLinesSubscriptionVariables, options?: C): AsyncIterable<CreatedLogLinesSubscription>;
+    updatedCloudStatus(variables?: UpdatedCloudStatusSubscriptionVariables, options?: C): AsyncIterable<UpdatedCloudStatusSubscription>;
     createScope(variables: CreateScopeMutationVariables, options?: C): Promise<CreateScopeMutation>;
     updateScope(variables: UpdateScopeMutationVariables, options?: C): Promise<UpdateScopeMutation>;
     deleteScope(variables: DeleteScopeMutationVariables, options?: C): Promise<DeleteScopeMutation>;
