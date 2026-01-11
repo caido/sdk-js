@@ -89,11 +89,7 @@ declare module "dns" {
   export function lookup(
     hostname: string,
     family: number,
-    callback: (
-      err: DOMException | null,
-      address: string,
-      family: number
-    ) => void
+    callback: (err: Error | null, address: string, family: number) => void
   ): void;
   export function lookup(
     hostname: string,
