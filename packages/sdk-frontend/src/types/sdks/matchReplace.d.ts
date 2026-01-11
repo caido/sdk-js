@@ -1,5 +1,6 @@
-import { type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type Source } from "../types/matchReplace";
-import type { HTTPQL, ID } from "../types/utils";
+import { type CurrentMatchReplaceRuleChangeEvent, type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
+import { type DefineAddToSlotFn } from "../types/slots";
+import type { AddIndicatorOptions, HTTPQL, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
  * @category Match and Replace
@@ -48,6 +49,27 @@ export type MatchReplaceSDK = {
      */
     selectRule: (id: ID | undefined) => void;
     /**
+     * Get the currently selected rule.
+     * @returns The currently selected rule, or undefined if no rule is selected.
+     */
+    getCurrentRule: () => MatchReplaceRule | undefined;
+    /**
+     * Subscribe to current rule changes.
+     * @param callback The callback to call when the selected rule changes.
+     * @returns An object with a `stop` method that can be called to stop listening to rule changes.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.matchReplace.onCurrentRuleChange((event) => {
+     *   console.log(`Rule ${event.ruleId} got selected!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onCurrentRuleChange: (callback: (event: CurrentMatchReplaceRuleChangeEvent) => void) => ListenerHandle;
+    /**
      * Create a rule.
      * @param options - The options for the rule.
      * @param options.name - The name of the rule.
@@ -88,4 +110,50 @@ export type MatchReplaceSDK = {
      * @param id - The ID of the rule.
      */
     deleteRule: (id: ID) => Promise<void>;
+    /**
+     * Add a component to a slot.
+     * @param slot The slot to add the component to.
+     * @param content The content to add to the slot.
+     * @example
+     * ```ts
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.UpdateHeader, {
+     *   type: "Button",
+     *   label: "My Button",
+     *   icon: "my-icon",
+     *   onClick: () => {
+     *     console.log("Button clicked");
+     *   },
+     * });
+     *
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.CreateHeader, {
+     *   type: "Custom",
+     *   definition: MyComponent,
+     * });
+     *
+     * sdk.matchReplace.addToSlot(MatchReplaceSlot.UpdateHeader, {
+     *   type: "Command",
+     *   commandId: "my-command",
+     *   icon: "my-icon",
+     * });
+     * ```
+     */
+    addToSlot: DefineAddToSlotFn<MatchReplaceSlotContent>;
+    /**
+     * Add an indicator to a rule.
+     * Indicators are displayed next to the session name in the collections tree.
+     * @param ruleId The ID of the rule to add the indicator to.
+     * @param indicator The indicator configuration.
+     * @returns A handle object with a `remove` method to remove the indicator.
+     * @example
+     *
+     * const indicator = sdk.matchReplace.addRuleIndicator(ruleId, {
+     *   icon: "fas fa-exclamation-triangle",
+     *   description: "Security warning",
+     * });
+     *
+     * // Later, remove the indicator
+     * indicator.remove();
+     *
+     */
+    addRuleIndicator: (ruleId: ID, indicator: AddIndicatorOptions) => Indicator;
 };

@@ -1,8 +1,8 @@
 import { type Extension } from "@codemirror/state";
-import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayEntry, type ReplaySession, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { ID, ListenerHandle } from "../types/utils";
+import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -192,4 +192,54 @@ export type ReplaySDK = {
      * ```
      */
     onCurrentSessionChange: (callback: (event: CurrentReplaySessionChangeEvent) => void) => ListenerHandle;
+    /**
+     * Subscribe to replay session creation events.
+     * @param callback The callback to call when a session is created.
+     * @returns An object with a `stop` method that can be called to stop listening to session creation events.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.replay.onSessionCreate((event) => {
+     *   console.log(`Session ${event.session.id} was created!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onSessionCreate: (callback: (event: ReplaySessionCreatedEvent) => void) => ListenerHandle;
+    /**
+     * Subscribe to replay collection creation events.
+     * @param callback The callback to call when a collection is created.
+     * @returns An object with a `stop` method that can be called to stop listening to collection creation events.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.replay.onCollectionCreate((event) => {
+     *   console.log(`Collection ${event.collection.id} was created!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onCollectionCreate: (callback: (event: ReplayCollectionCreatedEvent) => void) => ListenerHandle;
+    /**
+     * Add an indicator to a replay session.
+     * Indicators are displayed next to the session name in the collections tree.
+     * @param sessionId The ID of the session to add the indicator to.
+     * @param indicator The indicator configuration.
+     * @returns A handle object with a `remove` method to remove the indicator.
+     * @example
+     *
+     * const indicator = sdk.replay.addSessionIndicator(sessionId, {
+     *   icon: "fas fa-exclamation-triangle",
+     *   description: "Security warning",
+     * });
+     *
+     * // Later, remove the indicator
+     * indicator.remove();
+     *
+     */
+    addSessionIndicator: (sessionId: ID, indicator: AddIndicatorOptions) => Indicator;
 };

@@ -1,3 +1,7 @@
+/**
+ * Available route identifiers in Caido.
+ * @category Navigation
+ */
 export declare const Routes: {
     readonly Sitemap: "Sitemap";
     readonly Intercept: "Intercept";
@@ -9,7 +13,7 @@ export declare const Routes: {
     readonly Automate: "Automate";
     readonly Projects: "Projects";
     readonly Backups: "Backups";
-    readonly MatchReplace: "Tamper";
+    readonly MatchReplace: "MatchReplace";
     readonly Assistant: "Assistant";
     readonly Environment: "Environment";
     readonly Scope: "Scope";
@@ -23,6 +27,10 @@ export declare const Routes: {
     readonly Settings: "Settings";
 };
 export type Routes = (typeof Routes)[keyof typeof Routes];
+/**
+ * Event fired when the page changes.
+ * @category Navigation
+ */
 export type PageChangeEvent = {
     type: "Core";
     routeId: Routes;

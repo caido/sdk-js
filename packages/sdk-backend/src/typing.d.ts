@@ -14,6 +14,10 @@ declare module "caido:plugin" {
     ScopeSDK,
     GraphQLSDK,
     HostedFileSDK,
+    NetSDK,
+    RequestSpecRaw,
+    Connection,
+    RequestSpec,
   } from "caido:utils";
 
   /**
@@ -46,6 +50,19 @@ declare module "caido:plugin" {
       callback: (sdk: SDK, ...args: any[]) => MaybePromise<any>,
     ): void;
   };
+
+  /**
+   * The result of an upstream callback.
+   * @category Events
+   */
+  export type UpstreamResult =
+    | Connection
+    | RequestSpec
+    | {
+        connection?: Connection;
+        request?: RequestSpec;
+      }
+    | undefined;
 
   /**
    * The SDK for the API RPC service.
@@ -109,6 +126,35 @@ declare module "caido:plugin" {
         sdk: SDK<API, Events>,
         project: Project | null,
       ) => MaybePromise<void>,
+    ): void;
+
+    /**
+     * Callback called before the request is sent to the target.
+     *
+     * This callback is called synchronously so special care should be taken
+     * to not impact overall performance.
+     *
+     * The callback can return a `Connection` that will then be used to send the request.
+     * It can also return a `RequestSpec` to override the request sent to the target.
+     *
+     * This will only be called if the user has enabled it for a given domain
+     * in the settings for Upstream Plugins.
+     *
+     * @example
+     * ```ts
+     * sdk.events.onUpstream(async (sdk, request) => {
+     *    // Send all requests to example.com
+     *    return {
+     *      connection: await sdk.net.connect("https://example.com"),
+     *    };
+     * });
+     * ```
+     */
+    onUpstream(
+      callback: (
+        sdk: SDK<API, Events>,
+        request: RequestSpecRaw,
+      ) => MaybePromise<UpstreamResult>,
     ): void;
   };
 
@@ -205,5 +251,9 @@ declare module "caido:plugin" {
      * The SDK for the HostedFile service.
      */
     hostedFile: HostedFileSDK;
+    /**
+     * The SDK for the Net service.
+     */
+    net: NetSDK;
   }
 }

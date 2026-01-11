@@ -1,6 +1,7 @@
 import type { EditorView } from "@codemirror/view";
 /**
  * Generic editor interface.
+ * @category Editor
  */
 export type Editor = {
     /**
@@ -27,6 +28,10 @@ export type Editor = {
      */
     getEditorView: () => EditorView;
 };
+/**
+ * An HTTP request editor interface.
+ * @category Editor
+ */
 export type HTTPRequestEditor = {
     /**
      * Get the editor element.
@@ -40,6 +45,10 @@ export type HTTPRequestEditor = {
      */
     getEditorView: () => EditorView;
 };
+/**
+ * An HTTP response editor interface.
+ * @category Editor
+ */
 export type HTTPResponseEditor = {
     /**
      * Get the editor element.

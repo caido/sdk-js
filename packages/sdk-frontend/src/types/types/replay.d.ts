@@ -1,5 +1,5 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
-import { type ID } from "./utils";
+import { type ID, type Selection } from "./utils";
 /**
  * The slots in the Replay UI.
  * @category Replay
@@ -198,3 +198,39 @@ export type CurrentReplaySessionChangeEvent = {
      */
     sessionId: ID | undefined;
 };
+/**
+ * Event fired when a replay session is created.
+ * @category Replay
+ */
+export type ReplaySessionCreatedEvent = {
+    /**
+     * The newly created replay session.
+     */
+    session: ReplaySession;
+};
+/**
+ * Event fired when a replay collection is created.
+ * @category Replay
+ */
+export type ReplayCollectionCreatedEvent = {
+    /**
+     * The newly created replay collection.
+     */
+    collection: ReplayCollection;
+};
+/**
+ * Replay page context.
+ * @category Replay
+ */
+export type ReplayPageContext = {
+    kind: "Replay";
+    selection: Selection<ReplaySessionId>;
+};
+/**
+ * A unique replay session identifier.
+ * @category Replay
+ */
+type ReplaySessionId = string & {
+    __replaySessionId?: never;
+};
+export {};

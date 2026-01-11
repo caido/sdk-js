@@ -6,3 +6,10 @@ import { type ID } from "./utils";
 export type SelectedProjectChangeEvent = {
     projectId: ID | undefined;
 };
+/**
+ * Projects page context.
+ * @category Projects
+ */
+export type ProjectsPageContext = {
+    kind: "Projects";
+};

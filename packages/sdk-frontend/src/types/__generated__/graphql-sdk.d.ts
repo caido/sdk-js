@@ -185,6 +185,11 @@ export declare const Alteration: {
     readonly Tamper: "TAMPER";
 };
 export type Alteration = (typeof Alteration)[keyof typeof Alteration];
+export type AnalyticStatus = {
+    cloud: Scalars["Boolean"]["output"];
+    enabled: Scalars["Boolean"]["output"];
+    local: Scalars["Boolean"]["output"];
+};
 export declare const AssistantErrorReason: {
     readonly ContextExceeded: "CONTEXT_EXCEEDED";
     readonly InvalidModel: "INVALID_MODEL";
@@ -848,6 +853,15 @@ export type CreateTamperRulePayload = {
     error?: Maybe<CreateTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
+export type CreateUpstreamPluginInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    pluginId: Scalars["ID"]["input"];
+};
+export type CreateUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
+};
 export type CreateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
     auth?: InputMaybe<UpstreamProxyAuthInput>;
@@ -1016,6 +1030,9 @@ export type CreatedTamperRulePayload = {
     rule: TamperRule;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type CreatedUpstreamPluginPayload = {
+    upstream: UpstreamPlugin;
+};
 export type CreatedUpstreamProxyHttpPayload = {
     proxy: UpstreamProxyHttp;
 };
@@ -1106,6 +1123,12 @@ export type DataExportTask = Task & {
     export: DataExport;
     id: Scalars["ID"]["output"];
 };
+export type DataImportResult = {
+    errors: Array<Scalars["String"]["output"]>;
+    id: Scalars["ID"]["output"];
+    summary?: Maybe<DataImportSummary>;
+};
+export type DataImportSummary = FindingsSummary | TamperSummary;
 export type DeleteAssistantSessionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1195,6 +1218,9 @@ export type DeleteTamperRuleCollectionPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type DeleteTamperRulePayload = {
+    deletedId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type DeleteUpstreamPluginPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type DeleteUpstreamProxyHttpPayload = {
@@ -1295,6 +1321,9 @@ export type DeletedTamperRulePayload = {
     deletedRuleId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type DeletedUpstreamPluginPayload = {
+    deletedUpstreamId: Scalars["ID"]["output"];
+};
 export type DeletedUpstreamProxyHttpPayload = {
     deletedProxyId: Scalars["ID"]["output"];
 };
@@ -1348,6 +1377,14 @@ export type ExportFindingsInput = {
 };
 export type ExportFindingsPayload = {
     error?: Maybe<ExportFindingsError>;
+    export?: Maybe<DataExportOnDemand>;
+};
+export type ExportTamperError = OtherUserError | PermissionDeniedUserError;
+export type ExportTamperInput = {
+    target: TamperExportScopeInput;
+};
+export type ExportTamperPayload = {
+    error?: Maybe<ExportTamperError>;
     export?: Maybe<DataExportOnDemand>;
 };
 export type FilterClauseFindingInput = {
@@ -1407,6 +1444,9 @@ export type FindingOrderBy = (typeof FindingOrderBy)[keyof typeof FindingOrderBy
 export type FindingOrderInput = {
     by: FindingOrderBy;
     ordering: Ordering;
+};
+export type FindingsSummary = {
+    findingsImported: Scalars["Int"]["output"];
 };
 export type FinishedBackupTaskCancelled = {
     taskId: Scalars["ID"]["output"];
@@ -1468,7 +1508,6 @@ export type ForwardInterceptStreamWsMessageInput = {
 };
 export type GlobalConfig = {
     address: Scalars["String"]["output"];
-    onboarding: OnboardingState;
     project: GlobalConfigProject;
 };
 export type GlobalConfigProject = {
@@ -1521,6 +1560,19 @@ export type ImportCertificateInput = {
 export type ImportCertificatePayload = {
     error?: Maybe<ImportCertificateError>;
 };
+export type ImportDataInput = {
+    findings: ImportFindingsInput;
+    tamper?: never;
+} | {
+    findings?: never;
+    tamper: ImportTamperRuleInput;
+};
+export type ImportFindingsInput = {
+    file: Scalars["Upload"]["input"];
+};
+export type ImportTamperRuleInput = {
+    file: Scalars["Upload"]["input"];
+};
 export type InstallBrowserError = CloudUserError | OtherUserError | UnsupportedPlatformUserError;
 export type InstallBrowserPayload = {
     browser?: Maybe<Browser>;
@@ -1537,6 +1589,8 @@ export type InstallPluginPackagePayload = {
 };
 export type InstanceSettings = {
     aiProviders: AiProviders;
+    analytic: AnalyticStatus;
+    onboarding: OnboardingState;
 };
 export type InterceptEntry = {
     id: Scalars["ID"]["output"];
@@ -1731,6 +1785,7 @@ export type MutationRoot = {
     createSitemapEntries: CreateSitemapEntriesPayload;
     createTamperRule: CreateTamperRulePayload;
     createTamperRuleCollection: CreateTamperRuleCollectionPayload;
+    createUpstreamPlugin: CreateUpstreamPluginPayload;
     createUpstreamProxyHttp: CreateUpstreamProxyHttpPayload;
     createUpstreamProxySocks: CreateUpstreamProxySocksPayload;
     createWorkflow: CreateWorkflowPayload;
@@ -1755,16 +1810,19 @@ export type MutationRoot = {
     deleteSitemapEntries: DeleteSitemapEntriesPayload;
     deleteTamperRule: DeleteTamperRulePayload;
     deleteTamperRuleCollection: DeleteTamperRuleCollectionPayload;
+    deleteUpstreamPlugin: DeleteUpstreamPluginPayload;
     deleteUpstreamProxyHttp: DeleteUpstreamProxyHttpPayload;
     deleteUpstreamProxySocks: DeleteUpstreamProxySocksPayload;
     deleteWorkflow: DeleteWorkflowPayload;
     dropInterceptMessage: DropInterceptMessagePayload;
     duplicateAutomateSession: DuplicateAutomateSessionPayload;
     exportFindings: ExportFindingsPayload;
+    exportTamper: ExportTamperPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
     hideFindings: HideFindingsPayload;
     importCertificate: ImportCertificatePayload;
+    importData: DataImportResult;
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
     localizeWorkflow: LocalizeWorkflowPayload;
@@ -1777,6 +1835,7 @@ export type MutationRoot = {
     persistProject: PersistProjectPayload;
     rankDnsRewrite: RankDnsRewritePayload;
     rankTamperRule: RankTamperRulePayload;
+    rankUpstreamPlugin: RankUpstreamPluginPayload;
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
     rankUpstreamProxySocks: RankUpstreamProxySocksPayload;
     refreshAuthenticationToken: RefreshAuthenticationTokenPayload;
@@ -1805,7 +1864,6 @@ export type MutationRoot = {
     sendAssistantMessage: SendAssistantMessagePayload;
     /** @deprecated Remove usage, no replacement */
     setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
-    setGlobalConfigOnboarding: SetConfigOnboardingPayload;
     setGlobalConfigPort: SetConfigPortPayload;
     setGlobalConfigProject: SetConfigProjectPayload;
     setInstanceSettings: SetInstanceSettingsPayload;
@@ -1826,9 +1884,11 @@ export type MutationRoot = {
     toggleDnsRewrite: ToggleDnsRewritePayload;
     togglePlugin: TogglePluginPayload;
     toggleTamperRule: ToggleTamperRulePayload;
+    toggleUpstreamPlugin: ToggleUpstreamPluginPayload;
     toggleUpstreamProxyHttp: ToggleUpstreamProxyHttpPayload;
     toggleUpstreamProxySocks: ToggleUpstreamProxySocksPayload;
     toggleWorkflow: ToggleWorkflowPayload;
+    track: TrackPayload;
     uninstallPluginPackage: UninstallPluginPackagePayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
     updateBrowser: UpdateBrowserPayload;
@@ -1840,6 +1900,7 @@ export type MutationRoot = {
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
     updateTamperRule: UpdateTamperRulePayload;
+    updateUpstreamPlugin: UpdateUpstreamPluginPayload;
     updateUpstreamProxyHttp: UpdateUpstreamProxyHttpPayload;
     updateUpstreamProxySocks: UpdateUpstreamProxySocksPayload;
     updateViewerSettings: UpdateViewerSettingsPayload;
@@ -1903,6 +1964,9 @@ export type MutationRootCreateTamperRuleArgs = {
 };
 export type MutationRootCreateTamperRuleCollectionArgs = {
     input: CreateTamperRuleCollectionInput;
+};
+export type MutationRootCreateUpstreamPluginArgs = {
+    input: CreateUpstreamPluginInput;
 };
 export type MutationRootCreateUpstreamProxyHttpArgs = {
     input: CreateUpstreamProxyHttpInput;
@@ -1974,6 +2038,9 @@ export type MutationRootDeleteTamperRuleArgs = {
 export type MutationRootDeleteTamperRuleCollectionArgs = {
     id: Scalars["ID"]["input"];
 };
+export type MutationRootDeleteUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootDeleteUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
 };
@@ -1992,6 +2059,9 @@ export type MutationRootDuplicateAutomateSessionArgs = {
 export type MutationRootExportFindingsArgs = {
     input: ExportFindingsInput;
 };
+export type MutationRootExportTamperArgs = {
+    input: ExportTamperInput;
+};
 export type MutationRootForwardInterceptMessageArgs = {
     id: Scalars["ID"]["input"];
     input?: InputMaybe<ForwardInterceptMessageInput>;
@@ -2004,6 +2074,9 @@ export type MutationRootHideFindingsArgs = {
 };
 export type MutationRootImportCertificateArgs = {
     input: ImportCertificateInput;
+};
+export type MutationRootImportDataArgs = {
+    input: ImportDataInput;
 };
 export type MutationRootInstallPluginPackageArgs = {
     input: InstallPluginPackageInput;
@@ -2032,6 +2105,10 @@ export type MutationRootRankDnsRewriteArgs = {
 export type MutationRootRankTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: RankTamperRuleInput;
+};
+export type MutationRootRankUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+    input: RankInput;
 };
 export type MutationRootRankUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
@@ -2128,9 +2205,6 @@ export type MutationRootSetActiveReplaySessionEntryArgs = {
     entryId: Scalars["ID"]["input"];
     id: Scalars["ID"]["input"];
 };
-export type MutationRootSetGlobalConfigOnboardingArgs = {
-    input: SetConfigOnboardingInput;
-};
 export type MutationRootSetGlobalConfigPortArgs = {
     input: Scalars["Int"]["input"];
 };
@@ -2193,6 +2267,10 @@ export type MutationRootToggleTamperRuleArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
 };
+export type MutationRootToggleUpstreamPluginArgs = {
+    enabled: Scalars["Boolean"]["input"];
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootToggleUpstreamProxyHttpArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
@@ -2204,6 +2282,9 @@ export type MutationRootToggleUpstreamProxySocksArgs = {
 export type MutationRootToggleWorkflowArgs = {
     enabled: Scalars["Boolean"]["input"];
     id: Scalars["ID"]["input"];
+};
+export type MutationRootTrackArgs = {
+    input: TrackInput;
 };
 export type MutationRootUninstallPluginPackageArgs = {
     id: Scalars["ID"]["input"];
@@ -2244,6 +2325,10 @@ export type MutationRootUpdateTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateTamperRuleInput;
 };
+export type MutationRootUpdateUpstreamPluginArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamPluginInput;
+};
 export type MutationRootUpdateUpstreamProxyHttpArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateUpstreamProxyHttpInput;
@@ -2271,9 +2356,7 @@ export type NewerVersionUserError = UserError & {
     version: Scalars["Int"]["output"];
 };
 export type OnboardingState = {
-    caCertificate: Scalars["Boolean"]["output"];
-    license: Scalars["Boolean"]["output"];
-    project: Scalars["Boolean"]["output"];
+    analytic: Scalars["Boolean"]["output"];
 };
 export declare const Ordering: {
     readonly Asc: "ASC";
@@ -2519,6 +2602,7 @@ export type QueryRoot = {
     tamperRuleCollection?: Maybe<TamperRuleCollection>;
     tamperRuleCollections: Array<TamperRuleCollection>;
     tasks: Array<Task>;
+    upstreamPlugins: Array<UpstreamPlugin>;
     upstreamProxiesHttp: Array<UpstreamProxyHttp>;
     upstreamProxiesSocks: Array<UpstreamProxySocks>;
     viewer: User;
@@ -2744,6 +2828,9 @@ export type RankTamperRuleInput = {
 export type RankTamperRulePayload = {
     error?: Maybe<RankTamperRuleError>;
     rule?: Maybe<TamperRule>;
+};
+export type RankUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
 };
 export type RankUpstreamProxyHttpPayload = {
     proxy?: Maybe<UpstreamProxyHttp>;
@@ -3160,6 +3247,7 @@ export type Runtime = {
     logs: Scalars["Uri"]["output"];
     platform: Scalars["String"]["output"];
     version: Scalars["String"]["output"];
+    workspace?: Maybe<Workspace>;
 };
 export type Scope = {
     allowlist: Array<Scalars["String"]["output"]>;
@@ -3196,14 +3284,6 @@ export type SendAssistantMessagePayload = {
 export type SetActiveReplaySessionEntryPayload = {
     session?: Maybe<ReplaySession>;
 };
-export type SetConfigOnboardingInput = {
-    caCertificate: Scalars["Boolean"]["input"];
-    license: Scalars["Boolean"]["input"];
-    project: Scalars["Boolean"]["input"];
-};
-export type SetConfigOnboardingPayload = {
-    config: GlobalConfig;
-};
 export type SetConfigPortPayload = {
     config: GlobalConfig;
 };
@@ -3216,6 +3296,16 @@ export type SetConfigProjectPayload = {
 };
 export type SetInstanceSettingsInput = {
     aiProvider: SettingsAiProviderInput;
+    analytics?: never;
+    onboarding?: never;
+} | {
+    aiProvider?: never;
+    analytics: SettingsAnalyticInput;
+    onboarding?: never;
+} | {
+    aiProvider?: never;
+    analytics?: never;
+    onboarding: SettingsOnboardingInput;
 };
 export type SetInstanceSettingsPayload = {
     settings: InstanceSettings;
@@ -3251,6 +3341,12 @@ export type SettingsAiProviderInput = {
     google?: never;
     openai?: never;
     openrouter: AiProviderOpenRouterInput;
+};
+export type SettingsAnalyticInput = {
+    enabled: Scalars["Boolean"]["input"];
+};
+export type SettingsOnboardingInput = {
+    analytic: Scalars["Boolean"]["input"];
 };
 export declare const SitemapDescendantsDepth: {
     readonly All: "ALL";
@@ -3306,6 +3402,7 @@ export type SitemapEntryMetadataDomain = {
 };
 export declare const Source: {
     readonly Automate: "AUTOMATE";
+    readonly Import: "IMPORT";
     readonly Intercept: "INTERCEPT";
     readonly Plugin: "PLUGIN";
     readonly Replay: "REPLAY";
@@ -3517,6 +3614,7 @@ export type SubscriptionRoot = {
     createdStreamWsMessage: CreatedStreamWsMessagePayload;
     createdTamperRule: CreatedTamperRulePayload;
     createdTamperRuleCollection: CreatedTamperRuleCollectionPayload;
+    createdUpstreamPlugin: CreatedUpstreamPluginPayload;
     createdUpstreamProxyHttp: CreatedUpstreamProxyHttpPayload;
     createdUpstreamProxySocks: CreatedUpstreamProxySocksPayload;
     createdWorkflow: CreatedWorkflowPayload;
@@ -3543,6 +3641,7 @@ export type SubscriptionRoot = {
     deletedSitemapEntry: DeletedSitemapEntriesPayload;
     deletedTamperRule: DeletedTamperRulePayload;
     deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
+    deletedUpstreamPlugin: DeletedUpstreamPluginPayload;
     deletedUpstreamProxyHttp: DeletedUpstreamProxyHttpPayload;
     deletedUpstreamProxySocks: DeletedUpstreamProxySocksPayload;
     deletedWorkflow: DeletedWorkflowPayload;
@@ -3563,6 +3662,7 @@ export type SubscriptionRoot = {
     updatedAutomateTask: UpdatedAutomateTaskPayload;
     updatedBackup: UpdatedBackupPayload;
     updatedBrowser: UpdatedBrowserPayload;
+    updatedCloudStatus: UpdatedCloudStatusPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
     updatedDnsRewrite: UpdatedDnsRewritePayload;
@@ -3588,6 +3688,7 @@ export type SubscriptionRoot = {
     updatedStreamWsMessage: UpdatedStreamWsMessagePayload;
     updatedTamperRule: UpdatedTamperRulePayload;
     updatedTamperRuleCollection: UpdatedTamperRuleCollectionPayload;
+    updatedUpstreamPlugin: UpdatedUpstreamPluginPayload;
     updatedUpstreamProxyHttp: UpdatedUpstreamProxyHttpPayload;
     updatedUpstreamProxySocks: UpdatedUpstreamProxySocksPayload;
     updatedViewerAssistantUsage: UpdatedViewerAssistantUsagePayload;
@@ -3630,6 +3731,13 @@ export type SubscriptionRootUpdatedRequestArgs = {
 };
 export type SubscriptionRootUpdatedSitemapEntryArgs = {
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type TamperExportScopeInput = {
+    collections: Array<Scalars["ID"]["input"]>;
+    rules?: never;
+} | {
+    collections?: never;
+    rules: Array<Scalars["ID"]["input"]>;
 };
 export type TamperMatcherFull = {
     full: Scalars["Boolean"]["output"];
@@ -4157,6 +4265,10 @@ export type TamperSectionResponseStatusCode = {
 export type TamperSectionResponseStatusCodeInput = {
     operation: TamperOperationStatusCodeInput;
 };
+export type TamperSummary = {
+    collectionsCreated: Scalars["Int"]["output"];
+    rulesImported: Scalars["Int"]["output"];
+};
 export type Task = {
     createdAt: Scalars["DateTime"]["output"];
     id: Scalars["ID"]["output"];
@@ -4264,6 +4376,9 @@ export type ToggleTamperRulePayload = {
     error?: Maybe<ToggleTamperRuleError>;
     rule?: Maybe<TamperRule>;
 };
+export type ToggleUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
+};
 export type ToggleUpstreamProxyHttpPayload = {
     proxy?: Maybe<UpstreamProxyHttp>;
 };
@@ -4274,6 +4389,14 @@ export type ToggleWorkflowError = OtherUserError | UnknownIdUserError;
 export type ToggleWorkflowPayload = {
     error?: Maybe<ToggleWorkflowError>;
     workflow?: Maybe<Workflow>;
+};
+export type TrackInput = {
+    createdAt: Scalars["Timestamp"]["input"];
+    name: Scalars["String"]["input"];
+    value: Scalars["JsonObject"]["input"];
+};
+export type TrackPayload = {
+    success: Scalars["Boolean"]["output"];
 };
 export type UninstallPluginPackageError = OtherUserError | UnknownIdUserError;
 export type UninstallPluginPackagePayload = {
@@ -4369,13 +4492,22 @@ export type UpdateScopePayload = {
 export type UpdateTamperRuleError = InvalidHttpqlUserError | InvalidRegexUserError | OtherUserError | UnknownIdUserError;
 export type UpdateTamperRuleInput = {
     condition?: InputMaybe<Scalars["HTTPQL"]["input"]>;
-    name?: InputMaybe<Scalars["String"]["input"]>;
-    section?: InputMaybe<TamperSectionInput>;
-    sources?: InputMaybe<Array<Source>>;
+    name: Scalars["String"]["input"];
+    section: TamperSectionInput;
+    sources: Array<Source>;
 };
 export type UpdateTamperRulePayload = {
     error?: Maybe<UpdateTamperRuleError>;
     rule?: Maybe<TamperRule>;
+};
+export type UpdateUpstreamPluginInput = {
+    allowlist: Array<Scalars["String"]["input"]>;
+    denylist: Array<Scalars["String"]["input"]>;
+    enabled: Scalars["Boolean"]["input"];
+    pluginId: Scalars["ID"]["input"];
+};
+export type UpdateUpstreamPluginPayload = {
+    upstream?: Maybe<UpstreamPlugin>;
 };
 export type UpdateUpstreamProxyHttpInput = {
     allowlist: Array<Scalars["String"]["input"]>;
@@ -4437,6 +4569,9 @@ export type UpdatedBackupPayload = {
 };
 export type UpdatedBrowserPayload = {
     browser: Browser;
+};
+export type UpdatedCloudStatusPayload = {
+    cloudStatus: CloudStatus;
 };
 export type UpdatedDnsRewritePayload = {
     rewrite: DnsRewrite;
@@ -4548,6 +4683,9 @@ export type UpdatedTamperRulePayload = {
     rule: TamperRule;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type UpdatedUpstreamPluginPayload = {
+    upstream: UpstreamPlugin;
+};
 export type UpdatedUpstreamProxyHttpPayload = {
     proxy: UpstreamProxyHttp;
 };
@@ -4578,6 +4716,14 @@ export type UploadedBrowserPayload = {
 };
 export type UploadedHostedFilePayload = {
     hostedFile: HostedFile;
+};
+export type UpstreamPlugin = {
+    allowlist: Array<Scalars["String"]["output"]>;
+    denylist: Array<Scalars["String"]["output"]>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    plugin: PluginBackend;
+    rank: Scalars["Rank"]["output"];
 };
 export type UpstreamProxyAuth = UpstreamProxyAuthBasic;
 export type UpstreamProxyAuthBasic = {
@@ -4681,6 +4827,19 @@ export type WorkflowUserError = UserError & {
     message: Scalars["String"]["output"];
     node?: Maybe<Scalars["String"]["output"]>;
     reason: WorkflowErrorReason;
+};
+export type Workspace = {
+    generation: Scalars["Int"]["output"];
+    id: Scalars["ID"]["output"];
+    name: Scalars["String"]["output"];
+};
+export type TrackMutationVariables = Exact<{
+    input: TrackInput;
+}>;
+export type TrackMutation = {
+    track: {
+        success: boolean;
+    };
 };
 export type AssistantMessageFullFragment = {
     __typename: "AssistantMessage";
@@ -7807,31 +7966,10 @@ export type UpdatedBrowserSubscription = {
         };
     };
 };
-export type OnboardingFullFragment = {
-    __typename: "OnboardingState";
-    caCertificate: boolean;
-    license: boolean;
-    project: boolean;
-};
 export type GlobalConfigProjectFullFragment = {
     __typename: "GlobalConfigProject";
     selectOnStart: ProjectSelectOnStart;
     selectProjectId?: string | undefined | null;
-};
-export type UpdateOnboardingMutationVariables = Exact<{
-    input: SetConfigOnboardingInput;
-}>;
-export type UpdateOnboardingMutation = {
-    setGlobalConfigOnboarding: {
-        config: {
-            onboarding: {
-                __typename: "OnboardingState";
-                caCertificate: boolean;
-                license: boolean;
-                project: boolean;
-            };
-        };
-    };
 };
 export type UpdateGlobalConfigProjectMutationVariables = Exact<{
     input: SetConfigProjectInput;
@@ -7853,12 +7991,6 @@ export type GlobalConfigQueryVariables = Exact<{
 export type GlobalConfigQuery = {
     globalConfig: {
         address: string;
-        onboarding: {
-            __typename: "OnboardingState";
-            caCertificate: boolean;
-            license: boolean;
-            project: boolean;
-        };
         project: {
             __typename: "GlobalConfigProject";
             selectOnStart: ProjectSelectOnStart;
@@ -9603,7 +9735,7 @@ export type CreateFindingMutation = {
     };
 };
 export type DeleteFindingsMutationVariables = Exact<{
-    input: DeleteFindingsInput;
+    input?: InputMaybe<DeleteFindingsInput>;
 }>;
 export type DeleteFindingsMutation = {
     deleteFindings: {
@@ -9686,6 +9818,18 @@ export type ExportFindingsMutation = {
             code: string;
             permissionDeniedReason: PermissionDeniedErrorReason;
         } | undefined | null;
+    };
+};
+export type ImportFindingMutationVariables = Exact<{
+    input: ImportFindingsInput;
+}>;
+export type ImportFindingMutation = {
+    importData: {
+        id: string;
+        errors: Array<string>;
+        summary?: {
+            findingsImported: number;
+        } | {} | undefined | null;
     };
 };
 export type InterceptEntryFullFragment = {
@@ -10373,6 +10517,16 @@ export type InstanceSettingsFullFragment = {
             apiKey: string;
         } | undefined | null;
     };
+    onboarding: {
+        __typename: "OnboardingState";
+        analytic: boolean;
+    };
+    analytic: {
+        __typename: "AnalyticStatus";
+        enabled: boolean;
+        local: boolean;
+        cloud: boolean;
+    };
 };
 export type TestAiProviderPayloadFullFragment = {
     success?: boolean | undefined | null;
@@ -10405,6 +10559,16 @@ export type SetInstanceSettingsMutation = {
                 openrouter?: {
                     apiKey: string;
                 } | undefined | null;
+            };
+            onboarding: {
+                __typename: "OnboardingState";
+                analytic: boolean;
+            };
+            analytic: {
+                __typename: "AnalyticStatus";
+                enabled: boolean;
+                local: boolean;
+                cloud: boolean;
             };
         };
     };
@@ -10445,6 +10609,16 @@ export type InstanceSettingsQuery = {
                 apiKey: string;
             } | undefined | null;
         };
+        onboarding: {
+            __typename: "OnboardingState";
+            analytic: boolean;
+        };
+        analytic: {
+            __typename: "AnalyticStatus";
+            enabled: boolean;
+            local: boolean;
+            cloud: boolean;
+        };
     };
 };
 export type UpdatedInstanceSettingsSubscriptionVariables = Exact<{
@@ -10468,6 +10642,16 @@ export type UpdatedInstanceSettingsSubscription = {
                 openrouter?: {
                     apiKey: string;
                 } | undefined | null;
+            };
+            onboarding: {
+                __typename: "OnboardingState";
+                analytic: boolean;
+            };
+            analytic: {
+                __typename: "AnalyticStatus";
+                enabled: boolean;
+                local: boolean;
+                cloud: boolean;
             };
         };
     };
@@ -16273,6 +16457,774 @@ export type MoveTamperRuleMutation = {
         } | undefined | null;
     };
 };
+export type ExportTamperMutationVariables = Exact<{
+    input: ExportTamperInput;
+}>;
+export type ExportTamperMutation = {
+    exportTamper: {
+        export?: {
+            downloadUri: string;
+            id: string;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | undefined | null;
+    };
+};
+export type ImportTamperMutationVariables = Exact<{
+    input: ImportTamperRuleInput;
+}>;
+export type ImportTamperMutation = {
+    importData: {
+        id: string;
+        errors: Array<string>;
+        summary?: {
+            collectionsCreated: number;
+            rulesImported: number;
+        } | {} | undefined | null;
+    };
+};
+export type CreatedTamperRuleCollectionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedTamperRuleCollectionSubscription = {
+    createdTamperRuleCollection: {
+        snapshot: number;
+        collectionEdge: {
+            cursor: string;
+            node: {
+                __typename: "TamperRuleCollection";
+                id: string;
+                name: string;
+                rules: Array<{
+                    __typename: "TamperRule";
+                    id: string;
+                    name: string;
+                    condition?: string | undefined | null;
+                    sources: Array<Source>;
+                    section: {
+                        __typename: "TamperSectionRequestAll";
+                        operation: {
+                            __typename: "TamperOperationAllRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestBody";
+                        operation: {
+                            __typename: "TamperOperationBodyRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestFirstLine";
+                        operation: {
+                            __typename: "TamperOperationFirstLineRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestHeader";
+                        operation: {
+                            __typename: "TamperOperationHeaderAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestMethod";
+                        operation: {
+                            __typename: "TamperOperationMethodUpdate";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestPath";
+                        operation: {
+                            __typename: "TamperOperationPathRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestQuery";
+                        operation: {
+                            __typename: "TamperOperationQueryAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationQueryUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionRequestSNI";
+                        operation: {
+                            __typename: "TamperOperationSNIRaw";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseAll";
+                        operation: {
+                            __typename: "TamperOperationAllRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseBody";
+                        operation: {
+                            __typename: "TamperOperationBodyRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseFirstLine";
+                        operation: {
+                            __typename: "TamperOperationFirstLineRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseHeader";
+                        operation: {
+                            __typename: "TamperOperationHeaderAdd";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRaw";
+                            matcher: {
+                                __typename: "TamperMatcherFull";
+                            } | {
+                                __typename: "TamperMatcherRegex";
+                                regex: string;
+                            } | {
+                                __typename: "TamperMatcherValue";
+                                value: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderRemove";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                        } | {
+                            __typename: "TamperOperationHeaderUpdate";
+                            matcher: {
+                                __typename: "TamperMatcherName";
+                                name: string;
+                            };
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    } | {
+                        __typename: "TamperSectionResponseStatusCode";
+                        operation: {
+                            __typename: "TamperOperationStatusCodeUpdate";
+                            replacer: {
+                                __typename: "TamperReplacerTerm";
+                                term: string;
+                            } | {
+                                __typename: "TamperReplacerWorkflow";
+                                id: string;
+                            };
+                        };
+                    };
+                    enable?: {
+                        rank: string;
+                    } | undefined | null;
+                    collection: {
+                        id: string;
+                    };
+                }>;
+            };
+        };
+    };
+};
+export type CreatedTamperRuleSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedTamperRuleSubscription = {
+    createdTamperRule: {
+        snapshot: number;
+        rule: {
+            __typename: "TamperRule";
+            id: string;
+            name: string;
+            condition?: string | undefined | null;
+            sources: Array<Source>;
+            section: {
+                __typename: "TamperSectionRequestAll";
+                operation: {
+                    __typename: "TamperOperationAllRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestBody";
+                operation: {
+                    __typename: "TamperOperationBodyRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestFirstLine";
+                operation: {
+                    __typename: "TamperOperationFirstLineRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestHeader";
+                operation: {
+                    __typename: "TamperOperationHeaderAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestMethod";
+                operation: {
+                    __typename: "TamperOperationMethodUpdate";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestPath";
+                operation: {
+                    __typename: "TamperOperationPathRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestQuery";
+                operation: {
+                    __typename: "TamperOperationQueryAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationQueryUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionRequestSNI";
+                operation: {
+                    __typename: "TamperOperationSNIRaw";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseAll";
+                operation: {
+                    __typename: "TamperOperationAllRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseBody";
+                operation: {
+                    __typename: "TamperOperationBodyRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseFirstLine";
+                operation: {
+                    __typename: "TamperOperationFirstLineRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseHeader";
+                operation: {
+                    __typename: "TamperOperationHeaderAdd";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRaw";
+                    matcher: {
+                        __typename: "TamperMatcherFull";
+                    } | {
+                        __typename: "TamperMatcherRegex";
+                        regex: string;
+                    } | {
+                        __typename: "TamperMatcherValue";
+                        value: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderRemove";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                } | {
+                    __typename: "TamperOperationHeaderUpdate";
+                    matcher: {
+                        __typename: "TamperMatcherName";
+                        name: string;
+                    };
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            } | {
+                __typename: "TamperSectionResponseStatusCode";
+                operation: {
+                    __typename: "TamperOperationStatusCodeUpdate";
+                    replacer: {
+                        __typename: "TamperReplacerTerm";
+                        term: string;
+                    } | {
+                        __typename: "TamperReplacerWorkflow";
+                        id: string;
+                    };
+                };
+            };
+            enable?: {
+                rank: string;
+            } | undefined | null;
+            collection: {
+                id: string;
+            };
+        };
+    };
+};
 export type PageInfoFullFragment = {
     __typename: "PageInfo";
     hasPreviousPage: boolean;
@@ -20882,6 +21834,17 @@ export type CreatedLogLinesSubscription = {
         }>;
     };
 };
+export type UpdatedCloudStatusSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedCloudStatusSubscription = {
+    updatedCloudStatus: {
+        cloudStatus: {
+            __typename: "CloudStatus";
+            sync: boolean;
+        };
+    };
+};
 export type ScopeFullFragment = {
     __typename: "Scope";
     id: string;
@@ -22378,15 +23341,33 @@ export type UpstreamProxySocksFullFragment = {
         SNI?: string | undefined | null;
     };
 };
+export type UpstreamPluginFullFragment = {
+    __typename: "UpstreamPlugin";
+    id: string;
+    allowlist: Array<string>;
+    denylist: Array<string>;
+    enabled: boolean;
+    rank: string;
+    plugin: {
+        __typename: "PluginBackend";
+        id: string;
+        name?: string | undefined | null;
+        enabled: boolean;
+        manifestId: string;
+        package: {
+            id: string;
+        };
+    };
+};
 export type UpstreamProxyAuthBasicFullFragment = {
     __typename: "UpstreamProxyAuthBasic";
     username: string;
     password: string;
 };
-export type UpstreamProxiesQueryVariables = Exact<{
+export type UpstreamsQueryVariables = Exact<{
     [key: string]: never;
 }>;
-export type UpstreamProxiesQuery = {
+export type UpstreamsQuery = {
     upstreamProxiesHttp: Array<{
         __typename: "UpstreamProxyHttp";
         id: string;
@@ -22426,6 +23407,24 @@ export type UpstreamProxiesQuery = {
             port: number;
             isTLS: boolean;
             SNI?: string | undefined | null;
+        };
+    }>;
+    upstreamPlugins: Array<{
+        __typename: "UpstreamPlugin";
+        id: string;
+        allowlist: Array<string>;
+        denylist: Array<string>;
+        enabled: boolean;
+        rank: string;
+        plugin: {
+            __typename: "PluginBackend";
+            id: string;
+            name?: string | undefined | null;
+            enabled: boolean;
+            manifestId: string;
+            package: {
+                id: string;
+            };
         };
     }>;
 };
@@ -22526,6 +23525,68 @@ export type RankUpstreamProxyHttpMutation = {
                 SNI?: string | undefined | null;
             };
         } | undefined | null;
+    };
+};
+export type CreatedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedUpstreamProxyHttpSubscription = {
+    createdUpstreamProxyHttp: {
+        proxy: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+        };
+    };
+};
+export type UpdatedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedUpstreamProxyHttpSubscription = {
+    updatedUpstreamProxyHttp: {
+        proxy: {
+            __typename: "UpstreamProxyHttp";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            auth?: {
+                __typename: "UpstreamProxyAuthBasic";
+                username: string;
+                password: string;
+            } | undefined | null;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+        };
+    };
+};
+export type DeletedUpstreamProxyHttpSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedUpstreamProxyHttpSubscription = {
+    deletedUpstreamProxyHttp: {
+        deletedProxyId: string;
     };
 };
 export type CreateUpstreamProxySocksMutationVariables = Exact<{
@@ -22630,68 +23691,6 @@ export type RankUpstreamProxySocksMutation = {
         } | undefined | null;
     };
 };
-export type CreatedUpstreamProxyHttpSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type CreatedUpstreamProxyHttpSubscription = {
-    createdUpstreamProxyHttp: {
-        proxy: {
-            __typename: "UpstreamProxyHttp";
-            id: string;
-            allowlist: Array<string>;
-            denylist: Array<string>;
-            enabled: boolean;
-            rank: string;
-            auth?: {
-                __typename: "UpstreamProxyAuthBasic";
-                username: string;
-                password: string;
-            } | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTLS: boolean;
-                SNI?: string | undefined | null;
-            };
-        };
-    };
-};
-export type UpdatedUpstreamProxyHttpSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type UpdatedUpstreamProxyHttpSubscription = {
-    updatedUpstreamProxyHttp: {
-        proxy: {
-            __typename: "UpstreamProxyHttp";
-            id: string;
-            allowlist: Array<string>;
-            denylist: Array<string>;
-            enabled: boolean;
-            rank: string;
-            auth?: {
-                __typename: "UpstreamProxyAuthBasic";
-                username: string;
-                password: string;
-            } | undefined | null;
-            connection: {
-                __typename: "ConnectionInfo";
-                host: string;
-                port: number;
-                isTLS: boolean;
-                SNI?: string | undefined | null;
-            };
-        };
-    };
-};
-export type DeletedUpstreamProxyHttpSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type DeletedUpstreamProxyHttpSubscription = {
-    deletedUpstreamProxyHttp: {
-        deletedProxyId: string;
-    };
-};
 export type CreatedUpstreamProxySocksSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -22754,6 +23753,149 @@ export type DeletedUpstreamProxySocksSubscriptionVariables = Exact<{
 export type DeletedUpstreamProxySocksSubscription = {
     deletedUpstreamProxySocks: {
         deletedProxyId: string;
+    };
+};
+export type CreateUpstreamPluginMutationVariables = Exact<{
+    input: CreateUpstreamPluginInput;
+}>;
+export type CreateUpstreamPluginMutation = {
+    createUpstreamPlugin: {
+        upstream?: {
+            __typename: "UpstreamPlugin";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            plugin: {
+                __typename: "PluginBackend";
+                id: string;
+                name?: string | undefined | null;
+                enabled: boolean;
+                manifestId: string;
+                package: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type UpdateUpstreamPluginMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateUpstreamPluginInput;
+}>;
+export type UpdateUpstreamPluginMutation = {
+    updateUpstreamPlugin: {
+        upstream?: {
+            __typename: "UpstreamPlugin";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            plugin: {
+                __typename: "PluginBackend";
+                id: string;
+                name?: string | undefined | null;
+                enabled: boolean;
+                manifestId: string;
+                package: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type DeleteUpstreamPluginMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+}>;
+export type DeleteUpstreamPluginMutation = {
+    deleteUpstreamPlugin: {
+        deletedId?: string | undefined | null;
+    };
+};
+export type RankUpstreamPluginMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: RankInput;
+}>;
+export type RankUpstreamPluginMutation = {
+    rankUpstreamPlugin: {
+        upstream?: {
+            __typename: "UpstreamPlugin";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            plugin: {
+                __typename: "PluginBackend";
+                id: string;
+                name?: string | undefined | null;
+                enabled: boolean;
+                manifestId: string;
+                package: {
+                    id: string;
+                };
+            };
+        } | undefined | null;
+    };
+};
+export type CreatedUpstreamPluginSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedUpstreamPluginSubscription = {
+    createdUpstreamPlugin: {
+        upstream: {
+            __typename: "UpstreamPlugin";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            plugin: {
+                __typename: "PluginBackend";
+                id: string;
+                name?: string | undefined | null;
+                enabled: boolean;
+                manifestId: string;
+                package: {
+                    id: string;
+                };
+            };
+        };
+    };
+};
+export type UpdatedUpstreamPluginSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedUpstreamPluginSubscription = {
+    updatedUpstreamPlugin: {
+        upstream: {
+            __typename: "UpstreamPlugin";
+            id: string;
+            allowlist: Array<string>;
+            denylist: Array<string>;
+            enabled: boolean;
+            rank: string;
+            plugin: {
+                __typename: "PluginBackend";
+                id: string;
+                name?: string | undefined | null;
+                enabled: boolean;
+                manifestId: string;
+                package: {
+                    id: string;
+                };
+            };
+        };
+    };
+};
+export type DeletedUpstreamPluginSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedUpstreamPluginSubscription = {
+    deletedUpstreamPlugin: {
+        deletedUpstreamId: string;
     };
 };
 export type UserProfileFullFragment = {
@@ -23413,7 +24555,6 @@ export declare const FinishedRestoreBackupTaskSuccessFullFragmentDoc = "\n    fr
 export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    ";
 export declare const FinishedRestoreBackupTaskErrorFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
 export declare const BrowserFullFragmentDoc = "\n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
-export declare const OnboardingFullFragmentDoc = "\n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
 export declare const GlobalConfigProjectFullFragmentDoc = "\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const DnsRewriteFullFragmentDoc = "\n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    ";
 export declare const DnsUpstreamFullFragmentDoc = "\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
@@ -23458,7 +24599,7 @@ export declare const InterceptEntryFullFragmentDoc = "\n    fragment interceptEn
 export declare const InterceptEntryEdgeMetaFragmentDoc = "\n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InterceptRequestMessageFullFragmentDoc = "\n    fragment interceptRequestMessageFull on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
@@ -23552,12 +24693,14 @@ export declare const StreamWsMessageEdgeMetaFragmentDoc = "\n    fragment stream
 export declare const UpstreamProxyAuthBasicFullFragmentDoc = "\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    ";
 export declare const UpstreamProxyHttpFullFragmentDoc = "\n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    ";
 export declare const UpstreamProxySocksFullFragmentDoc = "\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
+export declare const UpstreamPluginFullFragmentDoc = "\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    ";
 export declare const UserProfileFullFragmentDoc = "\n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsFullFragmentDoc = "\n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on Workflow {\n  ...workflowMeta\n  definition\n}\n    ";
 export declare const WorkflowEdgeFullFragmentDoc = "\n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
+export declare const TrackDocument = "\n    mutation track($input: TrackInput!) {\n  track(input: $input) {\n    success\n  }\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantSessionDocument = "\n    query assistantSession($id: ID!) {\n  assistantSession(id: $id) {\n    ...assistantSessionFull\n  }\n}\n    \n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const AssistantCloudStateDocument = "\n    query assistantCloudState {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      assistantUsage {\n        ...assistantUsageFull\n      }\n    }\n  }\n  assistantModels {\n    ...assistantModelFull\n  }\n}\n    \n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    \n\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
@@ -23626,9 +24769,8 @@ export declare const UpdateBrowserDocument = "\n    mutation updateBrowser {\n  
 export declare const DeletedBrowserDocument = "\n    subscription deletedBrowser {\n  deletedBrowser {\n    deletedBrowserId\n  }\n}\n    ";
 export declare const InstalledBrowserDocument = "\n    subscription installedBrowser {\n  installedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const UpdatedBrowserDocument = "\n    subscription updatedBrowser {\n  updatedBrowser {\n    browser {\n      ...browserFull\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
-export declare const UpdateOnboardingDocument = "\n    mutation updateOnboarding($input: SetConfigOnboardingInput!) {\n  setGlobalConfigOnboarding(input: $input) {\n    config {\n      onboarding {\n        ...onboardingFull\n      }\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    ";
 export declare const UpdateGlobalConfigProjectDocument = "\n    mutation updateGlobalConfigProject($input: SetConfigProjectInput!) {\n  setGlobalConfigProject(input: $input) {\n    config {\n      project {\n        ...globalConfigProjectFull\n      }\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
-export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    onboarding {\n      ...onboardingFull\n    }\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment onboardingFull on OnboardingState {\n  __typename\n  caCertificate\n  license\n  project\n}\n    \n\n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
+export declare const GlobalConfigDocument = "\n    query globalConfig {\n  globalConfig {\n    address\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const GlobalConfigProjectDocument = "\n    query globalConfigProject {\n  globalConfig {\n    project {\n      ...globalConfigProjectFull\n    }\n  }\n}\n    \n    fragment globalConfigProjectFull on GlobalConfigProject {\n  __typename\n  selectOnStart\n  selectProjectId\n}\n    ";
 export declare const DnsConfigStateDocument = "\n    query DnsConfigState {\n  dnsRewrites {\n    ...dnsRewriteFull\n  }\n  dnsUpstreams {\n    ...dnsUpstreamFull\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment dnsUpstreamFull on DNSUpstream {\n  id\n  ip\n  name\n}\n    ";
 export declare const CreateDnsRewriteDocument = "\n    mutation createDnsRewrite($input: CreateDNSRewriteInput!) {\n  createDnsRewrite(input: $input) {\n    rewrite {\n      ...dnsRewriteFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dnsRewriteFull on DNSRewrite {\n  id\n  rank\n  enabled\n  resolution {\n    ... on DNSIpResolver {\n      ip\n    }\n    ... on DNSUpstreamResolver {\n      id\n    }\n  }\n  allowlist\n  denylist\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -23681,9 +24823,10 @@ export declare const CreatedFindingDocument = "\n    subscription createdFinding
 export declare const DeletedFindingsDocument = "\n    subscription deletedFindings {\n  deletedFindings {\n    deletedFindingIds\n    snapshot\n  }\n}\n    ";
 export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput!) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
+export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
 export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const ExportFindingsDocument = "\n    mutation exportFindings($input: ExportFindingsInput!) {\n  exportFindings(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const ImportFindingDocument = "\n    mutation importFinding($input: ImportFindingsInput!) {\n  importData(input: {findings: $input}) {\n    id\n    errors\n    summary {\n      ... on FindingsSummary {\n        findingsImported\n      }\n    }\n  }\n}\n    ";
 export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQL, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
@@ -23702,10 +24845,10 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
-export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
-export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n}\n    ";
+export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
+export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
@@ -23732,6 +24875,10 @@ export declare const TestTamperRuleDocument = "\n    mutation testTamperRule($in
 export declare const ToggleTamperRuleDocument = "\n    mutation toggleTamperRule($id: ID!, $enabled: Boolean!) {\n  toggleTamperRule(id: $id, enabled: $enabled) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
+export declare const ExportTamperDocument = "\n    mutation exportTamper($input: ExportTamperInput!) {\n  exportTamper(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
+export declare const ImportTamperDocument = "\n    mutation importTamper($input: ImportTamperRuleInput!) {\n  importData(input: {tamper: $input}) {\n    id\n    errors\n    summary {\n      ... on TamperSummary {\n        collectionsCreated\n        rulesImported\n      }\n    }\n  }\n}\n    ";
+export declare const CreatedTamperRuleCollectionDocument = "\n    subscription createdTamperRuleCollection {\n  createdTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
+export declare const CreatedTamperRuleDocument = "\n    subscription createdTamperRule {\n  createdTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const PluginPackagesDocument = "\n    query pluginPackages {\n  pluginPackages {\n    ...pluginPackageFull\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const StorePluginPackagesDocument = "\n    query storePluginPackages {\n  store {\n    pluginPackages {\n      ...storePluginPackageFull\n    }\n  }\n}\n    \n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n}\n    ";
 export declare const InstallPluginPackageDocument = "\n    mutation installPluginPackage($input: InstallPluginPackageInput!) {\n  installPluginPackage(input: $input) {\n    package {\n      ...pluginPackageFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PluginUserError {\n        ...pluginUserErrorFull\n      }\n      ... on StoreUserError {\n        ...storeUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    \n\n    fragment pluginPackageMeta on PluginPackage {\n  id\n  name\n  description\n  author {\n    ...pluginAuthorFull\n  }\n  links {\n    ...pluginLinksFull\n  }\n  version\n  installedAt\n  manifestId\n}\n    \n\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    \n\n    fragment pluginLinksFull on PluginLinks {\n  sponsor\n}\n    \n\n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment pluginUserErrorFull on PluginUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment storeUserErrorFull on StoreUserError {\n  ...userErrorFull\n  storeReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
@@ -23793,6 +24940,7 @@ export declare const GetCertificateDocument = "\n    query getCertificate($passw
 export declare const ImportCertificateDocument = "\n    mutation importCertificate($input: ImportCertificateInput!) {\n  importCertificate(input: $input) {\n    error {\n      __typename\n      ... on CertificateUserError {\n        ...certificateUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const RegenerateCertificateDocument = "\n    mutation regenerateCertificate {\n  regenerateCertificate {\n    success\n  }\n}\n    ";
 export declare const CreatedLogLinesDocument = "\n    subscription createdLogLines($duration: Duration!) {\n  createdLogLines(duration: $duration) {\n    lines {\n      ...logLineFull\n    }\n  }\n}\n    \n    fragment logLineFull on LogLine {\n  __typename\n  level\n  message\n  target\n  timestamp\n}\n    ";
+export declare const UpdatedCloudStatusDocument = "\n    subscription updatedCloudStatus {\n  updatedCloudStatus {\n    cloudStatus {\n      ...cloudStatusFull\n    }\n  }\n}\n    \n    fragment cloudStatusFull on CloudStatus {\n  __typename\n  sync\n}\n    ";
 export declare const CreateScopeDocument = "\n    mutation createScope($input: CreateScopeInput!) {\n  createScope(input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const UpdateScopeDocument = "\n    mutation updateScope($id: ID!, $input: UpdateScopeInput!) {\n  updateScope(id: $id, input: $input) {\n    error {\n      ... on InvalidGlobTermsUserError {\n        ...invalidGlobTermsUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    scope {\n      ...scopeFull\n    }\n  }\n}\n    \n    fragment invalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {\n  ...userErrorFull\n  terms\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const DeleteScopeDocument = "\n    mutation deleteScope($id: ID!) {\n  deleteScope(id: $id) {\n    deletedId\n  }\n}\n    ";
@@ -23825,23 +24973,30 @@ export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const UpstreamProxiesDocument = "\n    query upstreamProxies {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    ";
+export declare const UpstreamsDocument = "\n    query upstreams {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n  upstreamPlugins {\n    ...upstreamPluginFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeleteUpstreamProxyHttpDocument = "\n    mutation deleteUpstreamProxyHttp($id: ID!) {\n  deleteUpstreamProxyHttp(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestUpstreamProxyHttpDocument = "\n    mutation testUpstreamProxyHttp($input: TestUpstreamProxyHttpInput!) {\n  testUpstreamProxyHttp(input: $input) {\n    success\n  }\n}\n    ";
 export declare const RankUpstreamProxyHttpDocument = "\n    mutation rankUpstreamProxyHttp($id: ID!, $input: RankInput!) {\n  rankUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
+export declare const CreatedUpstreamProxyHttpDocument = "\n    subscription createdUpstreamProxyHttp {\n  createdUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
+export declare const UpdatedUpstreamProxyHttpDocument = "\n    subscription updatedUpstreamProxyHttp {\n  updatedUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
+export declare const DeletedUpstreamProxyHttpDocument = "\n    subscription deletedUpstreamProxyHttp {\n  deletedUpstreamProxyHttp {\n    deletedProxyId\n  }\n}\n    ";
 export declare const CreateUpstreamProxySocksDocument = "\n    mutation createUpstreamProxySocks($input: CreateUpstreamProxySocksInput!) {\n  createUpstreamProxySocks(input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxySocksDocument = "\n    mutation updateUpstreamProxySocks($id: ID!, $input: UpdateUpstreamProxySocksInput!) {\n  updateUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeleteUpstreamProxySocksDocument = "\n    mutation deleteUpstreamProxySocks($id: ID!) {\n  deleteUpstreamProxySocks(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestUpstreamProxySocksDocument = "\n    mutation testUpstreamProxySocks($input: TestUpstreamProxySocksInput!) {\n  testUpstreamProxySocks(input: $input) {\n    success\n  }\n}\n    ";
 export declare const RankUpstreamProxySocksDocument = "\n    mutation rankUpstreamProxySocks($id: ID!, $input: RankInput!) {\n  rankUpstreamProxySocks(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
-export declare const CreatedUpstreamProxyHttpDocument = "\n    subscription createdUpstreamProxyHttp {\n  createdUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
-export declare const UpdatedUpstreamProxyHttpDocument = "\n    subscription updatedUpstreamProxyHttp {\n  updatedUpstreamProxyHttp {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
-export declare const DeletedUpstreamProxyHttpDocument = "\n    subscription deletedUpstreamProxyHttp {\n  deletedUpstreamProxyHttp {\n    deletedProxyId\n  }\n}\n    ";
 export declare const CreatedUpstreamProxySocksDocument = "\n    subscription createdUpstreamProxySocks {\n  createdUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdatedUpstreamProxySocksDocument = "\n    subscription updatedUpstreamProxySocks {\n  updatedUpstreamProxySocks {\n    proxy {\n      ...upstreamProxySocksFull\n    }\n  }\n}\n    \n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const DeletedUpstreamProxySocksDocument = "\n    subscription deletedUpstreamProxySocks {\n  deletedUpstreamProxySocks {\n    deletedProxyId\n  }\n}\n    ";
+export declare const CreateUpstreamPluginDocument = "\n    mutation createUpstreamPlugin($input: CreateUpstreamPluginInput!) {\n  createUpstreamPlugin(input: $input) {\n    upstream {\n      ...upstreamPluginFull\n    }\n  }\n}\n    \n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
+export declare const UpdateUpstreamPluginDocument = "\n    mutation updateUpstreamPlugin($id: ID!, $input: UpdateUpstreamPluginInput!) {\n  updateUpstreamPlugin(id: $id, input: $input) {\n    upstream {\n      ...upstreamPluginFull\n    }\n  }\n}\n    \n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
+export declare const DeleteUpstreamPluginDocument = "\n    mutation deleteUpstreamPlugin($id: ID!) {\n  deleteUpstreamPlugin(id: $id) {\n    deletedId\n  }\n}\n    ";
+export declare const RankUpstreamPluginDocument = "\n    mutation rankUpstreamPlugin($id: ID!, $input: RankInput!) {\n  rankUpstreamPlugin(id: $id, input: $input) {\n    upstream {\n      ...upstreamPluginFull\n    }\n  }\n}\n    \n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
+export declare const CreatedUpstreamPluginDocument = "\n    subscription createdUpstreamPlugin {\n  createdUpstreamPlugin {\n    upstream {\n      ...upstreamPluginFull\n    }\n  }\n}\n    \n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
+export declare const UpdatedUpstreamPluginDocument = "\n    subscription updatedUpstreamPlugin {\n  updatedUpstreamPlugin {\n    upstream {\n      ...upstreamPluginFull\n    }\n  }\n}\n    \n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
+export declare const DeletedUpstreamPluginDocument = "\n    subscription deletedUpstreamPlugin {\n  deletedUpstreamPlugin {\n    deletedUpstreamId\n  }\n}\n    ";
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
@@ -23867,6 +25022,7 @@ export declare const TestWorkflowActiveDocument = "\n    mutation testWorkflowAc
 export declare const TestWorkflowPassiveDocument = "\n    mutation testWorkflowPassive($input: TestWorkflowPassiveInput!) {\n  testWorkflowPassive(input: $input) {\n    error {\n      ... on WorkflowUserError {\n        ...workflowUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    runState\n  }\n}\n    \n    fragment workflowUserErrorFull on WorkflowUserError {\n  ...userErrorFull\n  node\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export type Requester<C = {}> = <R, V>(doc: string, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
 export declare function getSdk<C>(requester: Requester<C>): {
+    track(variables: TrackMutationVariables, options?: C): Promise<TrackMutation>;
     assistantSessions(variables?: AssistantSessionsQueryVariables, options?: C): Promise<AssistantSessionsQuery>;
     assistantSession(variables: AssistantSessionQueryVariables, options?: C): Promise<AssistantSessionQuery>;
     assistantCloudState(variables?: AssistantCloudStateQueryVariables, options?: C): Promise<AssistantCloudStateQuery>;
@@ -23935,7 +25091,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedBrowser(variables?: DeletedBrowserSubscriptionVariables, options?: C): AsyncIterable<DeletedBrowserSubscription>;
     installedBrowser(variables?: InstalledBrowserSubscriptionVariables, options?: C): AsyncIterable<InstalledBrowserSubscription>;
     updatedBrowser(variables?: UpdatedBrowserSubscriptionVariables, options?: C): AsyncIterable<UpdatedBrowserSubscription>;
-    updateOnboarding(variables: UpdateOnboardingMutationVariables, options?: C): Promise<UpdateOnboardingMutation>;
     updateGlobalConfigProject(variables: UpdateGlobalConfigProjectMutationVariables, options?: C): Promise<UpdateGlobalConfigProjectMutation>;
     globalConfig(variables?: GlobalConfigQueryVariables, options?: C): Promise<GlobalConfigQuery>;
     globalConfigProject(variables?: GlobalConfigProjectQueryVariables, options?: C): Promise<GlobalConfigProjectQuery>;
@@ -23990,9 +25145,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedFindings(variables?: DeletedFindingsSubscriptionVariables, options?: C): AsyncIterable<DeletedFindingsSubscription>;
     updatedFindings(variables?: UpdatedFindingsSubscriptionVariables, options?: C): AsyncIterable<UpdatedFindingsSubscription>;
     createFinding(variables: CreateFindingMutationVariables, options?: C): Promise<CreateFindingMutation>;
-    deleteFindings(variables: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
+    deleteFindings(variables?: DeleteFindingsMutationVariables, options?: C): Promise<DeleteFindingsMutation>;
     updateFinding(variables: UpdateFindingMutationVariables, options?: C): Promise<UpdateFindingMutation>;
     exportFindings(variables: ExportFindingsMutationVariables, options?: C): Promise<ExportFindingsMutation>;
+    importFinding(variables: ImportFindingMutationVariables, options?: C): Promise<ImportFindingMutation>;
     interceptEntries(variables?: InterceptEntriesQueryVariables, options?: C): Promise<InterceptEntriesQuery>;
     interceptEntriesByOffset(variables?: InterceptEntriesByOffsetQueryVariables, options?: C): Promise<InterceptEntriesByOffsetQuery>;
     interceptEntry(variables: InterceptEntryQueryVariables, options?: C): Promise<InterceptEntryQuery>;
@@ -24041,6 +25197,10 @@ export declare function getSdk<C>(requester: Requester<C>): {
     toggleTamperRule(variables: ToggleTamperRuleMutationVariables, options?: C): Promise<ToggleTamperRuleMutation>;
     rankTamperRule(variables: RankTamperRuleMutationVariables, options?: C): Promise<RankTamperRuleMutation>;
     moveTamperRule(variables: MoveTamperRuleMutationVariables, options?: C): Promise<MoveTamperRuleMutation>;
+    exportTamper(variables: ExportTamperMutationVariables, options?: C): Promise<ExportTamperMutation>;
+    importTamper(variables: ImportTamperMutationVariables, options?: C): Promise<ImportTamperMutation>;
+    createdTamperRuleCollection(variables?: CreatedTamperRuleCollectionSubscriptionVariables, options?: C): AsyncIterable<CreatedTamperRuleCollectionSubscription>;
+    createdTamperRule(variables?: CreatedTamperRuleSubscriptionVariables, options?: C): AsyncIterable<CreatedTamperRuleSubscription>;
     pluginPackages(variables?: PluginPackagesQueryVariables, options?: C): Promise<PluginPackagesQuery>;
     storePluginPackages(variables?: StorePluginPackagesQueryVariables, options?: C): Promise<StorePluginPackagesQuery>;
     installPluginPackage(variables: InstallPluginPackageMutationVariables, options?: C): Promise<InstallPluginPackageMutation>;
@@ -24102,6 +25262,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     importCertificate(variables: ImportCertificateMutationVariables, options?: C): Promise<ImportCertificateMutation>;
     regenerateCertificate(variables?: RegenerateCertificateMutationVariables, options?: C): Promise<RegenerateCertificateMutation>;
     createdLogLines(variables: CreatedLogLinesSubscriptionVariables, options?: C): AsyncIterable<CreatedLogLinesSubscription>;
+    updatedCloudStatus(variables?: UpdatedCloudStatusSubscriptionVariables, options?: C): AsyncIterable<UpdatedCloudStatusSubscription>;
     createScope(variables: CreateScopeMutationVariables, options?: C): Promise<CreateScopeMutation>;
     updateScope(variables: UpdateScopeMutationVariables, options?: C): Promise<UpdateScopeMutation>;
     deleteScope(variables: DeleteScopeMutationVariables, options?: C): Promise<DeleteScopeMutation>;
@@ -24134,23 +25295,30 @@ export declare function getSdk<C>(requester: Requester<C>): {
     cancelTask(variables: CancelTaskMutationVariables, options?: C): Promise<CancelTaskMutation>;
     startedTask(variables?: StartedTaskSubscriptionVariables, options?: C): AsyncIterable<StartedTaskSubscription>;
     finishedTask(variables?: FinishedTaskSubscriptionVariables, options?: C): AsyncIterable<FinishedTaskSubscription>;
-    upstreamProxies(variables?: UpstreamProxiesQueryVariables, options?: C): Promise<UpstreamProxiesQuery>;
+    upstreams(variables?: UpstreamsQueryVariables, options?: C): Promise<UpstreamsQuery>;
     createUpstreamProxyHttp(variables: CreateUpstreamProxyHttpMutationVariables, options?: C): Promise<CreateUpstreamProxyHttpMutation>;
     updateUpstreamProxyHttp(variables: UpdateUpstreamProxyHttpMutationVariables, options?: C): Promise<UpdateUpstreamProxyHttpMutation>;
     deleteUpstreamProxyHttp(variables: DeleteUpstreamProxyHttpMutationVariables, options?: C): Promise<DeleteUpstreamProxyHttpMutation>;
     testUpstreamProxyHttp(variables: TestUpstreamProxyHttpMutationVariables, options?: C): Promise<TestUpstreamProxyHttpMutation>;
     rankUpstreamProxyHttp(variables: RankUpstreamProxyHttpMutationVariables, options?: C): Promise<RankUpstreamProxyHttpMutation>;
+    createdUpstreamProxyHttp(variables?: CreatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamProxyHttpSubscription>;
+    updatedUpstreamProxyHttp(variables?: UpdatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamProxyHttpSubscription>;
+    deletedUpstreamProxyHttp(variables?: DeletedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamProxyHttpSubscription>;
     createUpstreamProxySocks(variables: CreateUpstreamProxySocksMutationVariables, options?: C): Promise<CreateUpstreamProxySocksMutation>;
     updateUpstreamProxySocks(variables: UpdateUpstreamProxySocksMutationVariables, options?: C): Promise<UpdateUpstreamProxySocksMutation>;
     deleteUpstreamProxySocks(variables: DeleteUpstreamProxySocksMutationVariables, options?: C): Promise<DeleteUpstreamProxySocksMutation>;
     testUpstreamProxySocks(variables: TestUpstreamProxySocksMutationVariables, options?: C): Promise<TestUpstreamProxySocksMutation>;
     rankUpstreamProxySocks(variables: RankUpstreamProxySocksMutationVariables, options?: C): Promise<RankUpstreamProxySocksMutation>;
-    createdUpstreamProxyHttp(variables?: CreatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamProxyHttpSubscription>;
-    updatedUpstreamProxyHttp(variables?: UpdatedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamProxyHttpSubscription>;
-    deletedUpstreamProxyHttp(variables?: DeletedUpstreamProxyHttpSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamProxyHttpSubscription>;
     createdUpstreamProxySocks(variables?: CreatedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamProxySocksSubscription>;
     updatedUpstreamProxySocks(variables?: UpdatedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamProxySocksSubscription>;
     deletedUpstreamProxySocks(variables?: DeletedUpstreamProxySocksSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamProxySocksSubscription>;
+    createUpstreamPlugin(variables: CreateUpstreamPluginMutationVariables, options?: C): Promise<CreateUpstreamPluginMutation>;
+    updateUpstreamPlugin(variables: UpdateUpstreamPluginMutationVariables, options?: C): Promise<UpdateUpstreamPluginMutation>;
+    deleteUpstreamPlugin(variables: DeleteUpstreamPluginMutationVariables, options?: C): Promise<DeleteUpstreamPluginMutation>;
+    rankUpstreamPlugin(variables: RankUpstreamPluginMutationVariables, options?: C): Promise<RankUpstreamPluginMutation>;
+    createdUpstreamPlugin(variables?: CreatedUpstreamPluginSubscriptionVariables, options?: C): AsyncIterable<CreatedUpstreamPluginSubscription>;
+    updatedUpstreamPlugin(variables?: UpdatedUpstreamPluginSubscriptionVariables, options?: C): AsyncIterable<UpdatedUpstreamPluginSubscription>;
+    deletedUpstreamPlugin(variables?: DeletedUpstreamPluginSubscriptionVariables, options?: C): AsyncIterable<DeletedUpstreamPluginSubscription>;
     updateViewerSettings(variables: UpdateViewerSettingsMutationVariables, options?: C): Promise<UpdateViewerSettingsMutation>;
     userProfile(variables?: UserProfileQueryVariables, options?: C): Promise<UserProfileQuery>;
     userSettings(variables?: UserSettingsQueryVariables, options?: C): Promise<UserSettingsQuery>;

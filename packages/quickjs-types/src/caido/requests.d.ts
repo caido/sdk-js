@@ -212,6 +212,11 @@ declare module "caido:utils" {
      */
     static parse(raw: RequestSpecRaw): RequestSpec;
     /**
+     * Get the connection information of the request.
+     * @returns The connection information.
+     */
+    getInfo(): ConnectionInfo;
+    /**
      * Get the host of the request.
      */
     getHost(): string;
@@ -283,6 +288,10 @@ declare module "caido:utils" {
      * ```
      */
     setQuery(query: Bytes): void;
+    /**
+     * The full URL of the request.
+     */
+    getUrl(): string;
     /**
      * The headers of the request.
      *
@@ -380,6 +389,11 @@ declare module "caido:utils" {
      */
     constructor(url: string);
     /**
+     * Get the connection information of the request.
+     * @returns The connection information.
+     */
+    getInfo(): ConnectionInfo;
+    /**
      * Get the host of the request.
      */
     getHost(): string;
@@ -418,10 +432,18 @@ declare module "caido:utils" {
     /**
      * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
      *
+     * @deprecated Use `toSpec` instead.
      * @throws {Error} If the bytes are not a valid HTTP request.
      * @see {@link RequestSpec.parse}
      */
     getSpec(): RequestSpec;
+    /**
+     * This methods converts the {@link RequestSpecRaw} to a {@link RequestSpec}.
+     *
+     * @throws {Error} If the bytes are not a valid HTTP request.
+     * @see {@link RequestSpec.parse}
+     */
+    toSpec(): RequestSpec;
   }
 
   /**
@@ -690,6 +712,33 @@ declare module "caido:utils" {
      * @default true
      */
     save?: boolean;
+    /**
+     * If true, the request will be sent through the upstream plugins.
+     *
+     * It defaults to to true most of the time except when called from
+     * a `onUpstream` callback.
+     *
+     * @default true
+     */
+    plugins?: boolean;
+    /**
+     * The {@link Connection} to use for the request.
+     *
+     * If provided, the request will be sent through the connection.
+     *
+     * If not provided, the engine will open a new connection to the target.
+     *
+     * @default undefined
+     */
+    connection?: Connection;
+  };
+
+  /**
+   * A saved Request and Response pair with the connection used to send the request.
+   * @category Requests
+   */
+  export type RequestSendPayload = RequestResponse & {
+    connection: Connection;
   };
 
   /**
@@ -747,7 +796,7 @@ declare module "caido:utils" {
     send(
       request: RequestSpec | RequestSpecRaw,
       options?: RequestSendOptions,
-    ): Promise<RequestResponse>;
+    ): Promise<RequestSendPayload>;
     /**
      * Checks if a request is in scope.
      *

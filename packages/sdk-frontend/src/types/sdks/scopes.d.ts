@@ -1,5 +1,6 @@
-import { type Scope } from "../types/scopes";
-import type { ID } from "../types/utils";
+import { type CurrentScopeChangeEvent, type Scope, type ScopeSlotContent } from "../types/scopes";
+import { type DefineAddToSlotFn } from "../types/slots";
+import type { ID, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with scopes
  * @category Scopes
@@ -52,4 +53,53 @@ export type ScopesSDK = {
      * @returns Whether the scope was deleted.
      */
     deleteScope: (id: ID) => Promise<boolean>;
+    /**
+     * Get the currently selected scope.
+     * @returns The currently selected scope, or undefined if no scope is selected.
+     */
+    getCurrentScope: () => Scope | undefined;
+    /**
+     * Subscribe to current scope changes.
+     * @param callback The callback to call when the selected scope changes.
+     * @returns An object with a `stop` method that can be called to stop listening to scope changes.
+     *
+     * @example
+     * ```ts
+     * const handler = sdk.scopes.onCurrentScopeChange((event) => {
+     *   console.log(`Scope ${event.scopeId} got selected!`);
+     * });
+     *
+     * // Later, stop listening
+     * handler.stop();
+     * ```
+     */
+    onCurrentScopeChange: (callback: (event: CurrentScopeChangeEvent) => void) => ListenerHandle;
+    /**
+     * Add a component to a slot.
+     * @param slot The slot to add the component to.
+     * @param content The content to add to the slot.
+     * @example
+     * ```ts
+     * sdk.scopes.addToSlot(ScopeSlot.UpdateHeader, {
+     *   type: "Button",
+     *   label: "My Button",
+     *   icon: "my-icon",
+     *   onClick: () => {
+     *     console.log("Button clicked");
+     *   },
+     * });
+     *
+     * sdk.scopes.addToSlot(ScopeSlot.CreateHeader, {
+     *   type: "Custom",
+     *   definition: MyComponent,
+     * });
+     *
+     * sdk.scopes.addToSlot(ScopeSlot.UpdateHeader, {
+     *   type: "Command",
+     *   commandId: "my-command",
+     *   icon: "my-icon",
+     * });
+     * ```
+     */
+    addToSlot: DefineAddToSlotFn<ScopeSlotContent>;
 };
