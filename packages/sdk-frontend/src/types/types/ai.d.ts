@@ -1,4 +1,4 @@
-import { type LanguageModelV2, type ProviderV2 } from "@ai-sdk/provider";
+import { type LanguageModelV3, type ProviderV3 } from "@ai-sdk/provider";
 /**
  * Settings for AI reasoning.
  * @category AI
@@ -21,7 +21,7 @@ export type AILanguageModelSettings = {
  * Official AI Provider to be used by the [ai](https://ai-sdk.dev/) library.
  * @category AI
  */
-export type AIProvider = ProviderV2 & ((modelId: string, settings?: AILanguageModelSettings) => LanguageModelV2);
+export type AIProvider = ProviderV3 & ((modelId: string, settings?: AILanguageModelSettings) => LanguageModelV3);
 /**
  * AI upstream provider ID.
  * @category AI
