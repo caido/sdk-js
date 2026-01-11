@@ -28,13 +28,13 @@ declare module "crypto" {
    * Creates and returns a `Hash` object that can be used to generate hash digests
    * using the given `algorithm`.
    *
-   * The `algorithm` is supported by `'sha1'`, `'sha256'`,`'sha384'` and `'sha512'`.
+   * The `algorithm` is supported by `'md4'`, `'md5'`, `'sha1'`, `'sha256'`,`'sha384'` and `'sha512'`.
    */
   function createHash(algorithm: string): Hash;
   /**
    * Creates and returns an `Hmac` object that uses the given `algorithm` and `key`.
    *
-   * The `algorithm` is supported by `'sha1'`, `'sha256'`,`'sha384'` and `'sha512'`.
+   * The `algorithm` is supported by `'md4'`, `'md5'`, `'sha1'`, `'sha256'`,`'sha384'` and `'sha512'`.
    *
    * The `key` is the HMAC key used to generate the cryptographic HMAC hash.
    * If it is a string, please consider `caveats when using strings as inputs to cryptographic APIs`.
@@ -139,6 +139,218 @@ declare module "crypto" {
     digest(): Buffer;
     digest(encoding: BinaryToTextEncoding): string;
   }
+  type CipherCCMTypes = "aes-128-ccm" | "aes-192-ccm" | "aes-256-ccm";
+  type CipherGCMTypes = "aes-128-gcm" | "aes-192-gcm" | "aes-256-gcm";
+  type CipherOCBTypes = "aes-128-ocb" | "aes-192-ocb" | "aes-256-ocb";
+  type CipherChaCha20Poly1305Types = "chacha20-poly1305";
+  type CipherKey = BinaryLike;
+  interface CipherCCMOptions {
+    authTagLength: number;
+  }
+  interface CipherGCMOptions {
+    authTagLength?: number | undefined;
+  }
+  interface CipherOCBOptions {
+    authTagLength: number;
+  }
+  interface CipherChaCha20Poly1305Options {
+    /** @default 16 */
+    authTagLength?: number | undefined;
+  }
+  /**
+   * Creates and returns a `Cipher` object, with the given `algorithm`, `key` and
+   * initialization vector (`iv`).
+   *
+   * The `options` argument controls stream behavior and is optional except when a
+   * cipher in CCM or OCB mode (e.g. `'aes-128-ccm'`) is used. In that case, the`authTagLength` option is required and specifies the length of the
+   * authentication tag in bytes, see `CCM mode`. In GCM mode, the `authTagLength`option is not required but can be used to set the length of the authentication
+   * tag and defaults to 16 bytes.
+   * For `chacha20-poly1305`, the `authTagLength` option defaults to 16 bytes.
+   *
+   * The `key` is the raw key used by the `algorithm` and `iv` is an [initialization vector](https://en.wikipedia.org/wiki/Initialization_vector). Both arguments must be `'utf8'` encoded
+   * strings,`Buffers`, `TypedArray`, or `DataView`s. The `key` may optionally be
+   * a `KeyObject` of type `secret`. If the cipher does not need
+   * an initialization vector, `iv` may be `null`.
+   *
+   * When passing strings for `key` or `iv`, please consider `caveats when using strings as inputs to cryptographic APIs`.
+   *
+   * Initialization vectors should be unpredictable and unique; ideally, they will be
+   * cryptographically random. They do not have to be secret: IVs are typically just
+   * added to ciphertext messages unencrypted. It may sound contradictory that
+   * something has to be unpredictable and unique, but does not have to be secret;
+   * remember that an attacker must not be able to predict ahead of time what a
+   * given IV will be.
+   */
+  function createCipheriv(
+    algorithm: CipherCCMTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options: CipherCCMOptions,
+  ): Cipheriv;
+  function createCipheriv(
+    algorithm: CipherOCBTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options: CipherOCBOptions,
+  ): CipherOCB;
+  function createCipheriv(
+    algorithm: CipherGCMTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options?: CipherGCMOptions,
+  ): CipherGCM;
+  function createCipheriv(
+    algorithm: CipherChaCha20Poly1305Types,
+    key: CipherKey,
+    iv: BinaryLike,
+    options?: CipherChaCha20Poly1305Options,
+  ): CipherChaCha20Poly1305;
+  function createCipheriv(
+    algorithm: string,
+    key: CipherKey,
+    iv: BinaryLike | null,
+  ): Cipheriv;
+  /**
+   * Instances of the `Cipheriv` class are used to encrypt data. The class can be
+   * used in one way:
+   *
+   * * Using the `cipher.update()` and `cipher.final()` methods to produce
+   * the encrypted data.
+   *
+   * The {@link createCipheriv} method is
+   * used to create `Cipheriv` instances. `Cipheriv` objects are not to be created
+   * directly using the `new` keyword.
+   */
+  class Cipheriv {
+    private constructor();
+    /**
+     * Updates the cipher with `data`.
+     *
+     * The `cipher.update()` method can be called multiple times with new data until `cipher.final()` is called. Calling `cipher.update()` after `cipher.final()` will result in an error being
+     * thrown.
+     */
+    update(data: BinaryLike): Buffer;
+    /**
+     * Once the `cipher.final()` method has been called, the `Cipheriv` object can no
+     * longer be used to encrypt data. Attempts to call `cipher.final()` more than
+     * once will result in an error being thrown.
+     * @return Any remaining enciphered contents.
+     */
+    final(): Buffer;
+  }
+  interface CipherCCM extends Cipheriv {
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+    getAuthTag(): Buffer;
+  }
+  interface CipherGCM extends Cipheriv {
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+    getAuthTag(): Buffer;
+  }
+  interface CipherOCB extends Cipheriv {
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+    getAuthTag(): Buffer;
+  }
+  interface CipherChaCha20Poly1305 extends Cipheriv {
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+    getAuthTag(): Buffer;
+  }
+  /**
+   * Creates and returns a `Decipheriv` object that uses the given `algorithm`, `key` and initialization vector (`iv`).
+   *
+   * The `options` argument controls stream behavior and is optional except when a
+   * cipher in CCM or OCB mode (e.g. `'aes-128-ccm'`) is used. In that case, the `authTagLength` option is required and specifies the length of the
+   * authentication tag in bytes, see `CCM mode`. In GCM mode, the `authTagLength` option is not required but can be used to restrict accepted authentication tags
+   * to those with the specified length.
+   * For `chacha20-poly1305`, the `authTagLength` option defaults to 16 bytes.
+   *
+   * The `key` is the raw key used by the `algorithm` and `iv` is an [initialization vector](https://en.wikipedia.org/wiki/Initialization_vector). Both arguments must be `'utf8'` encoded
+   * strings,`Buffers`, `TypedArray`, or `DataView`s. The `key` may optionally be
+   * a `KeyObject` of type `secret`. If the cipher does not need
+   * an initialization vector, `iv` may be `null`.
+   *
+   * When passing strings for `key` or `iv`, please consider `caveats when using strings as inputs to cryptographic APIs`.
+   *
+   * Initialization vectors should be unpredictable and unique; ideally, they will be
+   * cryptographically random. They do not have to be secret: IVs are typically just
+   * added to ciphertext messages unencrypted. It may sound contradictory that
+   * something has to be unpredictable and unique, but does not have to be secret;
+   * remember that an attacker must not be able to predict ahead of time what a given
+   * IV will be.
+   */
+  function createDecipheriv(
+    algorithm: CipherCCMTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options: CipherCCMOptions,
+  ): DecipherCCM;
+  function createDecipheriv(
+    algorithm: CipherOCBTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options: CipherOCBOptions,
+  ): DecipherOCB;
+  function createDecipheriv(
+    algorithm: CipherGCMTypes,
+    key: CipherKey,
+    iv: BinaryLike,
+    options?: CipherGCMOptions,
+  ): DecipherGCM;
+  function createDecipheriv(
+    algorithm: CipherChaCha20Poly1305Types,
+    key: CipherKey,
+    iv: BinaryLike,
+    options?: CipherChaCha20Poly1305Options,
+  ): DecipherChaCha20Poly1305;
+  function createDecipheriv(
+    algorithm: string,
+    key: CipherKey,
+    iv: BinaryLike | null,
+  ): Decipheriv;
+  /**
+   * Instances of the `Decipheriv` class are used to decrypt data. The class can be
+   * used in one way:
+   *
+   * * Using the `decipher.update()` and `decipher.final()` methods to
+   * produce the unencrypted data.
+   *
+   * The {@link createDecipheriv} method is
+   * used to create `Decipheriv` instances. `Decipheriv` objects are not to be created
+   * directly using the `new` keyword.
+   */
+  class Decipheriv {
+    private constructor();
+    /**
+     * Updates the decipher with `data`.
+     *
+     * The `decipher.update()` method can be called multiple times with new data until `decipher.final()` is called. Calling `decipher.update()` after `decipher.final()` will result in an error
+     * being thrown.
+
+     */
+    update(data: QuickJS.ArrayBufferView): Buffer;
+
+    /**
+     * Once the `decipher.final()` method has been called, the `Decipheriv` object can
+     * no longer be used to decrypt data. Attempts to call `decipher.final()` more
+     * than once will result in an error being thrown.
+     */
+    final(): Buffer;
+  }
+  interface DecipherCCM extends Decipheriv {
+    setAuthTag(buffer: QuickJS.ArrayBufferView): this;
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+  }
+  interface DecipherGCM extends Decipheriv {
+    setAuthTag(buffer: QuickJS.ArrayBufferView): this;
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+  }
+  interface DecipherOCB extends Decipheriv {
+    setAuthTag(buffer: QuickJS.ArrayBufferView): this;
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+  }
+  interface DecipherChaCha20Poly1305 extends Decipheriv {
+    setAuthTag(buffer: QuickJS.ArrayBufferView): this;
+    setAAD(buffer: QuickJS.ArrayBufferView): this;
+  }
   /**
    * Generates cryptographically strong pseudorandom data. The `size` argument
    * is a number indicating the number of bytes to generate.
@@ -234,7 +446,7 @@ declare module "crypto" {
   function randomFillSync<T extends QuickJS.ArrayBufferView>(
     buffer: T,
     offset?: number,
-    size?: number
+    size?: number,
   ): T;
   /**
    * This function is similar to {@link randomBytes} but requires the first
@@ -304,18 +516,18 @@ declare module "crypto" {
    */
   function randomFill<T extends QuickJS.ArrayBufferView>(
     buffer: T,
-    callback: (err: Error | null, buf: T) => void
+    callback: (err: Error | null, buf: T) => void,
   ): void;
   function randomFill<T extends QuickJS.ArrayBufferView>(
     buffer: T,
     offset: number,
-    callback: (err: Error | null, buf: T) => void
+    callback: (err: Error | null, buf: T) => void,
   ): void;
   function randomFill<T extends QuickJS.ArrayBufferView>(
     buffer: T,
     offset: number,
     size: number,
-    callback: (err: Error | null, buf: T) => void
+    callback: (err: Error | null, buf: T) => void,
   ): void;
   type UUID = `${string}-${string}-${string}-${string}-${string}`;
   /**
