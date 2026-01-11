@@ -21,6 +21,9 @@ import {
   ConvertInput as _ConvertInput,
   Data as _Data,
   Decision as _Decision,
+  NodeInput as _NodeInput,
+  NodeResult as _NodeResult,
+  NodeInputHTTP as _NodeInputHTTP,
   SDK as _SDK,
 } from "caido:workflow";
 
@@ -50,6 +53,9 @@ declare global {
     _ConvertInput as ConvertInput,
     _Data as Data,
     _Decision as Decision,
+    _NodeInput as NodeInput,
+    _NodeResult as NodeResult,
+    _NodeInputHTTP as NodeInputHTTP,
     _SDK as SDK,
   };
 }
