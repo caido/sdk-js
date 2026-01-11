@@ -35,8 +35,8 @@ importers:
   packages/sdk-frontend:
     dependencies:
       '@ai-sdk/provider':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^3.0.1
+        version: 3.0.2
       '@codemirror/state':
         specifier: ^6.0.0
         version: 6.4.1
@@ -57,8 +57,8 @@ importers:
 
 packages:
 
-  '@ai-sdk/provider@2.0.0':
-    resolution: {integrity: sha512-6o7Y2SeO9vFKB8lArHXehNuusnpddKPk7xqL7T2/b+OvXMRIXUO1rR4wcv1hAFUAT9avGZshty3Wlua/XA7TvA==}
+  '@ai-sdk/provider@3.0.2':
+    resolution: {integrity: sha512-HrEmNt/BH/hkQ7zpi2o6N3k1ZR1QTb7z85WYhYygiTxOQuaml4CMtHCWRbric5WPU+RNsYI7r1EpyVQMKO1pYw==}
     engines: {node: '>=18'}
 
   '@babel/helper-string-parser@7.27.1':
@@ -255,7 +255,7 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/provider@2.0.0':
+  '@ai-sdk/provider@3.0.2':
     dependencies:
       json-schema: 0.4.0
 
