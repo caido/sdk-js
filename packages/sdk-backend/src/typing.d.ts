@@ -164,6 +164,10 @@ declare module "caido:plugin" {
    */
   export type MetaSDK = {
     /**
+     * The id of the plugin.
+     */
+    id(): string;
+    /**
      * The directory of the plugin in Caido Data.
      * You can store data related to your plugin in this directory.
      */
