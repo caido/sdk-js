@@ -1,6 +1,7 @@
 import { type Extension } from "@codemirror/state";
 import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
@@ -129,6 +130,11 @@ export type ReplaySDK = {
      * @param options The view mode options.
      */
     addRequestViewMode: (options: RequestViewModeOptions) => void;
+    /**
+     * Add a custom response view mode.
+     * @param options The view mode options.
+     */
+    addResponseViewMode: (options: ResponseViewModeOptions) => void;
     /**
      * Send a request to the Replay backend.
      * @param request The request to send.
