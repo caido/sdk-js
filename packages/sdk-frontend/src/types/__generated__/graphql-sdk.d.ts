@@ -10500,6 +10500,48 @@ export type HostedFilesQuery = {
         createdAt: Date;
     }>;
 };
+export type OnUploadedHostedFileSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type OnUploadedHostedFileSubscription = {
+    uploadedHostedFile: {
+        hostedFile: {
+            __typename: "HostedFile";
+            id: string;
+            name: string;
+            path: string;
+            size: number;
+            status: HostedFileStatus;
+            updatedAt: Date;
+            createdAt: Date;
+        };
+    };
+};
+export type OnDeletedHostedFileSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type OnDeletedHostedFileSubscription = {
+    deletedHostedFile: {
+        deletedHostedFileId: string;
+    };
+};
+export type OnUpdatedHostedFileSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type OnUpdatedHostedFileSubscription = {
+    updatedHostedFile: {
+        hostedFile: {
+            __typename: "HostedFile";
+            id: string;
+            name: string;
+            path: string;
+            size: number;
+            status: HostedFileStatus;
+            updatedAt: Date;
+            createdAt: Date;
+        };
+    };
+};
 export type InstanceSettingsFullFragment = {
     __typename: "InstanceSettings";
     aiProviders: {
@@ -24845,6 +24887,9 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
+export declare const OnUploadedHostedFileDocument = "\n    subscription onUploadedHostedFile {\n  uploadedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
+export declare const OnDeletedHostedFileDocument = "\n    subscription onDeletedHostedFile {\n  deletedHostedFile {\n    deletedHostedFileId\n  }\n}\n    ";
+export declare const OnUpdatedHostedFileDocument = "\n    subscription onUpdatedHostedFile {\n  updatedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
@@ -25167,6 +25212,9 @@ export declare function getSdk<C>(requester: Requester<C>): {
     renameHostedFile(variables: RenameHostedFileMutationVariables, options?: C): Promise<RenameHostedFileMutation>;
     uploadHostedFile(variables: UploadHostedFileMutationVariables, options?: C): Promise<UploadHostedFileMutation>;
     hostedFiles(variables?: HostedFilesQueryVariables, options?: C): Promise<HostedFilesQuery>;
+    onUploadedHostedFile(variables?: OnUploadedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnUploadedHostedFileSubscription>;
+    onDeletedHostedFile(variables?: OnDeletedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnDeletedHostedFileSubscription>;
+    onUpdatedHostedFile(variables?: OnUpdatedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnUpdatedHostedFileSubscription>;
     setInstanceSettings(variables: SetInstanceSettingsMutationVariables, options?: C): Promise<SetInstanceSettingsMutation>;
     testAiProvider(variables: TestAiProviderMutationVariables, options?: C): Promise<TestAiProviderMutation>;
     instanceSettings(variables?: InstanceSettingsQueryVariables, options?: C): Promise<InstanceSettingsQuery>;
