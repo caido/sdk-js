@@ -1,3 +1,4 @@
+import type { RequestFull, RequestMeta } from "./request";
 import type { As, ComponentDefinition, ID, Prettify } from "./utils";
 /**
  * A complete response with all metadata and raw content.
@@ -24,4 +25,8 @@ export type ResponseViewModeOptions = {
      * The component to render when the view mode is selected.
      */
     view: ComponentDefinition;
+    /**
+     * A function that determines if the view mode should be shown for a given response.
+     */
+    when?: (response: ResponseFull, request: RequestMeta | RequestFull) => boolean;
 };

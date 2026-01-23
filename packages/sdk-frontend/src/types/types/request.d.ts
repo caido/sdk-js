@@ -51,4 +51,8 @@ export type RequestViewModeOptions = {
      * The component to render when the view mode is selected.
      */
     view: ComponentDefinition;
+    /**
+     * A function that determines if the view mode should be shown for a given request.
+     */
+    when?: (request: RequestFull | RequestDraft) => boolean;
 };
