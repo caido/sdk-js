@@ -1834,8 +1834,6 @@ export type MutationRoot = {
     pauseIntercept: PauseInterceptPayload;
     persistProject: PersistProjectPayload;
     rankDnsRewrite: RankDnsRewritePayload;
-    rankReplaySession: RankReplaySessionPayload;
-    rankReplaySessionCollection: RankReplaySessionCollectionPayload;
     rankTamperRule: RankTamperRulePayload;
     rankUpstreamPlugin: RankUpstreamPluginPayload;
     rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
@@ -2101,14 +2099,6 @@ export type MutationRootPersistProjectArgs = {
     id: Scalars["ID"]["input"];
 };
 export type MutationRootRankDnsRewriteArgs = {
-    id: Scalars["ID"]["input"];
-    input: RankInput;
-};
-export type MutationRootRankReplaySessionArgs = {
-    id: Scalars["ID"]["input"];
-    input: RankInput;
-};
-export type MutationRootRankReplaySessionCollectionArgs = {
     id: Scalars["ID"]["input"];
     input: RankInput;
 };
@@ -2830,16 +2820,6 @@ export type RankInput = {
     afterId?: InputMaybe<Scalars["ID"]["input"]>;
     beforeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
-export type RankReplaySessionCollectionPayload = {
-    collection?: Maybe<ReplaySessionCollection>;
-    error?: Maybe<RankSessionCollectionPayloadError>;
-};
-export type RankReplaySessionPayload = {
-    error?: Maybe<RankSessionPayloadError>;
-    session?: Maybe<ReplaySession>;
-};
-export type RankSessionCollectionPayloadError = OtherUserError | RankUserError | UnknownIdUserError;
-export type RankSessionPayloadError = OtherUserError | RankUserError | UnknownIdUserError;
 export type RankTamperRuleError = OtherUserError | RankUserError | UnknownIdUserError;
 export type RankTamperRuleInput = {
     afterId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -3062,7 +3042,6 @@ export type ReplaySession = {
     entries: ReplayEntryConnection;
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
-    rank: Scalars["Rank"]["output"];
 };
 export type ReplaySessionEntriesArgs = {
     after?: InputMaybe<Scalars["String"]["input"]>;
@@ -3074,7 +3053,6 @@ export type ReplaySessionEntriesArgs = {
 export type ReplaySessionCollection = {
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
-    rank: Scalars["Rank"]["output"];
     sessions: Array<ReplaySession>;
 };
 export type ReplaySessionCollectionConnection = {
@@ -8805,11 +8783,6 @@ export type AuthorizationUserErrorFullFragment = {
     reason: AuthorizationErrorReason;
     code: string;
 };
-export type RankUserErrorFullFragment = {
-    __typename: "RankUserError";
-    reason: RankErrorReason;
-    code: string;
-};
 export type DataExportStoredMetaFragment = {
     __typename: "DataExportStored";
     id: string;
@@ -10526,48 +10499,6 @@ export type HostedFilesQuery = {
         updatedAt: Date;
         createdAt: Date;
     }>;
-};
-export type OnUploadedHostedFileSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type OnUploadedHostedFileSubscription = {
-    uploadedHostedFile: {
-        hostedFile: {
-            __typename: "HostedFile";
-            id: string;
-            name: string;
-            path: string;
-            size: number;
-            status: HostedFileStatus;
-            updatedAt: Date;
-            createdAt: Date;
-        };
-    };
-};
-export type OnDeletedHostedFileSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type OnDeletedHostedFileSubscription = {
-    deletedHostedFile: {
-        deletedHostedFileId: string;
-    };
-};
-export type OnUpdatedHostedFileSubscriptionVariables = Exact<{
-    [key: string]: never;
-}>;
-export type OnUpdatedHostedFileSubscription = {
-    updatedHostedFile: {
-        hostedFile: {
-            __typename: "HostedFile";
-            id: string;
-            name: string;
-            path: string;
-            size: number;
-            status: HostedFileStatus;
-            updatedAt: Date;
-            createdAt: Date;
-        };
-    };
 };
 export type InstanceSettingsFullFragment = {
     __typename: "InstanceSettings";
@@ -18488,7 +18419,6 @@ export type ReplaySessionMetaFragment = {
     __typename: "ReplaySession";
     id: string;
     name: string;
-    rank: string;
     activeEntry?: {
         __typename: "ReplayEntry";
         id: string;
@@ -18601,12 +18531,10 @@ export type ReplaySessionCollectionMetaFragment = {
     __typename: "ReplaySessionCollection";
     id: string;
     name: string;
-    rank: string;
     sessions: Array<{
         __typename: "ReplaySession";
         id: string;
         name: string;
-        rank: string;
         activeEntry?: {
             __typename: "ReplayEntry";
             id: string;
@@ -19048,7 +18976,6 @@ export type ActiveReplayEntryBySessionQuery = {
         __typename: "ReplaySession";
         id: string;
         name: string;
-        rank: string;
         activeEntry?: {
             __typename: "ReplayEntry";
             id: string;
@@ -19166,7 +19093,6 @@ export type ReplayEntriesBySessionQuery = {
         __typename: "ReplaySession";
         id: string;
         name: string;
-        rank: string;
         entries: {
             edges: Array<{
                 cursor: string;
@@ -19478,12 +19404,10 @@ export type ReplaySessionCollectionsQuery = {
                 __typename: "ReplaySessionCollection";
                 id: string;
                 name: string;
-                rank: string;
                 sessions: Array<{
                     __typename: "ReplaySession";
                     id: string;
                     name: string;
-                    rank: string;
                     activeEntry?: {
                         __typename: "ReplayEntry";
                         id: string;
@@ -19606,12 +19530,10 @@ export type RenameReplaySessionCollectionMutation = {
             __typename: "ReplaySessionCollection";
             id: string;
             name: string;
-            rank: string;
             sessions: Array<{
                 __typename: "ReplaySession";
                 id: string;
                 name: string;
-                rank: string;
                 activeEntry?: {
                     __typename: "ReplayEntry";
                     id: string;
@@ -19732,12 +19654,10 @@ export type CreateReplaySessionCollectionMutation = {
             __typename: "ReplaySessionCollection";
             id: string;
             name: string;
-            rank: string;
             sessions: Array<{
                 __typename: "ReplaySession";
                 id: string;
                 name: string;
-                rank: string;
                 activeEntry?: {
                     __typename: "ReplayEntry";
                     id: string;
@@ -19867,7 +19787,6 @@ export type RenameReplaySessionMutation = {
             __typename: "ReplaySession";
             id: string;
             name: string;
-            rank: string;
             activeEntry?: {
                 __typename: "ReplayEntry";
                 id: string;
@@ -19988,7 +19907,6 @@ export type SetActiveReplaySessionEntryMutation = {
             __typename: "ReplaySession";
             id: string;
             name: string;
-            rank: string;
             activeEntry?: {
                 __typename: "ReplayEntry";
                 id: string;
@@ -20116,17 +20034,14 @@ export type CreateReplaySessionMutation = {
             __typename: "ReplaySession";
             id: string;
             name: string;
-            rank: string;
             collection: {
                 __typename: "ReplaySessionCollection";
                 id: string;
                 name: string;
-                rank: string;
                 sessions: Array<{
                     __typename: "ReplaySession";
                     id: string;
                     name: string;
-                    rank: string;
                     activeEntry?: {
                         __typename: "ReplayEntry";
                         id: string;
@@ -20353,7 +20268,6 @@ export type MoveReplaySessionMutation = {
             __typename: "ReplaySession";
             id: string;
             name: string;
-            rank: string;
             activeEntry?: {
                 __typename: "ReplayEntry";
                 id: string;
@@ -20614,278 +20528,6 @@ export type StartReplayTaskMutation = {
         } | undefined | null;
     };
 };
-export type RankReplaySessionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    input: RankInput;
-}>;
-export type RankReplaySessionMutation = {
-    rankReplaySession: {
-        session?: {
-            __typename: "ReplaySession";
-            id: string;
-            name: string;
-            rank: string;
-            activeEntry?: {
-                __typename: "ReplayEntry";
-                id: string;
-                error?: string | undefined | null;
-                createdAt: Date;
-                connection: {
-                    __typename: "ConnectionInfo";
-                    host: string;
-                    port: number;
-                    isTLS: boolean;
-                    SNI?: string | undefined | null;
-                };
-                session: {
-                    id: string;
-                };
-                request?: {
-                    __typename: "Request";
-                    id: string;
-                    host: string;
-                    port: number;
-                    path: string;
-                    query: string;
-                    method: string;
-                    edited: boolean;
-                    isTls: boolean;
-                    sni?: string | undefined | null;
-                    length: number;
-                    alteration: Alteration;
-                    fileExtension?: string | undefined | null;
-                    source: Source;
-                    createdAt: Date;
-                    metadata: {
-                        __typename: "RequestMetadata";
-                        id: string;
-                        color?: string | undefined | null;
-                    };
-                    response?: {
-                        __typename: "Response";
-                        id: string;
-                        statusCode: number;
-                        roundtripTime: number;
-                        length: number;
-                        createdAt: Date;
-                        alteration: Alteration;
-                        edited: boolean;
-                    } | undefined | null;
-                    stream?: {
-                        id: string;
-                    } | undefined | null;
-                } | undefined | null;
-            } | undefined | null;
-            collection: {
-                id: string;
-            };
-            entries: {
-                nodes: Array<{
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    createdAt: Date;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTLS: boolean;
-                        SNI?: string | undefined | null;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        sni?: string | undefined | null;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                        stream?: {
-                            id: string;
-                        } | undefined | null;
-                    } | undefined | null;
-                }>;
-            };
-        } | undefined | null;
-        error?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "RankUserError";
-            reason: RankErrorReason;
-            code: string;
-        } | {
-            __typename: "UnknownIdUserError";
-            id: string;
-            code: string;
-        } | undefined | null;
-    };
-};
-export type RankReplaySessionCollectionMutationVariables = Exact<{
-    id: Scalars["ID"]["input"];
-    input: RankInput;
-}>;
-export type RankReplaySessionCollectionMutation = {
-    rankReplaySessionCollection: {
-        collection?: {
-            __typename: "ReplaySessionCollection";
-            id: string;
-            name: string;
-            rank: string;
-            sessions: Array<{
-                __typename: "ReplaySession";
-                id: string;
-                name: string;
-                rank: string;
-                activeEntry?: {
-                    __typename: "ReplayEntry";
-                    id: string;
-                    error?: string | undefined | null;
-                    createdAt: Date;
-                    connection: {
-                        __typename: "ConnectionInfo";
-                        host: string;
-                        port: number;
-                        isTLS: boolean;
-                        SNI?: string | undefined | null;
-                    };
-                    session: {
-                        id: string;
-                    };
-                    request?: {
-                        __typename: "Request";
-                        id: string;
-                        host: string;
-                        port: number;
-                        path: string;
-                        query: string;
-                        method: string;
-                        edited: boolean;
-                        isTls: boolean;
-                        sni?: string | undefined | null;
-                        length: number;
-                        alteration: Alteration;
-                        fileExtension?: string | undefined | null;
-                        source: Source;
-                        createdAt: Date;
-                        metadata: {
-                            __typename: "RequestMetadata";
-                            id: string;
-                            color?: string | undefined | null;
-                        };
-                        response?: {
-                            __typename: "Response";
-                            id: string;
-                            statusCode: number;
-                            roundtripTime: number;
-                            length: number;
-                            createdAt: Date;
-                            alteration: Alteration;
-                            edited: boolean;
-                        } | undefined | null;
-                        stream?: {
-                            id: string;
-                        } | undefined | null;
-                    } | undefined | null;
-                } | undefined | null;
-                collection: {
-                    id: string;
-                };
-                entries: {
-                    nodes: Array<{
-                        __typename: "ReplayEntry";
-                        id: string;
-                        error?: string | undefined | null;
-                        createdAt: Date;
-                        connection: {
-                            __typename: "ConnectionInfo";
-                            host: string;
-                            port: number;
-                            isTLS: boolean;
-                            SNI?: string | undefined | null;
-                        };
-                        session: {
-                            id: string;
-                        };
-                        request?: {
-                            __typename: "Request";
-                            id: string;
-                            host: string;
-                            port: number;
-                            path: string;
-                            query: string;
-                            method: string;
-                            edited: boolean;
-                            isTls: boolean;
-                            sni?: string | undefined | null;
-                            length: number;
-                            alteration: Alteration;
-                            fileExtension?: string | undefined | null;
-                            source: Source;
-                            createdAt: Date;
-                            metadata: {
-                                __typename: "RequestMetadata";
-                                id: string;
-                                color?: string | undefined | null;
-                            };
-                            response?: {
-                                __typename: "Response";
-                                id: string;
-                                statusCode: number;
-                                roundtripTime: number;
-                                length: number;
-                                createdAt: Date;
-                                alteration: Alteration;
-                                edited: boolean;
-                            } | undefined | null;
-                            stream?: {
-                                id: string;
-                            } | undefined | null;
-                        } | undefined | null;
-                    }>;
-                };
-            }>;
-        } | undefined | null;
-        error?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "RankUserError";
-            reason: RankErrorReason;
-            code: string;
-        } | {
-            __typename: "UnknownIdUserError";
-            id: string;
-            code: string;
-        } | undefined | null;
-    };
-};
 export type CreatedReplaySessionSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -20896,7 +20538,6 @@ export type CreatedReplaySessionSubscription = {
                 __typename: "ReplaySession";
                 id: string;
                 name: string;
-                rank: string;
                 activeEntry?: {
                     __typename: "ReplayEntry";
                     id: string;
@@ -21019,7 +20660,6 @@ export type UpdatedReplaySessionSubscription = {
                 __typename: "ReplaySession";
                 id: string;
                 name: string;
-                rank: string;
                 activeEntry?: {
                     __typename: "ReplayEntry";
                     id: string;
@@ -21149,12 +20789,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                 __typename: "ReplaySessionCollection";
                 id: string;
                 name: string;
-                rank: string;
                 sessions: Array<{
                     __typename: "ReplaySession";
                     id: string;
                     name: string;
-                    rank: string;
                     activeEntry?: {
                         __typename: "ReplayEntry";
                         id: string;
@@ -21277,12 +20915,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                 __typename: "ReplaySessionCollection";
                 id: string;
                 name: string;
-                rank: string;
                 sessions: Array<{
                     __typename: "ReplaySession";
                     id: string;
                     name: string;
-                    rank: string;
                     activeEntry?: {
                         __typename: "ReplayEntry";
                         id: string;
@@ -24944,7 +24580,6 @@ export declare const ProjectUserErrorFullFragmentDoc = "\n    fragment projectUs
 export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certificateUserErrorFull on CertificateUserError {\n  ...userErrorFull\n  certificateReason: reason\n}\n    ";
 export declare const NewerVersionUserErrorFullFragmentDoc = "\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    ";
 export declare const AuthorizationUserErrorFullFragmentDoc = "\n    fragment authorizationUserErrorFull on AuthorizationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const RankUserErrorFullFragmentDoc = "\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const DataExportStoredMetaFieldsFragmentDoc = "\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportStoredMetaFragmentDoc = "\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    ";
 export declare const DataExportStoredFullFieldsFragmentDoc = "\n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    ";
@@ -25030,8 +24665,8 @@ export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projec
 export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
 export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    ";
-export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    ";
+export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
 export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
 export declare const ReplayPrefixPreprocessorFullFragmentDoc = "\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    ";
 export declare const ReplaySuffixPreprocessorFullFragmentDoc = "\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    ";
@@ -25210,9 +24845,6 @@ export declare const DeleteHostedFileDocument = "\n    mutation deleteHostedFile
 export declare const RenameHostedFileDocument = "\n    mutation renameHostedFile($id: ID!, $name: String!) {\n  renameHostedFile(id: $id, name: $name) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const UploadHostedFileDocument = "\n    mutation uploadHostedFile($input: UploadHostedFileInput!) {\n  uploadHostedFile(input: $input) {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedFiles {\n    ...hostedFileFull\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const OnUploadedHostedFileDocument = "\n    subscription onUploadedHostedFile {\n  uploadedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const OnDeletedHostedFileDocument = "\n    subscription onDeletedHostedFile {\n  deletedHostedFile {\n    deletedHostedFileId\n  }\n}\n    ";
-export declare const OnUpdatedHostedFileDocument = "\n    subscription onUpdatedHostedFile {\n  updatedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAiProvider($input: TestAIProviderInput!) {\n  testAiProvider(input: $input) {\n    ...testAiProviderPayloadFull\n  }\n}\n    \n    fragment testAiProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
 export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  aiProviders {\n    anthropic {\n      apiKey\n    }\n    google {\n      apiKey\n    }\n    openai {\n      apiKey\n      url\n    }\n    openrouter {\n      apiKey\n    }\n  }\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
@@ -25269,26 +24901,24 @@ export declare const CurrentProjectDocument = "\n    query currentProject {\n  c
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ...replayEntryFull\n  }\n}\n    \n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    activeEntry {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ...replaySessionMeta\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    activeEntry {\n      ...replayEntryMeta\n    }\n    entries {\n      edges {\n        cursor\n        node {\n          ...replayEntryMeta\n        }\n      }\n      pageInfo {\n        ...pageInfoFull\n      }\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ...replaySessionMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {\n  startReplayTask(sessionId: $sessionId, input: $input) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ...replayEntryFull\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryFull on ReplayEntry {\n  ...replayEntryMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  sessions {\n    ...replaySessionMeta\n  }\n}\n    \n\n    fragment replaySessionMeta on ReplaySession {\n  __typename\n  id\n  name\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  id\n  error\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  session {\n    id\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQL) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQL) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -25537,9 +25167,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     renameHostedFile(variables: RenameHostedFileMutationVariables, options?: C): Promise<RenameHostedFileMutation>;
     uploadHostedFile(variables: UploadHostedFileMutationVariables, options?: C): Promise<UploadHostedFileMutation>;
     hostedFiles(variables?: HostedFilesQueryVariables, options?: C): Promise<HostedFilesQuery>;
-    onUploadedHostedFile(variables?: OnUploadedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnUploadedHostedFileSubscription>;
-    onDeletedHostedFile(variables?: OnDeletedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnDeletedHostedFileSubscription>;
-    onUpdatedHostedFile(variables?: OnUpdatedHostedFileSubscriptionVariables, options?: C): AsyncIterable<OnUpdatedHostedFileSubscription>;
     setInstanceSettings(variables: SetInstanceSettingsMutationVariables, options?: C): Promise<SetInstanceSettingsMutation>;
     testAiProvider(variables: TestAiProviderMutationVariables, options?: C): Promise<TestAiProviderMutation>;
     instanceSettings(variables?: InstanceSettingsQueryVariables, options?: C): Promise<InstanceSettingsQuery>;
@@ -25609,8 +25236,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createReplaySession(variables: CreateReplaySessionMutationVariables, options?: C): Promise<CreateReplaySessionMutation>;
     moveReplaySession(variables: MoveReplaySessionMutationVariables, options?: C): Promise<MoveReplaySessionMutation>;
     startReplayTask(variables: StartReplayTaskMutationVariables, options?: C): Promise<StartReplayTaskMutation>;
-    rankReplaySession(variables: RankReplaySessionMutationVariables, options?: C): Promise<RankReplaySessionMutation>;
-    rankReplaySessionCollection(variables: RankReplaySessionCollectionMutationVariables, options?: C): Promise<RankReplaySessionCollectionMutation>;
     createdReplaySession(variables?: CreatedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<CreatedReplaySessionSubscription>;
     updatedReplaySession(variables?: UpdatedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<UpdatedReplaySessionSubscription>;
     deletedReplaySession(variables?: DeletedReplaySessionSubscriptionVariables, options?: C): AsyncIterable<DeletedReplaySessionSubscription>;
