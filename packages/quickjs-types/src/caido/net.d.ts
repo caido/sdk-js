@@ -38,8 +38,8 @@ declare module "caido:utils" {
   }
 
   /**
-   * The SDK for the Projects service.
-   * @category Projects
+   * The SDK for the Net service.
+   * @category Net
    */
   export type NetSDK = {
     /*

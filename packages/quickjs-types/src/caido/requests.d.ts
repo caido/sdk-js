@@ -693,6 +693,10 @@ declare module "caido:utils" {
     global?: number;
   };
 
+  /**
+   * Options for sending a request.
+   * @category Requests
+   */
   export type RequestSendOptions = {
     /**
      * The timeouts to use for sending a request and receiving a response.
