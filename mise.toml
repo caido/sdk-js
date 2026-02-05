@@ -1,3 +1,15 @@
 [tools]
 node = "24.11.1"
 pnpm = "10.28.2"
+
+[tasks.typecheck]
+description = "Run typecheck"
+run = "pnpm typecheck"
+
+[tasks.lint]
+description = "Run linter"
+run = "pnpm lint"
+
+[tasks.validate]
+description = 'Validate the project'
+depends = ['typecheck', 'lint']
