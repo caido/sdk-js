@@ -18,7 +18,6 @@ async function main() {
     (request: AuthenticationRequest): void => {
       console.log("=== Authentication Required ===");
       console.log(`Visit: ${request.verificationUrl}`);
-      console.log(`Enter code: ${request.userCode}`);
       console.log(`Expires at: ${request.expiresAt.toISOString()}`);
       console.log("===============================\n");
       console.log("Waiting for approval...");

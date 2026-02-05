@@ -23,6 +23,8 @@ export interface AuthenticationToken {
   refreshToken: string;
   /** When the access token expires */
   expiresAt: Date;
+  /** The scopes granted to this token */
+  scopes: string[];
 }
 
 /**
@@ -45,10 +47,64 @@ export interface DeviceInformation {
   scopes: DeviceScope[];
 }
 
-export interface GraphQLError {
+/**
+ * Base error type with code
+ */
+interface BaseError {
   code: string;
+}
+
+/**
+ * Authentication user error with code and reason
+ */
+export interface AuthenticationUserError extends BaseError {
+  reason: string;
+}
+
+/**
+ * Cloud user error with code and reason
+ */
+export interface CloudUserError extends BaseError {
+  reason: string;
+}
+
+/**
+ * Internal user error with code and message
+ */
+export interface InternalUserError extends BaseError {
   message: string;
 }
+
+/**
+ * Other user error with just code
+ */
+export interface OtherUserError extends BaseError {}
+
+/**
+ * Union type for all possible authentication flow errors
+ */
+export type StartAuthenticationFlowError =
+  | AuthenticationUserError
+  | CloudUserError
+  | InternalUserError
+  | OtherUserError;
+
+/**
+ * Union type for authentication token creation errors
+ */
+export type CreatedAuthenticationTokenError =
+  | AuthenticationUserError
+  | InternalUserError
+  | OtherUserError;
+
+/**
+ * Union type for token refresh errors
+ */
+export type RefreshAuthenticationTokenError =
+  | AuthenticationUserError
+  | CloudUserError
+  | InternalUserError
+  | OtherUserError;
 
 export interface StartAuthenticationFlowResponse {
   startAuthenticationFlow: {
@@ -58,7 +114,7 @@ export interface StartAuthenticationFlowResponse {
       verificationUrl: string;
       expiresAt: string;
     };
-    error?: GraphQLError;
+    error?: StartAuthenticationFlowError;
   };
 }
 
@@ -66,10 +122,11 @@ export interface CreatedAuthenticationTokenResponse {
   createdAuthenticationToken: {
     token?: {
       accessToken: string;
-      refreshToken: string;
       expiresAt: string;
+      refreshToken: string;
+      scopes: string[];
     };
-    error?: GraphQLError;
+    error?: CreatedAuthenticationTokenError;
   };
 }
 
@@ -77,9 +134,10 @@ export interface RefreshAuthenticationTokenResponse {
   refreshAuthenticationToken: {
     token?: {
       accessToken: string;
-      refreshToken: string;
       expiresAt: string;
+      refreshToken: string;
+      scopes: string[];
     };
-    error?: GraphQLError;
+    error?: RefreshAuthenticationTokenError;
   };
 }

@@ -13,7 +13,7 @@ This example demonstrates how to authenticate with a Caido instance using browse
 2. Run the example:
 
    ```bash
-   pnpm dev
+   pnpm run
    ```
 
 3. Follow the instructions displayed in the console to complete authentication in your browser.
