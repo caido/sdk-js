@@ -28,11 +28,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build packages
+        run: pnpm -r build
+
       - name: Publish quickjs-types
         uses: ./.github/actions/publish-one
         with:
           package: quickjs-types
           internal: true
+          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish server-auth
+        uses: ./.github/actions/publish-one
+        with:
+          package: server-auth
+          internal: false
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish sdk-backend
