@@ -25,7 +25,8 @@
     "dist/*"
   ],
   "scripts": {
-    "build": "tsdown"
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@urql/core": "^6.0.0",

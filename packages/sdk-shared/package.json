@@ -10,6 +10,7 @@
     "src/*"
   ],
   "scripts": {
-    "build": "echo 'No build step required for @caido/sdk-shared'"
+    "build": "echo 'No build step required for @caido/sdk-shared'",
+    "typecheck": "tsc --noEmit"
   }
 }
