@@ -1,0 +1,32 @@
+name: Validate
+
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_call:
+
+concurrency:
+  group: validate-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: 'Validate'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Mise
+        uses: caido/action-mise-action@v3.2.0
+        with:
+          version: ${{ vars.CI__MISE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run validation
+        run: pnpm lint
