@@ -1,0 +1,36 @@
+{
+  "name": "@caido/server-auth",
+  "version": "0.1.0",
+  "description": "Authenticate with a Caido instance",
+  "author": "Caido Labs Inc. <dev@caido.io>",
+  "repository": "https://github.com/caido/sdk-js/",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist/*"
+  ],
+  "scripts": {
+    "build": "tsdown"
+  },
+  "dependencies": {
+    "@urql/core": "^6.0.0",
+    "graphql": "^16.12.0",
+    "graphql-tag": "^2.12.0",
+    "graphql-ws": "^6.0.0"
+  }
+}

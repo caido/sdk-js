@@ -1,11 +1,14 @@
 import type { AuthenticationRequest } from "../types.js";
+
 import type { AuthApprover } from "./types.js";
 
 /**
  * Callback function that receives the authentication request details.
  * Used to display the verification URL and user code to the user.
  */
-export type OnRequestCallback = (request: AuthenticationRequest) => void;
+export type OnRequestCallback = (
+  request: AuthenticationRequest,
+) => Promise<void> | void;
 
 /**
  * Browser-based approver that delegates to a callback function.
@@ -16,7 +19,6 @@ export type OnRequestCallback = (request: AuthenticationRequest) => void;
  * ```typescript
  * const approver = new BrowserApprover((request) => {
  *   console.log(`Visit ${request.verificationUrl}`);
- *   console.log(`Enter code: ${request.userCode}`);
  * });
  * ```
  */
@@ -39,6 +41,6 @@ export class BrowserApprover implements AuthApprover {
    * @param request - The authentication request
    */
   async approve(request: AuthenticationRequest): Promise<void> {
-    this.onRequest(request);
+    await this.onRequest(request);
   }
 }

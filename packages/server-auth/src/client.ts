@@ -2,7 +2,11 @@ import { Client, fetchExchange } from "@urql/core";
 import { createClient as createWSClient } from "graphql-ws";
 
 import type { AuthApprover } from "./approvers/types.js";
-import { AuthenticationError, AuthenticationFlowError, TokenRefreshError } from "./errors.js";
+import {
+  AuthenticationError,
+  AuthenticationFlowError,
+  TokenRefreshError,
+} from "./errors.js";
 import {
   CREATED_AUTHENTICATION_TOKEN,
   REFRESH_AUTHENTICATION_TOKEN,
@@ -83,37 +87,33 @@ export class CaidoAuth {
    */
   async startAuthenticationFlow(): Promise<AuthenticationToken> {
     // Step 1: Start the authentication flow
-    const result = await this.client.mutation<StartAuthenticationFlowResponse>(
-      START_AUTHENTICATION_FLOW,
-      {}
-    ).toPromise();
+    const result = await this.client
+      .mutation<StartAuthenticationFlowResponse>(START_AUTHENTICATION_FLOW, {})
+      .toPromise();
 
     if (result.error) {
-      throw new AuthenticationFlowError(
-        "GRAPHQL_ERROR",
-        result.error.message
-      );
+      throw new AuthenticationFlowError("GRAPHQL_ERROR", result.error.message);
     }
 
     const payload = result.data?.startAuthenticationFlow;
     if (!payload) {
       throw new AuthenticationFlowError(
         "NO_RESPONSE",
-        "No response from startAuthenticationFlow"
+        "No response from startAuthenticationFlow",
       );
     }
 
     if (payload.error) {
       throw new AuthenticationFlowError(
         payload.error.code,
-        payload.error.message
+        payload.error.message,
       );
     }
 
     if (!payload.request) {
       throw new AuthenticationFlowError(
         "NO_REQUEST",
-        "No authentication request returned"
+        "No authentication request returned",
       );
     }
 
@@ -145,61 +145,62 @@ export class CaidoAuth {
         url: this.websocketUrl,
       });
 
-      const unsubscribe = wsClient.subscribe<CreatedAuthenticationTokenResponse>(
-        {
-          query:
-            CREATED_AUTHENTICATION_TOKEN.loc?.source.body ??
-            `subscription CreatedAuthenticationToken($requestId: ID!) {
+      const unsubscribe =
+        wsClient.subscribe<CreatedAuthenticationTokenResponse>(
+          {
+            query:
+              CREATED_AUTHENTICATION_TOKEN.loc?.source.body ??
+              `subscription CreatedAuthenticationToken($requestId: ID!) {
               createdAuthenticationToken(requestId: $requestId) {
                 token { accessToken refreshToken expiresAt }
                 error { code message }
               }
             }`,
-          variables: { requestId },
-        },
-        {
-          next: (result) => {
-            const payload = result.data?.createdAuthenticationToken;
+            variables: { requestId },
+          },
+          {
+            next: (result) => {
+              const payload = result.data?.createdAuthenticationToken;
 
-            if (payload?.error) {
-              unsubscribe();
+              if (payload?.error) {
+                unsubscribe();
+                wsClient.dispose();
+                reject(
+                  new AuthenticationError(
+                    `${payload.error.code}: ${payload.error.message}`,
+                  ),
+                );
+                return;
+              }
+
+              if (payload?.token) {
+                unsubscribe();
+                wsClient.dispose();
+                resolve({
+                  accessToken: payload.token.accessToken,
+                  refreshToken: payload.token.refreshToken,
+                  expiresAt: new Date(payload.token.expiresAt),
+                });
+              }
+            },
+            error: (error) => {
               wsClient.dispose();
               reject(
                 new AuthenticationError(
-                  `${payload.error.code}: ${payload.error.message}`
-                )
+                  error instanceof Error ? error.message : String(error),
+                ),
               );
-              return;
-            }
-
-            if (payload?.token) {
-              unsubscribe();
+            },
+            complete: () => {
               wsClient.dispose();
-              resolve({
-                accessToken: payload.token.accessToken,
-                refreshToken: payload.token.refreshToken,
-                expiresAt: new Date(payload.token.expiresAt),
-              });
-            }
+              reject(
+                new AuthenticationError(
+                  "Subscription ended without receiving token",
+                ),
+              );
+            },
           },
-          error: (error) => {
-            wsClient.dispose();
-            reject(
-              new AuthenticationError(
-                error instanceof Error ? error.message : String(error)
-              )
-            );
-          },
-          complete: () => {
-            wsClient.dispose();
-            reject(
-              new AuthenticationError(
-                "Subscription ended without receiving token"
-              )
-            );
-          },
-        }
-      );
+        );
     });
   }
 
@@ -211,10 +212,12 @@ export class CaidoAuth {
    * @throws {TokenRefreshError} If the refresh fails
    */
   async refreshToken(refreshToken: string): Promise<AuthenticationToken> {
-    const result = await this.client.mutation<RefreshAuthenticationTokenResponse>(
-      REFRESH_AUTHENTICATION_TOKEN,
-      { refreshToken }
-    ).toPromise();
+    const result = await this.client
+      .mutation<RefreshAuthenticationTokenResponse>(
+        REFRESH_AUTHENTICATION_TOKEN,
+        { refreshToken },
+      )
+      .toPromise();
 
     if (result.error) {
       throw new TokenRefreshError("GRAPHQL_ERROR", result.error.message);
@@ -224,7 +227,7 @@ export class CaidoAuth {
     if (!payload) {
       throw new TokenRefreshError(
         "NO_RESPONSE",
-        "No response from refreshAuthenticationToken"
+        "No response from refreshAuthenticationToken",
       );
     }
 

@@ -45,17 +45,11 @@ export interface DeviceInformation {
   scopes: DeviceScope[];
 }
 
-/**
- * GraphQL error response structure.
- */
 export interface GraphQLError {
   code: string;
   message: string;
 }
 
-/**
- * GraphQL response for startAuthenticationFlow mutation.
- */
 export interface StartAuthenticationFlowResponse {
   startAuthenticationFlow: {
     request?: {
@@ -68,9 +62,6 @@ export interface StartAuthenticationFlowResponse {
   };
 }
 
-/**
- * GraphQL response for createdAuthenticationToken subscription.
- */
 export interface CreatedAuthenticationTokenResponse {
   createdAuthenticationToken: {
     token?: {
@@ -82,9 +73,6 @@ export interface CreatedAuthenticationTokenResponse {
   };
 }
 
-/**
- * GraphQL response for refreshAuthenticationToken mutation.
- */
 export interface RefreshAuthenticationTokenResponse {
   refreshAuthenticationToken: {
     token?: {

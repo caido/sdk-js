@@ -1,5 +1,6 @@
-import type { AuthenticationRequest, DeviceInformation } from "../types.js";
 import { DeviceApprovalError, DeviceInformationError } from "../errors.js";
+import type { AuthenticationRequest, DeviceInformation } from "../types.js";
+
 import type { AuthApprover } from "./types.js";
 
 const DEFAULT_API_URL = "https://api.caido.io";
@@ -34,7 +35,7 @@ export interface PATApproverOptions {
  */
 export class PATApprover implements AuthApprover {
   private readonly pat: string;
-  private readonly allowedScopes?: string[];
+  private readonly allowedScopes: string[] | undefined;
   private readonly apiUrl: string;
 
   /**
@@ -66,7 +67,7 @@ export class PATApprover implements AuthApprover {
     let scopesToApprove = deviceInfo.scopes.map((s) => s.name);
     if (this.allowedScopes) {
       scopesToApprove = scopesToApprove.filter((scope) =>
-        this.allowedScopes!.includes(scope)
+        this.allowedScopes!.includes(scope),
       );
     }
 
@@ -82,9 +83,12 @@ export class PATApprover implements AuthApprover {
    * @throws {DeviceInformationError} If the request fails
    */
   private async getDeviceInformation(
-    userCode: string
+    userCode: string,
   ): Promise<DeviceInformation> {
-    const url = `${this.apiUrl}/oauth2/device/information?user_code=${encodeURIComponent(userCode)}`;
+    const params = new URLSearchParams();
+    params.append("user_code", userCode);
+    const url = new URL(`${this.apiUrl}/oauth2/device/information`);
+    url.search = params.toString();
 
     const response = await fetch(url, {
       method: "GET",
@@ -98,7 +102,7 @@ export class PATApprover implements AuthApprover {
       const errorText = await response.text().catch(() => "Unknown error");
       throw new DeviceInformationError(
         `Failed to get device information: ${errorText}`,
-        response.status
+        response.status,
       );
     }
 
@@ -115,9 +119,13 @@ export class PATApprover implements AuthApprover {
    */
   private async approveDevice(
     userCode: string,
-    scopes: string[]
+    scopes: string[],
   ): Promise<void> {
-    const url = `${this.apiUrl}/oauth2/device/approve`;
+    const params = new URLSearchParams();
+    params.append("user_code", userCode);
+    params.append("scope", scopes.join(","));
+    const url = new URL(`${this.apiUrl}/oauth2/device/approve`);
+    url.search = params.toString();
 
     const response = await fetch(url, {
       method: "POST",
@@ -126,17 +134,13 @@ export class PATApprover implements AuthApprover {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        user_code: userCode,
-        scopes: scopes,
-      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "Unknown error");
       throw new DeviceApprovalError(
         `Failed to approve device: ${errorText}`,
-        response.status
+        response.status,
       );
     }
   }

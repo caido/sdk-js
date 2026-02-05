@@ -41,7 +41,7 @@ export class TokenRefreshError extends AuthenticationError {
  */
 export class DeviceApprovalError extends AuthenticationError {
   /** HTTP status code if available */
-  readonly statusCode?: number;
+  readonly statusCode: number | undefined;
 
   constructor(message: string, statusCode?: number) {
     super(message);
@@ -55,7 +55,7 @@ export class DeviceApprovalError extends AuthenticationError {
  */
 export class DeviceInformationError extends AuthenticationError {
   /** HTTP status code if available */
-  readonly statusCode?: number;
+  readonly statusCode: number | undefined;
 
   constructor(message: string, statusCode?: number) {
     super(message);
