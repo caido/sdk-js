@@ -1,0 +1,16 @@
+{
+  "name": "@caido/server-auth-example-browser",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "run": "node src/index.ts"
+  },
+  "dependencies": {
+    "@caido/server-auth": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "25.0.10",
+    "typescript": "5.6.2"
+  }
+}
