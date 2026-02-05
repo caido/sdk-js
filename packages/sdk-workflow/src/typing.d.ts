@@ -1,18 +1,18 @@
 declare module "caido:workflow" {
   import {
-    Bytes,
-    FindingsSDK,
-    RequestsSDK,
-    Request,
-    Response,
-    ReplaySDK,
-    ProjectsSDK,
-    EnvironmentSDK,
-    RuntimeSDK,
-    ScopeSDK,
-    GraphQLSDK,
-    HostedFileSDK,
-    NetSDK,
+    type Bytes,
+    type EnvironmentSDK,
+    type FindingsSDK,
+    type GraphQLSDK,
+    type HostedFileSDK,
+    type NetSDK,
+    type ProjectsSDK,
+    type ReplaySDK,
+    type Request,
+    type RequestsSDK,
+    type Response,
+    type RuntimeSDK,
+    type ScopeSDK,
   } from "caido:utils";
 
   /**

@@ -12,6 +12,7 @@
     "src/*"
   ],
   "scripts": {
+    "build": "echo 'No build step required for @caido/sdk-frontend'",
     "generate:doc": "typedoc"
   },
   "peerDependencies": {

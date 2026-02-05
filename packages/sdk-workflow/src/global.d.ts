@@ -13,22 +13,21 @@ import {
   RequestsSDK as _RequestsSDK,
   Response as _Response,
 } from "caido:utils";
-
 import {
-  HttpInput as _HttpInput,
-  PassiveInput as _PassiveInput,
   BytesInput as _BytesInput,
   ConvertInput as _ConvertInput,
   Data as _Data,
   Decision as _Decision,
+  HttpInput as _HttpInput,
   NodeInput as _NodeInput,
-  NodeResult as _NodeResult,
   NodeInputHTTP as _NodeInputHTTP,
+  NodeResult as _NodeResult,
+  PassiveInput as _PassiveInput,
   SDK as _SDK,
 } from "caido:workflow";
 
 declare global {
-  //@ts-ignore TS2666
+  //@ts-expect-error TS2666
   export {
     _Body as Body,
     _Request as Request,
@@ -45,7 +44,7 @@ declare global {
     _FindingsSDK as FindingsSDK,
   };
 
-  //@ts-ignore TS2666
+  //@ts-expect-error TS2666
   export {
     _HttpInput as HttpInput,
     _PassiveInput as PassiveInput,
