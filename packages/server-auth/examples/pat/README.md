@@ -20,7 +20,7 @@ This example demonstrates how to authenticate with a Caido instance using a Pers
 3. Run the example:
 
    ```bash
-   pnpm dev
+   pnpm start
    ```
 
 ## Environment Variables
@@ -30,5 +30,4 @@ This example demonstrates how to authenticate with a Caido instance using a Pers
 
 ## Getting a PAT
 
-You can create a Personal Access Token from your Caido dashboard at:
-https://dashboard.caido.io/settings/tokens
+Follow [our guide](https://docs.caido.io/dashboard/guides/create_pat.html) to learn how to create a Personal Access Token.

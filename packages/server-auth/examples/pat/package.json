@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "run": "node src/index.ts"
+    "start": "node ./index.ts"
   },
   "dependencies": {
     "@caido/server-auth": "workspace:*"
