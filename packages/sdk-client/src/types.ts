@@ -1,4 +1,5 @@
-import type { AuthenticationRequest } from "@caido/server-auth";
+import type { AuthOptions } from "@/auth/types.js";
+import type { Logger } from "@/logger.js";
 
 /**
  * Options for creating a new Caido client.
@@ -15,47 +16,12 @@ export interface CaidoOptions {
 
   /** Request configuration */
   request?: RequestOptions;
-}
-
-/**
- * Authentication options.
- *
- * Provide one of:
- * - `pat` - Personal Access Token for automatic device code approval
- * - `token` - Direct access token (string) or token pair with refresh capability
- * - Neither - falls back to browser-based authentication
- */
-export interface AuthOptions {
-  /** Personal Access Token for automatic authentication */
-  pat?: string;
 
   /**
-   * Direct access token.
-   * - `string` - Use as a static access token (no refresh capability)
-   * - `{ accessToken, refreshToken }` - Use with refresh capability
+   * Logger instance for debug/info/warn/error output.
+   * Defaults to `ConsoleLogger`.
    */
-  token?: string | TokenPair;
-
-  /** Enable token caching to disk */
-  cache?: boolean;
-
-  /** File path for the token cache (requires `cache: true`) */
-  cachePath?: string;
-
-  /**
-   * Callback for browser-based authentication.
-   * Called with the authentication request containing the verification URL.
-   * Defaults to `console.log` if not provided.
-   */
-  onRequest?: (request: AuthenticationRequest) => void;
-}
-
-/**
- * A pair of access and refresh tokens.
- */
-export interface TokenPair {
-  accessToken: string;
-  refreshToken: string;
+  logger?: Logger;
 }
 
 /**

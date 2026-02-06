@@ -1,13 +1,19 @@
 export { Caido } from "@/client.js";
 
 export type {
-  AuthOptions,
   CaidoOptions,
   RequestOptions,
   RetryOptions,
   RetryRequest,
-  TokenPair,
 } from "@/types.js";
+export type {
+  AuthCacheOptions,
+  AuthOptions,
+  BrowserAuthOptions,
+  PATAuthOptions,
+  TokenAuthOptions,
+  TokenPair,
+} from "@/auth/types.js";
 
 export {
   AuthorizationUserError,
@@ -19,6 +25,18 @@ export {
   toUserError,
   type GraphQLErrorEntry,
 } from "@/errors.js";
+
+export { ConsoleLogger, type Logger } from "@/logger.js";
+
+export type { CachedToken, TokenCache } from "@/auth/cache/types.js";
+export {
+  FileTokenCache,
+  type FileTokenCacheOptions,
+} from "@/auth/cache/file.js";
+export {
+  LocalStorageTokenCache,
+  type LocalStorageTokenCacheOptions,
+} from "@/auth/cache/localstorage.js";
 
 export { GraphQLClient } from "@/graphql/index.js";
 export { RestClient, type RestRequestOptions } from "@/rest/index.js";

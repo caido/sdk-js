@@ -6,8 +6,11 @@ import {
 } from "@caido/server-auth";
 
 import type { CachedToken, TokenCache } from "./cache/types.js";
+import type { AuthOptions, BrowserAuthOptions } from "./types.js";
+import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 
-import type { AuthOptions, RequestOptions } from "@/types.js";
+import type { Logger } from "@/logger.js";
+import type { RequestOptions } from "@/types.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 interface TokenState {
@@ -21,19 +24,24 @@ export class AuthManager {
   private readonly authOptions: AuthOptions | undefined;
   private readonly requestOptions: RequestOptions | undefined;
   private readonly cache: TokenCache | undefined;
+  private readonly logger: Logger;
 
   private tokenState: TokenState | undefined;
   private caidoAuth: CaidoAuth | undefined;
 
   constructor(
     instanceUrl: string,
+    logger: Logger,
     authOptions?: AuthOptions,
     requestOptions?: RequestOptions,
   ) {
     this.instanceUrl = instanceUrl;
+    this.logger = logger;
     this.authOptions = authOptions;
     this.requestOptions = requestOptions;
-    this.cache = authOptions?.cache;
+    this.cache = isPresent(authOptions?.cache)
+      ? resolveCache(authOptions.cache, logger)
+      : undefined;
   }
 
   getAccessToken(): string | undefined {
@@ -48,14 +56,17 @@ export class AuthManager {
     const auth = this.authOptions;
 
     if (isPresent(this.cache)) {
+      this.logger.debug("Attempting to load cached token");
       const cached = await this.cache.load();
       if (isPresent(cached)) {
+        this.logger.info("Loaded token from cache");
         this.tokenState = fromCachedToken(cached);
         return;
       }
     }
 
-    if (isPresent(auth?.token)) {
+    if (isPresent(auth) && isTokenAuth(auth)) {
+      this.logger.debug("Using provided token");
       if (typeof auth.token === "string") {
         this.tokenState = { accessToken: auth.token };
       } else {
@@ -68,9 +79,11 @@ export class AuthManager {
       return;
     }
 
+    this.logger.info("Starting authentication flow");
     const caidoAuth = this.getOrCreateCaidoAuth();
     const token = await caidoAuth.startAuthenticationFlow();
     this.applyAuthToken(token);
+    this.logger.info("Authentication flow completed");
     await this.maybeCacheToken();
   }
 
@@ -83,9 +96,11 @@ export class AuthManager {
       );
     }
 
+    this.logger.debug("Refreshing access token");
     const caidoAuth = this.getOrCreateCaidoAuth();
     const token = await caidoAuth.refreshToken(refreshToken);
     this.applyAuthToken(token);
+    this.logger.info("Access token refreshed");
     await this.maybeCacheToken();
   }
 
@@ -100,15 +115,17 @@ export class AuthManager {
   private createApprover() {
     const auth = this.authOptions;
 
-    if (isPresent(auth?.pat)) {
+    if (isPresent(auth) && isPATAuth(auth)) {
       return new PATApprover({ pat: auth.pat });
     }
 
+    const logger = this.logger;
+    const browserAuth = auth as BrowserAuthOptions | undefined;
     const onRequest =
-      auth?.onRequest ??
+      browserAuth?.onRequest ??
       ((request) => {
-        console.log(
-          `\nPlease visit the following URL to authenticate:\n${request.verificationUrl}\n\nEnter code: ${request.userCode}\n`,
+        logger.info(
+          `Please visit the following URL to authenticate: ${request.verificationUrl}`,
         );
       });
 
@@ -126,6 +143,7 @@ export class AuthManager {
   private async maybeCacheToken(): Promise<void> {
     if (isAbsent(this.cache) || isAbsent(this.tokenState)) return;
 
+    this.logger.debug("Saving token to cache");
     await this.cache.save(toCachedToken(this.tokenState));
   }
 }

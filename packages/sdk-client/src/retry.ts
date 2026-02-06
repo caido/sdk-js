@@ -1,3 +1,4 @@
+import type { Logger } from "@/logger.js";
 import type { RetryOptions, RetryRequest } from "@/types.js";
 import { isPresent } from "@/utils/optional.js";
 
@@ -21,6 +22,7 @@ export async function withRetry<T>(
   operation: () => Promise<T>,
   retryConfig: ResolvedRetryConfig,
   requestInfo: { url: string; method: string; body?: unknown },
+  logger: Logger,
   shouldRetry: (error: Error) => boolean = () => true,
 ): Promise<T> {
   let lastError: Error | undefined;
@@ -57,6 +59,11 @@ export async function withRetry<T>(
           throw err;
         }
       }
+
+      logger.warn(
+        `Retrying request ${requestInfo.method} ${requestInfo.url} (attempt ${attempt + 1}/${retryConfig.retries})`,
+        err,
+      );
     }
   }
 

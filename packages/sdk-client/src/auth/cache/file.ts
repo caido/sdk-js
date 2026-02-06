@@ -1,17 +1,21 @@
 import type { CachedToken, TokenCache } from "./types.js";
 
+import type { Logger } from "@/logger.js";
 import type { Maybe } from "@/utils/optional.js";
 import { isAbsent } from "@/utils/optional.js";
 
 export interface FileTokenCacheOptions {
   path?: string;
+  logger?: Logger;
 }
 
 export class FileTokenCache implements TokenCache {
   private readonly path: string;
+  private readonly logger: Logger | undefined;
 
   constructor(options?: FileTokenCacheOptions) {
     this.path = options?.path ?? ".caido-token.json";
+    this.logger = options?.logger;
   }
 
   async load(): Promise<Maybe<CachedToken>> {
@@ -33,7 +37,8 @@ export class FileTokenCache implements TokenCache {
         refreshToken: parsed.refreshToken,
         expiresAt: parsed.expiresAt,
       };
-    } catch {
+    } catch (error) {
+      this.logger?.debug("Failed to load cached token from file", error);
       return undefined;
     }
   }
@@ -49,8 +54,8 @@ export class FileTokenCache implements TokenCache {
 
       const data = JSON.stringify(token, null, 2);
       await fs.writeFile(resolvedPath, data, { mode: 0o600 });
-    } catch {
-      // Silently fail on cache write errors
+    } catch (error) {
+      this.logger?.warn("Failed to save token cache to file", error);
     }
   }
 
@@ -59,8 +64,8 @@ export class FileTokenCache implements TokenCache {
       const fs = await import("node:fs/promises");
       const resolvedPath = await this.resolvePath();
       await fs.unlink(resolvedPath);
-    } catch {
-      // Silently fail if file doesn't exist
+    } catch (error) {
+      this.logger?.warn("Failed to clear token cache file", error);
     }
   }
 

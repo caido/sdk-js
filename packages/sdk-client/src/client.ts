@@ -1,5 +1,6 @@
-import { AuthManager } from "@/auth.js";
+import { AuthManager } from "@/auth/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
+import { ConsoleLogger } from "@/logger.js";
 import { RestClient } from "@/rest/index.js";
 import { resolveRetryConfig } from "@/retry.js";
 import { UserSDK } from "@/sdks/user/index.js";
@@ -23,7 +24,6 @@ import type { CaidoOptions } from "@/types.js";
  * await client.connect();
  *
  * const viewer = await client.user.viewer();
- * console.log(viewer);
  * ```
  *
  * @example
@@ -41,6 +41,17 @@ import type { CaidoOptions } from "@/types.js";
  * // Browser-based authentication (interactive)
  * const client = new Caido({
  *   url: "http://localhost:8080",
+ *   auth: { onRequest: (req) => showAuthDialog(req.verificationUrl) },
+ * });
+ * await client.connect();
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // With file-based token caching
+ * const client = new Caido({
+ *   url: "http://localhost:8080",
+ *   auth: { pat: "caido_xxxxx", cache: { file: ".caido-token.json" } },
  * });
  * await client.connect();
  * ```
@@ -58,14 +69,21 @@ export class Caido {
   private readonly auth: AuthManager;
 
   constructor(options: CaidoOptions) {
+    const logger = options.logger ?? new ConsoleLogger();
     const retryConfig = resolveRetryConfig(options.retry);
 
-    this.auth = new AuthManager(options.url, options.auth, options.request);
+    this.auth = new AuthManager(
+      options.url,
+      logger,
+      options.auth,
+      options.request,
+    );
 
     this.graphql = new GraphQLClient(
       options.url,
       this.auth,
       retryConfig,
+      logger,
       options.request,
     );
 
@@ -73,6 +91,7 @@ export class Caido {
       options.url,
       this.auth,
       retryConfig,
+      logger,
       options.request,
     );
 
