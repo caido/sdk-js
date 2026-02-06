@@ -2,6 +2,8 @@ import type { Logger } from "@/logger.js";
 import type { RetryOptions, RetryRequest } from "@/types.js";
 import { isPresent } from "@/utils/optional.js";
 
+const DEFAULT_RETRIES = 3;
+
 export interface ResolvedRetryConfig {
   enabled: boolean;
   retries: number;
@@ -9,11 +11,19 @@ export interface ResolvedRetryConfig {
 }
 
 export function resolveRetryConfig(
-  options?: RetryOptions,
+  options?: RetryOptions | boolean,
 ): ResolvedRetryConfig {
+  if (typeof options === "boolean") {
+    return {
+      enabled: options,
+      retries: DEFAULT_RETRIES,
+      callback: undefined,
+    };
+  }
+
   return {
     enabled: options?.enabled ?? true,
-    retries: options?.retries ?? 3,
+    retries: options?.retries ?? DEFAULT_RETRIES,
     callback: options?.callback,
   };
 }

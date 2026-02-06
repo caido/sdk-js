@@ -238,6 +238,8 @@ export class GraphQLClient {
         return options;
       },
       fetch: fetchFn,
+      requestPolicy: "network-only",
+      preferGetMethod: false,
     });
   }
 

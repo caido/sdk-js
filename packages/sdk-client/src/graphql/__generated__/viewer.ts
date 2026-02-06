@@ -1,7 +1,6 @@
-// @ts-nocheck
-import * as Types from "./types";
+import * as Types from "./types.js";
 
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type ScriptUserFragment = { __typename: "ScriptUser"; id: string };
 
 export type GuestUserFragment = { __typename: "GuestUser"; id: string };

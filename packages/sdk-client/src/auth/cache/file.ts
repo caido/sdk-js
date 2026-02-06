@@ -38,7 +38,7 @@ export class FileTokenCache implements TokenCache {
         expiresAt: parsed.expiresAt,
       };
     } catch (error) {
-      this.logger?.debug("Failed to load cached token from file", error);
+      this.logger?.debug("Failed to load cached token from file");
       return undefined;
     }
   }

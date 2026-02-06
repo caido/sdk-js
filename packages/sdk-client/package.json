@@ -41,12 +41,10 @@
   },
   "devDependencies": {
     "@types/node": "25.0.10",
-    "@graphql-codegen/add": "5.0.3",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/near-operation-file-preset": "3.0.0",
     "@graphql-codegen/typed-document-node": "5.0.11",
     "@graphql-codegen/typescript": "4.1.1",
-    "@graphql-codegen/typescript-generic-sdk": "4.0.1",
     "@graphql-codegen/typescript-operations": "4.3.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@hey-api/openapi-ts": "0.76.0",

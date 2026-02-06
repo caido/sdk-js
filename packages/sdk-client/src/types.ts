@@ -12,7 +12,7 @@ export interface CaidoOptions {
   auth?: AuthOptions;
 
   /** Retry configuration */
-  retry?: RetryOptions;
+  retry?: RetryOptions | boolean;
 
   /** Request configuration */
   request?: RequestOptions;

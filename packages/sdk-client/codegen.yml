@@ -19,7 +19,6 @@ generates:
 
   ./src/graphql/__generated__/:
     plugins:
-      - add
       - typescript-operations
       - typed-document-node
     preset: near-operation-file
@@ -28,7 +27,6 @@ generates:
       extension: .ts
       baseTypesPath: types.ts
     config:
-      content: '// @ts-nocheck'
       scalars:
         DateTime: Date
         Duration: number
