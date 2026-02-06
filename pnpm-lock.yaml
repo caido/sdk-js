@@ -62,9 +62,6 @@ importers:
         specifier: ^6.0.0
         version: 6.3.5
     devDependencies:
-      '@graphql-codegen/add':
-        specifier: 5.0.3
-        version: 5.0.3(graphql@16.12.0)
       '@graphql-codegen/cli':
         specifier: 5.0.3
         version: 5.0.3(@types/node@25.0.10)(graphql@16.12.0)(typescript@5.6.2)
@@ -77,9 +74,6 @@ importers:
       '@graphql-codegen/typescript':
         specifier: 4.1.1
         version: 4.1.1(graphql@16.12.0)
-      '@graphql-codegen/typescript-generic-sdk':
-        specifier: 4.0.1
-        version: 4.0.1(graphql-tag@2.12.6(graphql@16.12.0))(graphql@16.12.0)
       '@graphql-codegen/typescript-operations':
         specifier: 4.3.1
         version: 4.3.1(graphql@16.12.0)
@@ -89,6 +83,19 @@ importers:
       '@hey-api/openapi-ts':
         specifier: 0.76.0
         version: 0.76.0(typescript@5.6.2)
+      '@types/node':
+        specifier: 25.0.10
+        version: 25.0.10
+      typescript:
+        specifier: 5.6.2
+        version: 5.6.2
+
+  packages/sdk-client/examples/base:
+    dependencies:
+      '@caido/sdk-client':
+        specifier: workspace:*
+        version: link:../..
+    devDependencies:
       '@types/node':
         specifier: 25.0.10
         version: 25.0.10
@@ -652,13 +659,6 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-
-  '@graphql-codegen/typescript-generic-sdk@4.0.1':
-    resolution: {integrity: sha512-DBezPLnzeWnD28EOj6KhNpG463bh7PvkoRf2om4qeLPiaPKwril+xX5o4pxVbUzlYMwfYK9IJ2GrfU6c2mwJTA==}
-    engines: {node: '>= 16.0.0'}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-tag: ^2.0.0
 
   '@graphql-codegen/typescript-operations@4.3.1':
     resolution: {integrity: sha512-yW5Iia6IK1VKiPm3oeukYMQN5pEBLwRlG8ZzQA9beeLQ8PskKyz6mjar6U7dJ2hc8pv/qT4R8kcJOQ2RloniAQ==}
@@ -3421,10 +3421,10 @@ snapshots:
     dependencies:
       '@babel/core': 7.29.0
       '@babel/generator': 7.29.0
-      '@babel/parser': 7.27.5
+      '@babel/parser': 7.29.0
       '@babel/runtime': 7.28.6
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
       babel-preset-fbjs: 3.4.0(@babel/core@7.29.0)
       chalk: 4.1.2
       fb-watchman: 2.0.2
@@ -3444,7 +3444,7 @@ snapshots:
   '@ardatan/relay-compiler@12.0.3(graphql@16.12.0)':
     dependencies:
       '@babel/generator': 7.29.0
-      '@babel/parser': 7.27.5
+      '@babel/parser': 7.29.0
       '@babel/runtime': 7.28.6
       chalk: 4.1.2
       fb-watchman: 2.0.2
@@ -3504,7 +3504,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.27.3':
     dependencies:
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
 
   '@babel/helper-compilation-targets@7.28.6':
     dependencies:
@@ -3554,7 +3554,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
 
   '@babel/helper-plugin-utils@7.28.6': {}
 
@@ -3570,7 +3570,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.27.1':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -3956,7 +3956,7 @@ snapshots:
     dependencies:
       '@babel/generator': 7.29.0
       '@babel/template': 7.28.6
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
       '@graphql-codegen/client-preset': 4.8.3(graphql@16.12.0)
       '@graphql-codegen/core': 4.0.2(graphql@16.12.0)
       '@graphql-codegen/plugin-helpers': 5.1.1(graphql@16.12.0)
@@ -4112,18 +4112,6 @@ snapshots:
       tslib: 2.6.3
     transitivePeerDependencies:
       - encoding
-
-  '@graphql-codegen/typescript-generic-sdk@4.0.1(graphql-tag@2.12.6(graphql@16.12.0))(graphql@16.12.0)':
-    dependencies:
-      '@graphql-codegen/plugin-helpers': 3.1.2(graphql@16.12.0)
-      '@graphql-codegen/visitor-plugin-common': 2.13.1(graphql@16.12.0)
-      auto-bind: 4.0.0
-      graphql: 16.12.0
-      graphql-tag: 2.12.6(graphql@16.12.0)
-      tslib: 2.6.3
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
 
   '@graphql-codegen/typescript-operations@4.3.1(graphql@16.12.0)':
     dependencies:
@@ -4371,10 +4359,10 @@ snapshots:
   '@graphql-tools/graphql-tag-pluck@8.3.27(graphql@16.12.0)':
     dependencies:
       '@babel/core': 7.29.0
-      '@babel/parser': 7.27.5
+      '@babel/parser': 7.29.0
       '@babel/plugin-syntax-import-assertions': 7.28.6(@babel/core@7.29.0)
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.27.6
+      '@babel/types': 7.29.0
       '@graphql-tools/utils': 11.0.0(graphql@16.12.0)
       graphql: 16.12.0
       tslib: 2.8.1

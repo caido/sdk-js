@@ -5,3 +5,4 @@ minimumReleaseAgeExclude:
 packages:
   - 'packages/*'
   - 'packages/server-auth/examples/*'
+  - 'packages/sdk-client/examples/*'
