@@ -23,7 +23,6 @@ export {
   GraphQLRequestError,
   OtherUserError,
   toUserError,
-  type GraphQLErrorEntry,
 } from "@/errors.js";
 
 export { ConsoleLogger, type Logger } from "@/logger.js";

@@ -1,5 +1,6 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { type AnyVariables, Client, type OperationResult } from "@urql/core";
+import { GraphQLError } from "graphql";
 import {
   createClient as createWSClient,
   type Client as WSClient,
@@ -12,17 +13,17 @@ import {
   createSubscriptionExchange,
 } from "./exchanges/index.js";
 
-import type { AuthManager } from "@/auth.js";
+import type { AuthManager } from "@/auth/index.js";
 import {
   AuthorizationUserError,
-  type GraphQLErrorEntry,
   GraphQLRequestError,
   toUserError,
 } from "@/errors.js";
+import type { Logger } from "@/logger.js";
 import type { ResolvedRetryConfig } from "@/retry.js";
 import { withRetry } from "@/retry.js";
 import type { RequestOptions } from "@/types.js";
-import { isPresent } from "@/utils/optional.js";
+import { isAbsent, isPresent } from "@/utils/optional.js";
 
 type UrqlOperationFn<TData, TVars extends AnyVariables> = (
   client: Client,
@@ -39,13 +40,16 @@ export class GraphQLClient {
   private readonly auth: AuthManager;
   private readonly retryConfig: ResolvedRetryConfig;
   private readonly requestOptions: RequestOptions | undefined;
+  private readonly logger: Logger;
   private client: Client;
   private wsClient: WSClient;
+  private sockets: WebSocket[] = [];
 
   constructor(
     baseUrl: string,
     auth: AuthManager,
     retryConfig: ResolvedRetryConfig,
+    logger: Logger,
     requestOptions?: RequestOptions,
   ) {
     const normalizedUrl = baseUrl.replace(/\/$/, "");
@@ -53,9 +57,13 @@ export class GraphQLClient {
     this.wsUrl = this.toWebSocketUrl(normalizedUrl);
     this.auth = auth;
     this.retryConfig = retryConfig;
+    this.logger = logger;
     this.requestOptions = requestOptions;
     this.wsClient = this.createWSClient();
     this.client = this.createUrqlClient();
+
+    // Subscribe to token refresh events
+    this.auth.onTokenRefresh(() => this.closeSockets());
   }
 
   /**
@@ -118,16 +126,7 @@ export class GraphQLClient {
           const result = results.shift()!;
 
           if (result.error) {
-            throw new GraphQLRequestError(
-              result.error.graphQLErrors.map((e) => ({
-                message: e.message,
-                locations: e.locations as
-                  | { line: number; column: number }[]
-                  | undefined,
-                path: e.path,
-                extensions: e.extensions as Record<string, unknown> | undefined,
-              })),
-            );
+            throw new GraphQLRequestError(result.error.graphQLErrors);
           }
 
           if (isPresent(result.data)) {
@@ -152,15 +151,7 @@ export class GraphQLClient {
       const result = await operationFn(this.client, document, vars);
 
       if (result.error) {
-        const graphqlErrors: GraphQLErrorEntry[] =
-          result.error.graphQLErrors.map((e) => ({
-            message: e.message,
-            locations: e.locations as
-              | { line: number; column: number }[]
-              | undefined,
-            path: e.path,
-            extensions: e.extensions as Record<string, unknown> | undefined,
-          }));
+        const graphqlErrors = result.error.graphQLErrors;
 
         if (graphqlErrors.length > 0) {
           const firstUserError = graphqlErrors
@@ -172,12 +163,12 @@ export class GraphQLClient {
           throw new GraphQLRequestError(graphqlErrors);
         }
 
-        throw new GraphQLRequestError([{ message: result.error.message }]);
+        throw new GraphQLRequestError([new GraphQLError(result.error.message)]);
       }
 
-      if (!result.data) {
+      if (isAbsent(result.data)) {
         throw new GraphQLRequestError([
-          { message: "No data returned from GraphQL" },
+          new GraphQLError("No data returned from GraphQL"),
         ]);
       }
 
@@ -188,22 +179,51 @@ export class GraphQLClient {
       operation,
       this.retryConfig,
       { url: this.graphqlUrl, method: "POST", body: variables },
+      this.logger,
       (error) => !(error instanceof AuthorizationUserError),
     );
   }
 
   private createWSClient(): WSClient {
     const auth = this.auth;
+    const logger = this.logger;
+    const sockets = this.sockets;
 
     return createWSClient({
       url: this.wsUrl,
+      lazy: true,
+      shouldRetry: () => true,
       connectionParams: () => {
         const accessToken = auth.getAccessToken();
         return isPresent(accessToken)
           ? { Authorization: `Bearer ${accessToken}` }
           : {};
       },
+      on: {
+        connected: (socket) => {
+          logger.debug("Websocket connection established");
+          if (socket instanceof WebSocket) {
+            sockets.push(socket);
+          }
+        },
+        closed: () => {
+          logger.debug("Websocket connection closed");
+        },
+      },
     });
+  }
+
+  private closeSockets(): void {
+    this.logger.debug("Closing websocket connections due to token refresh");
+    // Close sockets
+    this.sockets.forEach((socket) => {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close(4205, "Client restart");
+      }
+    });
+
+    // Clear sockets
+    this.sockets.length = 0;
   }
 
   private createUrqlClient(): Client {

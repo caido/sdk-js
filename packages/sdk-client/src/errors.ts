@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql";
+
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 /**
@@ -64,24 +66,14 @@ export class OtherUserError extends CaidoError {
  * Error wrapping a full GraphQL error response.
  */
 export class GraphQLRequestError extends CaidoError {
-  readonly errors: readonly GraphQLErrorEntry[];
+  readonly errors: readonly GraphQLError[];
 
-  constructor(errors: readonly GraphQLErrorEntry[]) {
+  constructor(errors: readonly GraphQLError[]) {
     const messages = errors.map((e) => e.message).join("; ");
     super(`GraphQL error: ${messages}`);
     this.name = "GraphQLRequestError";
     this.errors = errors;
   }
-}
-
-/**
- * Shape of a single GraphQL error from the server response.
- */
-export interface GraphQLErrorEntry {
-  message: string;
-  locations?: readonly { line: number; column: number }[];
-  path?: readonly (string | number)[];
-  extensions?: Record<string, unknown>;
 }
 
 interface CaidoExtension {
@@ -95,7 +87,7 @@ interface CaidoExtension {
  * Returns `undefined` if the error doesn't have a recognized CAIDO extension.
  */
 export function toUserError(
-  error: GraphQLErrorEntry,
+  error: GraphQLError,
 ): AuthorizationUserError | CloudUserError | OtherUserError | undefined {
   const caidoExtension = error.extensions?.["CAIDO"] as
     | CaidoExtension
@@ -127,7 +119,7 @@ export function toUserError(
  * Check if a list of GraphQL errors contains an authorization error.
  */
 export function hasAuthorizationError(
-  errors: readonly GraphQLErrorEntry[],
+  errors: readonly GraphQLError[],
 ): boolean {
   return errors.some((e) => {
     const userError = toUserError(e);

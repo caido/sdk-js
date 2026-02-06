@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/require-await */
 import type { Exchange } from "@urql/core";
 import { type AuthConfig, authExchange } from "@urql/exchange-auth";
 
-import type { AuthManager } from "@/auth.js";
-import { type GraphQLErrorEntry, hasAuthorizationError } from "@/errors.js";
+import type { AuthManager } from "@/auth/index.js";
+import { hasAuthorizationError } from "@/errors.js";
 import { isAbsent } from "@/utils/optional.js";
 
 export const createAuthExchange = (options: {
@@ -24,17 +23,7 @@ export const createAuthExchange = (options: {
       },
 
       didAuthError(error) {
-        const graphqlErrors: GraphQLErrorEntry[] = error.graphQLErrors.map(
-          (e) => ({
-            message: e.message,
-            locations: e.locations as
-              | { line: number; column: number }[]
-              | undefined,
-            path: e.path,
-            extensions: e.extensions as Record<string, unknown> | undefined,
-          }),
-        );
-        return hasAuthorizationError(graphqlErrors);
+        return hasAuthorizationError(error.graphQLErrors);
       },
 
       async refreshAuth() {

@@ -28,6 +28,7 @@ export class AuthManager {
 
   private tokenState: TokenState | undefined;
   private caidoAuth: CaidoAuth | undefined;
+  private onTokenRefreshCallbacks: Set<() => void> = new Set();
 
   constructor(
     instanceUrl: string,
@@ -50,6 +51,30 @@ export class AuthManager {
 
   canRefresh(): boolean {
     return isPresent(this.tokenState?.refreshToken);
+  }
+
+  /**
+   * Subscribe to token refresh events.
+   * The callback will be called whenever the token is refreshed.
+   *
+   * @param callback - Function to call when token is refreshed
+   * @returns Unsubscribe function
+   */
+  onTokenRefresh(callback: () => void): () => void {
+    this.onTokenRefreshCallbacks.add(callback);
+    return () => {
+      this.onTokenRefreshCallbacks.delete(callback);
+    };
+  }
+
+  private notifyTokenRefresh(): void {
+    for (const callback of this.onTokenRefreshCallbacks) {
+      try {
+        callback();
+      } catch (error) {
+        this.logger.warn("Error in token refresh callback", error);
+      }
+    }
   }
 
   async authenticate(): Promise<void> {
@@ -102,6 +127,7 @@ export class AuthManager {
     this.applyAuthToken(token);
     this.logger.info("Access token refreshed");
     await this.maybeCacheToken();
+    this.notifyTokenRefresh();
   }
 
   private getOrCreateCaidoAuth(): CaidoAuth {
