@@ -1,0 +1,63 @@
+fragment ScriptUser on ScriptUser {
+  __typename
+  id
+}
+
+fragment GuestUser on GuestUser {
+  __typename
+  id
+}
+
+fragment CloudUser on CloudUser {
+  __typename
+  id
+  profile {
+    identity {
+      email
+      name
+    }
+    subscription {
+      plan {
+        name
+      }
+      entitlements {
+        name
+      }
+    }
+  }
+}
+
+fragment User on User {
+  ... on CloudUser {
+      __typename
+      id
+      profile {
+        identity {
+          email
+          name
+        }
+        subscription {
+          plan {
+            name
+          }
+          entitlements {
+            name
+          }
+        }
+      }
+    }
+    ... on GuestUser {
+      __typename
+      id
+    }
+    ... on ScriptUser {
+      __typename
+      id
+    }
+}
+
+query Viewer {
+  viewer {
+    ...User
+  }
+}

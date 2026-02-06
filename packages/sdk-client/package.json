@@ -28,7 +28,7 @@
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "generate": "pnpm generate:graphql && pnpm generate:rest",
-    "generate:graphql": "graphql-codegen --config codegen.ts",
+    "generate:graphql": "graphql-codegen --config codegen.yml",
     "generate:rest": "openapi-ts"
   },
   "dependencies": {
@@ -36,13 +36,14 @@
     "@urql/core": "^6.0.0",
     "@urql/exchange-auth": "^3.0.0",
     "graphql": "^16.12.0",
-    "graphql-ws": "^6.0.0"
+    "graphql-ws": "^6.0.0",
+    "wonka": "^6.0.0"
   },
   "devDependencies": {
+    "@types/node": "25.0.10",
     "@graphql-codegen/add": "5.0.3",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/near-operation-file-preset": "3.0.0",
-    "@graphql-codegen/schema-ast": "4.1.0",
     "@graphql-codegen/typed-document-node": "5.0.11",
     "@graphql-codegen/typescript": "4.1.1",
     "@graphql-codegen/typescript-generic-sdk": "4.0.1",
