@@ -1,5 +1,6 @@
+import type { AuthManager } from "@/auth/index.js";
 import { AuthorizationUserError } from "@/errors.js";
-import type { AuthManager } from "@/auth.js";
+import type { Logger } from "@/logger.js";
 import type { ResolvedRetryConfig } from "@/retry.js";
 import { withRetry } from "@/retry.js";
 import type { RequestOptions } from "@/types.js";
@@ -28,16 +29,19 @@ export class RestClient {
   private readonly retryConfig: ResolvedRetryConfig;
   private readonly fetchFn: typeof globalThis.fetch;
   private readonly timeout: number | undefined;
+  private readonly logger: Logger;
 
   constructor(
     baseUrl: string,
     auth: AuthManager,
     retryConfig: ResolvedRetryConfig,
+    logger: Logger,
     requestOptions?: RequestOptions,
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.auth = auth;
     this.retryConfig = retryConfig;
+    this.logger = logger;
     this.fetchFn = requestOptions?.fetch ?? globalThis.fetch;
     this.timeout = requestOptions?.timeout;
   }
@@ -117,20 +121,28 @@ export class RestClient {
       const response = await this.fetchFn(url.toString(), fetchOptions);
 
       if (!response.ok) {
-        if (response.status === 401 && !hasRefreshed && this.auth.canRefresh()) {
+        if (
+          response.status === 401 &&
+          !hasRefreshed &&
+          this.auth.canRefresh()
+        ) {
+          this.logger.debug("Received 401, attempting token refresh");
           hasRefreshed = true;
           await this.auth.refresh();
           return operation();
         }
 
-        const errorText = await response.text().catch(() => "Unknown error");
+        const errorText = await response.text().catch((error: unknown) => {
+          this.logger.warn("Failed to read error response body", error);
+          return "Unknown error";
+        });
         throw new Error(
           `REST request failed: ${method} ${requestPath} - ${response.status}: ${errorText}`,
         );
       }
 
       const contentType = response.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
+      if (isPresent(contentType) && contentType.includes("application/json")) {
         return (await response.json()) as T;
       }
 
@@ -141,6 +153,7 @@ export class RestClient {
       operation,
       this.retryConfig,
       { url: `${this.baseUrl}${requestPath}`, method, body },
+      this.logger,
       (error) => !(error instanceof AuthorizationUserError),
     );
   }
