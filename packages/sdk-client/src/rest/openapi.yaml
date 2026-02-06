@@ -1,0 +1,755 @@
+openapi: 3.1.0
+info:
+  title: Caido Proxy API
+  version: 0.55.0
+paths:
+  /ai/completion:
+    post:
+      tags:
+      - ai
+      operationId: completion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletionInput'
+        required: true
+      responses:
+        '200':
+          description: Streaming completion response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionPayload'
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/AIStreamedAssistantContent'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /backup/{backup_id}:
+    get:
+      tags:
+      - backup
+      operationId: backup
+      parameters:
+      - name: backup_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: Streaming backup file
+          content:
+            application/zip: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /ca.crt:
+    get:
+      tags:
+      - proxy
+      operationId: ca_cert
+      responses:
+        '200':
+          description: CA certificate
+          content:
+            application/octet-stream: {}
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+  /exports/data/{export_id}:
+    get:
+      tags:
+      - export
+      operationId: data_export
+      parameters:
+      - name: export_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ID'
+      responses:
+        '200':
+          description: Streamed data export
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /exports/logs:
+    get:
+      tags:
+      - export
+      operationId: logs_export
+      responses:
+        '200':
+          description: Logs archive
+          content:
+            application/zip: {}
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+  /graphql:
+    get:
+      tags:
+      - graphql
+      operationId: graphql_playground
+      responses:
+        '200':
+          description: GraphQL playground
+    post:
+      tags:
+      - graphql
+      operationId: graphql
+      responses:
+        '200':
+          description: GraphQL request
+          content:
+            application/json: {}
+  /graphql/{filename}:
+    get:
+      tags:
+      - graphql
+      operationId: graphql_playground_file
+      responses:
+        '200':
+          description: GraphQL playground file
+  /health:
+    get:
+      tags:
+      - proxy
+      operationId: health
+      responses:
+        '200':
+          description: Proxy API health
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthPayload'
+  /plugin/backend/{plugin_id}/function:
+    post:
+      tags:
+      - plugin
+      operationId: function
+      parameters:
+      - name: plugin_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FunctionInput'
+        required: true
+      responses:
+        '200':
+          description: Plugin function call
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionPayload'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /plugin/frontend/{plugin_id}/assets/{file_path}:
+    get:
+      tags:
+      - plugin
+      operationId: get_plugin_assets_file
+      parameters:
+      - name: plugin_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ID'
+      - name: file_path
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Plugin asset file
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /plugin/frontend/{plugin_id}/{file_name}:
+    get:
+      tags:
+      - plugin
+      operationId: get_plugin_file
+      parameters:
+      - name: plugin_id
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ID'
+      - name: file_name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Plugin file
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /ws/graphql:
+    get:
+      tags:
+      - graphql
+      operationId: graphql_ws
+      responses:
+        '101':
+          description: GraphQL WebSocket
+components:
+  schemas:
+    AIAssistantContent:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/AIText'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - text
+      - allOf:
+        - $ref: '#/components/schemas/AIToolCall'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - toolcall
+      - allOf:
+        - $ref: '#/components/schemas/AIReasoning'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - reasoning
+    AIMessage:
+      oneOf:
+      - type: object
+        required:
+        - content
+        - role
+        properties:
+          content:
+            type: array
+            items:
+              $ref: '#/components/schemas/AIUserContent'
+          role:
+            type: string
+            enum:
+            - user
+      - type: object
+        required:
+        - content
+        - role
+        properties:
+          content:
+            type: array
+            items:
+              $ref: '#/components/schemas/AIAssistantContent'
+          id:
+            type:
+            - string
+            - 'null'
+          role:
+            type: string
+            enum:
+            - assistant
+    AIReasoning:
+      type: object
+      required:
+      - reasoning
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        reasoning:
+          type: array
+          items:
+            type: string
+        signature:
+          type:
+          - string
+          - 'null'
+    AIReasoningEffort:
+      type: string
+      enum:
+      - low
+      - medium
+      - high
+    AIReasoningEnd:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        signature:
+          type:
+          - string
+          - 'null'
+    AIStreamError:
+      type: object
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+    AIStreamedAssistantContent:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/AIText'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - text
+      - allOf:
+        - $ref: '#/components/schemas/AIToolCall'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - tool-call
+      - allOf:
+        - $ref: '#/components/schemas/AIToolCallDelta'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - tool-call-delta
+      - allOf:
+        - $ref: '#/components/schemas/AIReasoning'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - reasoning
+      - allOf:
+        - $ref: '#/components/schemas/AIReasoningEnd'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - reasoning-end
+      - allOf:
+        - $ref: '#/components/schemas/AIStreamError'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - error
+      - type: object
+        required:
+        - kind
+        properties:
+          kind:
+            type: string
+            enum:
+            - final
+    AIStructuredOutput:
+      type: object
+      required:
+      - name
+      - schema
+      properties:
+        name:
+          type: string
+        schema: {}
+        strict:
+          type:
+          - boolean
+          - 'null'
+    AIText:
+      type: object
+      required:
+      - text
+      properties:
+        text:
+          type: string
+    AIToolCall:
+      type: object
+      required:
+      - call_id
+      - function
+      properties:
+        additional_params: {}
+        call_id:
+          type: string
+        function:
+          $ref: '#/components/schemas/AIToolFunction'
+        signature:
+          type:
+          - string
+          - 'null'
+    AIToolCallDelta:
+      type: object
+      required:
+      - call_id
+      - content
+      properties:
+        call_id:
+          type: string
+        content:
+          $ref: '#/components/schemas/AIToolCallDeltaContent'
+    AIToolCallDeltaContent:
+      oneOf:
+      - type: object
+        required:
+        - name
+        - kind
+        properties:
+          kind:
+            type: string
+            enum:
+            - name
+          name:
+            type: string
+      - type: object
+        required:
+        - delta
+        - kind
+        properties:
+          delta:
+            type: string
+          kind:
+            type: string
+            enum:
+            - delta
+    AIToolDefinition:
+      type: object
+      required:
+      - name
+      - description
+      - parameters
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        parameters: {}
+    AIToolFunction:
+      type: object
+      required:
+      - name
+      - arguments
+      properties:
+        arguments: {}
+        name:
+          type: string
+    AIToolResult:
+      type: object
+      required:
+      - call_id
+      - content
+      properties:
+        call_id:
+          type: string
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIToolResultContent'
+    AIToolResultContent:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/AIText'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - text
+    AIUserContent:
+      oneOf:
+      - allOf:
+        - $ref: '#/components/schemas/AIText'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - text
+      - allOf:
+        - $ref: '#/components/schemas/AIToolResult'
+        - type: object
+          required:
+          - kind
+          properties:
+            kind:
+              type: string
+              enum:
+              - toolresult
+    CompletionCapabilities:
+      type: object
+      required:
+      - reasoning
+      - structured_output
+      properties:
+        reasoning:
+          type: boolean
+        structured_output:
+          type: boolean
+    CompletionInput:
+      type: object
+      required:
+      - stream
+      - model
+      - request
+      properties:
+        model:
+          $ref: '#/components/schemas/CompletionModel'
+        request:
+          $ref: '#/components/schemas/CompletionRequest'
+        stream:
+          type: boolean
+    CompletionModel:
+      type: object
+      required:
+      - provider
+      - name
+      properties:
+        capabilities:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/CompletionCapabilities'
+        name:
+          type: string
+        provider:
+          $ref: '#/components/schemas/CompletionProvider'
+    CompletionPayload:
+      type: object
+      required:
+      - choices
+      properties:
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIAssistantContent'
+    CompletionProvider:
+      type: string
+      enum:
+      - openai
+      - anthropic
+      - google
+      - openrouter
+    CompletionReasoning:
+      type: object
+      required:
+      - effort
+      properties:
+        effort:
+          $ref: '#/components/schemas/AIReasoningEffort'
+    CompletionRequest:
+      type: object
+      required:
+      - messages
+      properties:
+        max_tokens:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 0
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/AIMessage'
+        reasoning:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/CompletionReasoning'
+        structured_output:
+          oneOf:
+          - type: 'null'
+          - $ref: '#/components/schemas/AIStructuredOutput'
+        system:
+          type:
+          - string
+          - 'null'
+        temperature:
+          type:
+          - number
+          - 'null'
+          format: double
+        tools:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AIToolDefinition'
+    ErrorResponse:
+      type: object
+      required:
+      - code
+      - error
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          minimum: 0
+        error:
+          type: string
+        message:
+          type: string
+    FunctionErrorPayload:
+      oneOf:
+      - type: object
+        required:
+        - name
+        - kind
+        properties:
+          kind:
+            type: string
+            enum:
+            - invalid_procedure
+          name:
+            type: string
+      - type: object
+        required:
+        - expected
+        - found
+        - kind
+        properties:
+          expected:
+            type: string
+          found:
+            type: string
+          kind:
+            type: string
+            enum:
+            - invalid_output
+      - type: object
+        required:
+        - kind
+        properties:
+          kind:
+            type: string
+            enum:
+            - thrown
+          message:
+            type:
+            - string
+            - 'null'
+          stack:
+            type:
+            - string
+            - 'null'
+    FunctionInput:
+      type: object
+      required:
+      - name
+      - args
+      properties:
+        args:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+    FunctionPayload:
+      oneOf:
+      - type: object
+        required:
+        - kind
+        properties:
+          kind:
+            type: string
+            enum:
+            - success
+          returns:
+            type:
+            - string
+            - 'null'
+      - type: object
+        required:
+        - error
+        - kind
+        properties:
+          error:
+            $ref: '#/components/schemas/FunctionErrorPayload'
+          kind:
+            type: string
+            enum:
+            - error
+    HealthPayload:
+      type: object
+      required:
+      - name
+      - version
+      - ready
+      properties:
+        name:
+          type: string
+        ready:
+          type: boolean
+        version:
+          type: string
+    ID:
+      type: string
