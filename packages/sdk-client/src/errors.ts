@@ -1,4 +1,4 @@
-import { GraphQLError } from "graphql";
+import { type GraphQLError } from "graphql";
 
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
@@ -25,7 +25,7 @@ export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
  * This typically means the access token is expired or invalid.
  */
 export class AuthorizationUserError extends CaidoError {
-  readonly code = ErrorCodes.AUTHORIZATION;
+  readonly code: ErrorCode = ErrorCodes.AUTHORIZATION;
   readonly reason: string;
 
   constructor(data: { reason: string }) {
@@ -39,7 +39,7 @@ export class AuthorizationUserError extends CaidoError {
  * Error thrown when the server returns a cloud-related error.
  */
 export class CloudUserError extends CaidoError {
-  readonly code = ErrorCodes.CLOUD;
+  readonly code: ErrorCode = ErrorCodes.CLOUD;
   readonly cloudReason: string;
 
   constructor(data: { cloudReason: string }) {

@@ -58,10 +58,10 @@ importers:
       graphql-ws:
         specifier: ^6.0.0
         version: 6.0.7(graphql@16.12.0)(ws@8.19.0)
+      wonka:
+        specifier: ^6.0.0
+        version: 6.3.5
     devDependencies:
-      '@caido/server-schema':
-        specifier: workspace:*
-        version: link:../server-schema
       '@graphql-codegen/add':
         specifier: 5.0.3
         version: 5.0.3(graphql@16.12.0)
@@ -71,9 +71,6 @@ importers:
       '@graphql-codegen/near-operation-file-preset':
         specifier: 3.0.0
         version: 3.0.0(graphql@16.12.0)
-      '@graphql-codegen/schema-ast':
-        specifier: 4.1.0
-        version: 4.1.0(graphql@16.12.0)
       '@graphql-codegen/typed-document-node':
         specifier: 5.0.11
         version: 5.0.11(graphql@16.12.0)
@@ -92,6 +89,9 @@ importers:
       '@hey-api/openapi-ts':
         specifier: 0.76.0
         version: 0.76.0(typescript@5.6.2)
+      '@types/node':
+        specifier: 25.0.10
+        version: 25.0.10
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -159,8 +159,6 @@ importers:
       typescript:
         specifier: 5.6.2
         version: 5.6.2
-
-  packages/server-schema: {}
 
 packages:
 
