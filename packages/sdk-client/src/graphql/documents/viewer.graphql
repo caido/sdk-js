@@ -1,34 +1,6 @@
-fragment ScriptUser on ScriptUser {
-  __typename
-  id
-}
-
-fragment GuestUser on GuestUser {
-  __typename
-  id
-}
-
-fragment CloudUser on CloudUser {
-  __typename
-  id
-  profile {
-    identity {
-      email
-      name
-    }
-    subscription {
-      plan {
-        name
-      }
-      entitlements {
-        name
-      }
-    }
-  }
-}
-
-fragment User on User {
-  ... on CloudUser {
+query Viewer {
+  viewer {
+    ... on CloudUser {
       __typename
       id
       profile {
@@ -54,10 +26,5 @@ fragment User on User {
       __typename
       id
     }
-}
-
-query Viewer {
-  viewer {
-    ...User
   }
 }
