@@ -23,10 +23,12 @@ export class PluginSDK {
     this.rest = rest;
   }
 
-  async pluginPackage(id: string): Promise<PluginPackage | undefined> {
+  async pluginPackage(manifestId: string): Promise<PluginPackage | undefined> {
     const result = await this.graphql.query(PluginPackagesDocument, {});
 
-    const pluginPackage = result.pluginPackages.find((p) => p.id === id);
+    const pluginPackage = result.pluginPackages.find(
+      (p) => p.manifestId === manifestId,
+    );
     if (!pluginPackage) {
       return undefined;
     }
@@ -48,7 +50,7 @@ type CallFunctionInput = {
   /**
    * The arguments to pass to the function.
    */
-  arguments: Array<Json>;
+  arguments?: Array<Json>;
 };
 
 export class PluginPackage {
@@ -83,14 +85,12 @@ export class PluginPackage {
 
     const body: FunctionInput = {
       name: input.name,
-      args: input.arguments.map((arg) => JSON.stringify(arg)),
+      args: input.arguments?.map((arg) => JSON.stringify(arg)) ?? [],
     };
 
     const payload = await this.rest.post<FunctionPayload>(
-      `/plugins/${plugin.id}/functions/${input.name}`,
-      {
-        arguments: input.arguments,
-      },
+      `/plugin/backend/${plugin.id}/function`,
+      body,
     );
 
     switch (payload.kind) {
@@ -100,7 +100,9 @@ export class PluginPackage {
         return JSON.parse(returns) as T;
       }
       case "error":
-        throw new Error(`Function call failed: ${input.name}`);
+        throw new Error(
+          `Function call failed: ${JSON.stringify(payload.error)}`,
+        );
     }
   }
 }

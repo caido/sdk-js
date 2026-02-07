@@ -1,10 +1,10 @@
 import { AuthManager } from "@/auth/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
 import { ConsoleLogger } from "@/logger.js";
+import type { CaidoOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import { resolveRetryConfig } from "@/retry.js";
-import { UserSDK } from "@/sdks/user/index.js";
-import type { CaidoOptions } from "@/options.js";
+import { PluginSDK, UserSDK } from "@/sdks/index.js";
 
 /**
  * Caido client for interacting with a Caido instance.
@@ -66,6 +66,9 @@ export class Caido {
   /** Higher-level user SDK. */
   readonly user: UserSDK;
 
+  /** Higher-level plugin SDK. */
+  readonly plugin: PluginSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: CaidoOptions) {
@@ -96,6 +99,7 @@ export class Caido {
     );
 
     this.user = new UserSDK(this.graphql);
+    this.plugin = new PluginSDK(this.graphql, this.rest);
   }
 
   /**

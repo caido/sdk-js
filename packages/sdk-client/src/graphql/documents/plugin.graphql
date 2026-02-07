@@ -1,12 +1,11 @@
 fragment PluginPackageMeta on PluginPackage {
   id
+  manifestId
   plugins {
     __typename
     id
-    ... on PluginBackend {
-      manifestId
-      enabled
-    }
+    manifestId
+    enabled
   }
 }
 

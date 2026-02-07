@@ -3,15 +3,26 @@ import type * as Types from "./types.js";
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type PluginPackageMetaFragment = {
   id: string;
+  manifestId: string;
   plugins: Array<
     | {
         __typename: "PluginBackend";
+        id: string;
         manifestId: string;
         enabled: boolean;
-        id: string;
       }
-    | { __typename: "PluginFrontend"; id: string }
-    | { __typename: "PluginWorkflow"; id: string }
+    | {
+        __typename: "PluginFrontend";
+        id: string;
+        manifestId: string;
+        enabled: boolean;
+      }
+    | {
+        __typename: "PluginWorkflow";
+        id: string;
+        manifestId: string;
+        enabled: boolean;
+      }
   >;
 };
 
@@ -22,15 +33,26 @@ export type PluginPackagesQueryVariables = Types.Exact<{
 export type PluginPackagesQuery = {
   pluginPackages: Array<{
     id: string;
+    manifestId: string;
     plugins: Array<
       | {
           __typename: "PluginBackend";
+          id: string;
           manifestId: string;
           enabled: boolean;
-          id: string;
         }
-      | { __typename: "PluginFrontend"; id: string }
-      | { __typename: "PluginWorkflow"; id: string }
+      | {
+          __typename: "PluginFrontend";
+          id: string;
+          manifestId: string;
+          enabled: boolean;
+        }
+      | {
+          __typename: "PluginWorkflow";
+          id: string;
+          manifestId: string;
+          enabled: boolean;
+        }
     >;
   }>;
 };
@@ -49,6 +71,7 @@ export const PluginPackageMetaFragmentDoc = {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "manifestId" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "plugins" },
@@ -57,26 +80,8 @@ export const PluginPackageMetaFragmentDoc = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "__typename" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "InlineFragment",
-                  typeCondition: {
-                    kind: "NamedType",
-                    name: { kind: "Name", value: "PluginBackend" },
-                  },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "manifestId" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "enabled" },
-                      },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "manifestId" } },
+                { kind: "Field", name: { kind: "Name", value: "enabled" } },
               ],
             },
           },
@@ -122,6 +127,7 @@ export const PluginPackagesDocument = {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "manifestId" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "plugins" },
@@ -130,26 +136,8 @@ export const PluginPackagesDocument = {
               selections: [
                 { kind: "Field", name: { kind: "Name", value: "__typename" } },
                 { kind: "Field", name: { kind: "Name", value: "id" } },
-                {
-                  kind: "InlineFragment",
-                  typeCondition: {
-                    kind: "NamedType",
-                    name: { kind: "Name", value: "PluginBackend" },
-                  },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "manifestId" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "enabled" },
-                      },
-                    ],
-                  },
-                },
+                { kind: "Field", name: { kind: "Name", value: "manifestId" } },
+                { kind: "Field", name: { kind: "Name", value: "enabled" } },
               ],
             },
           },
