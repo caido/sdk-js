@@ -10,7 +10,7 @@ import type { AuthOptions, BrowserAuthOptions } from "./types.js";
 import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 
 import type { Logger } from "@/logger.js";
-import type { RequestOptions } from "@/types.js";
+import type { RequestOptions } from "@/options.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 interface TokenState {

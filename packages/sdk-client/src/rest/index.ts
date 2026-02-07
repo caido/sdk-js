@@ -3,7 +3,7 @@ import { AuthorizationUserError } from "@/errors.js";
 import type { Logger } from "@/logger.js";
 import type { ResolvedRetryConfig } from "@/retry.js";
 import { withRetry } from "@/retry.js";
-import type { RequestOptions } from "@/types.js";
+import type { RequestOptions } from "@/options.js";
 import { isPresent } from "@/utils/optional.js";
 
 /**

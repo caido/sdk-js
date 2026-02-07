@@ -4,7 +4,7 @@ import { ConsoleLogger } from "@/logger.js";
 import { RestClient } from "@/rest/index.js";
 import { resolveRetryConfig } from "@/retry.js";
 import { UserSDK } from "@/sdks/user/index.js";
-import type { CaidoOptions } from "@/types.js";
+import type { CaidoOptions } from "@/options.js";
 
 /**
  * Caido client for interacting with a Caido instance.

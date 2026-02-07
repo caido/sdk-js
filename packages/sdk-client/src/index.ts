@@ -5,7 +5,7 @@ export type {
   RequestOptions,
   RetryOptions,
   RetryRequest,
-} from "@/types.js";
+} from "@/options.js";
 export type {
   AuthCacheOptions,
   AuthOptions,
@@ -14,6 +14,7 @@ export type {
   TokenAuthOptions,
   TokenPair,
 } from "@/auth/types.js";
+export * from "@/types/index.js";
 
 export {
   AuthorizationUserError,
@@ -40,4 +41,4 @@ export {
 export { GraphQLClient } from "@/graphql/index.js";
 export { RestClient, type RestRequestOptions } from "@/rest/index.js";
 
-export { UserSDK } from "@/sdks/user/index.js";
+export * from "@/sdks/index.js";

@@ -1,5 +1,5 @@
 import type { Logger } from "@/logger.js";
-import type { RetryOptions, RetryRequest } from "@/types.js";
+import type { RetryOptions, RetryRequest } from "@/options.js";
 import { isPresent } from "@/utils/optional.js";
 
 const DEFAULT_RETRIES = 3;
@@ -71,7 +71,9 @@ export async function withRetry<T>(
       }
 
       logger.warn(
-        `Retrying request ${requestInfo.method} ${requestInfo.url} (attempt ${attempt + 1}/${retryConfig.retries})`,
+        `Retrying request ${requestInfo.method} ${requestInfo.url} (attempt ${
+          attempt + 1
+        }/${retryConfig.retries})`,
         err,
       );
     }
