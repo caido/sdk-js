@@ -1,4 +1,4 @@
-import * as Types from "./types.js";
+import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type ViewerQueryVariables = Types.Exact<{ [key: string]: never }>;

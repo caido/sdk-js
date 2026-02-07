@@ -25,29 +25,9 @@ generates:
     presetConfig:
       folder: ../__generated__
       extension: .ts
-      baseTypesPath: types.ts
+      baseTypesPath: ./types.js.js # Hack to add the js extension
     config:
-      scalars:
-        DateTime: Date
-        Duration: number
-        Blob: string
-        Port: number
-        Timestamp: Date
-        Snapshot: number
-        Rank: string
-        Token: string
-        Url: string
-        JSON: unknown
-        JsonObject: Record<string, unknown>
-        Upload: File
-        Image: string
-        Sensitive: string
-        Uri: string
-        Alias: string
-        HTTPQL: string
-        JsonRaw: string
-        Version: string
-        Binary: Uint8Array
+      useTypeImports: true
 
 config:
   declarationKind: type

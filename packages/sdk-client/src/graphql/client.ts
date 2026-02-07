@@ -20,9 +20,9 @@ import {
   toUserError,
 } from "@/errors.js";
 import type { Logger } from "@/logger.js";
+import type { RequestOptions } from "@/options.js";
 import type { ResolvedRetryConfig } from "@/retry.js";
 import { withRetry } from "@/retry.js";
-import type { RequestOptions } from "@/options.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 type UrqlOperationFn<TData, TVars extends AnyVariables> = (
