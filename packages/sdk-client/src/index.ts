@@ -3,8 +3,6 @@ export { Caido } from "@/client.js";
 export type {
   CaidoOptions,
   RequestOptions,
-  RetryOptions,
-  RetryRequest,
 } from "@/options.js";
 export type {
   AuthCacheOptions,

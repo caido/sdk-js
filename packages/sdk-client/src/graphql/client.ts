@@ -21,8 +21,6 @@ import {
 } from "@/errors.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
-import type { ResolvedRetryConfig } from "@/retry.js";
-import { withRetry } from "@/retry.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 type UrqlOperationFn<TData, TVars extends AnyVariables> = (
@@ -38,7 +36,6 @@ export class GraphQLClient {
   private readonly graphqlUrl: string;
   private readonly wsUrl: string;
   private readonly auth: AuthManager;
-  private readonly retryConfig: ResolvedRetryConfig;
   private readonly requestOptions: RequestOptions | undefined;
   private readonly logger: Logger;
   private client: Client;
@@ -48,7 +45,6 @@ export class GraphQLClient {
   constructor(
     baseUrl: string,
     auth: AuthManager,
-    retryConfig: ResolvedRetryConfig,
     logger: Logger,
     requestOptions?: RequestOptions,
   ) {
@@ -56,7 +52,6 @@ export class GraphQLClient {
     this.graphqlUrl = `${normalizedUrl}/graphql`;
     this.wsUrl = this.toWebSocketUrl(normalizedUrl);
     this.auth = auth;
-    this.retryConfig = retryConfig;
     this.logger = logger;
     this.requestOptions = requestOptions;
     this.wsClient = this.createWSClient();
@@ -142,41 +137,31 @@ export class GraphQLClient {
   ): Promise<TData> {
     const vars = variables ?? ({} as TVars);
 
-    const operation = async (): Promise<TData> => {
-      const result = await operationFn(this.client, document, vars);
+    const result = await operationFn(this.client, document, vars);
 
-      if (result.error) {
-        const graphqlErrors = result.error.graphQLErrors;
+    if (result.error) {
+      const graphqlErrors = result.error.graphQLErrors;
 
-        if (graphqlErrors.length > 0) {
-          const firstUserError = graphqlErrors
-            .map(toUserError)
-            .find((e) => isPresent(e));
-          if (isPresent(firstUserError)) {
-            throw firstUserError;
-          }
-          throw new GraphQLRequestError(graphqlErrors);
+      if (graphqlErrors.length > 0) {
+        const firstUserError = graphqlErrors
+          .map(toUserError)
+          .find((e) => isPresent(e));
+        if (isPresent(firstUserError)) {
+          throw firstUserError;
         }
-
-        throw new GraphQLRequestError([new GraphQLError(result.error.message)]);
+        throw new GraphQLRequestError(graphqlErrors);
       }
 
-      if (isAbsent(result.data)) {
-        throw new GraphQLRequestError([
-          new GraphQLError("No data returned from GraphQL"),
-        ]);
-      }
+      throw new GraphQLRequestError([new GraphQLError(result.error.message)]);
+    }
 
-      return result.data;
-    };
+    if (isAbsent(result.data)) {
+      throw new GraphQLRequestError([
+        new GraphQLError("No data returned from GraphQL"),
+      ]);
+    }
 
-    return withRetry(
-      operation,
-      this.retryConfig,
-      { url: this.graphqlUrl, method: "POST", body: variables },
-      this.logger,
-      (error) => !(error instanceof AuthorizationUserError),
-    );
+    return result.data;
   }
 
   private createWSClient(): WSClient {

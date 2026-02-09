@@ -23,7 +23,6 @@ async function main() {
         file: ".secrets.json",
       },
     },
-    retry: false,
   });
 
   await client.connect();

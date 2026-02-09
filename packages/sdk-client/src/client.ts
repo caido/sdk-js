@@ -3,7 +3,6 @@ import { GraphQLClient } from "@/graphql/index.js";
 import { ConsoleLogger } from "@/logger.js";
 import type { CaidoOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
-import { resolveRetryConfig } from "@/retry.js";
 import { PluginSDK, UserSDK } from "@/sdks/index.js";
 
 /**
@@ -73,7 +72,6 @@ export class Caido {
 
   constructor(options: CaidoOptions) {
     const logger = options.logger ?? new ConsoleLogger();
-    const retryConfig = resolveRetryConfig(options.retry);
 
     this.auth = new AuthManager(
       options.url,
@@ -85,7 +83,6 @@ export class Caido {
     this.graphql = new GraphQLClient(
       options.url,
       this.auth,
-      retryConfig,
       logger,
       options.request,
     );
@@ -93,7 +90,6 @@ export class Caido {
     this.rest = new RestClient(
       options.url,
       this.auth,
-      retryConfig,
       logger,
       options.request,
     );

@@ -1,7 +1,7 @@
 import {
+  AuthClient,
   type AuthenticationToken,
   BrowserApprover,
-  CaidoAuth,
   PATApprover,
 } from "@caido/server-auth";
 
@@ -27,7 +27,7 @@ export class AuthManager {
   private readonly logger: Logger;
 
   private tokenState: TokenState | undefined;
-  private caidoAuth: CaidoAuth | undefined;
+  private authClient: AuthClient | undefined;
   private onTokenRefreshCallbacks: Set<() => void> = new Set();
 
   constructor(
@@ -105,8 +105,8 @@ export class AuthManager {
     }
 
     this.logger.info("Starting authentication flow");
-    const caidoAuth = this.getOrCreateCaidoAuth();
-    const token = await caidoAuth.startAuthenticationFlow();
+    const authClient = this.getOrCreateAuthClient();
+    const token = await authClient.startAuthenticationFlow();
     this.applyAuthToken(token);
     this.logger.info("Authentication flow completed");
     await this.maybeCacheToken();
@@ -122,27 +122,36 @@ export class AuthManager {
     }
 
     this.logger.debug("Refreshing access token");
-    const caidoAuth = this.getOrCreateCaidoAuth();
-    const token = await caidoAuth.refreshToken(refreshToken);
+    const authClient = this.getOrCreateAuthClient();
+    const token = await authClient.refreshToken(refreshToken);
     this.applyAuthToken(token);
     this.logger.info("Access token refreshed");
     await this.maybeCacheToken();
     this.notifyTokenRefresh();
   }
 
-  private getOrCreateCaidoAuth(): CaidoAuth {
-    if (isAbsent(this.caidoAuth)) {
+  private getOrCreateAuthClient(): AuthClient {
+    if (isAbsent(this.authClient)) {
       const approver = this.createApprover();
-      this.caidoAuth = new CaidoAuth(this.instanceUrl, approver);
+      this.authClient = new AuthClient({
+        instanceUrl: this.instanceUrl,
+        approver,
+        fetch: this.requestOptions?.fetch,
+        timeout: this.requestOptions?.timeout,
+      });
     }
-    return this.caidoAuth;
+    return this.authClient;
   }
 
   private createApprover() {
     const auth = this.authOptions;
 
     if (isPresent(auth) && isPATAuth(auth)) {
-      return new PATApprover({ pat: auth.pat });
+      return new PATApprover({
+        pat: auth.pat,
+        fetch: this.requestOptions?.fetch,
+        timeout: this.requestOptions?.timeout,
+      });
     }
 
     const logger = this.logger;
