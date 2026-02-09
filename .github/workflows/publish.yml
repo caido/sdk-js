@@ -72,3 +72,10 @@ jobs:
           package: sdk-workflow
           internal: true
           secret-github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish sdk-client
+        uses: ./.github/actions/publish-one
+        with:
+          package: sdk-client
+          internal: false
+          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
