@@ -1,4 +1,5 @@
 import { Client, fetchExchange } from "@urql/core";
+import { print } from "graphql";
 import { createClient as createWSClient } from "graphql-ws";
 
 import type { AuthApprover } from "./approvers/types.js";
@@ -104,10 +105,7 @@ export class CaidoAuth {
     }
 
     if (payload.error) {
-      throw new AuthenticationFlowError(
-        payload.error.code,
-        payload.error.message,
-      );
+      throw new AuthenticationFlowError(payload.error.code, "");
     }
 
     if (!payload.request) {
@@ -148,14 +146,7 @@ export class CaidoAuth {
       const unsubscribe =
         wsClient.subscribe<CreatedAuthenticationTokenResponse>(
           {
-            query:
-              CREATED_AUTHENTICATION_TOKEN.loc?.source.body ??
-              `subscription CreatedAuthenticationToken($requestId: ID!) {
-              createdAuthenticationToken(requestId: $requestId) {
-                token { accessToken refreshToken expiresAt }
-                error { code message }
-              }
-            }`,
+            query: print(CREATED_AUTHENTICATION_TOKEN),
             variables: { requestId },
           },
           {
@@ -165,11 +156,7 @@ export class CaidoAuth {
               if (payload?.error) {
                 unsubscribe();
                 wsClient.dispose();
-                reject(
-                  new AuthenticationError(
-                    `${payload.error.code}: ${payload.error.message}`,
-                  ),
-                );
+                reject(new AuthenticationError(payload.error.code));
                 return;
               }
 
@@ -180,6 +167,7 @@ export class CaidoAuth {
                   accessToken: payload.token.accessToken,
                   refreshToken: payload.token.refreshToken,
                   expiresAt: new Date(payload.token.expiresAt),
+                  scopes: payload.token.scopes,
                 });
               }
             },
@@ -232,7 +220,7 @@ export class CaidoAuth {
     }
 
     if (payload.error) {
-      throw new TokenRefreshError(payload.error.code, payload.error.message);
+      throw new TokenRefreshError(payload.error.code, "");
     }
 
     if (!payload.token) {
@@ -243,6 +231,7 @@ export class CaidoAuth {
       accessToken: payload.token.accessToken,
       refreshToken: payload.token.refreshToken,
       expiresAt: new Date(payload.token.expiresAt),
+      scopes: payload.token.scopes,
     };
   }
 }
