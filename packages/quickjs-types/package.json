@@ -10,6 +10,8 @@
     "src/*"
   ],
   "scripts": {
+    "build": "echo 'No build step required for @caido/quickjs-types'",
+    "typecheck": "tsc --noEmit",
     "generate:doc": "typedoc",
     "typing": "./scripts/typing.sh"
   }

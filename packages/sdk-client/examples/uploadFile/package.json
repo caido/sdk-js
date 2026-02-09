@@ -1,0 +1,16 @@
+{
+  "name": "@caido/sdk-client-example-function-call",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node ./index.ts"
+  },
+  "dependencies": {
+    "@caido/sdk-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "25.0.10",
+    "typescript": "5.6.2"
+  }
+}

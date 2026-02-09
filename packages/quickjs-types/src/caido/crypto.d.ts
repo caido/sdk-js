@@ -15,7 +15,7 @@
  * ```
  */
 declare module "crypto" {
-  import { Buffer } from "buffer";
+  import { type Buffer } from "buffer";
   type BinaryLike = string | QuickJS.ArrayBufferView;
   type BinaryToTextEncoding = "base64" | "hex";
   type CharacterEncoding = "utf8" | "utf-8" | "utf16le" | "utf-16le" | "latin1";

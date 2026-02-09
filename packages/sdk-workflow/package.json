@@ -10,6 +10,8 @@
     "src/*"
   ],
   "scripts": {
+    "build": "echo 'No build step required for @caido/sdk-workflow'",
+    "typecheck": "tsc --noEmit",
     "generate:doc": "typedoc"
   },
   "dependencies": {

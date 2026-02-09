@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src", "*.config.ts", "codegen.ts"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

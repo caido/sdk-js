@@ -8,5 +8,9 @@
   "types": "./src/index.d.ts",
   "files": [
     "src/*"
-  ]
+  ],
+  "scripts": {
+    "build": "echo 'No build step required for @caido/sdk-shared'",
+    "typecheck": "tsc --noEmit"
+  }
 }

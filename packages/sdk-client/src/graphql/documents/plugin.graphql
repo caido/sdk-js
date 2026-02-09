@@ -1,0 +1,16 @@
+fragment PluginPackageMeta on PluginPackage {
+  id
+  manifestId
+  plugins {
+    __typename
+    id
+    manifestId
+    enabled
+  }
+}
+
+query PluginPackages {
+  pluginPackages {
+    ...PluginPackageMeta
+  }
+}

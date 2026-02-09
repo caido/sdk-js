@@ -1,0 +1,126 @@
+query Projects {
+  projects {
+    id
+    name
+    path
+    status
+    temporary
+    createdAt
+    updatedAt
+    version
+    size
+    readOnly
+  }
+}
+
+mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    project {
+      id
+      name
+      path
+      status
+      temporary
+      createdAt
+      updatedAt
+      version
+      size
+      readOnly
+    }
+  }
+}
+
+mutation DeleteProject($id: ID!) {
+  deleteProject(id: $id) {
+    deletedId
+    error {
+      __typename
+      ... on ProjectUserError {
+        ...ProjectUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+mutation RenameProject($id: ID!, $name: String!) {
+  renameProject(id: $id, name: $name) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        code
+        name
+      }
+      ... on UnknownIdUserError {
+        code
+        id
+      }
+      ... on OtherUserError {
+        code
+      }
+    }
+    project {
+      id
+      name
+      path
+      status
+      temporary
+      createdAt
+      updatedAt
+      version
+      size
+      readOnly
+    }
+  }
+}
+
+mutation SelectProject($id: ID!) {
+  selectProject(id: $id) {
+    currentProject {
+      project {
+        id
+        name
+        path
+        status
+        temporary
+        createdAt
+        updatedAt
+        version
+        size
+        readOnly
+      }
+    }
+    error {
+      __typename
+      ... on ProjectUserError {
+        ...ProjectUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}

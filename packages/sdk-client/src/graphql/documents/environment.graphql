@@ -1,0 +1,127 @@
+query Environments {
+  environments {
+    id
+    name
+    variables {
+      name
+      value
+      kind
+    }
+    version
+  }
+}
+
+query EnvironmentQuery($id: ID!) {
+  environment(id: $id) {
+    id
+    name
+    variables {
+      name
+      value
+      kind
+    }
+    version
+  }
+}
+
+mutation CreateEnvironment($input: CreateEnvironmentInput!) {
+  createEnvironment(input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    environment {
+      id
+      name
+      variables {
+        name
+        value
+        kind
+      }
+      version
+    }
+  }
+}
+
+mutation UpdateEnvironment($id: ID!, $input: UpdateEnvironmentInput!) {
+  updateEnvironment(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on NewerVersionUserError {
+        ...NewerVersionUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    environment {
+      id
+      name
+      variables {
+        name
+        value
+        kind
+      }
+      version
+    }
+  }
+}
+
+mutation DeleteEnvironment($id: ID!) {
+  deleteEnvironment(id: $id) {
+    deletedId
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+mutation SelectEnvironment($id: ID) {
+  selectEnvironment(id: $id) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    environment {
+      id
+      name
+      variables {
+        name
+        value
+        kind
+      }
+      version
+    }
+  }
+}

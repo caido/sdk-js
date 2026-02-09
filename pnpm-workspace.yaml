@@ -1,5 +1,8 @@
 minimumReleaseAge: 7200
 minimumReleaseAgeExclude:
   - '@caido/quickjs-types'
+  - '@caido/server-auth'
 packages:
   - 'packages/*'
+  - 'packages/server-auth/examples/*'
+  - 'packages/sdk-client/examples/*'

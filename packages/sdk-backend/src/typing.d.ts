@@ -1,24 +1,24 @@
 declare module "caido:plugin" {
-  import type { Database } from "sqlite";
   import type {
-    MaybePromise,
-    FindingsSDK,
-    RequestsSDK,
-    Request,
-    Response,
-    ReplaySDK,
-    ProjectsSDK,
-    Project,
+    Connection,
     EnvironmentSDK,
-    RuntimeSDK,
-    ScopeSDK,
+    FindingsSDK,
     GraphQLSDK,
     HostedFileSDK,
+    MaybePromise,
     NetSDK,
-    RequestSpecRaw,
-    Connection,
+    Project,
+    ProjectsSDK,
+    ReplaySDK,
+    Request,
     RequestSpec,
+    RequestSpecRaw,
+    RequestsSDK,
+    Response,
+    RuntimeSDK,
+    ScopeSDK,
   } from "caido:utils";
+  import type { Database } from "sqlite";
 
   /**
    * The SDK for the API RPC service.
