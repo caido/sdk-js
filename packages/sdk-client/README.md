@@ -18,17 +18,31 @@
   <hr />
 </div>
 
-## 👋 SDK JS
+## 👋 Client SDK
 
-This is the monorepo for all the JS SDK and related tooling of Caido. It contains the following packages:
+[![NPM Version](https://img.shields.io/npm/v/@caido/sdk-client?style=for-the-badge)](https://www.npmjs.com/package/@caido/sdk-client)
 
-- `sdk-client`: SDK to interact with a Caido Instance as a client
-- `sdk-backend`: SDK definition for the Caido Backend
-- `sdk-frontend`: SDK definition for the Caido Frontend
-- `sdk-workflow`: SDK definition for Caido Workflows
-- `sdk-shared`: Typing helpers shared between SDKs
-- `quickjs-types`: Typing for the QuickJS Engine
-- `server-auth`: Client to authenticate with a Caido Instance
+This is repository for the Caido client SDK.
+
+The goal of this SDK is to allow scripts to access Caido Instances. It handles authentication, graphql and rest.
+
+We recommend you look at the [examples](https://github.com/caido/sdk-js/tree/main/packages/sdk-client/examples) to learn how to use it.
+
+```typescript
+const client = new Client({
+  url: instanceUrl,
+  auth: {
+    pat: "caido_xxxxxx",
+    cache: {
+      file: ".secrets.json",
+    },
+  },
+});
+
+await client.connect();
+
+const viewer = await client.user.viewer();
+```
 
 ## 💚 Community
 
