@@ -1,6 +1,6 @@
-import type { HostedFileStatus } from "@/graphql/index.js";
-
 import type { ID } from "./index.js";
+
+import type { HostedFileStatus } from "@/graphql/index.js";
 
 /**
  * Hosted file information

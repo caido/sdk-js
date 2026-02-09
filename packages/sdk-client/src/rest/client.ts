@@ -114,11 +114,7 @@ export class RestClient {
     const response = await this.fetchFn(url.toString(), fetchOptions);
 
     if (!response.ok) {
-      if (
-        response.status === 401 &&
-        !hasRefreshed &&
-        this.auth.canRefresh()
-      ) {
+      if (response.status === 401 && !hasRefreshed && this.auth.canRefresh()) {
         this.logger.debug("Received 401, attempting token refresh");
         hasRefreshed = true;
         await this.auth.refresh();

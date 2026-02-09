@@ -9,6 +9,6 @@ import { from } from "@/errors/from.js";
  */
 export function handleGraphQLError(error: AllErrors): never {
   const errorInstance = from(error);
-  // eslint-disable-next-line @typescript-eslint/only-throw-error
+
   throw errorInstance;
 }
