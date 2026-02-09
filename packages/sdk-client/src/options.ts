@@ -4,7 +4,7 @@ import type { Logger } from "@/logger.js";
 /**
  * Options for creating a new Caido client.
  */
-export interface CaidoOptions {
+export interface ClientOptions {
   /** Base URL of the Caido instance (e.g., "http://localhost:8080") */
   url: string;
 

@@ -1,4 +1,4 @@
-import { Caido } from "@caido/sdk-client";
+import { Client } from "@caido/sdk-client";
 
 type QuickSSRFSettings = {
   serverURL: string;
@@ -26,7 +26,7 @@ async function main() {
     process.exit(1);
   }
 
-  const client = new Caido({
+  const client = new Client({
     url: instanceUrl,
     auth: {
       pat: pat,

@@ -1,9 +1,6 @@
-export { Caido } from "@/client.js";
+export { Client } from "@/client.js";
 
-export type {
-  CaidoOptions,
-  RequestOptions,
-} from "@/options.js";
+export type { ClientOptions, RequestOptions } from "@/options.js";
 export type {
   AuthCacheOptions,
   AuthOptions,

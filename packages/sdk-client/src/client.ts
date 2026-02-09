@@ -1,7 +1,7 @@
 import { AuthManager } from "@/auth/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
 import { ConsoleLogger } from "@/logger.js";
-import type { CaidoOptions } from "@/options.js";
+import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import { PluginSDK, UserSDK } from "@/sdks/index.js";
 
@@ -55,7 +55,7 @@ import { PluginSDK, UserSDK } from "@/sdks/index.js";
  * await client.connect();
  * ```
  */
-export class Caido {
+export class Client {
   /** Low-level GraphQL client for executing queries, mutations, and subscriptions. */
   readonly graphql: GraphQLClient;
 
@@ -70,7 +70,7 @@ export class Caido {
 
   private readonly auth: AuthManager;
 
-  constructor(options: CaidoOptions) {
+  constructor(options: ClientOptions) {
     const logger = options.logger ?? new ConsoleLogger();
 
     this.auth = new AuthManager(
@@ -87,12 +87,7 @@ export class Caido {
       options.request,
     );
 
-    this.rest = new RestClient(
-      options.url,
-      this.auth,
-      logger,
-      options.request,
-    );
+    this.rest = new RestClient(options.url, this.auth, logger, options.request);
 
     this.user = new UserSDK(this.graphql);
     this.plugin = new PluginSDK(this.graphql, this.rest);
