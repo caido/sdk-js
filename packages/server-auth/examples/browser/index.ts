@@ -1,9 +1,8 @@
 import {
+  AuthClient,
   AuthenticationError,
-  AuthenticationFlowError,
   type AuthenticationRequest,
   BrowserApprover,
-  CaidoAuth,
 } from "@caido/server-auth";
 
 async function main() {
@@ -25,7 +24,10 @@ async function main() {
   );
 
   // Create the auth client
-  const auth = new CaidoAuth(instanceUrl, approver);
+  const auth = new AuthClient({
+    instanceUrl,
+    approver,
+  });
 
   try {
     // Start the authentication flow
@@ -36,10 +38,7 @@ async function main() {
     console.log(`Expires at: ${token.expiresAt.toISOString()}`);
     console.log(`Refresh Token: ${token.refreshToken.substring(0, 20)}...`);
   } catch (error: unknown) {
-    if (error instanceof AuthenticationFlowError) {
-      console.error(`❌ Authentication flow error: ${error.message}`);
-      process.exit(1);
-    } else if (error instanceof AuthenticationError) {
+    if (error instanceof AuthenticationError) {
       console.error(`❌ Authentication error: ${error.message}`);
       process.exit(1);
     } else {

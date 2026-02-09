@@ -1,9 +1,27 @@
-import { DeviceApprovalError, DeviceInformationError } from "../errors.js";
+import { CloudError } from "../errors.js";
 import type { AuthenticationRequest, DeviceInformation } from "../types.js";
 
 import type { AuthApprover } from "./types.js";
 
 const DEFAULT_API_URL = "https://api.caido.io";
+
+interface OAuth2ErrorResponse {
+  error?: string;
+  error_description?: string;
+}
+
+type OAuth2ErrorData = OAuth2ErrorResponse | string;
+
+interface ParsedOAuth2Error {
+  errorText: string;
+  errorCode: string | undefined;
+  errorDescription: string | undefined;
+}
+
+interface RequestOptions {
+  method: string;
+  headers: Record<string, string>;
+}
 
 /**
  * Options for the PATApprover.
@@ -15,6 +33,10 @@ export interface PATApproverOptions {
   allowedScopes?: string[];
   /** The API URL to use. Defaults to "https://api.caido.io" */
   apiUrl?: string;
+  /** Request timeout in milliseconds */
+  timeout?: number;
+  /** Custom fetch implementation */
+  fetch?: typeof globalThis.fetch;
 }
 
 /**
@@ -37,16 +59,15 @@ export class PATApprover implements AuthApprover {
   private readonly pat: string;
   private readonly allowedScopes: string[] | undefined;
   private readonly apiUrl: string;
+  private readonly fetchFn: typeof globalThis.fetch;
+  private readonly timeout: number | undefined;
 
-  /**
-   * Create a new PATApprover.
-   *
-   * @param options - Configuration options for the approver
-   */
   constructor(options: PATApproverOptions) {
     this.pat = options.pat;
     this.allowedScopes = options.allowedScopes;
     this.apiUrl = (options.apiUrl ?? DEFAULT_API_URL).replace(/\/$/, "");
+    this.fetchFn = options.fetch ?? globalThis.fetch;
+    this.timeout = options.timeout;
   }
 
   /**
@@ -56,8 +77,7 @@ export class PATApprover implements AuthApprover {
    * and finally approves the device.
    *
    * @param request - The authentication request
-   * @throws {DeviceInformationError} If fetching device information fails
-   * @throws {DeviceApprovalError} If approving the device fails
+   * @throws {CloudError} If fetching device information or approving the device fails
    */
   async approve(request: AuthenticationRequest): Promise<void> {
     // Step 1: Get device information to retrieve available scopes
@@ -75,13 +95,45 @@ export class PATApprover implements AuthApprover {
     await this.approveDevice(request.userCode, scopesToApprove);
   }
 
-  /**
-   * Fetch device information from the API.
-   *
-   * @param userCode - The user code from the authentication request
-   * @returns The device information including available scopes
-   * @throws {DeviceInformationError} If the request fails
-   */
+  private async sendRequest(
+    url: URL,
+    options: RequestOptions,
+  ): Promise<Response> {
+    const fetchOptions: RequestInit = {
+      method: options.method,
+      headers: options.headers,
+    };
+
+    if (this.timeout !== undefined) {
+      fetchOptions.signal = AbortSignal.timeout(this.timeout);
+    }
+
+    return this.fetchFn(url, fetchOptions);
+  }
+
+  private async parseOAuth2Error(
+    response: Response,
+  ): Promise<ParsedOAuth2Error> {
+    let errorText: string;
+    let errorCode: string | undefined;
+    let errorDescription: string | undefined;
+
+    try {
+      const errorData = (await response.json()) as OAuth2ErrorData;
+      if (typeof errorData === "string") {
+        errorText = errorData;
+      } else {
+        errorCode = errorData.error;
+        errorDescription = errorData.error_description;
+        errorText = errorDescription ?? errorCode ?? "Unknown error";
+      }
+    } catch {
+      errorText = await response.text().catch(() => "Unknown error");
+    }
+
+    return { errorText, errorCode, errorDescription };
+  }
+
   private async getDeviceInformation(
     userCode: string,
   ): Promise<DeviceInformation> {
@@ -90,7 +142,7 @@ export class PATApprover implements AuthApprover {
     const url = new URL(`${this.apiUrl}/oauth2/device/information`);
     url.search = params.toString();
 
-    const response = await fetch(url, {
+    const response = await this.sendRequest(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${this.pat}`,
@@ -99,24 +151,20 @@ export class PATApprover implements AuthApprover {
     });
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
-      throw new DeviceInformationError(
-        `Failed to get device information: ${errorText}`,
-        response.status,
-      );
+      const { errorText, errorCode, errorDescription } =
+        await this.parseOAuth2Error(response);
+
+      throw new CloudError(`Failed to get device information: ${errorText}`, {
+        statusCode: response.status,
+        code: errorCode,
+        reason: errorDescription,
+      });
     }
 
     const data = (await response.json()) as DeviceInformation;
     return data;
   }
 
-  /**
-   * Approve the device with the specified scopes.
-   *
-   * @param userCode - The user code from the authentication request
-   * @param scopes - The scopes to approve
-   * @throws {DeviceApprovalError} If the request fails
-   */
   private async approveDevice(
     userCode: string,
     scopes: string[],
@@ -127,7 +175,7 @@ export class PATApprover implements AuthApprover {
     const url = new URL(`${this.apiUrl}/oauth2/device/approve`);
     url.search = params.toString();
 
-    const response = await fetch(url, {
+    const response = await this.sendRequest(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.pat}`,
@@ -137,11 +185,14 @@ export class PATApprover implements AuthApprover {
     });
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
-      throw new DeviceApprovalError(
-        `Failed to approve device: ${errorText}`,
-        response.status,
-      );
+      const { errorText, errorCode, errorDescription } =
+        await this.parseOAuth2Error(response);
+
+      throw new CloudError(`Failed to approve device: ${errorText}`, {
+        statusCode: response.status,
+        code: errorCode,
+        reason: errorDescription,
+      });
     }
   }
 }

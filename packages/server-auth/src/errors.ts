@@ -9,57 +9,57 @@ export class AuthenticationError extends Error {
 }
 
 /**
- * Error thrown when the authentication flow fails to start.
+ * Error thrown for errors coming from the Caido cloud API.
+ * Used for device approval and device information operations.
  */
-export class AuthenticationFlowError extends AuthenticationError {
-  /** Error code from the API */
-  readonly code: string;
-
-  constructor(code: string, message: string) {
-    super(`${code}: ${message}`);
-    this.name = "AuthenticationFlowError";
-    this.code = code;
-  }
-}
-
-/**
- * Error thrown when token refresh fails.
- */
-export class TokenRefreshError extends AuthenticationError {
-  /** Error code from the API */
-  readonly code: string;
-
-  constructor(code: string, message: string) {
-    super(`${code}: ${message}`);
-    this.name = "TokenRefreshError";
-    this.code = code;
-  }
-}
-
-/**
- * Error thrown when device approval fails.
- */
-export class DeviceApprovalError extends AuthenticationError {
+export class CloudError extends AuthenticationError {
   /** HTTP status code if available */
   readonly statusCode: number | undefined;
+  /** Error code from the API if available */
+  readonly code: string | undefined;
+  /** Reason for the error if available */
+  readonly reason: string | undefined;
 
-  constructor(message: string, statusCode?: number) {
+  constructor(
+    message: string,
+    options?: {
+      statusCode?: number;
+      code?: string;
+      reason?: string;
+    },
+  ) {
     super(message);
-    this.name = "DeviceApprovalError";
-    this.statusCode = statusCode;
+    this.name = "CloudError";
+    this.statusCode = options?.statusCode;
+    this.code = options?.code;
+    this.reason = options?.reason;
   }
 }
 
 /**
- * Error thrown when fetching device information fails.
+ * Error thrown for errors coming from the Caido instance.
+ * Used for authentication flow and token refresh operations.
  */
-export class DeviceInformationError extends AuthenticationError {
-  /** HTTP status code if available */
-  readonly statusCode: number | undefined;
+export class InstanceError extends AuthenticationError {
+  /** Error code from the API */
+  readonly code: string;
+  /** Reason for the error if available */
+  readonly reason: string | undefined;
+  /** Error message if available */
+  readonly errorMessage: string | undefined;
 
-  constructor(message: string, statusCode?: number) {
+  constructor(
+    code: string,
+    options?: {
+      reason?: string;
+      message?: string;
+    },
+  ) {
+    const message = options?.reason ?? options?.message ?? code;
     super(message);
-    this.name = "DeviceInformationError";
-    this.statusCode = statusCode;
+    this.name = "InstanceError";
+    this.code = code;
+    this.reason = options?.reason;
+    this.errorMessage = options?.message;
   }
 }

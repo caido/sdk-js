@@ -3,11 +3,7 @@ import { print } from "graphql";
 import { createClient as createWSClient } from "graphql-ws";
 
 import type { AuthApprover } from "./approvers/types.js";
-import {
-  AuthenticationError,
-  AuthenticationFlowError,
-  TokenRefreshError,
-} from "./errors.js";
+import { AuthenticationError, InstanceError } from "./errors.js";
 import {
   CREATED_AUTHENTICATION_TOKEN,
   REFRESH_AUTHENTICATION_TOKEN,
@@ -16,61 +12,101 @@ import {
 import type {
   AuthenticationRequest,
   AuthenticationToken,
+  CreatedAuthenticationTokenError,
   CreatedAuthenticationTokenResponse,
+  RefreshAuthenticationTokenError,
   RefreshAuthenticationTokenResponse,
+  StartAuthenticationFlowError,
   StartAuthenticationFlowResponse,
 } from "./types.js";
+
+/**
+ * Options for configuring the AuthClient.
+ */
+export interface AuthClientOptions {
+  /** Base URL of the Caido instance (e.g., "http://localhost:8080") */
+  instanceUrl: string;
+  /** The approver to use for the authentication flow */
+  approver: AuthApprover;
+  /** Request timeout in milliseconds */
+  timeout?: number;
+  /** Custom fetch implementation */
+  fetch?: typeof globalThis.fetch;
+}
+
+interface ErrorDetails {
+  reason?: string;
+  message?: string;
+}
 
 /**
  * Client for authenticating with a Caido instance.
  *
  * @example
  * ```typescript
- * import { CaidoAuth, BrowserApprover } from "@caido/auth";
+ * import { AuthClient, BrowserApprover } from "@caido/auth";
  *
- * const auth = new CaidoAuth(
- *   "http://localhost:8080",
- *   new BrowserApprover((request) => {
+ * const auth = new AuthClient({
+ *   instanceUrl: "http://localhost:8080",
+ *   approver: new BrowserApprover((request) => {
  *     console.log(`Visit ${request.verificationUrl}`);
  *   })
- * );
+ * });
  *
  * const token = await auth.startAuthenticationFlow();
  * console.log("Access token:", token.accessToken);
  * ```
  */
-export class CaidoAuth {
+export class AuthClient {
   private readonly instanceUrl: string;
   private readonly graphqlUrl: string;
   private readonly websocketUrl: string;
   private readonly approver: AuthApprover;
   private readonly client: Client;
+  private readonly fetchFn: typeof globalThis.fetch | undefined;
+  private readonly timeout: number | undefined;
 
-  /**
-   * Create a new CaidoAuth client.
-   *
-   * @param instanceUrl - Base URL of the Caido instance (e.g., "http://localhost:8080")
-   * @param approver - The approver to use for the authentication flow
-   */
-  constructor(instanceUrl: string, approver: AuthApprover) {
-    this.instanceUrl = instanceUrl.replace(/\/$/, "");
+  constructor(options: AuthClientOptions) {
+    this.instanceUrl = options.instanceUrl.replace(/\/$/, "");
     this.graphqlUrl = `${this.instanceUrl}/graphql`;
     this.websocketUrl = this.getWebsocketUrl();
-    this.approver = approver;
+    this.approver = options.approver;
+    this.fetchFn = options.fetch;
+    this.timeout = options.timeout;
 
     this.client = new Client({
       url: this.graphqlUrl,
       exchanges: [fetchExchange],
+      fetchOptions: () => {
+        const fetchOptions: RequestInit = {};
+        if (this.timeout !== undefined) {
+          fetchOptions.signal = AbortSignal.timeout(this.timeout);
+        }
+        return fetchOptions;
+      },
+      fetch: this.fetchFn,
     });
   }
 
-  /**
-   * Convert HTTP(S) URL to WS(S) URL for subscriptions.
-   */
   private getWebsocketUrl(): string {
     const url = new URL(this.graphqlUrl);
     const scheme = url.protocol === "https:" ? "wss:" : "ws:";
     return `${scheme}//${url.host}/ws/graphql`;
+  }
+
+  private extractErrorDetails(
+    error:
+      | StartAuthenticationFlowError
+      | CreatedAuthenticationTokenError
+      | RefreshAuthenticationTokenError,
+  ): ErrorDetails {
+    if ("reason" in error) {
+      return { reason: error.reason };
+    }
+    if ("message" in error) {
+      return { message: error.message };
+    }
+    return {};
   }
 
   /**
@@ -83,7 +119,7 @@ export class CaidoAuth {
    * 4. Returns the authentication token once approved
    *
    * @returns The authentication token
-   * @throws {AuthenticationFlowError} If the flow fails to start
+   * @throws {InstanceError} If the flow fails to start
    * @throws {AuthenticationError} If token retrieval fails
    */
   async startAuthenticationFlow(): Promise<AuthenticationToken> {
@@ -93,26 +129,27 @@ export class CaidoAuth {
       .toPromise();
 
     if (result.error) {
-      throw new AuthenticationFlowError("GRAPHQL_ERROR", result.error.message);
+      throw new InstanceError("GRAPHQL_ERROR", {
+        message: result.error.message,
+      });
     }
 
     const payload = result.data?.startAuthenticationFlow;
     if (!payload) {
-      throw new AuthenticationFlowError(
-        "NO_RESPONSE",
-        "No response from startAuthenticationFlow",
-      );
+      throw new InstanceError("NO_RESPONSE", {
+        message: "No response from startAuthenticationFlow",
+      });
     }
 
     if (payload.error) {
-      throw new AuthenticationFlowError(payload.error.code, "");
+      const details = this.extractErrorDetails(payload.error);
+      throw new InstanceError(payload.error.code, details);
     }
 
     if (!payload.request) {
-      throw new AuthenticationFlowError(
-        "NO_REQUEST",
-        "No authentication request returned",
-      );
+      throw new InstanceError("NO_REQUEST", {
+        message: "No authentication request returned",
+      });
     }
 
     const authRequest: AuthenticationRequest = {
@@ -130,13 +167,6 @@ export class CaidoAuth {
     return token;
   }
 
-  /**
-   * Subscribe and wait for the authentication token.
-   *
-   * @param requestId - The authentication request ID
-   * @returns The authentication token once the user authorizes
-   * @throws {AuthenticationError} If subscription fails or returns an error
-   */
   private async waitForToken(requestId: string): Promise<AuthenticationToken> {
     return new Promise<AuthenticationToken>((resolve, reject) => {
       const wsClient = createWSClient({
@@ -156,7 +186,8 @@ export class CaidoAuth {
               if (payload?.error) {
                 unsubscribe();
                 wsClient.dispose();
-                reject(new AuthenticationError(payload.error.code));
+                const details = this.extractErrorDetails(payload.error);
+                reject(new InstanceError(payload.error.code, details));
                 return;
               }
 
@@ -174,17 +205,18 @@ export class CaidoAuth {
             error: (error) => {
               wsClient.dispose();
               reject(
-                new AuthenticationError(
-                  error instanceof Error ? error.message : String(error),
-                ),
+                new InstanceError("SUBSCRIPTION_ERROR", {
+                  message:
+                    error instanceof Error ? error.message : String(error),
+                }),
               );
             },
             complete: () => {
               wsClient.dispose();
               reject(
-                new AuthenticationError(
-                  "Subscription ended without receiving token",
-                ),
+                new InstanceError("SUBSCRIPTION_COMPLETE", {
+                  message: "Subscription ended without receiving token",
+                }),
               );
             },
           },
@@ -197,7 +229,7 @@ export class CaidoAuth {
    *
    * @param refreshToken - The refresh token from a previous authentication
    * @returns New authentication token with updated access and refresh tokens
-   * @throws {TokenRefreshError} If the refresh fails
+   * @throws {InstanceError} If the refresh fails
    */
   async refreshToken(refreshToken: string): Promise<AuthenticationToken> {
     const result = await this.client
@@ -208,23 +240,27 @@ export class CaidoAuth {
       .toPromise();
 
     if (result.error) {
-      throw new TokenRefreshError("GRAPHQL_ERROR", result.error.message);
+      throw new InstanceError("GRAPHQL_ERROR", {
+        message: result.error.message,
+      });
     }
 
     const payload = result.data?.refreshAuthenticationToken;
     if (!payload) {
-      throw new TokenRefreshError(
-        "NO_RESPONSE",
-        "No response from refreshAuthenticationToken",
-      );
+      throw new InstanceError("NO_RESPONSE", {
+        message: "No response from refreshAuthenticationToken",
+      });
     }
 
     if (payload.error) {
-      throw new TokenRefreshError(payload.error.code, "");
+      const details = this.extractErrorDetails(payload.error);
+      throw new InstanceError(payload.error.code, details);
     }
 
     if (!payload.token) {
-      throw new TokenRefreshError("NO_TOKEN", "No token returned from refresh");
+      throw new InstanceError("NO_TOKEN", {
+        message: "No token returned from refresh",
+      });
     }
 
     return {
