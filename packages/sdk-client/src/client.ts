@@ -3,7 +3,15 @@ import { GraphQLClient } from "@/graphql/index.js";
 import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
-import { PluginSDK, UserSDK } from "@/sdks/index.js";
+import {
+  EnvironmentSDK,
+  FilterSDK,
+  HostedFileSDK,
+  PluginSDK,
+  ProjectSDK,
+  ScopeSDK,
+  UserSDK,
+} from "@/sdks/index.js";
 
 /**
  * Caido client for interacting with a Caido instance.
@@ -12,6 +20,12 @@ import { PluginSDK, UserSDK } from "@/sdks/index.js";
  * - `graphql` - Low-level GraphQL client (execute queries/mutations, subscribe)
  * - `rest` - Low-level REST client (GET, POST)
  * - `user` - Higher-level user SDK
+ * - `plugin` - Higher-level plugin SDK
+ * - `project` - Higher-level project SDK
+ * - `scope` - Higher-level scope SDK
+ * - `filter` - Higher-level filter preset SDK
+ * - `environment` - Higher-level environment SDK
+ * - `hostedFile` - Higher-level hosted file SDK
  *
  * @example
  * ```typescript
@@ -68,6 +82,21 @@ export class Client {
   /** Higher-level plugin SDK. */
   readonly plugin: PluginSDK;
 
+  /** Higher-level project SDK. */
+  readonly project: ProjectSDK;
+
+  /** Higher-level scope SDK. */
+  readonly scope: ScopeSDK;
+
+  /** Higher-level filter preset SDK. */
+  readonly filter: FilterSDK;
+
+  /** Higher-level environment SDK. */
+  readonly environment: EnvironmentSDK;
+
+  /** Higher-level hosted file SDK. */
+  readonly hostedFile: HostedFileSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -91,6 +120,11 @@ export class Client {
 
     this.user = new UserSDK(this.graphql);
     this.plugin = new PluginSDK(this.graphql, this.rest);
+    this.project = new ProjectSDK(this.graphql);
+    this.scope = new ScopeSDK(this.graphql);
+    this.filter = new FilterSDK(this.graphql);
+    this.environment = new EnvironmentSDK(this.graphql);
+    this.hostedFile = new HostedFileSDK(this.graphql);
   }
 
   /**

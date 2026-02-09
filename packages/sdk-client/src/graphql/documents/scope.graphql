@@ -1,0 +1,67 @@
+query Scopes {
+  scopes {
+    id
+    name
+    allowlist
+    denylist
+    indexed
+  }
+}
+
+query Scope($id: ID!) {
+  scope(id: $id) {
+    id
+    name
+    allowlist
+    denylist
+    indexed
+  }
+}
+
+mutation CreateScope($input: CreateScopeInput!) {
+  createScope(input: $input) {
+    error {
+      __typename
+      ... on InvalidGlobTermsUserError {
+        ...InvalidGlobTermsUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    scope {
+      id
+      name
+      allowlist
+      denylist
+      indexed
+    }
+  }
+}
+
+mutation UpdateScope($id: ID!, $input: UpdateScopeInput!) {
+  updateScope(id: $id, input: $input) {
+    error {
+      __typename
+      ... on InvalidGlobTermsUserError {
+        ...InvalidGlobTermsUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    scope {
+      id
+      name
+      allowlist
+      denylist
+      indexed
+    }
+  }
+}
+
+mutation DeleteScope($id: ID!) {
+  deleteScope(id: $id) {
+    deletedId
+  }
+}

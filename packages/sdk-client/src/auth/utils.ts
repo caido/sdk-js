@@ -1,6 +1,8 @@
-import { FileTokenCache } from "./cache/file.js";
-import { LocalStorageTokenCache } from "./cache/localstorage.js";
-import type { TokenCache } from "./cache/types.js";
+import {
+  FileTokenCache,
+  LocalStorageTokenCache,
+  type TokenCache,
+} from "./cache/index.js";
 import type {
   AuthCacheFile,
   AuthCacheLocalStorage,
@@ -20,13 +22,13 @@ export const isTokenAuth = (auth: AuthOptions): auth is TokenAuthOptions => {
   return "token" in auth;
 };
 
-export const isFileCacheOptions = (
+const isFileCacheOptions = (
   options: AuthCacheOptions,
 ): options is AuthCacheFile => {
   return "file" in options;
 };
 
-export const isLocalStorageCacheOptions = (
+const isLocalStorageCacheOptions = (
   options: AuthCacheOptions,
 ): options is AuthCacheLocalStorage => {
   return "localstorage" in options;

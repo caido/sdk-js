@@ -11,27 +11,11 @@ export type {
 } from "@/auth/types.js";
 export * from "@/types/index.js";
 
-export {
-  AuthorizationUserError,
-  CaidoError,
-  CloudUserError,
-  ErrorCodes,
-  GraphQLRequestError,
-  OtherUserError,
-  toUserError,
-} from "@/errors.js";
+export * from "@/errors/index.js";
 
 export { ConsoleLogger, type Logger } from "@/logger.js";
 
 export type { CachedToken, TokenCache } from "@/auth/cache/types.js";
-export {
-  FileTokenCache,
-  type FileTokenCacheOptions,
-} from "@/auth/cache/file.js";
-export {
-  LocalStorageTokenCache,
-  type LocalStorageTokenCacheOptions,
-} from "@/auth/cache/localstorage.js";
 
 export { GraphQLClient } from "@/graphql/index.js";
 export { RestClient, type RestRequestOptions } from "@/rest/index.js";

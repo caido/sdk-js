@@ -5,7 +5,7 @@ import {
   PATApprover,
 } from "@caido/server-auth";
 
-import type { CachedToken, TokenCache } from "./cache/types.js";
+import type { CachedToken, TokenCache } from "./cache/index.js";
 import type { AuthOptions, BrowserAuthOptions } from "./types.js";
 import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 

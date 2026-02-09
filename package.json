@@ -4,6 +4,7 @@
   "scripts": {
     "lint": "eslint ./packages/**/src --fix",
     "typecheck": "pnpm -r typecheck",
+    "knip": "knip",
     "generate:doc": "pnpm -r generate:doc"
   },
   "engines": {
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@caido/eslint-config": "0.8.0",
     "eslint": "9.39.2",
+    "knip": "5.82.1",
     "tsdown": "0.20.1",
     "typescript": "5.6.2",
     "typedoc": "0.28.14",

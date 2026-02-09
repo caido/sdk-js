@@ -1,8 +1,9 @@
 import type { Exchange } from "@urql/core";
 import { type AuthConfig, authExchange } from "@urql/exchange-auth";
 
+import { hasAuthorizationError } from "../utils.js";
+
 import type { AuthManager } from "@/auth/index.js";
-import { hasAuthorizationError } from "@/errors.js";
 import { isAbsent } from "@/utils/optional.js";
 
 export const createAuthExchange = (options: {

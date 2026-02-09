@@ -66,6 +66,10 @@ export class PluginPackage {
     return this.definition.id;
   }
 
+  get manifestId(): string {
+    return this.definition.manifestId;
+  }
+
   async callFunction<T>(input: CallFunctionInput): Promise<T> {
     const plugin = this.definition.plugins.find((p) => {
       if (p.__typename !== "PluginBackend") {

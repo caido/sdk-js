@@ -1,0 +1,48 @@
+fragment UserErrorFull on UserError {
+  __typename
+  code
+}
+
+fragment CloudUserErrorFull on CloudUserError {
+  ...UserErrorFull
+  cloudReason: reason
+}
+
+fragment NameTakenUserErrorFull on NameTakenUserError {
+  ...UserErrorFull
+  name
+}
+
+fragment UnknownIdUserErrorFull on UnknownIdUserError {
+  ...UserErrorFull
+  id
+}
+
+fragment PermissionDeniedUserErrorFull on PermissionDeniedUserError {
+  ...UserErrorFull
+  permissionReason: reason
+}
+
+fragment ProjectUserErrorFull on ProjectUserError {
+  ...UserErrorFull
+  projectReason: reason
+}
+
+fragment OtherUserErrorFull on OtherUserError {
+  ...UserErrorFull
+}
+
+fragment InvalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {
+  ...UserErrorFull
+  terms
+}
+
+fragment AliasTakenUserErrorFull on AliasTakenUserError {
+  ...UserErrorFull
+  alias
+}
+
+fragment NewerVersionUserErrorFull on NewerVersionUserError {
+  ...UserErrorFull
+  version
+}

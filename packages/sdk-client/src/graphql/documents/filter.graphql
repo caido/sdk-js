@@ -1,0 +1,75 @@
+query FilterPresets {
+  filterPresets {
+    id
+    name
+    alias
+    clause
+  }
+}
+
+query FilterPreset($id: ID!) {
+  filterPreset(id: $id) {
+    id
+    name
+    alias
+    clause
+  }
+}
+
+mutation CreateFilterPreset($input: CreateFilterPresetInput!) {
+  createFilterPreset(input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on AliasTakenUserError {
+        ...AliasTakenUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    filter {
+      id
+      name
+      alias
+      clause
+    }
+  }
+}
+
+mutation UpdateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {
+  updateFilterPreset(id: $id, input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on AliasTakenUserError {
+        ...AliasTakenUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    filter {
+      id
+      name
+      alias
+      clause
+    }
+  }
+}
+
+mutation DeleteFilterPreset($id: ID!) {
+  deleteFilterPreset(id: $id) {
+    deletedId
+  }
+}

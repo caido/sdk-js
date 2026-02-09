@@ -4,7 +4,7 @@ import type { Logger } from "@/logger.js";
 import type { Maybe } from "@/utils/optional.js";
 import { isAbsent } from "@/utils/optional.js";
 
-export interface LocalStorageTokenCacheOptions {
+interface LocalStorageTokenCacheOptions {
   key?: string;
   logger?: Logger;
 }

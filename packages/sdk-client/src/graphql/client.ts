@@ -1,6 +1,5 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { type AnyVariables, Client, type OperationResult } from "@urql/core";
-import { GraphQLError } from "graphql";
 import {
   createClient as createWSClient,
   type Client as WSClient,
@@ -12,13 +11,14 @@ import {
   createFetchExchange,
   createSubscriptionExchange,
 } from "./exchanges/index.js";
+import { toUserError } from "./utils.js";
 
 import type { AuthManager } from "@/auth/index.js";
 import {
-  AuthorizationUserError,
-  GraphQLRequestError,
-  toUserError,
-} from "@/errors.js";
+  NetworkUserError,
+  NoDataUserError,
+  OperationUserError,
+} from "@/errors/graphql.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
@@ -100,31 +100,7 @@ export class GraphQLClient {
       pipe(
         this.client.subscription<TData, TVars>(document, vars),
         map((result: OperationResult<TData, TVars>) => {
-          if (result.error) {
-            const graphqlErrors = result.error.graphQLErrors;
-
-            if (graphqlErrors.length > 0) {
-              const firstUserError = graphqlErrors
-                .map(toUserError)
-                .find((e) => isPresent(e));
-              if (isPresent(firstUserError)) {
-                throw firstUserError;
-              }
-              throw new GraphQLRequestError(graphqlErrors);
-            }
-
-            throw new GraphQLRequestError([
-              new GraphQLError(result.error.message),
-            ]);
-          }
-
-          if (isAbsent(result.data)) {
-            throw new GraphQLRequestError([
-              new GraphQLError("No data returned from GraphQL"),
-            ]);
-          }
-
-          return result.data;
+          return this.toUserError(result);
         }),
       ),
     );
@@ -139,29 +115,7 @@ export class GraphQLClient {
 
     const result = await operationFn(this.client, document, vars);
 
-    if (result.error) {
-      const graphqlErrors = result.error.graphQLErrors;
-
-      if (graphqlErrors.length > 0) {
-        const firstUserError = graphqlErrors
-          .map(toUserError)
-          .find((e) => isPresent(e));
-        if (isPresent(firstUserError)) {
-          throw firstUserError;
-        }
-        throw new GraphQLRequestError(graphqlErrors);
-      }
-
-      throw new GraphQLRequestError([new GraphQLError(result.error.message)]);
-    }
-
-    if (isAbsent(result.data)) {
-      throw new GraphQLRequestError([
-        new GraphQLError("No data returned from GraphQL"),
-      ]);
-    }
-
-    return result.data;
+    return this.toUserError(result);
   }
 
   private createWSClient(): WSClient {
@@ -232,5 +186,32 @@ export class GraphQLClient {
     const url = new URL(baseUrl);
     const scheme = url.protocol === "https:" ? "wss:" : "ws:";
     return `${scheme}//${url.host}/ws/graphql`;
+  }
+
+  private toUserError<TData>(result: OperationResult<TData>): TData {
+    const { data, error } = result;
+
+    if (isPresent(error)) {
+      if (isPresent(error.networkError)) {
+        throw new NetworkUserError();
+      }
+
+      const caidoErrors = error.graphQLErrors
+        .map(toUserError)
+        .filter(isPresent);
+
+      const caidoError = caidoErrors[0];
+      if (isPresent(caidoError)) {
+        throw caidoError;
+      }
+
+      throw new OperationUserError(error);
+    }
+
+    if (isAbsent(data)) {
+      throw new NoDataUserError();
+    }
+
+    return data;
   }
 }
