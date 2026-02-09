@@ -1,6 +1,6 @@
-# Function call example
+# Upload File Example
 
-A simple example demonstrating how to connect to a Caido instance and call a function of a plugin using the SDK.
+A simple example demonstrating how to connect to a Caido instance and upload a file using the SDK.
 
 ## What it does
 
@@ -8,8 +8,9 @@ This example:
 
 1. Creates a Caido client with Personal Access Token (PAT) authentication
 2. Connects to the Caido instance
-3. Finds the plugin
-4. Calls functions to generate an interactsh url
+3. Reads a file from the filesystem
+4. Uploads the file to the Caido instance
+5. Displays information about the uploaded file
 
 ## Prerequisites
 
@@ -33,6 +34,16 @@ This example:
 
 ## Running
 
+Upload a file by providing the file path as an argument:
+
 ```bash
-pnpm start
+pnpm start path/to/file.txt
 ```
+
+You can also optionally specify a custom name for the uploaded file:
+
+```bash
+pnpm start path/to/file.txt custom-name.txt
+```
+
+If no file path is provided, it will default to `test.txt`.

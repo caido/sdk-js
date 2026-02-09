@@ -1,7 +1,10 @@
 import { type GraphQLError } from "graphql";
 import { z } from "zod";
 
-import { AuthorizationErrorReason, CloudErrorReason } from "./index.js";
+import {
+  AuthorizationErrorReason,
+  CloudErrorReason,
+} from "./__generated__/enums.js";
 
 import {
   AuthorizationUserError,

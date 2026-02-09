@@ -38,36 +38,6 @@ import {
  *
  * const viewer = await client.user.viewer();
  * ```
- *
- * @example
- * ```typescript
- * // Authenticate with a direct access token
- * const client = new Caido({
- *   url: "http://localhost:8080",
- *   auth: { token: "my-access-token" },
- * });
- * await client.connect();
- * ```
- *
- * @example
- * ```typescript
- * // Browser-based authentication (interactive)
- * const client = new Caido({
- *   url: "http://localhost:8080",
- *   auth: { onRequest: (req) => showAuthDialog(req.verificationUrl) },
- * });
- * await client.connect();
- * ```
- *
- * @example
- * ```typescript
- * // With file-based token caching
- * const client = new Caido({
- *   url: "http://localhost:8080",
- *   auth: { pat: "caido_xxxxx", cache: { file: ".caido-token.json" } },
- * });
- * await client.connect();
- * ```
  */
 export class Client {
   /** Low-level GraphQL client for executing queries, mutations, and subscriptions. */
