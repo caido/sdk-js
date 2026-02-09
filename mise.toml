@@ -10,6 +10,10 @@ run = "pnpm typecheck"
 description = "Run linter"
 run = "pnpm lint"
 
+[tasks.knip]
+description = "Run knip"
+run = "pnpm knip"
+
 [tasks.validate]
 description = 'Validate the project'
-depends = ['typecheck', 'lint']
+depends = ['typecheck', 'lint', 'knip']
