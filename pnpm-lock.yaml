@@ -47,8 +47,8 @@ importers:
   packages/sdk-client:
     dependencies:
       '@caido/server-auth':
-        specifier: workspace:*
-        version: link:../server-auth
+        specifier: 0.2.0
+        version: 0.2.0(ws@8.19.0)
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.12.0)
@@ -535,6 +535,9 @@ packages:
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
+
+  '@caido/server-auth@0.2.0':
+    resolution: {integrity: sha512-jQhhjOvr7bOkFZpAuoLDQNfddjAZrrmn1KzXIUHNRBmhkUko/4a2TzoUajawr5LjB8Gk5GX0LA9f+tGLA3J2Rg==}
 
   '@codemirror/state@6.4.1':
     resolution: {integrity: sha512-QkEyUiLhsJoZkbumGZlswmAhA7CBU02Wrz7zvH4SrcifbsqwlXShVXg65f3v/ts57W3dqyamEriMhij1Z3Zz4A==}
@@ -4014,6 +4017,17 @@ snapshots:
   '@caido/quickjs-types@0.25.4': {}
 
   '@caido/sdk-shared@0.1.1': {}
+
+  '@caido/server-auth@0.2.0(ws@8.19.0)':
+    dependencies:
+      '@urql/core': 6.0.1(graphql@16.12.0)
+      graphql: 16.12.0
+      graphql-tag: 2.12.6(graphql@16.12.0)
+      graphql-ws: 6.0.7(graphql@16.12.0)(ws@8.19.0)
+    transitivePeerDependencies:
+      - '@fastify/websocket'
+      - crossws
+      - ws
 
   '@codemirror/state@6.4.1': {}
 
