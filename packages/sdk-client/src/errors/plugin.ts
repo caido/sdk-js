@@ -6,6 +6,40 @@ import {
   StoreErrorReason,
   type StoreUserErrorFullFragment,
 } from "@/graphql/index.js";
+import type { FunctionErrorPayload } from "@/rest/index.js";
+
+/**
+ * Error thrown when a plugin function call fails.
+ */
+export class PluginFunctionCallError extends BaseError {
+  readonly __typename = "PluginFunctionCallError";
+  readonly kind: FunctionErrorPayload["kind"];
+
+  constructor(name: string, error: FunctionErrorPayload) {
+    switch (error.kind) {
+      case "invalid_procedure":
+        super(`Could not call plugin function with name '${error.name}'.`);
+        this.kind = error.kind;
+        break;
+      case "invalid_output":
+        super(
+          `Invalid output type for plugin function. Expected ${error.expected} but got ${error.found}.`,
+        );
+        this.kind = error.kind;
+        break;
+      case "thrown": {
+        const message = error.message ?? "Unknown error";
+        const stack = error.stack ?? "";
+        const stackText = stack !== "" ? `\n\n${stack}` : "";
+        super(
+          `Plugin function '${name}' threw an error: ${message}${stackText}`,
+        );
+        this.kind = error.kind;
+        break;
+      }
+    }
+  }
+}
 
 export class PluginUserError extends BaseError {
   readonly __typename = "PluginUserError";

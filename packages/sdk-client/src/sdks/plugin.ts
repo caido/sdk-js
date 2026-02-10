@@ -1,3 +1,4 @@
+import { NotFoundUserError, PluginFunctionCallError } from "@/errors/index.js";
 import {
   type GraphQLClient,
   InstallPluginPackageDocument,
@@ -169,7 +170,7 @@ export class PluginPackage {
     });
 
     if (isAbsent(plugin)) {
-      throw new Error(`Plugin not found: ${input.name}`);
+      throw new NotFoundUserError();
     }
 
     const body: FunctionInput = {
@@ -189,9 +190,7 @@ export class PluginPackage {
         return JSON.parse(returns) as T;
       }
       case "error":
-        throw new Error(
-          `Function call failed: ${JSON.stringify(payload.error)}`,
-        );
+        throw new PluginFunctionCallError(input.name, payload.error);
     }
   }
 }

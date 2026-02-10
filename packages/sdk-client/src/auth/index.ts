@@ -9,6 +9,7 @@ import type { CachedToken, TokenCache } from "./cache/index.js";
 import type { AuthOptions, BrowserAuthOptions } from "./types.js";
 import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 
+import { TokenRefreshError } from "@/errors/index.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
@@ -115,10 +116,7 @@ export class AuthManager {
   async refresh(): Promise<void> {
     const refreshToken = this.tokenState?.refreshToken;
     if (isAbsent(refreshToken)) {
-      throw new Error(
-        "Cannot refresh token: no refresh token available. " +
-          "Provide a token pair with a refresh token, or use PAT/browser authentication.",
-      );
+      throw new TokenRefreshError();
     }
 
     this.logger.debug("Refreshing access token");

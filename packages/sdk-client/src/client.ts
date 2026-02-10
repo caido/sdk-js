@@ -1,4 +1,5 @@
 import { AuthManager } from "@/auth/index.js";
+import { InstanceNotReadyError } from "@/errors/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
 import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
@@ -204,6 +205,6 @@ export class Client {
       }
     }
 
-    throw new Error(`Instance not ready after ${maxRetries} attempts`);
+    throw new InstanceNotReadyError(maxRetries);
   }
 }

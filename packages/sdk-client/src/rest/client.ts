@@ -1,4 +1,5 @@
 import type { AuthManager } from "@/auth/index.js";
+import { RestRequestError } from "@/errors/index.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
 import { isPresent } from "@/utils/optional.js";
@@ -125,8 +126,11 @@ export class RestClient {
         this.logger.warn("Failed to read error response body", error);
         return "Unknown error";
       });
-      throw new Error(
-        `REST request failed: ${method} ${requestPath} - ${response.status}: ${errorText}`,
+      throw new RestRequestError(
+        method,
+        requestPath,
+        response.status,
+        errorText,
       );
     }
 
