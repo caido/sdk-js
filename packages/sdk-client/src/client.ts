@@ -12,6 +12,7 @@ import {
   ScopeSDK,
   UserSDK,
 } from "@/sdks/index.js";
+import { type Health, healthSchema } from "@/types/index.js";
 
 /**
  * Caido client for interacting with a Caido instance.
@@ -108,5 +109,25 @@ export class Client {
    */
   async connect(): Promise<void> {
     await this.auth.authenticate();
+  }
+
+  /**
+   * Check the health status of the Caido instance.
+   *
+   * Pings the `/health` endpoint and returns instance metadata.
+   *
+   * @returns Instance health metadata including name, version, and ready status
+   *
+   * @example
+   * ```typescript
+   * const health = await client.health();
+   * console.log(health.name); // "caido"
+   * console.log(health.version); // "0.55.3"
+   * console.log(health.ready); // true
+   * ```
+   */
+  async health(): Promise<Health> {
+    const response = await this.rest.get<unknown>("/health");
+    return healthSchema.parse(response);
   }
 }

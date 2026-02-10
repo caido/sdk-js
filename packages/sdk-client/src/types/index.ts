@@ -5,6 +5,7 @@ export * from "./filter.js";
 export * from "./environment.js";
 export * from "./hostedFile.js";
 export * from "./plugin.js";
+export * from "./health.js";
 
 /**
  * A unique Caido identifier per type.
