@@ -13,15 +13,15 @@ This example:
 ## Prerequisites
 
 - Node.js installed
-- A Caido instance running (default: `http://localhost:8082`)
+- A Caido instance running (default: `http://localhost:8080`)
 - A Personal Access Token (PAT) from your Caido instance
 
 ## Setup
 
-1. Set the `CAIDO_INSTANCE_URL` environment variable (optional, defaults to `http://localhost:8082`):
+1. Set the `CAIDO_INSTANCE_URL` environment variable (optional, defaults to `http://localhost:8080`):
 
    ```bash
-   export CAIDO_INSTANCE_URL=http://localhost:8082
+   export CAIDO_INSTANCE_URL=http://localhost:8080
    ```
 
 2. Set the `CAIDO_PAT` environment variable with your Personal Access Token:

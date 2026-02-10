@@ -3,7 +3,7 @@ import { Client } from "@caido/sdk-client";
 async function main() {
   // Get the Caido instance URL from environment or use default
   const instanceUrl =
-    process.env["CAIDO_INSTANCE_URL"] ?? "http://localhost:8082";
+    process.env["CAIDO_INSTANCE_URL"] ?? "http://localhost:8080";
 
   // Get the Personal Access Token from environment
   const pat = process.env["CAIDO_PAT"];
