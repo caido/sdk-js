@@ -12,7 +12,12 @@ import {
   ScopeSDK,
   UserSDK,
 } from "@/sdks/index.js";
-import { type Health, healthSchema, type ReadyOptions } from "@/types/index.js";
+import {
+  type ConnectOptions,
+  type Health,
+  healthSchema,
+  type ReadyOptions,
+} from "@/types/index.js";
 import { sleep } from "@/utils/misc.js";
 
 /**
@@ -107,8 +112,27 @@ export class Client {
    * - Load cached tokens if caching is enabled
    * - Perform PAT-based or browser-based authentication if needed
    * - Store the resulting tokens
+   * - Optionally wait for the instance to be ready
+   *
+   * @example
+   * ```typescript
+   * // Default: authenticate and wait for ready with default options
+   * await client.connect();
+   *
+   * // Skip ready check
+   * await client.connect({ ready: false });
+   * ```
    */
-  async connect(): Promise<void> {
+  async connect(options?: ConnectOptions): Promise<void> {
+    // Wait for the instance to be ready
+    const readyOption = options?.ready ?? true;
+    if (readyOption !== false) {
+      await this.ready(
+        typeof readyOption === "object" ? readyOption : undefined,
+      );
+    }
+
+    // Authenticate
     await this.auth.authenticate();
   }
 

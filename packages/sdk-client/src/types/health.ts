@@ -32,3 +32,17 @@ export type ReadyOptions = {
    */
   timeout?: number;
 };
+
+/**
+ * Options for the connect() method
+ */
+export type ConnectOptions = {
+  /**
+   * Whether to wait for the instance to be ready after authentication.
+   * If `true`, uses default ready options.
+   * If `false`, skips the ready check.
+   * If a `ReadyOptions` object, uses those options for the ready check.
+   * @default true
+   */
+  ready?: ReadyOptions | boolean;
+};
