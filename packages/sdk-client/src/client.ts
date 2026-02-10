@@ -12,7 +12,8 @@ import {
   ScopeSDK,
   UserSDK,
 } from "@/sdks/index.js";
-import { type Health, healthSchema } from "@/types/index.js";
+import { type Health, healthSchema, type ReadyOptions } from "@/types/index.js";
+import { sleep } from "@/utils/misc.js";
 
 /**
  * Caido client for interacting with a Caido instance.
@@ -129,5 +130,56 @@ export class Client {
   async health(): Promise<Health> {
     const response = await this.rest.get<unknown>("/health");
     return healthSchema.parse(response);
+  }
+
+  /**
+   * Wait for the Caido instance to be ready.
+   *
+   * @param options - Optional configuration for polling behavior
+   * @returns Promise that resolves when the instance is ready
+   * @throws Error if the instance is not ready within the specified timeout or retries
+   *
+   * @example
+   * ```typescript
+   * // Use default options
+   * await client.ready();
+   *
+   * // Custom options
+   * await client.ready({
+   *   interval: 1000,  // Check every 1 second
+   *   retries: 10,      // Try up to 10 times
+   *   timeout: 10000,  // Overall timeout of 10 seconds
+   * });
+   * ```
+   */
+  async ready(options?: ReadyOptions): Promise<void> {
+    const interval = options?.interval ?? 5000;
+    const maxRetries = options?.retries ?? 5;
+    const timeout = options?.timeout ?? 5000;
+
+    let attempts = 0;
+
+    const checkHealth = async (): Promise<boolean> => {
+      try {
+        const response = await this.rest.get<unknown>("/health", { timeout });
+        return healthSchema.parse(response).ready;
+      } catch {
+        return false;
+      }
+    };
+
+    while (attempts < maxRetries) {
+      const isReady = await checkHealth();
+      if (isReady) {
+        return;
+      }
+
+      attempts++;
+      if (attempts < maxRetries) {
+        await sleep(interval);
+      }
+    }
+
+    throw new Error(`Instance not ready after ${maxRetries} attempts`);
   }
 }
