@@ -14,3 +14,26 @@ query PluginPackages {
     ...PluginPackageMeta
   }
 }
+
+mutation InstallPluginPackage($input: InstallPluginPackageInput!) {
+  installPluginPackage(input: $input) {
+    package {
+      ...PluginPackageMeta
+    }
+    error {
+      __typename
+      ... on PluginUserError {
+        ...PluginUserErrorFull
+      }
+      ... on StoreUserError {
+        ...StoreUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}

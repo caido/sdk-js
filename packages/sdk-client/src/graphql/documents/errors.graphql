@@ -46,3 +46,13 @@ fragment NewerVersionUserErrorFull on NewerVersionUserError {
   ...UserErrorFull
   version
 }
+
+fragment PluginUserErrorFull on PluginUserError {
+  ...UserErrorFull
+  reason
+}
+
+fragment StoreUserErrorFull on StoreUserError {
+  ...UserErrorFull
+  storeReason: reason
+}

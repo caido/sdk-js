@@ -4,6 +4,7 @@ export * from "./scope.js";
 export * from "./filter.js";
 export * from "./environment.js";
 export * from "./hostedFile.js";
+export * from "./plugin.js";
 
 /**
  * A unique Caido identifier per type.

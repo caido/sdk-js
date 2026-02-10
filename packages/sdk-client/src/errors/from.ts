@@ -7,6 +7,7 @@ import {
   NameTakenUserError,
 } from "./form.js";
 import { NotFoundUserError, OtherUserError } from "./misc.js";
+import { PluginUserError, StoreUserError } from "./plugin.js";
 import { ProjectUserError } from "./project.js";
 import { NewerVersionUserError } from "./version.js";
 
@@ -22,6 +23,8 @@ type ErrType<T> = InstanceType<
   E extends "ProjectUserError" ? typeof ProjectUserError :
   E extends "NewerVersionUserError" ? typeof NewerVersionUserError :
   E extends "CloudUserError" ? typeof CloudUserError :
+  E extends "PluginUserError" ? typeof PluginUserError :
+  E extends "StoreUserError" ? typeof StoreUserError :
   never :
   never
 >;
@@ -55,6 +58,12 @@ export const from = <T extends AllErrors>(error: T): ErrType<T> => {
 
       case "CloudUserError":
         return new CloudUserError(error);
+
+      case "PluginUserError":
+        return new PluginUserError(error);
+
+      case "StoreUserError":
+        return new StoreUserError(error);
     }
   })() as ErrType<T>;
 };

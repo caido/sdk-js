@@ -218,6 +218,18 @@ export type NewerVersionUserErrorFullFragment = {
   code: string;
 };
 
+export type PluginUserErrorFullFragment = {
+  __typename: "PluginUserError";
+  reason: Types.PluginErrorReason;
+  code: string;
+};
+
+export type StoreUserErrorFullFragment = {
+  __typename: "StoreUserError";
+  code: string;
+  storeReason: Types.StoreErrorReason;
+};
+
 export const UserErrorFullFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -591,3 +603,83 @@ export const NewerVersionUserErrorFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<NewerVersionUserErrorFullFragment, unknown>;
+export const PluginUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PluginUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PluginUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "reason" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PluginUserErrorFullFragment, unknown>;
+export const StoreUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StoreUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StoreUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "storeReason" },
+            name: { kind: "Name", value: "reason" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StoreUserErrorFullFragment, unknown>;

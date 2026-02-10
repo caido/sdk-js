@@ -55,7 +55,7 @@ export class FilterSDK {
       name: result.filterPreset.name,
       alias: result.filterPreset.alias,
       clause: result.filterPreset.clause,
-    };
+    } satisfies FilterPreset;
   }
 
   /**
@@ -82,7 +82,7 @@ export class FilterSDK {
       name: filter.name,
       alias: filter.alias,
       clause: filter.clause,
-    };
+    } satisfies FilterPreset;
   }
 
   /**
@@ -113,7 +113,7 @@ export class FilterSDK {
       name: filter.name,
       alias: filter.alias,
       clause: filter.clause,
-    };
+    } satisfies FilterPreset;
   }
 
   /**
