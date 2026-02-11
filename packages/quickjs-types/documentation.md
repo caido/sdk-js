@@ -27,7 +27,7 @@ Some elements are similar to `Node.JS`, but some imports will be different and s
 | [path](llrt/path/index.md)               | Path transformation      | `path`             | ✘      |
 | [sqlite](extra/sqlite.md)                | SQlite access            | `sqlite`           | ✘      |
 | [stream](llrt/stream/stream.md)          | Streams (basic)          | `stream`           | ✔︎      |
-| [stream/web](llrt/web/index.md)          | Streams Web              | `stream/web`       | ✘      |
+| [stream/web](llrt/stream/web/index.md)   | Streams Web              | `stream/web`       | ✘      |
 | [string_decoder](llrt/string_decoder.md) | String Decoder           | `string_decoder`   | ✘      |
 | [timers](extra/timers.md)                | Timers                   | N/A                | ✔︎      |
 | [url](llrt/url/index.md)                 | URL utilities            | `url`              | ✔︎      |
