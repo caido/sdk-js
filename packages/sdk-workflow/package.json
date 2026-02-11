@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-workflow",
-  "version": "0.55.3",
+  "version": "0.55.4-beta.0",
   "description": "Typing for the Caido Workflow SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "repository": "https://github.com/caido/sdk-js/",
@@ -15,6 +15,6 @@
     "generate:doc": "typedoc"
   },
   "dependencies": {
-    "@caido/quickjs-types": "^0.25.4"
+    "@caido/quickjs-types": "^0.26.0"
   }
 }

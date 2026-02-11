@@ -38,8 +38,8 @@ importers:
   packages/sdk-backend:
     dependencies:
       '@caido/quickjs-types':
-        specifier: ^0.25.4
-        version: 0.25.4
+        specifier: ^0.26.0
+        version: 0.26.0
       '@caido/sdk-shared':
         specifier: ^0.1.0
         version: 0.1.1
@@ -155,8 +155,8 @@ importers:
   packages/sdk-workflow:
     dependencies:
       '@caido/quickjs-types':
-        specifier: ^0.25.4
-        version: 0.25.4
+        specifier: ^0.26.0
+        version: 0.26.0
 
   packages/server-auth:
     dependencies:
@@ -530,8 +530,8 @@ packages:
       eslint: '>=9.0.0'
       prettier: ^3.0.0
 
-  '@caido/quickjs-types@0.25.4':
-    resolution: {integrity: sha512-U7Cvi4aHoCN8T2JB+Az3ArqQ3MUK0PRCtBm5Sq1rfqaJ9NymAkh3O29q77Keh3G/zINq2WTkKZq5qJlvrQNl+Q==}
+  '@caido/quickjs-types@0.26.0':
+    resolution: {integrity: sha512-Nnpu87fnTvVxEdLUQXAc9d763vj13GPcQEhSWireuLlDPDgxM/7dK8kZdOhGX/BhWRRZ7nUzNc3IdN+OVdsoSA==}
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
@@ -4014,7 +4014,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@caido/quickjs-types@0.25.4': {}
+  '@caido/quickjs-types@0.26.0': {}
 
   '@caido/sdk-shared@0.1.1': {}
 
