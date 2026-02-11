@@ -4,7 +4,7 @@ import { MarkdownTheme } from "typedoc-plugin-markdown";
 // @ts-check
 /**
  * Plugin that prepends documentation.md content to the index.md page.
- * 
+ *
  * @param {import('typedoc-plugin-markdown').MarkdownApplication} app
  */
 export function load(app) {
@@ -13,7 +13,7 @@ export function load(app) {
 
   // If you just want to prepend data, leave the theme as default
   app.renderer.markdownHooks.on("content.begin", (ctx) => {
-    if (ctx.page.model.url === "index.md") {
+    if (ctx.page.url === "index.md") {
       const documentation = fs.readFileSync("documentation.md", "utf8");
       return documentation;
     }
@@ -22,11 +22,10 @@ export function load(app) {
 
 class OverrideMarkdownTheme extends MarkdownTheme {
   render(page, template) {
-    if (page.model.url == "index.md") {
+    if (page.url == "index.md") {
       const documentation = fs.readFileSync("documentation.md", "utf8");
       return documentation;
     }
     return super.render(page, template);
   }
 }
-

@@ -1,23 +1,29 @@
 {
   "extends": ["../../typedoc.base.json"],
   "entryPoints": [
+    "src/caido/crypto.d.ts",
     "src/caido/http.d.ts",
     "src/extra/console.d.ts",
     "src/extra/os.d.ts",
     "src/extra/sqlite.d.ts",
     "src/extra/timers.d.ts",
-    "src/extra/url.d.ts",
+    "src/llrt/fs/promises.d.ts",
+    "src/llrt/stream/web.d.ts",
     "src/llrt/abort.d.ts",
     "src/llrt/buffer.d.ts",
     "src/llrt/child_process.d.ts",
-    "src/llrt/crypto.d.ts",
+    "src/llrt/dns.d.ts",
     "src/llrt/dom-events.d.ts",
+    "src/llrt/events.d.ts",
     "src/llrt/fs.d.ts",
     "src/llrt/globals.d.ts",
+    "src/llrt/https.d.ts",
     "src/llrt/net.d.ts",
     "src/llrt/path.d.ts",
     "src/llrt/process.d.ts",
-    "src/llrt/stream.d.ts"
+    "src/llrt/stream.d.ts",
+    "src/llrt/string_decoder.d.ts",
+    "src/llrt/url.d.ts"
   ],
   "externalPattern": ["**/node_modules/typescript/**"],
   "theme": "override"

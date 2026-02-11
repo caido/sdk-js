@@ -1,5 +1,28 @@
 declare module "caido:utils" {
   /**
+   * A saved immutable Environment.
+   * @category Environment
+   */
+  export type Environment = {
+    /**
+     * The ID of the environment.
+     */
+    readonly id: ID;
+    /**
+     * The name of the environment.
+     */
+    readonly name: string;
+    /**
+     * The version of the environment.
+     */
+    readonly version: number;
+    /**
+     * The variables of the environment.
+     */
+    readonly variables: Array<EnvironmentVariable>;
+  };
+
+  /**
    * A saved immutable Finding.
    * @category Environment
    */
@@ -33,7 +56,6 @@ declare module "caido:utils" {
     value: string;
     /**
      * If the environment variable should be treated as secret.
-     * Secrets are encrypted on the disk.
      * @default false
      */
     secret: boolean;
@@ -49,6 +71,48 @@ declare module "caido:utils" {
      * This will take precedence over the `global` flag if provided.
      */
     env?: string;
+  };
+
+  export type EnvironmentVariableInput = {
+    /**
+     * The name of the environment variable.
+     */
+    name: string;
+    /**
+     * The value of the environment variable.
+     */
+    value: string;
+    /**
+     * If the environment variable should be treated as secret.
+     */
+    secret: boolean;
+  };
+
+  export type CreateEnvironmentInput = {
+    /**
+     * The name of the environment.
+     */
+    name: string;
+    /**
+     * The variables of the environment.
+     */
+    variables: Array<EnvironmentVariable>;
+  };
+
+  export type UpdateEnvironmentInput = {
+    /**
+     * The version of the environment to update.
+     * If not equal to the current version, the update will fail.
+     */
+    version: number;
+    /**
+     * The name of the environment.
+     */
+    name?: string;
+    /**
+     * The variables of the environment.
+     */
+    variables?: Array<EnvironmentVariableInput>;
   };
 
   /**
@@ -89,5 +153,49 @@ declare module "caido:utils" {
      * ```
      */
     setVar(input: SetVarInput): Promise<void>;
+    /**
+     * Get all the environments.
+     * @returns An array of {@link Environment}
+     */
+    getEnvironments(): Promise<Array<Environment>>;
+    /**
+     * Get an environment by its ID.
+     * @param id The ID of the environment.
+     * @returns The environment or undefined if not found.
+     */
+    getEnvironment(id: ID): Promise<Environment | undefined>;
+    /**
+     * Create a new environment.
+     * @param input The input for the creation.
+     * @returns The created environment.
+     */
+    createEnvironment(input: CreateEnvironmentInput): Promise<Environment>;
+    /**
+     * Update an environment.
+     * @param id The ID of the environment.
+     * @param input The input for the update.
+     * @returns The updated environment.
+     *
+     * @throws {Error} If the version passed in is not equal to the current version of the environment.
+     *
+     * @example
+     * ```js
+     * const environment = await sdk.env.getEnvironment(id);
+     * await sdk.env.updateEnvironment(id, {
+     *   version: environment.version,
+     *   name: "new name",
+     *   variables: [{ name: "USER_SECRET", value: "new secret value", secret: true }],
+     * });
+     * ```
+     */
+    updateEnvironment(
+      id: ID,
+      input: UpdateEnvironmentInput,
+    ): Promise<Environment>;
+    /**
+     * Delete an environment by its ID.
+     * @param id The ID of the environment.
+     */
+    deleteEnvironment(id: ID): Promise<void>;
   };
 }

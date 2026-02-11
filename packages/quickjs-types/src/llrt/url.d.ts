@@ -412,9 +412,7 @@ declare module "url" {
      * the empty string (`''`).
      *
      * The port value can be an empty string in which case the port depends on
-     * the protocol/scheme:
-     *
-     * <omitted>
+     * the protocol/scheme.
      *
      * Upon assigning a value to the port, the value will first be converted to a
      * string using `.toString()`.
