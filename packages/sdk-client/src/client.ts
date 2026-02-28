@@ -1,3 +1,5 @@
+import { FindingSDK } from "./sdks/finding.js";
+
 import { AuthManager } from "@/auth/index.js";
 import { InstanceNotReadyError } from "@/errors/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
@@ -75,6 +77,9 @@ export class Client {
   /** Higher-level hosted file SDK. */
   readonly hostedFile: HostedFileSDK;
 
+  /** Higher-level finding SDK. */
+  readonly finding: FindingSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -103,6 +108,7 @@ export class Client {
     this.filter = new FilterSDK(this.graphql);
     this.environment = new EnvironmentSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
+    this.finding = new FindingSDK(this.graphql);
   }
 
   /**

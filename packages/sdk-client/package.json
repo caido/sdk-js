@@ -29,7 +29,8 @@
     "typecheck": "tsc --noEmit",
     "generate": "pnpm generate:graphql && pnpm generate:rest",
     "generate:graphql": "graphql-codegen --config codegen.yml",
-    "generate:rest": "openapi-ts"
+    "generate:rest": "openapi-ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "@caido/server-auth": "0.2.0",
@@ -49,6 +50,8 @@
     "@graphql-codegen/typescript": "4.1.1",
     "@graphql-codegen/typescript-operations": "4.3.1",
     "@hey-api/openapi-ts": "0.76.0",
-    "typescript": "5.6.2"
+    "typescript": "5.6.2",
+    "undici": "7.22.0",
+    "vitest": "4.0.8"
   }
 }
