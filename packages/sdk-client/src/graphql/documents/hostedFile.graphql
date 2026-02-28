@@ -1,5 +1,4 @@
-query HostedFiles {
-  hostedFiles {
+fragment HostedFileFull on HostedFile {
     id
     name
     path
@@ -7,19 +6,18 @@ query HostedFiles {
     status
     createdAt
     updatedAt
+}
+
+query HostedFiles {
+  hostedFiles {
+    ...HostedFileFull
   }
 }
 
 mutation UploadHostedFile($input: UploadHostedFileInput!) {
   uploadHostedFile(input: $input) {
     hostedFile {
-      id
-      name
-      path
-      size
-      status
-      createdAt
-      updatedAt
+      ...HostedFileFull
     }
   }
 }
@@ -27,13 +25,7 @@ mutation UploadHostedFile($input: UploadHostedFileInput!) {
 mutation RenameHostedFile($id: ID!, $name: String!) {
   renameHostedFile(id: $id, name: $name) {
     hostedFile {
-      id
-      name
-      path
-      size
-      status
-      createdAt
-      updatedAt
+      ...HostedFileFull
     }
   }
 }

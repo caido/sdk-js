@@ -1,6 +1,16 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type HostedFileFullFragment = {
+  id: string;
+  name: string;
+  path: string;
+  size: number;
+  status: Types.HostedFileStatus;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type HostedFilesQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type HostedFilesQuery = {
@@ -66,6 +76,31 @@ export type DeleteHostedFileMutation = {
   deleteHostedFile: { deletedId?: string | undefined | null };
 };
 
+export const HostedFileFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HostedFileFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HostedFile" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<HostedFileFullFragment, unknown>;
 export const HostedFilesDocument = {
   kind: "Document",
   definitions: [
@@ -82,16 +117,33 @@ export const HostedFilesDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "path" } },
-                { kind: "Field", name: { kind: "Name", value: "size" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "HostedFileFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HostedFileFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HostedFile" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
         ],
       },
     },
@@ -145,21 +197,9 @@ export const UploadHostedFileDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "path" } },
-                      { kind: "Field", name: { kind: "Name", value: "size" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "status" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "updatedAt" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HostedFileFull" },
                       },
                     ],
                   },
@@ -167,6 +207,26 @@ export const UploadHostedFileDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HostedFileFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HostedFile" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
         ],
       },
     },
@@ -236,21 +296,9 @@ export const RenameHostedFileDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "path" } },
-                      { kind: "Field", name: { kind: "Name", value: "size" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "status" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "updatedAt" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HostedFileFull" },
                       },
                     ],
                   },
@@ -258,6 +306,26 @@ export const RenameHostedFileDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HostedFileFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HostedFile" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
         ],
       },
     },

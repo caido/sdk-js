@@ -1,3 +1,4 @@
+import { mapToHostedFile } from "@/convert/hostedFile.js";
 import {
   DeleteHostedFileDocument,
   type GraphQLClient,
@@ -22,15 +23,7 @@ export class HostedFileSDK {
    */
   async list(): Promise<HostedFile[]> {
     const result = await this.graphql.query(HostedFilesDocument);
-    return result.hostedFiles.map((f) => ({
-      id: f.id as ID,
-      name: f.name,
-      path: f.path,
-      size: f.size,
-      status: f.status,
-      createdAt: f.createdAt,
-      updatedAt: f.updatedAt,
-    }));
+    return result.hostedFiles.map(mapToHostedFile);
   }
 
   /**
@@ -45,15 +38,7 @@ export class HostedFileSDK {
     });
 
     const hostedFile = result.uploadHostedFile.hostedFile!;
-    return {
-      id: hostedFile.id as ID,
-      name: hostedFile.name,
-      path: hostedFile.path,
-      size: hostedFile.size,
-      status: hostedFile.status,
-      createdAt: hostedFile.createdAt,
-      updatedAt: hostedFile.updatedAt,
-    };
+    return mapToHostedFile(hostedFile);
   }
 
   /**
@@ -65,16 +50,7 @@ export class HostedFileSDK {
       name,
     });
 
-    const hostedFile = result.renameHostedFile.hostedFile!;
-    return {
-      id: hostedFile.id as ID,
-      name: hostedFile.name,
-      path: hostedFile.path,
-      size: hostedFile.size,
-      status: hostedFile.status,
-      createdAt: hostedFile.createdAt,
-      updatedAt: hostedFile.updatedAt,
-    };
+    return mapToHostedFile(result.renameHostedFile.hostedFile!);
   }
 
   /**
