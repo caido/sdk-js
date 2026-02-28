@@ -1,3 +1,4 @@
+import { mapToProject } from "@/convert/project.js";
 import {
   CreateProjectDocument,
   DeleteProjectDocument,
@@ -25,18 +26,7 @@ export class ProjectSDK {
    */
   async list(): Promise<Project[]> {
     const result = await this.graphql.query(ProjectsDocument);
-    return result.projects.map((p) => ({
-      id: p.id as ID,
-      name: p.name,
-      path: p.path,
-      status: p.status,
-      temporary: p.temporary,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt,
-      version: p.version,
-      size: p.size,
-      readOnly: p.readOnly,
-    }));
+    return result.projects.map(mapToProject);
   }
 
   /**
@@ -56,19 +46,7 @@ export class ProjectSDK {
       handleGraphQLError(payload.error);
     }
 
-    const project = payload.project!;
-    return {
-      id: project.id as ID,
-      name: project.name,
-      path: project.path,
-      status: project.status,
-      temporary: project.temporary,
-      createdAt: project.createdAt,
-      updatedAt: project.updatedAt,
-      version: project.version,
-      size: project.size,
-      readOnly: project.readOnly,
-    };
+    return mapToProject(payload.project!);
   }
 
   /**
@@ -101,19 +79,7 @@ export class ProjectSDK {
       handleGraphQLError(payload.error);
     }
 
-    const project = payload.project!;
-    return {
-      id: project.id as ID,
-      name: project.name,
-      path: project.path,
-      status: project.status,
-      temporary: project.temporary,
-      createdAt: project.createdAt,
-      updatedAt: project.updatedAt,
-      version: project.version,
-      size: project.size,
-      readOnly: project.readOnly,
-    };
+    return mapToProject(payload.project!);
   }
 
   /**
@@ -131,17 +97,6 @@ export class ProjectSDK {
     }
 
     const project = payload.currentProject!.project;
-    return {
-      id: project.id as ID,
-      name: project.name,
-      path: project.path,
-      status: project.status,
-      temporary: project.temporary,
-      createdAt: project.createdAt,
-      updatedAt: project.updatedAt,
-      version: project.version,
-      size: project.size,
-      readOnly: project.readOnly,
-    };
+    return mapToProject(project);
   }
 }

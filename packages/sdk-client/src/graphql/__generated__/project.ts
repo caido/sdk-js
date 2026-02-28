@@ -1,6 +1,19 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type ProjectFullFragment = {
+  id: string;
+  name: string;
+  path: string;
+  status: Types.ProjectStatus;
+  temporary: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  version: string;
+  size: number;
+  readOnly: boolean;
+};
+
 export type ProjectsQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type ProjectsQuery = {
@@ -144,6 +157,34 @@ export type SelectProjectMutation = {
   };
 };
 
+export const ProjectFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProjectFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Project" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "temporary" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "readOnly" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProjectFullFragment, unknown>;
 export const ProjectsDocument = {
   kind: "Document",
   definitions: [
@@ -160,19 +201,36 @@ export const ProjectsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "path" } },
-                { kind: "Field", name: { kind: "Name", value: "status" } },
-                { kind: "Field", name: { kind: "Name", value: "temporary" } },
-                { kind: "Field", name: { kind: "Name", value: "createdAt" } },
-                { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
-                { kind: "Field", name: { kind: "Name", value: "version" } },
-                { kind: "Field", name: { kind: "Name", value: "size" } },
-                { kind: "Field", name: { kind: "Name", value: "readOnly" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ProjectFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProjectFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Project" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "temporary" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "readOnly" } },
         ],
       },
     },
@@ -318,33 +376,9 @@ export const CreateProjectDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "path" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "status" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "temporary" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "updatedAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "version" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "size" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "readOnly" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "ProjectFull" },
                       },
                     ],
                   },
@@ -446,6 +480,29 @@ export const CreateProjectDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProjectFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Project" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "temporary" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "readOnly" } },
         ],
       },
     },
@@ -774,33 +831,9 @@ export const RenameProjectDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "path" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "status" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "temporary" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "updatedAt" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "version" },
-                      },
-                      { kind: "Field", name: { kind: "Name", value: "size" } },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "readOnly" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "ProjectFull" },
                       },
                     ],
                   },
@@ -808,6 +841,29 @@ export const RenameProjectDocument = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProjectFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Project" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "temporary" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "readOnly" } },
         ],
       },
     },
@@ -865,44 +921,8 @@ export const SelectProjectDocument = {
                           kind: "SelectionSet",
                           selections: [
                             {
-                              kind: "Field",
-                              name: { kind: "Name", value: "id" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "name" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "path" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "status" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "temporary" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "createdAt" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "updatedAt" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "version" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "size" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "readOnly" },
+                              kind: "FragmentSpread",
+                              name: { kind: "Name", value: "ProjectFull" },
                             },
                           ],
                         },
@@ -998,6 +1018,29 @@ export const SelectProjectDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "__typename" } },
           { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ProjectFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Project" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "path" } },
+          { kind: "Field", name: { kind: "Name", value: "status" } },
+          { kind: "Field", name: { kind: "Name", value: "temporary" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "Field", name: { kind: "Name", value: "updatedAt" } },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+          { kind: "Field", name: { kind: "Name", value: "size" } },
+          { kind: "Field", name: { kind: "Name", value: "readOnly" } },
         ],
       },
     },

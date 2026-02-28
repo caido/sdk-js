@@ -1,5 +1,4 @@
-query Projects {
-  projects {
+fragment ProjectFull on Project {
     id
     name
     path
@@ -10,6 +9,11 @@ query Projects {
     version
     size
     readOnly
+}
+
+query Projects {
+  projects {
+    ...ProjectFull
   }
 }
 
@@ -31,16 +35,7 @@ mutation CreateProject($input: CreateProjectInput!) {
       }
     }
     project {
-      id
-      name
-      path
-      status
-      temporary
-      createdAt
-      updatedAt
-      version
-      size
-      readOnly
+      ...ProjectFull
     }
   }
 }
@@ -80,16 +75,7 @@ mutation RenameProject($id: ID!, $name: String!) {
       }
     }
     project {
-      id
-      name
-      path
-      status
-      temporary
-      createdAt
-      updatedAt
-      version
-      size
-      readOnly
+      ...ProjectFull
     }
   }
 }
@@ -98,16 +84,7 @@ mutation SelectProject($id: ID!) {
   selectProject(id: $id) {
     currentProject {
       project {
-        id
-        name
-        path
-        status
-        temporary
-        createdAt
-        updatedAt
-        version
-        size
-        readOnly
+        ...ProjectFull
       }
     }
     error {
