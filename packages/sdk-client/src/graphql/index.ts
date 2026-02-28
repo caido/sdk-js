@@ -10,4 +10,5 @@ export * from "./__generated__/plugin.js";
 export * from "./__generated__/project.js";
 export * from "./__generated__/scope.js";
 export * from "./__generated__/finding.js";
+export * from "./__generated__/request.js";
 export * from "./utils.js";

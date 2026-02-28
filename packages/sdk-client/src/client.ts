@@ -1,4 +1,5 @@
 import { FindingSDK } from "./sdks/finding.js";
+import { RequestSDK } from "./sdks/request.js";
 
 import { AuthManager } from "@/auth/index.js";
 import { InstanceNotReadyError } from "@/errors/index.js";
@@ -36,6 +37,7 @@ import { sleep } from "@/utils/misc.js";
  * - `filter` - Higher-level filter preset SDK
  * - `environment` - Higher-level environment SDK
  * - `hostedFile` - Higher-level hosted file SDK
+ * - `request` - Higher-level request SDK
  *
  * @example
  * ```typescript
@@ -80,6 +82,9 @@ export class Client {
   /** Higher-level finding SDK. */
   readonly finding: FindingSDK;
 
+  /** Higher-level request SDK. */
+  readonly request: RequestSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -109,6 +114,7 @@ export class Client {
     this.environment = new EnvironmentSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
+    this.request = new RequestSDK(this.graphql);
   }
 
   /**

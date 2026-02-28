@@ -5,3 +5,4 @@ export { PluginSDK } from "@/sdks/plugin.js";
 export { ProjectSDK } from "@/sdks/project.js";
 export { ScopeSDK } from "@/sdks/scope.js";
 export { UserSDK } from "@/sdks/user.js";
+export { RequestSDK } from "@/sdks/request.js";

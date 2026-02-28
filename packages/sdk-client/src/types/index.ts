@@ -8,6 +8,7 @@ export * from "./plugin.js";
 export * from "./health.js";
 export * from "./finding.js";
 export * from "./connection.js";
+export * from "./request.js";
 
 /**
  * A unique Caido identifier per type.

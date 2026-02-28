@@ -1,0 +1,81 @@
+# Variables $includeRequestRaw and $includeResponseRaw control whether raw is fetched.
+# Fragments are always used so one query can include or skip raw via variables.
+
+fragment ResponseFull on Response {
+  id
+  statusCode
+  roundtripTime
+  length
+  createdAt
+  raw @include(if: $includeResponseRaw)
+}
+
+fragment RequestFull on Request {
+  id
+  host
+  port
+  method
+  path
+  query
+  isTls
+  metadata {
+    id
+    color
+  }
+  createdAt
+  raw @include(if: $includeRequestRaw)
+  response {
+    ...ResponseFull
+  }
+}
+
+query Request(
+  $id: ID!
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  request(id: $id) {
+    ...RequestFull
+  }
+}
+
+query Response($id: ID!, $includeResponseRaw: Boolean!) {
+  response(id: $id) {
+    ...ResponseFull
+  }
+}
+
+query Requests(
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+  $filter: HTTPQL
+  $order: RequestResponseOrderInput
+  $scopeId: ID
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  requests(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    filter: $filter
+    order: $order
+    scopeId: $scopeId
+  ) {
+    edges {
+      cursor
+      node {
+        ...RequestFull
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
