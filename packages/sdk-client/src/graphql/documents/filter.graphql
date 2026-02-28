@@ -1,18 +1,19 @@
-query FilterPresets {
-  filterPresets {
+fragment FilterPresetFull on FilterPreset {
     id
     name
     alias
     clause
+}
+
+query FilterPresets {
+  filterPresets {
+    ...FilterPresetFull
   }
 }
 
 query FilterPreset($id: ID!) {
   filterPreset(id: $id) {
-    id
-    name
-    alias
-    clause
+    ...FilterPresetFull
   }
 }
 
@@ -37,10 +38,7 @@ mutation CreateFilterPreset($input: CreateFilterPresetInput!) {
       }
     }
     filter {
-      id
-      name
-      alias
-      clause
+      ...FilterPresetFull
     }
   }
 }
@@ -60,10 +58,7 @@ mutation UpdateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {
       }
     }
     filter {
-      id
-      name
-      alias
-      clause
+      ...FilterPresetFull
     }
   }
 }

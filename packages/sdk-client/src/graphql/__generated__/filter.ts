@@ -1,6 +1,13 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type FilterPresetFullFragment = {
+  id: string;
+  name: string;
+  alias: string;
+  clause: string;
+};
+
 export type FilterPresetsQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type FilterPresetsQuery = {
@@ -80,6 +87,28 @@ export type DeleteFilterPresetMutation = {
   deleteFilterPreset: { deletedId?: string | undefined | null };
 };
 
+export const FilterPresetFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FilterPresetFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "FilterPreset" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "alias" } },
+          { kind: "Field", name: { kind: "Name", value: "clause" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<FilterPresetFullFragment, unknown>;
 export const FilterPresetsDocument = {
   kind: "Document",
   definitions: [
@@ -96,13 +125,30 @@ export const FilterPresetsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "alias" } },
-                { kind: "Field", name: { kind: "Name", value: "clause" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "FilterPresetFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FilterPresetFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "FilterPreset" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "alias" } },
+          { kind: "Field", name: { kind: "Name", value: "clause" } },
         ],
       },
     },
@@ -144,13 +190,30 @@ export const FilterPresetDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "alias" } },
-                { kind: "Field", name: { kind: "Name", value: "clause" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "FilterPresetFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FilterPresetFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "FilterPreset" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "alias" } },
+          { kind: "Field", name: { kind: "Name", value: "clause" } },
         ],
       },
     },
@@ -315,12 +378,9 @@ export const CreateFilterPresetDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "alias" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "clause" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "FilterPresetFull" },
                       },
                     ],
                   },
@@ -440,6 +500,23 @@ export const CreateFilterPresetDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FilterPresetFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "FilterPreset" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "alias" } },
+          { kind: "Field", name: { kind: "Name", value: "clause" } },
         ],
       },
     },
@@ -582,12 +659,9 @@ export const UpdateFilterPresetDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "alias" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "clause" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "FilterPresetFull" },
                       },
                     ],
                   },
@@ -663,6 +737,23 @@ export const UpdateFilterPresetDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "FilterPresetFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "FilterPreset" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "alias" } },
+          { kind: "Field", name: { kind: "Name", value: "clause" } },
         ],
       },
     },

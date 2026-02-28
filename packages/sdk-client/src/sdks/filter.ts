@@ -1,3 +1,4 @@
+import { mapToFilterPreset } from "@/convert/filter.js";
 import {
   CreateFilterPresetDocument,
   DeleteFilterPresetDocument,
@@ -30,12 +31,7 @@ export class FilterSDK {
    */
   async list(): Promise<FilterPreset[]> {
     const result = await this.graphql.query(FilterPresetsDocument);
-    return result.filterPresets.map((f) => ({
-      id: f.id as ID,
-      name: f.name,
-      alias: f.alias,
-      clause: f.clause,
-    }));
+    return result.filterPresets.map(mapToFilterPreset);
   }
 
   /**
@@ -50,12 +46,7 @@ export class FilterSDK {
       return undefined;
     }
 
-    return {
-      id: result.filterPreset.id as ID,
-      name: result.filterPreset.name,
-      alias: result.filterPreset.alias,
-      clause: result.filterPreset.clause,
-    } satisfies FilterPreset;
+    return mapToFilterPreset(result.filterPreset);
   }
 
   /**
@@ -76,13 +67,7 @@ export class FilterSDK {
       handleGraphQLError(payload.error);
     }
 
-    const filter = payload.filter!;
-    return {
-      id: filter.id as ID,
-      name: filter.name,
-      alias: filter.alias,
-      clause: filter.clause,
-    } satisfies FilterPreset;
+    return mapToFilterPreset(payload.filter!);
   }
 
   /**
@@ -107,13 +92,7 @@ export class FilterSDK {
       handleGraphQLError(payload.error);
     }
 
-    const filter = payload.filter!;
-    return {
-      id: filter.id as ID,
-      name: filter.name,
-      alias: filter.alias,
-      clause: filter.clause,
-    } satisfies FilterPreset;
+    return mapToFilterPreset(payload.filter!);
   }
 
   /**
