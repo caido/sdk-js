@@ -1,3 +1,4 @@
+import { mapToScope } from "@/convert/scope.js";
 import {
   CreateScopeDocument,
   DeleteScopeDocument,
@@ -30,13 +31,7 @@ export class ScopeSDK {
    */
   async list(): Promise<Scope[]> {
     const result = await this.graphql.query(ScopesDocument);
-    return result.scopes.map((s) => ({
-      id: s.id as ID,
-      name: s.name,
-      allowlist: s.allowlist,
-      denylist: s.denylist,
-      indexed: s.indexed,
-    }));
+    return result.scopes.map(mapToScope);
   }
 
   /**
@@ -51,13 +46,7 @@ export class ScopeSDK {
       return undefined;
     }
 
-    return {
-      id: result.scope.id as ID,
-      name: result.scope.name,
-      allowlist: result.scope.allowlist,
-      denylist: result.scope.denylist,
-      indexed: result.scope.indexed,
-    };
+    return mapToScope(result.scope);
   }
 
   /**
@@ -79,13 +68,7 @@ export class ScopeSDK {
     }
 
     const scope = payload.scope!;
-    return {
-      id: scope.id as ID,
-      name: scope.name,
-      allowlist: scope.allowlist,
-      denylist: scope.denylist,
-      indexed: scope.indexed,
-    };
+    return mapToScope(scope);
   }
 
   /**
@@ -107,14 +90,7 @@ export class ScopeSDK {
       handleGraphQLError(payload.error);
     }
 
-    const scope = payload.scope!;
-    return {
-      id: scope.id as ID,
-      name: scope.name,
-      allowlist: scope.allowlist,
-      denylist: scope.denylist,
-      indexed: scope.indexed,
-    };
+    return mapToScope(payload.scope!);
   }
 
   /**

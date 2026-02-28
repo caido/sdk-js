@@ -1,6 +1,14 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type ScopeFullFragment = {
+  id: string;
+  name: string;
+  allowlist: Array<string>;
+  denylist: Array<string>;
+  indexed: boolean;
+};
+
 export type ScopesQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type ScopesQuery = {
@@ -93,6 +101,29 @@ export type DeleteScopeMutationVariables = Types.Exact<{
 
 export type DeleteScopeMutation = { deleteScope: { deletedId: string } };
 
+export const ScopeFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ScopeFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Scope" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "allowlist" } },
+          { kind: "Field", name: { kind: "Name", value: "denylist" } },
+          { kind: "Field", name: { kind: "Name", value: "indexed" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ScopeFullFragment, unknown>;
 export const ScopesDocument = {
   kind: "Document",
   definitions: [
@@ -109,14 +140,31 @@ export const ScopesDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "allowlist" } },
-                { kind: "Field", name: { kind: "Name", value: "denylist" } },
-                { kind: "Field", name: { kind: "Name", value: "indexed" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ScopeFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ScopeFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Scope" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "allowlist" } },
+          { kind: "Field", name: { kind: "Name", value: "denylist" } },
+          { kind: "Field", name: { kind: "Name", value: "indexed" } },
         ],
       },
     },
@@ -158,14 +206,31 @@ export const ScopeDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
-                { kind: "Field", name: { kind: "Name", value: "allowlist" } },
-                { kind: "Field", name: { kind: "Name", value: "denylist" } },
-                { kind: "Field", name: { kind: "Name", value: "indexed" } },
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "ScopeFull" },
+                },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ScopeFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Scope" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "allowlist" } },
+          { kind: "Field", name: { kind: "Name", value: "denylist" } },
+          { kind: "Field", name: { kind: "Name", value: "indexed" } },
         ],
       },
     },
@@ -273,19 +338,9 @@ export const CreateScopeDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "allowlist" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "denylist" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "indexed" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "ScopeFull" },
                       },
                     ],
                   },
@@ -343,6 +398,24 @@ export const CreateScopeDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ScopeFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Scope" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "allowlist" } },
+          { kind: "Field", name: { kind: "Name", value: "denylist" } },
+          { kind: "Field", name: { kind: "Name", value: "indexed" } },
         ],
       },
     },
@@ -466,19 +539,9 @@ export const UpdateScopeDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "allowlist" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "denylist" },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "indexed" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "ScopeFull" },
                       },
                     ],
                   },
@@ -536,6 +599,24 @@ export const UpdateScopeDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ScopeFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Scope" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "allowlist" } },
+          { kind: "Field", name: { kind: "Name", value: "denylist" } },
+          { kind: "Field", name: { kind: "Name", value: "indexed" } },
         ],
       },
     },

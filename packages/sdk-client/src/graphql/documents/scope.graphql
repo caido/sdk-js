@@ -1,20 +1,20 @@
-query Scopes {
-  scopes {
+fragment ScopeFull on Scope {
     id
     name
     allowlist
     denylist
     indexed
+}
+
+query Scopes {
+  scopes {
+    ...ScopeFull
   }
 }
 
 query Scope($id: ID!) {
   scope(id: $id) {
-    id
-    name
-    allowlist
-    denylist
-    indexed
+    ...ScopeFull
   }
 }
 
@@ -30,11 +30,7 @@ mutation CreateScope($input: CreateScopeInput!) {
       }
     }
     scope {
-      id
-      name
-      allowlist
-      denylist
-      indexed
+      ...ScopeFull
     }
   }
 }
@@ -51,11 +47,7 @@ mutation UpdateScope($id: ID!, $input: UpdateScopeInput!) {
       }
     }
     scope {
-      id
-      name
-      allowlist
-      denylist
-      indexed
+      ...ScopeFull
     }
   }
 }
