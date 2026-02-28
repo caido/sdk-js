@@ -1,6 +1,17 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type EnvironmentFullFragment = {
+  id: string;
+  name: string;
+  version: number;
+  variables: Array<{
+    name: string;
+    value: string;
+    kind: Types.EnvironmentVariableKind;
+  }>;
+};
+
 export type EnvironmentsQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type EnvironmentsQuery = {
@@ -150,6 +161,39 @@ export type SelectEnvironmentMutation = {
   };
 };
 
+export const EnvironmentFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EnvironmentFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Environment" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "variables" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+                { kind: "Field", name: { kind: "Name", value: "kind" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<EnvironmentFullFragment, unknown>;
 export const EnvironmentsDocument = {
   kind: "Document",
   definitions: [
@@ -166,24 +210,41 @@ export const EnvironmentsDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "variables" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "value" } },
-                      { kind: "Field", name: { kind: "Name", value: "kind" } },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EnvironmentFull" },
                 },
-                { kind: "Field", name: { kind: "Name", value: "version" } },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EnvironmentFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Environment" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "variables" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+                { kind: "Field", name: { kind: "Name", value: "kind" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
         ],
       },
     },
@@ -225,24 +286,41 @@ export const EnvironmentQueryDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-                { kind: "Field", name: { kind: "Name", value: "name" } },
                 {
-                  kind: "Field",
-                  name: { kind: "Name", value: "variables" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
-                      { kind: "Field", name: { kind: "Name", value: "value" } },
-                      { kind: "Field", name: { kind: "Name", value: "kind" } },
-                    ],
-                  },
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "EnvironmentFull" },
                 },
-                { kind: "Field", name: { kind: "Name", value: "version" } },
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EnvironmentFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Environment" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "variables" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+                { kind: "Field", name: { kind: "Name", value: "kind" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
         ],
       },
     },
@@ -391,32 +469,9 @@ export const CreateEnvironmentDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "variables" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "name" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "value" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "kind" },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "version" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "EnvironmentFull" },
                       },
                     ],
                   },
@@ -518,6 +573,34 @@ export const CreateEnvironmentDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EnvironmentFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Environment" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "variables" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+                { kind: "Field", name: { kind: "Name", value: "kind" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
         ],
       },
     },
@@ -704,32 +787,9 @@ export const UpdateEnvironmentDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
-                      { kind: "Field", name: { kind: "Name", value: "name" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "variables" },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "name" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "value" },
-                            },
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "kind" },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "version" },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "EnvironmentFull" },
                       },
                     ],
                   },
@@ -845,6 +905,34 @@ export const UpdateEnvironmentDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "EnvironmentFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Environment" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "variables" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "name" } },
+                { kind: "Field", name: { kind: "Name", value: "value" } },
+                { kind: "Field", name: { kind: "Name", value: "kind" } },
+              ],
+            },
+          },
+          { kind: "Field", name: { kind: "Name", value: "version" } },
         ],
       },
     },

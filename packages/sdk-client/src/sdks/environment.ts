@@ -1,3 +1,4 @@
+import { mapToEnvironment } from "@/convert/environment.js";
 import {
   CreateEnvironmentDocument,
   DeleteEnvironmentDocument,
@@ -17,24 +18,6 @@ import type {
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
-function mapEnvironment(env: {
-  id: string;
-  name: string;
-  version: number;
-  variables: Array<{ name: string; value: string; kind: string }>;
-}): Environment {
-  return {
-    id: env.id as ID,
-    name: env.name,
-    version: env.version,
-    variables: env.variables.map((v) => ({
-      name: v.name,
-      value: v.value,
-      kind: v.kind as EnvironmentVariable["kind"],
-    })),
-  };
-}
-
 /**
  * Higher-level SDK for environment-related operations.
  */
@@ -50,7 +33,7 @@ export class EnvironmentSDK {
    */
   async list(): Promise<Environment[]> {
     const result = await this.graphql.query(EnvironmentsDocument);
-    return result.environments.map(mapEnvironment);
+    return result.environments.map(mapToEnvironment);
   }
 
   /**
@@ -68,7 +51,7 @@ export class EnvironmentSDK {
 
     return new EnvironmentInstance(
       this.graphql,
-      mapEnvironment(result.environment),
+      mapToEnvironment(result.environment),
     );
   }
 
@@ -98,7 +81,7 @@ export class EnvironmentSDK {
 
     return new EnvironmentInstance(
       this.graphql,
-      mapEnvironment(payload.environment!),
+      mapToEnvironment(payload.environment!),
     );
   }
 
@@ -131,7 +114,7 @@ export class EnvironmentSDK {
 
     return new EnvironmentInstance(
       this.graphql,
-      mapEnvironment(payload.environment!),
+      mapToEnvironment(payload.environment!),
     );
   }
 
@@ -171,7 +154,7 @@ export class EnvironmentSDK {
 
     return new EnvironmentInstance(
       this.graphql,
-      mapEnvironment(payload.environment),
+      mapToEnvironment(payload.environment),
     );
   }
 }
@@ -281,6 +264,6 @@ export class EnvironmentInstance {
       handleGraphQLError(payload.error);
     }
 
-    this.state = mapEnvironment(payload.environment!);
+    this.state = mapToEnvironment(payload.environment!);
   }
 }

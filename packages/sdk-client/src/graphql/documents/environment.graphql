@@ -1,5 +1,4 @@
-query Environments {
-  environments {
+fragment EnvironmentFull on Environment {
     id
     name
     variables {
@@ -8,19 +7,17 @@ query Environments {
       kind
     }
     version
+}
+
+query Environments {
+  environments {
+    ...EnvironmentFull
   }
 }
 
 query EnvironmentQuery($id: ID!) {
   environment(id: $id) {
-    id
-    name
-    variables {
-      name
-      value
-      kind
-    }
-    version
+    ...EnvironmentFull
   }
 }
 
@@ -42,14 +39,7 @@ mutation CreateEnvironment($input: CreateEnvironmentInput!) {
       }
     }
     environment {
-      id
-      name
-      variables {
-        name
-        value
-        kind
-      }
-      version
+      ...EnvironmentFull
     }
   }
 }
@@ -75,14 +65,7 @@ mutation UpdateEnvironment($id: ID!, $input: UpdateEnvironmentInput!) {
       }
     }
     environment {
-      id
-      name
-      variables {
-        name
-        value
-        kind
-      }
-      version
+      ...EnvironmentFull
     }
   }
 }
