@@ -10,6 +10,7 @@ import type {
   ProjectUserErrorFullFragment,
   RankUserErrorFullFragment,
   StoreUserErrorFullFragment,
+  TaskInProgressUserErrorFullFragment,
   UnknownIdUserErrorFullFragment,
 } from "@/graphql/index.js";
 
@@ -25,4 +26,5 @@ export type AllErrors =
   | CloudUserErrorFullFragment
   | PluginUserErrorFullFragment
   | StoreUserErrorFullFragment
-  | RankUserErrorFullFragment;
+  | RankUserErrorFullFragment
+  | TaskInProgressUserErrorFullFragment;

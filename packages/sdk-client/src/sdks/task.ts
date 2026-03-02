@@ -1,6 +1,15 @@
 import type { GraphQLClient, TaskMetaFragment } from "@/graphql/index.js";
-import { CancelTaskDocument, TasksDocument } from "@/graphql/index.js";
+import {
+  CancelTaskDocument,
+  FinishedTaskDocument,
+  TasksDocument,
+} from "@/graphql/index.js";
 import type { ID } from "@/types/index.js";
+import type { TaskResult, TaskStatus } from "@/types/task.js";
+import {
+  filterAsyncIterable,
+  mapAsyncIterable,
+} from "@/utils/asyncIterable.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isPresent } from "@/utils/optional.js";
 
@@ -25,6 +34,24 @@ export class TaskSDK {
     await this.graphql.mutation(CancelTaskDocument, {
       id: id as string,
     });
+  }
+
+  finished(
+    filter: (taskResult: TaskResult) => boolean,
+  ): AsyncIterable<TaskResult> {
+    return filterAsyncIterable(
+      filter,
+      mapAsyncIterable((event) => {
+        const task = new Task(this.graphql, event.finishedTask.task);
+        return {
+          task,
+          status: event.finishedTask.status as TaskStatus,
+          error: event.finishedTask.error
+            ? { code: event.finishedTask.error.code }
+            : undefined,
+        };
+      }, this.graphql.subscribe(FinishedTaskDocument)),
+    );
   }
 }
 

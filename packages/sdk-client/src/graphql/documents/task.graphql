@@ -42,6 +42,7 @@ subscription FinishedTask {
         ...ReplayTaskMeta
       }
     }
+    status
     error {
       code
     }

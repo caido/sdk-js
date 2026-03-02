@@ -9,6 +9,7 @@ import {
 import { NotFoundUserError, OtherUserError, RankUserError } from "./misc.js";
 import { PluginUserError, StoreUserError } from "./plugin.js";
 import { ProjectUserError } from "./project.js";
+import type { TaskInProgressUserError } from "./tasks.js";
 import { NewerVersionUserError } from "./version.js";
 
 // prettier-ignore
@@ -26,6 +27,7 @@ type ErrType<T> = InstanceType<
   E extends "PluginUserError" ? typeof PluginUserError :
   E extends "StoreUserError" ? typeof StoreUserError :
   E extends "RankUserError" ? typeof RankUserError :
+  E extends "TaskInProgressUserError" ? typeof TaskInProgressUserError :
   never :
   never
 >;
@@ -68,6 +70,9 @@ export const from = <T extends AllErrors>(error: T): ErrType<T> => {
 
       case "RankUserError":
         return new RankUserError(error.code, error.rankReason);
+
+      case "TaskInProgressUserError":
+        return new TaskInProgressUserError(error.taskId);
     }
   })() as ErrType<T>;
 };

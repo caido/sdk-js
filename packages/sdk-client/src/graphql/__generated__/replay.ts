@@ -558,14 +558,22 @@ export type StartReplayTaskMutationVariables = Types.Exact<{
 export type StartReplayTaskMutation = {
   startReplayTask: {
     error?:
-      | { __typename: "CloudUserError" }
+      | {
+          __typename: "CloudUserError";
+          code: string;
+          cloudReason: Types.CloudErrorReason;
+        }
       | { __typename: "OtherUserError"; code: string }
-      | { __typename: "PermissionDeniedUserError" }
-      | { __typename: "TaskInProgressUserError" }
+      | {
+          __typename: "PermissionDeniedUserError";
+          code: string;
+          permissionReason: Types.PermissionDeniedErrorReason;
+        }
+      | { __typename: "TaskInProgressUserError"; taskId: string; code: string }
       | undefined
       | null;
     task?:
-      | { id: string; createdAt: string; replayEntry: { id: string } }
+      | { __typename: "ReplayTask"; id: string; createdAt: string }
       | undefined
       | null;
   };
@@ -4715,6 +4723,69 @@ export const StartReplayTaskDocument = {
                         kind: "InlineFragment",
                         typeCondition: {
                           kind: "NamedType",
+                          name: { kind: "Name", value: "CloudUserError" },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "CloudUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: {
+                            kind: "Name",
+                            value: "PermissionDeniedUserError",
+                          },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "PermissionDeniedUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: {
+                            kind: "Name",
+                            value: "TaskInProgressUserError",
+                          },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "TaskInProgressUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
                           name: { kind: "Name", value: "OtherUserError" },
                         },
                         selectionSet: {
@@ -4739,35 +4810,9 @@ export const StartReplayTaskDocument = {
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      { kind: "Field", name: { kind: "Name", value: "id" } },
                       {
-                        kind: "Field",
-                        name: { kind: "Name", value: "createdAt" },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "ReplayTask" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "Field",
-                              name: { kind: "Name", value: "replayEntry" },
-                              selectionSet: {
-                                kind: "SelectionSet",
-                                selections: [
-                                  {
-                                    kind: "Field",
-                                    name: { kind: "Name", value: "id" },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "TaskMeta" },
                       },
                     ],
                   },
@@ -4795,6 +4840,68 @@ export const StartReplayTaskDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CloudUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CloudUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "cloudReason" },
+            name: { kind: "Name", value: "reason" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PermissionDeniedUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PermissionDeniedUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "permissionReason" },
+            name: { kind: "Name", value: "reason" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TaskInProgressUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "TaskInProgressUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "taskId" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "OtherUserErrorFull" },
       typeCondition: {
         kind: "NamedType",
@@ -4807,6 +4914,22 @@ export const StartReplayTaskDocument = {
             kind: "FragmentSpread",
             name: { kind: "Name", value: "UserErrorFull" },
           },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TaskMeta" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Task" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
         ],
       },
     },

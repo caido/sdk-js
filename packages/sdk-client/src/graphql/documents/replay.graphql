@@ -298,18 +298,21 @@ mutation StartReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {
   startReplayTask(sessionId: $sessionId, input: $input) {
     error {
       __typename
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on TaskInProgressUserError {
+        ...TaskInProgressUserErrorFull
+      }
       ... on OtherUserError {
         ...OtherUserErrorFull
       }
     }
     task {
-      id
-      createdAt
-      ... on ReplayTask {
-        replayEntry {
-          id
-        }
-      }
+      ...TaskMeta
     }
   }
 }

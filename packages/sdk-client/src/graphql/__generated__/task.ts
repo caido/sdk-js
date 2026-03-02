@@ -75,6 +75,7 @@ export type FinishedTaskSubscriptionVariables = Types.Exact<{
 
 export type FinishedTaskSubscription = {
   finishedTask: {
+    status: Types.TaskStatus;
     task:
       | { __typename: "DataExportTask"; id: string; createdAt: string }
       | {
@@ -459,6 +460,7 @@ export const FinishedTaskDocument = {
                     ],
                   },
                 },
+                { kind: "Field", name: { kind: "Name", value: "status" } },
                 {
                   kind: "Field",
                   name: { kind: "Name", value: "error" },

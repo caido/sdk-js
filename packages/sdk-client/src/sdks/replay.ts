@@ -1,8 +1,11 @@
+import { OtherUserError } from "../../dist/index.mjs";
+
 import { ReplayCollectionSDK } from "./replayCollection.js";
 import { ReplayEntrySDK } from "./replayEntry.js";
 import { ReplaySessionSDK } from "./replaySession.js";
+import { Task, TaskSDK } from "./task.js";
 
-import type { GraphQLClient } from "@/graphql/index.js";
+import type { GraphQLClient, StartReplayTaskInput } from "@/graphql/index.js";
 import {
   FinishedTaskDocument,
   StartReplayTaskDocument,
@@ -20,64 +23,68 @@ export class ReplaySDK {
   readonly collections: ReplayCollectionSDK;
   readonly entries: ReplayEntrySDK;
 
+  private readonly tasks: TaskSDK;
+
   constructor(private readonly graphql: GraphQLClient) {
     this.sessions = new ReplaySessionSDK(graphql);
     this.collections = new ReplayCollectionSDK(graphql);
     this.entries = new ReplayEntrySDK(graphql);
+    this.tasks = new TaskSDK(graphql);
   }
 
-  // /**
-  //  * Send a replay: start the task for the session with the given raw request and connection,
-  //  * then wait for the task to finish (via finishedTask subscription).
-  //  */
-  // async send(
-  //   sessionId: ID,
-  //   options: ReplaySendOptions,
-  // ): Promise<ReplaySendResult> {
-  //   const settings = options.settings ?? {};
-  //   const input = {
-  //     connection: {
-  //       host: options.connection.host,
-  //       port: options.connection.port,
-  //       isTLS: options.connection.isTLS,
-  //       SNI: options.connection.SNI,
-  //     },
-  //     raw: options.raw,
-  //     settings: {
-  //       connectionClose: settings.connectionClose ?? false,
-  //       updateContentLength: settings.updateContentLength ?? true,
-  //       placeholders: settings.placeholders ?? [],
-  //     },
-  //   };
+  /**
+   * Send a request on via replay.
+   */
+  async send(
+    sessionId: ID,
+    options: ReplaySendOptions,
+  ): Promise<ReplaySendResult> {
+    // Start task
+    const settings = options.settings ?? {};
+    const input = {
+      connection: {
+        host: options.connection.host,
+        port: options.connection.port,
+        isTLS: options.connection.isTLS,
+        SNI: options.connection.SNI,
+      },
+      raw: options.raw,
+      settings: {
+        connectionClose: settings.connectionClose ?? false,
+        updateContentLength: settings.updateContentLength ?? true,
+        placeholders:
+          settings.placeholders?.map((placeholder) => ({
+            inputRange: placeholder.inputRange,
+            outputRange: placeholder.outputRange,
+            preprocessors: placeholder.preprocessors ?? [],
+          })) ?? [],
+      },
+    } satisfies StartReplayTaskInput;
 
-  //   const result = await this.graphql.mutation(StartReplayTaskDocument, {
-  //     sessionId: sessionId as string,
-  //     input,
-  //   });
+    const result = await this.graphql.mutation(StartReplayTaskDocument, {
+      sessionId: sessionId as string,
+      input,
+    });
 
-  //   const payload = result.startReplayTask;
-  //   if (isPresent(payload.error)) {
-  //     handleGraphQLError(payload.error);
-  //   }
-  //   const task = payload.task;
-  //   if (!task) {
-  //     throw new Error("startReplayTask returned no task");
-  //   }
+    const payload = result.startReplayTask;
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+    const task = new Task(this.graphql, payload.task!);
 
-  //   const taskId = task.id as ID;
+    // Wait for task to finish
+    for await (const result of this.tasks.finished(
+      (result) => result.task.id === task.id,
+    )) {
+      return {
+        status: result.status,
+        error: result.error,
+      };
+    }
 
-  //   for await (const event of this.graphql.subscribe(FinishedTaskDocument)) {
-  //     if (event.finishedTask.task.id === taskId) {
-  //       return {
-  //         taskId,
-  //         status: event.finishedTask.status as ReplaySendResult["status"],
-  //         error: event.finishedTask.error
-  //           ? { code: event.finishedTask.error.code }
-  //           : undefined,
-  //       };
-  //     }
-  //   }
-
-  //   throw new Error("Replay task subscription ended without finished event");
-  // }
+    throw new OtherUserError(
+      "INTERNAL",
+      "Replay task subscription ended without finished event",
+    );
+  }
 }

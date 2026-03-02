@@ -1,5 +1,7 @@
 import type { ConnectionInfoInput, ID } from "./index.js";
 
+import type { RangeInput, ReplayPreprocessorInput } from "@/graphql/index.js";
+
 /**
  * Options for creating a replay session.
  * @category Replay
@@ -21,9 +23,9 @@ export type ReplaySendOptions = {
     connectionClose?: boolean;
     updateContentLength?: boolean;
     placeholders?: Array<{
-      inputRange: { start: number; end: number };
-      outputRange: { start: number; end: number };
-      preprocessors?: unknown[];
+      inputRange: RangeInput;
+      outputRange: RangeInput;
+      preprocessors?: Array<ReplayPreprocessorInput>;
     }>;
   };
 };
@@ -33,7 +35,6 @@ export type ReplaySendOptions = {
  * @category Replay
  */
 export type ReplaySendResult = {
-  taskId: ID;
   status: "DONE" | "CANCELLED" | "ERROR";
   error?: { code: string };
 };
