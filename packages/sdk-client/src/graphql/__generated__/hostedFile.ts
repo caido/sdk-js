@@ -7,8 +7,8 @@ export type HostedFileFullFragment = {
   path: string;
   size: number;
   status: Types.HostedFileStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type HostedFilesQueryVariables = Types.Exact<{ [key: string]: never }>;
@@ -20,8 +20,8 @@ export type HostedFilesQuery = {
     path: string;
     size: number;
     status: Types.HostedFileStatus;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
   }>;
 };
 
@@ -38,8 +38,8 @@ export type UploadHostedFileMutation = {
           path: string;
           size: number;
           status: Types.HostedFileStatus;
-          createdAt: Date;
-          updatedAt: Date;
+          createdAt: string;
+          updatedAt: string;
         }
       | undefined
       | null;
@@ -60,8 +60,8 @@ export type RenameHostedFileMutation = {
           path: string;
           size: number;
           status: Types.HostedFileStatus;
-          createdAt: Date;
-          updatedAt: Date;
+          createdAt: string;
+          updatedAt: string;
         }
       | undefined
       | null;

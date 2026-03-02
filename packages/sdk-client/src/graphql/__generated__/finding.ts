@@ -10,7 +10,7 @@ export type FindingFullFragment = {
   host: string;
   path: string;
   hidden: boolean;
-  createdAt: Date;
+  createdAt: string;
   request: { id: string };
 };
 
@@ -29,7 +29,7 @@ export type FindingQuery = {
         host: string;
         path: string;
         hidden: boolean;
-        createdAt: Date;
+        createdAt: string;
         request: { id: string };
       }
     | undefined
@@ -58,7 +58,7 @@ export type FindingsQuery = {
         host: string;
         path: string;
         hidden: boolean;
-        createdAt: Date;
+        createdAt: string;
         request: { id: string };
       };
     }>;
@@ -93,7 +93,7 @@ export type CreateFindingMutation = {
           host: string;
           path: string;
           hidden: boolean;
-          createdAt: Date;
+          createdAt: string;
           request: { id: string };
         }
       | undefined
@@ -123,7 +123,7 @@ export type UpdateFindingMutation = {
           host: string;
           path: string;
           hidden: boolean;
-          createdAt: Date;
+          createdAt: string;
           request: { id: string };
         }
       | undefined

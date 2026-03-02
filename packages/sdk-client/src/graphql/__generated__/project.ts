@@ -7,8 +7,8 @@ export type ProjectFullFragment = {
   path: string;
   status: Types.ProjectStatus;
   temporary: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   version: string;
   size: number;
   readOnly: boolean;
@@ -23,8 +23,8 @@ export type ProjectsQuery = {
     path: string;
     status: Types.ProjectStatus;
     temporary: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     version: string;
     size: number;
     readOnly: boolean;
@@ -59,8 +59,8 @@ export type CreateProjectMutation = {
           path: string;
           status: Types.ProjectStatus;
           temporary: boolean;
-          createdAt: Date;
-          updatedAt: Date;
+          createdAt: string;
+          updatedAt: string;
           version: string;
           size: number;
           readOnly: boolean;
@@ -110,8 +110,8 @@ export type RenameProjectMutation = {
           path: string;
           status: Types.ProjectStatus;
           temporary: boolean;
-          createdAt: Date;
-          updatedAt: Date;
+          createdAt: string;
+          updatedAt: string;
           version: string;
           size: number;
           readOnly: boolean;
@@ -135,8 +135,8 @@ export type SelectProjectMutation = {
             path: string;
             status: Types.ProjectStatus;
             temporary: boolean;
-            createdAt: Date;
-            updatedAt: Date;
+            createdAt: string;
+            updatedAt: string;
             version: string;
             size: number;
             readOnly: boolean;

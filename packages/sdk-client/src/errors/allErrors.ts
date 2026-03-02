@@ -8,6 +8,7 @@ import type {
   PermissionDeniedUserErrorFullFragment,
   PluginUserErrorFullFragment,
   ProjectUserErrorFullFragment,
+  RankUserErrorFullFragment,
   StoreUserErrorFullFragment,
   UnknownIdUserErrorFullFragment,
 } from "@/graphql/index.js";
@@ -23,4 +24,5 @@ export type AllErrors =
   | NewerVersionUserErrorFullFragment
   | CloudUserErrorFullFragment
   | PluginUserErrorFullFragment
-  | StoreUserErrorFullFragment;
+  | StoreUserErrorFullFragment
+  | RankUserErrorFullFragment;

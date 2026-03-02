@@ -8,7 +8,7 @@ export const mapToHostedFile = (node: HostedFileFullFragment): HostedFile => {
     path: node.path,
     size: node.size,
     status: node.status,
-    createdAt: node.createdAt,
-    updatedAt: node.updatedAt,
+    createdAt: new Date(node.createdAt),
+    updatedAt: new Date(node.updatedAt),
   };
 };

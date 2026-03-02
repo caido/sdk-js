@@ -9,9 +9,13 @@ export * from "./health.js";
 export * from "./finding.js";
 export * from "./connection.js";
 export * from "./request.js";
+export * from "./replaySession.js";
+export * from "./replayCollection.js";
+export * from "./network.js";
 
 /**
  * A unique Caido identifier per type.
+ * @category Shared
  */
 export type ID = string & {
   __id?: never;
@@ -22,3 +26,12 @@ export type ID = string & {
  * @category Shared
  */
 export type Cursor = string & { __cursor?: never };
+
+/**
+ * An HTTPQL expression.
+ * @example `req.method.eq:"POST"`
+ * @category Shared
+ */
+export type HTTPQL = string & {
+  __httpql?: never;
+};

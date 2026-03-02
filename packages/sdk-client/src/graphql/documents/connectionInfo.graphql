@@ -1,0 +1,7 @@
+fragment ConnectionInfoFull on ConnectionInfo {
+  __typename
+  host
+  port
+  isTLS
+  SNI
+}

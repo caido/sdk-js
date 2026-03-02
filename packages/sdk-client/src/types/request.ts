@@ -44,7 +44,7 @@ export type Request = {
   metadata: RequestMetadata;
   createdAt: Date;
   /** Present when includeRaw was true. */
-  raw?: string;
+  raw?: Uint8Array;
 };
 
 /**
@@ -58,7 +58,7 @@ export type Response = {
   length: number;
   createdAt: Date;
   /** Present when includeRaw was true. */
-  raw?: string;
+  raw?: Uint8Array;
 };
 
 /**

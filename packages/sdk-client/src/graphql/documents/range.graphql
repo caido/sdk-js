@@ -1,0 +1,4 @@
+fragment RangeFull on Range {
+  start
+  end
+}

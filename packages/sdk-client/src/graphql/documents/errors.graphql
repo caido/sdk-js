@@ -56,3 +56,8 @@ fragment StoreUserErrorFull on StoreUserError {
   ...UserErrorFull
   storeReason: reason
 }
+
+fragment RankUserErrorFull on RankUserError {
+  ...UserErrorFull
+  rankReason: reason
+}

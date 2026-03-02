@@ -6,7 +6,7 @@ export type ResponseFullFragment = {
   statusCode: number;
   roundtripTime: number;
   length: number;
-  createdAt: Date;
+  createdAt: string;
   raw?: string;
 };
 
@@ -18,7 +18,7 @@ export type RequestFullFragment = {
   path: string;
   query: string;
   isTls: boolean;
-  createdAt: Date;
+  createdAt: string;
   raw?: string;
   metadata: { id: string; color?: string | undefined | null };
   response?:
@@ -27,7 +27,7 @@ export type RequestFullFragment = {
         statusCode: number;
         roundtripTime: number;
         length: number;
-        createdAt: Date;
+        createdAt: string;
         raw?: string;
       }
     | undefined
@@ -50,7 +50,7 @@ export type RequestQuery = {
         path: string;
         query: string;
         isTls: boolean;
-        createdAt: Date;
+        createdAt: string;
         raw?: string;
         metadata: { id: string; color?: string | undefined | null };
         response?:
@@ -59,7 +59,7 @@ export type RequestQuery = {
               statusCode: number;
               roundtripTime: number;
               length: number;
-              createdAt: Date;
+              createdAt: string;
               raw?: string;
             }
           | undefined
@@ -81,7 +81,7 @@ export type ResponseQuery = {
         statusCode: number;
         roundtripTime: number;
         length: number;
-        createdAt: Date;
+        createdAt: string;
         raw?: string;
       }
     | undefined
@@ -112,7 +112,7 @@ export type RequestsQuery = {
         path: string;
         query: string;
         isTls: boolean;
-        createdAt: Date;
+        createdAt: string;
         raw?: string;
         metadata: { id: string; color?: string | undefined | null };
         response?:
@@ -121,7 +121,7 @@ export type RequestsQuery = {
               statusCode: number;
               roundtripTime: number;
               length: number;
-              createdAt: Date;
+              createdAt: string;
               raw?: string;
             }
           | undefined

@@ -10,8 +10,8 @@ export const mapToProject = (node: ProjectFullFragment): Project => {
     size: node.size,
     status: node.status,
     temporary: node.temporary,
-    createdAt: node.createdAt,
-    updatedAt: node.updatedAt,
+    createdAt: new Date(node.createdAt),
+    updatedAt: new Date(node.updatedAt),
     version: node.version,
   };
 };

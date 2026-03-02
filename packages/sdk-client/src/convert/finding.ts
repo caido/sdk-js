@@ -12,6 +12,6 @@ export const mapToFinding = (node: FindingFullFragment): Finding => {
     host: node.host,
     path: node.path,
     hidden: node.hidden,
-    createdAt: node.createdAt,
+    createdAt: new Date(node.createdAt),
   };
 };

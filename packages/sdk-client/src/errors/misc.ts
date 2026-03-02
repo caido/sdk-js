@@ -1,5 +1,6 @@
 import { BaseError } from "./base.js";
 
+import type { RankErrorReason } from "@/graphql/index.js";
 import { isPresent } from "@/utils/optional.js";
 
 export class NotFoundUserError extends BaseError {
@@ -27,5 +28,13 @@ export class OtherUserError extends BaseError {
     } else {
       super(`An unknown user error occured: ${JSON.stringify(code)}`);
     }
+  }
+}
+
+export class RankUserError extends BaseError {
+  readonly __typename = "RankUserError";
+
+  constructor(code: string, reason: RankErrorReason) {
+    super(`Ranking failed: ${code}: ${reason.toString()}`);
   }
 }

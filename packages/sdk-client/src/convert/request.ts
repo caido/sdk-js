@@ -1,3 +1,5 @@
+import { decodeBlob } from "./blob.js";
+
 import type {
   RequestFullFragment,
   ResponseFullFragment,
@@ -23,8 +25,8 @@ export const mapToRequest = (node: RequestFullFragment): Request => {
       id: node.metadata.id as ID,
       color: node.metadata.color ?? undefined,
     },
-    createdAt: node.createdAt,
-    raw: node.raw,
+    createdAt: new Date(node.createdAt),
+    raw: decodeBlob(node.raw),
   };
 };
 
@@ -34,8 +36,8 @@ export const mapToResponse = (node: ResponseFullFragment): Response => {
     statusCode: node.statusCode,
     roundtripTime: node.roundtripTime,
     length: node.length,
-    createdAt: node.createdAt,
-    raw: node.raw,
+    createdAt: new Date(node.createdAt),
+    raw: decodeBlob(node.raw),
   };
 };
 

@@ -10,6 +10,7 @@ import {
 } from "@/graphql/index.js";
 import type {
   ConnectionQueryResult,
+  HTTPQL,
   ID,
   RequestGetOptions,
   RequestOrderField,
@@ -41,10 +42,10 @@ const RESP_ORDER_BY: Record<ResponseOrderField, RequestResponseOrderBy> = {
  */
 export class RequestsListBuilder extends ListBuilder<
   RequestResponseOpt,
-  string,
+  HTTPQL,
   RequestResponseOrderInput
 > {
-  private scopeId?: string;
+  private scopeId?: ID;
   private includeRequestRaw = true;
   private includeResponseRaw = true;
 

@@ -74,7 +74,7 @@ export type Scalars = {
   Int: { input: number; output: number };
   Float: { input: number; output: number };
   Alias: { input: string; output: string };
-  Binary: { input: Uint8Array; output: Uint8Array };
+  Binary: { input: string; output: string };
   Blob: { input: string; output: string };
   /**
    * A datetime with timezone offset.
@@ -84,7 +84,7 @@ export type Scalars = {
    * format, but it is always normalized to the UTC (Z) offset, e.g.
    * "2022-01-12T04:00:19.12345Z".
    */
-  DateTime: { input: Date; output: Date };
+  DateTime: { input: string; output: string };
   Duration: { input: number; output: number };
   HTTPQL: { input: string; output: string };
   Image: { input: string; output: string };
@@ -99,7 +99,7 @@ export type Scalars = {
   Rank: { input: string; output: string };
   Sensitive: { input: string; output: string };
   Snapshot: { input: number; output: number };
-  Timestamp: { input: Date; output: Date };
+  Timestamp: { input: string; output: string };
   Token: { input: string; output: string };
   Upload: { input: File; output: File };
   Uri: { input: string; output: string };

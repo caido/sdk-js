@@ -230,6 +230,12 @@ export type StoreUserErrorFullFragment = {
   storeReason: Types.StoreErrorReason;
 };
 
+export type RankUserErrorFullFragment = {
+  __typename: "RankUserError";
+  code: string;
+  rankReason: Types.RankErrorReason;
+};
+
 export const UserErrorFullFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -683,3 +689,45 @@ export const StoreUserErrorFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<StoreUserErrorFullFragment, unknown>;
+export const RankUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "RankUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "RankUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "rankReason" },
+            name: { kind: "Name", value: "reason" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RankUserErrorFullFragment, unknown>;

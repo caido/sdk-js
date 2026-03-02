@@ -37,11 +37,11 @@ config:
   dedupeFragments: true
   enumsAsConst: true
   scalars:
-    DateTime: Date
+    DateTime: string
     Duration: number
     Blob: string
     Port: number
-    Timestamp: Date
+    Timestamp: string
     Snapshot: number
     Rank: string
     Token: string
@@ -56,7 +56,7 @@ config:
     HTTPQL: string
     JsonRaw: string
     Version: string
-    Binary: Uint8Array
+    Binary: string
 
 hooks:
   afterAllFileWrite:

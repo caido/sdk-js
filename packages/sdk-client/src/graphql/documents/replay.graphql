@@ -1,0 +1,315 @@
+fragment ReplayEntryFull on ReplayEntry {
+  connection {
+    ...ConnectionInfoFull
+  }
+  createdAt
+  error
+  id
+  raw @include(if: $includeReplayRaw)
+  request {
+    ...RequestFull
+  }
+  session {
+    id
+  }
+  settings {
+    placeholders {
+      ...ReplayPlaceholderFull
+    }
+  }
+}
+
+fragment ReplayPlaceholderFull on ReplayPlaceholder {
+  __typename
+  inputRange {
+    ...RangeFull
+  }
+
+  outputRange {
+    ...RangeFull
+  }
+
+  preprocessors {
+    ...ReplayPreprocessorFull
+  }
+}
+
+fragment ReplayPrefixPreprocessorFull on ReplayPrefixPreprocessor {
+  __typename
+  value
+}
+
+fragment ReplaySuffixPreprocessorFull on ReplaySuffixPreprocessor {
+  __typename
+  value
+}
+
+fragment ReplayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {
+  __typename
+  charset
+  nonAscii
+}
+
+fragment ReplayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {
+  __typename
+  id
+}
+
+fragment ReplayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {
+  __typename
+  variableName
+}
+
+fragment ReplayPreprocessorFull on ReplayPreprocessor {
+  __typename
+  options {
+    ... on ReplayPrefixPreprocessor {
+      ...ReplayPrefixPreprocessorFull
+    }
+
+    ... on ReplaySuffixPreprocessor {
+      ...ReplaySuffixPreprocessorFull
+    }
+
+    ... on ReplayUrlEncodePreprocessor {
+      ...ReplayUrlEncodePreprocessorFull
+    }
+
+    ... on ReplayWorkflowPreprocessor {
+      ...ReplayWorkflowPreprocessorFull
+    }
+
+    ... on ReplayEnvironmentPreprocessor {
+      ...ReplayEnvironmentPreprocessorFull
+    }
+  }
+}
+
+fragment ReplaySessionMeta on ReplaySession {
+  id
+  name
+  rank
+  collection {
+    id
+  }
+  activeEntry {
+    id
+  }
+}
+
+fragment ReplaySessionCollectionMeta on ReplaySessionCollection {
+  id
+  name
+  rank
+}
+
+query ReplayEntry(
+  $id: ID!
+  $includeReplayRaw: Boolean!
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  replayEntry(id: $id) {
+    ...ReplayEntryFull
+  }
+}
+
+query ReplaySessions($first: Int, $after: String, $last: Int, $before: String) {
+  replaySessions(first: $first, after: $after, last: $last, before: $before) {
+    edges {
+      cursor
+      node {
+        ...ReplaySessionMeta
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+query ReplaySessionEntries(
+  $id: ID!
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $includeReplayRaw: Boolean!
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  replaySession(id: $id) {
+    entries(after: $after, before: $before, first: $first, last: $last) {
+      edges {
+        cursor
+        node {
+          ...ReplayEntryFull
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+}
+
+query ReplaySession($id: ID!) {
+  replaySession(id: $id) {
+    ...ReplaySessionMeta
+  }
+}
+
+query ReplaySessionCollections(
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+) {
+  replaySessionCollections(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        ...ReplaySessionCollectionMeta
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+mutation CreateReplaySession($input: CreateReplaySessionInput!) {
+  createReplaySession(input: $input) {
+    session {
+      ...ReplaySessionMeta
+    }
+  }
+}
+
+mutation CreateReplaySessionCollection(
+  $input: CreateReplaySessionCollectionInput!
+) {
+  createReplaySessionCollection(input: $input) {
+    collection {
+      ...ReplaySessionCollectionMeta
+    }
+  }
+}
+
+mutation DeleteReplaySessions($ids: [ID!]!) {
+  deleteReplaySessions(ids: $ids) {
+    deletedIds
+  }
+}
+
+mutation DeleteReplaySessionCollection($id: ID!) {
+  deleteReplaySessionCollection(id: $id) {
+    deletedId
+  }
+}
+
+mutation MoveReplaySession($id: ID!, $collectionId: ID!) {
+  moveReplaySession(id: $id, collectionId: $collectionId) {
+    session {
+      ...ReplaySessionMeta
+    }
+  }
+}
+
+mutation RenameReplaySession($id: ID!, $name: String!) {
+  renameReplaySession(id: $id, name: $name) {
+    session {
+      ...ReplaySessionMeta
+    }
+  }
+}
+
+mutation RenameReplaySessionCollection($id: ID!, $name: String!) {
+  renameReplaySessionCollection(id: $id, name: $name) {
+    collection {
+      ...ReplaySessionCollectionMeta
+    }
+  }
+}
+
+mutation RankReplaySession($id: ID!, $input: RankInput!) {
+  rankReplaySession(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on RankUserError {
+        ...RankUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    session {
+      ...ReplaySessionMeta
+    }
+  }
+}
+
+mutation RankReplaySessionCollection($id: ID!, $input: RankInput!) {
+  rankReplaySessionCollection(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on RankUserError {
+        ...RankUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    collection {
+      ...ReplaySessionCollectionMeta
+    }
+  }
+}
+
+mutation SetActiveReplaySessionEntry($id: ID!, $entryId: ID!) {
+  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {
+    session {
+      ...ReplaySessionMeta
+    }
+  }
+}
+
+mutation StartReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {
+  startReplayTask(sessionId: $sessionId, input: $input) {
+    error {
+      __typename
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    task {
+      id
+      createdAt
+      ... on ReplayTask {
+        replayEntry {
+          id
+        }
+      }
+    }
+  }
+}
