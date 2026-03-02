@@ -1,5 +1,6 @@
 import { FindingSDK } from "./sdks/finding.js";
 import { RequestSDK } from "./sdks/request.js";
+import type { TaskSDK } from "./sdks/task.js";
 
 import { AuthManager } from "@/auth/index.js";
 import { InstanceNotReadyError } from "@/errors/index.js";
@@ -85,6 +86,9 @@ export class Client {
   /** Higher-level request SDK. */
   readonly request: RequestSDK;
 
+  /** Higher-level task SDK. */
+  readonly task: TaskSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -115,6 +119,7 @@ export class Client {
     this.hostedFile = new HostedFileSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
     this.request = new RequestSDK(this.graphql);
+    this.task = new TaskSDK(this.graphql);
   }
 
   /**
