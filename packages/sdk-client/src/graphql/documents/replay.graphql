@@ -88,7 +88,6 @@ fragment ReplayPreprocessorFull on ReplayPreprocessor {
 fragment ReplaySessionMeta on ReplaySession {
   id
   name
-  rank
   collection {
     id
   }
@@ -100,7 +99,6 @@ fragment ReplaySessionMeta on ReplaySession {
 fragment ReplaySessionCollectionMeta on ReplaySessionCollection {
   id
   name
-  rank
 }
 
 query ReplayEntry(
@@ -246,46 +244,6 @@ mutation RenameReplaySessionCollection($id: ID!, $name: String!) {
   }
 }
 
-mutation RankReplaySession($id: ID!, $input: RankInput!) {
-  rankReplaySession(id: $id, input: $input) {
-    error {
-      __typename
-      ... on UnknownIdUserError {
-        ...UnknownIdUserErrorFull
-      }
-      ... on RankUserError {
-        ...RankUserErrorFull
-      }
-      ... on OtherUserError {
-        ...OtherUserErrorFull
-      }
-    }
-    session {
-      ...ReplaySessionMeta
-    }
-  }
-}
-
-mutation RankReplaySessionCollection($id: ID!, $input: RankInput!) {
-  rankReplaySessionCollection(id: $id, input: $input) {
-    error {
-      __typename
-      ... on UnknownIdUserError {
-        ...UnknownIdUserErrorFull
-      }
-      ... on RankUserError {
-        ...RankUserErrorFull
-      }
-      ... on OtherUserError {
-        ...OtherUserErrorFull
-      }
-    }
-    collection {
-      ...ReplaySessionCollectionMeta
-    }
-  }
-}
-
 mutation SetActiveReplaySessionEntry($id: ID!, $entryId: ID!) {
   setActiveReplaySessionEntry(id: $id, entryId: $entryId) {
     session {
@@ -312,7 +270,7 @@ mutation StartReplayTask($sessionId: ID!, $input: StartReplayTaskInput!) {
       }
     }
     task {
-      ...TaskMeta
+      ...ReplayTaskMeta
     }
   }
 }

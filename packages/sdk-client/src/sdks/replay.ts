@@ -1,18 +1,15 @@
-import { OtherUserError } from "../../dist/index.mjs";
-
 import { ReplayCollectionSDK } from "./replayCollection.js";
 import { ReplayEntrySDK } from "./replayEntry.js";
 import { ReplaySessionSDK } from "./replaySession.js";
-import { Task, TaskSDK } from "./task.js";
+import { ReplayTask, Task, TaskSDK } from "./task.js";
 
+import { encodeBlob } from "@/convert/blob.js";
+import { OtherUserError } from "@/errors/index.js";
 import type { GraphQLClient, StartReplayTaskInput } from "@/graphql/index.js";
-import {
-  FinishedTaskDocument,
-  StartReplayTaskDocument,
-} from "@/graphql/index.js";
+import { StartReplayTaskDocument } from "@/graphql/index.js";
 import type { ID, ReplaySendOptions, ReplaySendResult } from "@/types/index.js";
 import { handleGraphQLError } from "@/utils/errors.js";
-import { isPresent } from "@/utils/optional.js";
+import { isAbsent, isPresent } from "@/utils/optional.js";
 
 /**
  * Top-level Replay SDK: sessions, collections, and send().
@@ -48,7 +45,7 @@ export class ReplaySDK {
         isTLS: options.connection.isTLS,
         SNI: options.connection.SNI,
       },
-      raw: options.raw,
+      raw: encodeBlob(options.raw),
       settings: {
         connectionClose: settings.connectionClose ?? false,
         updateContentLength: settings.updateContentLength ?? true,
@@ -70,13 +67,19 @@ export class ReplaySDK {
     if (isPresent(payload.error)) {
       handleGraphQLError(payload.error);
     }
-    const task = new Task(this.graphql, payload.task!);
+    const task = new ReplayTask(this.graphql, payload.task!);
 
     // Wait for task to finish
     for await (const result of this.tasks.finished(
       (result) => result.task.id === task.id,
     )) {
+      const entry = await this.entries.get(task.replayEntryId);
+      if (isAbsent(entry)) {
+        throw new OtherUserError("INTERNAL", "Replay entry not found");
+      }
+
       return {
+        entry,
         status: result.status,
         error: result.error,
       };

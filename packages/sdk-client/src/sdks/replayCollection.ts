@@ -7,7 +7,6 @@ import type {
 import {
   CreateReplaySessionCollectionDocument,
   DeleteReplaySessionCollectionDocument,
-  RankReplaySessionCollectionDocument,
   RenameReplaySessionCollectionDocument,
   ReplaySessionCollectionsDocument,
 } from "@/graphql/index.js";
@@ -117,30 +116,6 @@ export class ReplayCollectionSDK {
     }
     return new ReplaySessionCollection(this.graphql, collection);
   }
-
-  /**
-   * Rank a replay session collection.
-   * @param id - The ID of the replay session collection to rank.
-   * @param input - The input for the rank operation.
-   * @returns The ranked replay session collection.
-   */
-  async rank(id: ID, input: RankInput): Promise<ReplaySessionCollection> {
-    const result = await this.graphql.mutation(
-      RankReplaySessionCollectionDocument,
-      {
-        id: id as string,
-        input: {
-          afterId: input.afterId as string | undefined,
-          beforeId: input.beforeId as string | undefined,
-        },
-      },
-    );
-    const payload = result.rankReplaySessionCollection;
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
-    }
-    return new ReplaySessionCollection(this.graphql, payload.collection!);
-  }
 }
 
 /**
@@ -149,7 +124,6 @@ export class ReplayCollectionSDK {
 export class ReplaySessionCollection {
   readonly id: ID;
   readonly name: string;
-  readonly rank: string;
 
   private readonly graphql: GraphQLClient;
 
@@ -160,6 +134,5 @@ export class ReplaySessionCollection {
     this.graphql = graphql;
     this.id = data.id;
     this.name = data.name;
-    this.rank = data.rank;
   }
 }

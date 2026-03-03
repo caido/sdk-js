@@ -1,13 +1,13 @@
 import { decodeBlob } from "@/convert/blob.js";
 import { mapToConnectionInfo } from "@/convert/network.js";
-import { mapToRequest } from "@/convert/request.js";
+import { mapToRequest, mapToResponse } from "@/convert/request.js";
 import type {
   GraphQLClient,
   ReplayEntryFullFragment,
   ReplayEntrySettings,
 } from "@/graphql/index.js";
 import { ReplayEntryDocument } from "@/graphql/index.js";
-import type { ConnectionInfo, ID, Request } from "@/types/index.js";
+import type { ConnectionInfo, ID, Request, Response } from "@/types/index.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 /**
@@ -45,6 +45,7 @@ export class ReplayEntry {
   readonly raw: Uint8Array | undefined;
   readonly connection: ConnectionInfo;
   readonly request: Request | undefined;
+  readonly response: Response | undefined;
   readonly sessionId: ID;
   readonly settings: ReplayEntrySettings;
 
@@ -59,6 +60,9 @@ export class ReplayEntry {
     this.connection = mapToConnectionInfo(data.connection);
     this.request = isPresent(data.request)
       ? mapToRequest(data.request)
+      : undefined;
+    this.response = isPresent(data.request?.response)
+      ? mapToResponse(data.request.response)
       : undefined;
     this.sessionId = data.session.id;
     this.settings = data.settings;

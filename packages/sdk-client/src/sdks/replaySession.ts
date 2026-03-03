@@ -257,7 +257,6 @@ export class ReplaySessionSDK {
 export class ReplaySession {
   readonly id: ID;
   readonly name: string;
-  readonly rank: string;
   readonly collectionId: ID;
   readonly activeEntryId: ID | undefined;
 
@@ -267,7 +266,6 @@ export class ReplaySession {
     this.graphql = graphql;
     this.id = data.id;
     this.name = data.name;
-    this.rank = data.rank;
     this.collectionId = data.collection.id;
     this.activeEntryId = data.activeEntry?.id ?? undefined;
   }

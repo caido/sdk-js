@@ -1,7 +1,3 @@
-import { FindingSDK } from "./sdks/finding.js";
-import { RequestSDK } from "./sdks/request.js";
-import type { TaskSDK } from "./sdks/task.js";
-
 import { AuthManager } from "@/auth/index.js";
 import { InstanceNotReadyError } from "@/errors/index.js";
 import { GraphQLClient } from "@/graphql/index.js";
@@ -11,10 +7,14 @@ import { RestClient } from "@/rest/index.js";
 import {
   EnvironmentSDK,
   FilterSDK,
+  FindingSDK,
   HostedFileSDK,
   PluginSDK,
   ProjectSDK,
+  ReplaySDK,
+  RequestSDK,
   ScopeSDK,
+  TaskSDK,
   UserSDK,
 } from "@/sdks/index.js";
 import {
@@ -89,6 +89,9 @@ export class Client {
   /** Higher-level task SDK. */
   readonly task: TaskSDK;
 
+  /** Higher-level replay SDK. */
+  readonly replay: ReplaySDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -120,6 +123,7 @@ export class Client {
     this.finding = new FindingSDK(this.graphql);
     this.request = new RequestSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
+    this.replay = new ReplaySDK(this.graphql);
   }
 
   /**

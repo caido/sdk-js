@@ -12,3 +12,10 @@ export const decodeBlob = (raw: string | undefined): Uint8Array | undefined => {
   }
   return bytes;
 };
+
+export const encodeBlob = (bytes: string | Uint8Array): string => {
+  if (typeof bytes === "string") {
+    return btoa(bytes);
+  }
+  return btoa(String.fromCharCode(...bytes));
+};

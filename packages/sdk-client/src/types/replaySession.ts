@@ -1,6 +1,7 @@
 import type { ConnectionInfoInput, ID } from "./index.js";
 
 import type { RangeInput, ReplayPreprocessorInput } from "@/graphql/index.js";
+import type { ReplayEntry } from "@/sdks/index.js";
 
 /**
  * Options for creating a replay session.
@@ -17,7 +18,7 @@ export type CreateReplaySessionOptions = {
  * @category Replay
  */
 export type ReplaySendOptions = {
-  raw: string;
+  raw: string | Uint8Array;
   connection: ConnectionInfoInput;
   settings?: {
     connectionClose?: boolean;
@@ -35,6 +36,7 @@ export type ReplaySendOptions = {
  * @category Replay
  */
 export type ReplaySendResult = {
+  entry: ReplayEntry;
   status: "DONE" | "CANCELLED" | "ERROR";
   error?: { code: string };
 };

@@ -7,12 +7,6 @@ export type TaskMeta_DataExportTask_Fragment = {
   createdAt: string;
 };
 
-export type TaskMeta_DeleteStreamWsMessageTask_Fragment = {
-  __typename: "DeleteStreamWsMessageTask";
-  id: string;
-  createdAt: string;
-};
-
 export type TaskMeta_ReplayTask_Fragment = {
   __typename: "ReplayTask";
   id: string;
@@ -27,7 +21,6 @@ export type TaskMeta_WorkflowTask_Fragment = {
 
 export type TaskMetaFragment =
   | TaskMeta_DataExportTask_Fragment
-  | TaskMeta_DeleteStreamWsMessageTask_Fragment
   | TaskMeta_ReplayTask_Fragment
   | TaskMeta_WorkflowTask_Fragment;
 
@@ -43,7 +36,6 @@ export type TasksQueryVariables = Types.Exact<{ [key: string]: never }>;
 export type TasksQuery = {
   tasks: Array<
     | { __typename: "DataExportTask"; id: string; createdAt: string }
-    | { __typename: "DeleteStreamWsMessageTask"; id: string; createdAt: string }
     | {
         __typename: "ReplayTask";
         id: string;
@@ -78,11 +70,6 @@ export type FinishedTaskSubscription = {
     status: Types.TaskStatus;
     task:
       | { __typename: "DataExportTask"; id: string; createdAt: string }
-      | {
-          __typename: "DeleteStreamWsMessageTask";
-          id: string;
-          createdAt: string;
-        }
       | {
           __typename: "ReplayTask";
           id: string;

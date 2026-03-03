@@ -1,4 +1,8 @@
-import type { GraphQLClient, TaskMetaFragment } from "@/graphql/index.js";
+import type {
+  GraphQLClient,
+  ReplayTaskMetaFragment,
+  TaskMetaFragment,
+} from "@/graphql/index.js";
 import {
   CancelTaskDocument,
   FinishedTaskDocument,
@@ -14,7 +18,7 @@ import { handleGraphQLError } from "@/utils/errors.js";
 import { isPresent } from "@/utils/optional.js";
 
 /**
- * SDK for the generic task system: list tasks, get by id (from list), cancel.
+ * SDK for the generic task system.
  */
 export class TaskSDK {
   constructor(private readonly graphql: GraphQLClient) {}
@@ -56,7 +60,7 @@ export class TaskSDK {
 }
 
 /**
- * Handle to a task; supports cancel() and refresh(). Returned by startTask-style methods.
+ * A task.
  */
 export class Task {
   readonly id: ID;
@@ -77,5 +81,14 @@ export class Task {
     if (isPresent(result.cancelTask.error)) {
       handleGraphQLError(result.cancelTask.error);
     }
+  }
+}
+
+export class ReplayTask extends Task {
+  readonly replayEntryId: ID;
+
+  constructor(graphql: GraphQLClient, data: ReplayTaskMetaFragment) {
+    super(graphql, data);
+    this.replayEntryId = data.replayEntry.id;
   }
 }

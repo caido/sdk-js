@@ -127,16 +127,11 @@ export type ReplayPreprocessorFullFragment = {
 export type ReplaySessionMetaFragment = {
   id: string;
   name: string;
-  rank: string;
   collection: { id: string };
   activeEntry?: { id: string } | undefined | null;
 };
 
-export type ReplaySessionCollectionMetaFragment = {
-  id: string;
-  name: string;
-  rank: string;
-};
+export type ReplaySessionCollectionMetaFragment = { id: string; name: string };
 
 export type ReplayEntryQueryVariables = Types.Exact<{
   id: Types.Scalars["ID"]["input"];
@@ -228,7 +223,6 @@ export type ReplaySessionsQuery = {
       node: {
         id: string;
         name: string;
-        rank: string;
         collection: { id: string };
         activeEntry?: { id: string } | undefined | null;
       };
@@ -353,7 +347,6 @@ export type ReplaySessionQuery = {
     | {
         id: string;
         name: string;
-        rank: string;
         collection: { id: string };
         activeEntry?: { id: string } | undefined | null;
       }
@@ -370,10 +363,7 @@ export type ReplaySessionCollectionsQueryVariables = Types.Exact<{
 
 export type ReplaySessionCollectionsQuery = {
   replaySessionCollections: {
-    edges: Array<{
-      cursor: string;
-      node: { id: string; name: string; rank: string };
-    }>;
+    edges: Array<{ cursor: string; node: { id: string; name: string } }>;
     pageInfo: {
       hasNextPage: boolean;
       hasPreviousPage: boolean;
@@ -393,7 +383,6 @@ export type CreateReplaySessionMutation = {
       | {
           id: string;
           name: string;
-          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -408,7 +397,7 @@ export type CreateReplaySessionCollectionMutationVariables = Types.Exact<{
 
 export type CreateReplaySessionCollectionMutation = {
   createReplaySessionCollection: {
-    collection?: { id: string; name: string; rank: string } | undefined | null;
+    collection?: { id: string; name: string } | undefined | null;
   };
 };
 
@@ -439,7 +428,6 @@ export type MoveReplaySessionMutation = {
       | {
           id: string;
           name: string;
-          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -459,7 +447,6 @@ export type RenameReplaySessionMutation = {
       | {
           id: string;
           name: string;
-          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -475,58 +462,7 @@ export type RenameReplaySessionCollectionMutationVariables = Types.Exact<{
 
 export type RenameReplaySessionCollectionMutation = {
   renameReplaySessionCollection: {
-    collection?: { id: string; name: string; rank: string } | undefined | null;
-  };
-};
-
-export type RankReplaySessionMutationVariables = Types.Exact<{
-  id: Types.Scalars["ID"]["input"];
-  input: Types.RankInput;
-}>;
-
-export type RankReplaySessionMutation = {
-  rankReplaySession: {
-    error?:
-      | { __typename: "OtherUserError"; code: string }
-      | {
-          __typename: "RankUserError";
-          code: string;
-          rankReason: Types.RankErrorReason;
-        }
-      | { __typename: "UnknownIdUserError"; id: string; code: string }
-      | undefined
-      | null;
-    session?:
-      | {
-          id: string;
-          name: string;
-          rank: string;
-          collection: { id: string };
-          activeEntry?: { id: string } | undefined | null;
-        }
-      | undefined
-      | null;
-  };
-};
-
-export type RankReplaySessionCollectionMutationVariables = Types.Exact<{
-  id: Types.Scalars["ID"]["input"];
-  input: Types.RankInput;
-}>;
-
-export type RankReplaySessionCollectionMutation = {
-  rankReplaySessionCollection: {
-    error?:
-      | { __typename: "OtherUserError"; code: string }
-      | {
-          __typename: "RankUserError";
-          code: string;
-          rankReason: Types.RankErrorReason;
-        }
-      | { __typename: "UnknownIdUserError"; id: string; code: string }
-      | undefined
-      | null;
-    collection?: { id: string; name: string; rank: string } | undefined | null;
+    collection?: { id: string; name: string } | undefined | null;
   };
 };
 
@@ -541,7 +477,6 @@ export type SetActiveReplaySessionEntryMutation = {
       | {
           id: string;
           name: string;
-          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -573,7 +508,12 @@ export type StartReplayTaskMutation = {
       | undefined
       | null;
     task?:
-      | { __typename: "ReplayTask"; id: string; createdAt: string }
+      | {
+          __typename: "ReplayTask";
+          id: string;
+          createdAt: string;
+          replayEntry: { id: string };
+        }
       | undefined
       | null;
   };
@@ -1664,7 +1604,6 @@ export const ReplaySessionMetaFragmentDoc = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -1705,7 +1644,6 @@ export const ReplaySessionCollectionMetaFragmentDoc = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
         ],
       },
     },
@@ -2437,7 +2375,6 @@ export const ReplaySessionsDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3219,7 +3156,6 @@ export const ReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3398,7 +3334,6 @@ export const ReplaySessionCollectionsDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
         ],
       },
     },
@@ -3480,7 +3415,6 @@ export const CreateReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3588,7 +3522,6 @@ export const CreateReplaySessionCollectionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
         ],
       },
     },
@@ -3788,7 +3721,6 @@ export const MoveReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3903,7 +3835,6 @@ export const RenameReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -4021,7 +3952,6 @@ export const RenameReplaySessionCollectionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
         ],
       },
     },
@@ -4029,509 +3959,6 @@ export const RenameReplaySessionCollectionDocument = {
 } as unknown as DocumentNode<
   RenameReplaySessionCollectionMutation,
   RenameReplaySessionCollectionMutationVariables
->;
-export const RankReplaySessionDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "RankReplaySession" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "input" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "RankInput" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "rankReplaySession" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "id" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "input" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "input" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "error" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "__typename" },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "UnknownIdUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "UnknownIdUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "RankUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "RankUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "OtherUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "OtherUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "session" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: { kind: "Name", value: "ReplaySessionMeta" },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "UserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "UserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "__typename" } },
-          { kind: "Field", name: { kind: "Name", value: "code" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "UnknownIdUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "UnknownIdUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "RankUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "RankUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-          {
-            kind: "Field",
-            alias: { kind: "Name", value: "rankReason" },
-            name: { kind: "Name", value: "reason" },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "OtherUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "OtherUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "ReplaySessionMeta" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "ReplaySession" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "collection" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "activeEntry" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "id" } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  RankReplaySessionMutation,
-  RankReplaySessionMutationVariables
->;
-export const RankReplaySessionCollectionDocument = {
-  kind: "Document",
-  definitions: [
-    {
-      kind: "OperationDefinition",
-      operation: "mutation",
-      name: { kind: "Name", value: "RankReplaySessionCollection" },
-      variableDefinitions: [
-        {
-          kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
-          type: {
-            kind: "NonNullType",
-            type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "input" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "RankInput" },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "rankReplaySessionCollection" },
-            arguments: [
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "id" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "id" },
-                },
-              },
-              {
-                kind: "Argument",
-                name: { kind: "Name", value: "input" },
-                value: {
-                  kind: "Variable",
-                  name: { kind: "Name", value: "input" },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "error" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "__typename" },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "UnknownIdUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "UnknownIdUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "RankUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "RankUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: "InlineFragment",
-                        typeCondition: {
-                          kind: "NamedType",
-                          name: { kind: "Name", value: "OtherUserError" },
-                        },
-                        selectionSet: {
-                          kind: "SelectionSet",
-                          selections: [
-                            {
-                              kind: "FragmentSpread",
-                              name: {
-                                kind: "Name",
-                                value: "OtherUserErrorFull",
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "collection" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "ReplaySessionCollectionMeta",
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "UserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "UserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "__typename" } },
-          { kind: "Field", name: { kind: "Name", value: "code" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "UnknownIdUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "UnknownIdUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "RankUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "RankUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-          {
-            kind: "Field",
-            alias: { kind: "Name", value: "rankReason" },
-            name: { kind: "Name", value: "reason" },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "OtherUserErrorFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "OtherUserError" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          {
-            kind: "FragmentSpread",
-            name: { kind: "Name", value: "UserErrorFull" },
-          },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "ReplaySessionCollectionMeta" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "ReplaySessionCollection" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  RankReplaySessionCollectionMutation,
-  RankReplaySessionCollectionMutationVariables
 >;
 export const SetActiveReplaySessionEntryDocument = {
   kind: "Document",
@@ -4619,7 +4046,6 @@ export const SetActiveReplaySessionEntryDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
-          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -4812,7 +4238,7 @@ export const StartReplayTaskDocument = {
                     selections: [
                       {
                         kind: "FragmentSpread",
-                        name: { kind: "Name", value: "TaskMeta" },
+                        name: { kind: "Name", value: "ReplayTaskMeta" },
                       },
                     ],
                   },
@@ -4835,6 +4261,22 @@ export const StartReplayTaskDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "__typename" } },
           { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TaskMeta" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Task" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
         ],
       },
     },
@@ -4919,17 +4361,25 @@ export const StartReplayTaskDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "TaskMeta" },
+      name: { kind: "Name", value: "ReplayTaskMeta" },
       typeCondition: {
         kind: "NamedType",
-        name: { kind: "Name", value: "Task" },
+        name: { kind: "Name", value: "ReplayTask" },
       },
       selectionSet: {
         kind: "SelectionSet",
         selections: [
-          { kind: "Field", name: { kind: "Name", value: "__typename" } },
-          { kind: "Field", name: { kind: "Name", value: "id" } },
-          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+          { kind: "FragmentSpread", name: { kind: "Name", value: "TaskMeta" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "replayEntry" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
         ],
       },
     },

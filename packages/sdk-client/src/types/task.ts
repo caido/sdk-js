@@ -1,4 +1,4 @@
-import type { Task } from "@/sdks/task.js";
+import type { Task } from "@/sdks/index.js";
 
 export type TaskStatus = "DONE" | "CANCELLED" | "ERROR";
 

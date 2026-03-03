@@ -1396,11 +1396,6 @@ export type DeleteSitemapEntriesPayload = {
   errors: Array<DeleteSitemapEntriesError>;
 };
 
-export type DeleteStreamWsMessageTask = Task & {
-  createdAt: Scalars["DateTime"]["output"];
-  id: Scalars["ID"]["output"];
-};
-
 export type DeleteTamperRuleCollectionPayload = {
   deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1530,10 +1525,6 @@ export type DeletedScopePayload = {
 export type DeletedSitemapEntriesPayload = {
   deletedIds: Array<Scalars["ID"]["output"]>;
   snapshot: Scalars["Snapshot"]["output"];
-};
-
-export type DeletedStreamWsMessagesPayload = {
-  deletedIds: Array<Scalars["ID"]["output"]>;
 };
 
 export type DeletedTamperRuleCollectionPayload = {
@@ -2130,8 +2121,6 @@ export type MutationRoot = {
   pauseIntercept: PauseInterceptPayload;
   persistProject: PersistProjectPayload;
   rankDnsRewrite: RankDnsRewritePayload;
-  rankReplaySession: RankReplaySessionPayload;
-  rankReplaySessionCollection: RankReplaySessionCollectionPayload;
   rankTamperRule: RankTamperRulePayload;
   rankUpstreamPlugin: RankUpstreamPluginPayload;
   rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
@@ -2170,7 +2159,6 @@ export type MutationRoot = {
   setProjectConfigStream: SetProjectConfigStreamPayload;
   startAuthenticationFlow: StartAuthenticationFlowPayload;
   startAutomateTask: StartAutomateTaskPayload;
-  startDeleteStreamWsMessageTask: StartDeleteStreamWsMessageTaskPayload;
   startExportRequestsTask: StartExportRequestsTaskPayload;
   startReplayTask: StartReplayTaskPayload;
   testAiProvider: TestAiProviderPayload;
@@ -2465,16 +2453,6 @@ export type MutationRootRankDnsRewriteArgs = {
   input: RankInput;
 };
 
-export type MutationRootRankReplaySessionArgs = {
-  id: Scalars["ID"]["input"];
-  input: RankInput;
-};
-
-export type MutationRootRankReplaySessionCollectionArgs = {
-  id: Scalars["ID"]["input"];
-  input: RankInput;
-};
-
 export type MutationRootRankTamperRuleArgs = {
   id: Scalars["ID"]["input"];
   input: RankTamperRuleInput;
@@ -2632,10 +2610,6 @@ export type MutationRootSetProjectConfigStreamArgs = {
 
 export type MutationRootStartAutomateTaskArgs = {
   automateSessionId: Scalars["ID"]["input"];
-};
-
-export type MutationRootStartDeleteStreamWsMessageTaskArgs = {
-  input: StartDeleteStreamWsMessageTaskInput;
 };
 
 export type MutationRootStartExportRequestsTaskArgs = {
@@ -3296,26 +3270,6 @@ export type RankInput = {
   beforeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
-export type RankReplaySessionCollectionPayload = {
-  collection?: Maybe<ReplaySessionCollection>;
-  error?: Maybe<RankSessionCollectionPayloadError>;
-};
-
-export type RankReplaySessionPayload = {
-  error?: Maybe<RankSessionPayloadError>;
-  session?: Maybe<ReplaySession>;
-};
-
-export type RankSessionCollectionPayloadError =
-  | OtherUserError
-  | RankUserError
-  | UnknownIdUserError;
-
-export type RankSessionPayloadError =
-  | OtherUserError
-  | RankUserError
-  | UnknownIdUserError;
-
 export type RankTamperRuleError =
   | OtherUserError
   | RankUserError
@@ -3597,7 +3551,6 @@ export type ReplaySession = {
   entries: ReplayEntryConnection;
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
-  rank: Scalars["Rank"]["output"];
 };
 
 export type ReplaySessionEntriesArgs = {
@@ -3611,7 +3564,6 @@ export type ReplaySessionEntriesArgs = {
 export type ReplaySessionCollection = {
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
-  rank: Scalars["Rank"]["output"];
   sessions: Array<ReplaySession>;
 };
 
@@ -4040,14 +3992,6 @@ export type StartAutomateTaskPayload = {
   automateTask?: Maybe<AutomateTask>;
 };
 
-export type StartDeleteStreamWsMessageTaskInput = {
-  ids: Array<Scalars["ID"]["input"]>;
-};
-
-export type StartDeleteStreamWsMessageTaskPayload = {
-  task?: Maybe<DeleteStreamWsMessageTask>;
-};
-
 export type StartExportRequestsTaskInput = {
   filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
   format: DataExportFormat;
@@ -4276,7 +4220,6 @@ export type SubscriptionRoot = {
   deletedReplaySessionCollection: DeletedReplaySessionCollectionPayload;
   deletedScope: DeletedScopePayload;
   deletedSitemapEntry: DeletedSitemapEntriesPayload;
-  deletedStreamWsMessages: DeletedStreamWsMessagesPayload;
   deletedTamperRule: DeletedTamperRulePayload;
   deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
   deletedUpstreamPlugin: DeletedUpstreamPluginPayload;
