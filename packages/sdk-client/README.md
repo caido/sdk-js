@@ -42,6 +42,7 @@ const client = new Client({
 await client.connect();
 
 const viewer = await client.user.viewer();
+console.log("Viewer: ", JSON.stringify(viewer, null, 2));
 ```
 
 ## 💚 Community
