@@ -7,16 +7,18 @@ describe("Replay", () => {
     const session = await createMockReplaySession();
 
     const result = await caido.replay.send(session.id, {
-      raw: "GET / HTTP/1.1\r\nHost: perdu.com\r\n\r\n",
+      raw: "GET / HTTP/1.1\r\nHost: httpforever.com\r\n\r\n",
       connection: {
-        host: "perdu.com",
-        port: 443,
-        isTLS: true,
+        host: "httpforever.com",
+        port: 80,
+        isTLS: false,
       },
     });
-    expect(result.entry.request!.host).toBe("perdu.com");
-    expect(result.entry.request!.port).toBe(443);
+    expect(result.entry.request!.host).toBe("httpforever.com");
+    expect(result.entry.request!.port).toBe(80);
     expect(result.entry.response!.statusCode).toBe(200);
-    expect(result.entry.response!.raw).toContainBytes(bytes("Pas de panique"));
+    expect(result.entry.response!.raw).toContainBytes(
+      bytes("A reliably insecure connection"),
+    );
   });
 });
