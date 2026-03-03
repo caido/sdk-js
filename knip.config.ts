@@ -11,7 +11,7 @@ const config: KnipConfig = {
   ],
   workspaces: {
     "packages/sdk-client": {
-      project: ["src/**/*.ts!"],
+      project: ["src/**/*.ts!", "tests/**/*.ts!"],
       ignore: ["src/**/__generated__/**"],
     },
     "packages/server-auth": {

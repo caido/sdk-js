@@ -9,9 +9,15 @@ export { RequestSDK } from "@/sdks/request.js";
 export { ReplaySDK } from "@/sdks/replay.js";
 export { TaskSDK, Task } from "@/sdks/task.js";
 export { FindingSDK } from "@/sdks/finding.js";
-export { ReplaySessionSDK, ReplaySession } from "@/sdks/replaySession.js";
+export {
+  ReplaySessionSDK,
+  ReplaySession,
+  ReplaySessionsListBuilder,
+  ReplaySessionEntriesListBuilder,
+} from "@/sdks/replaySession.js";
 export {
   ReplayCollectionSDK,
   ReplaySessionCollection,
+  ReplayCollectionsListBuilder,
 } from "@/sdks/replayCollection.js";
 export { ReplayEntrySDK, ReplayEntry } from "@/sdks/replayEntry.js";

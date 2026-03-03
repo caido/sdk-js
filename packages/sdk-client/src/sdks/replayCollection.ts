@@ -14,11 +14,9 @@ import type {
   ConnectionQueryResult,
   CreateReplaySessionCollectionOptions,
   ID,
-  RankInput,
 } from "@/types/index.js";
-import { handleGraphQLError } from "@/utils/errors.js";
 import { ListBuilder, type ListBuilderVars } from "@/utils/list.js";
-import { isAbsent, isPresent } from "@/utils/optional.js";
+import { isAbsent } from "@/utils/optional.js";
 
 /**
  * List builder for replay session collections.

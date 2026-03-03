@@ -9,7 +9,7 @@ import {
 import { NotFoundUserError, OtherUserError, RankUserError } from "./misc.js";
 import { PluginUserError, StoreUserError } from "./plugin.js";
 import { ProjectUserError } from "./project.js";
-import type { TaskInProgressUserError } from "./tasks.js";
+import { TaskInProgressUserError } from "./tasks.js";
 import { NewerVersionUserError } from "./version.js";
 
 // prettier-ignore
