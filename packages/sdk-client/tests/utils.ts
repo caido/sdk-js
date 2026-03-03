@@ -1,7 +1,7 @@
-import type { ReplaySession } from "@caido/sdk-client";
 import type { ID } from "graphql-ws";
 import { ProxyAgent } from "undici";
 
+import type { ReplaySession } from "@/index.js";
 import type { Finding } from "@/types/index.js";
 
 export const bytes = (text: string): Uint8Array => {

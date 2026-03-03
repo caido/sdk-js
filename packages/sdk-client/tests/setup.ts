@@ -1,5 +1,6 @@
-import { Client } from "@caido/sdk-client";
 import { afterEach, beforeAll, beforeEach, expect } from "vitest";
+
+import { Client } from "@/index.js";
 
 const findSubarrayIndex = (source: Uint8Array, target: Uint8Array): number => {
   if (target.length === 0) {

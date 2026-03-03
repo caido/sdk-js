@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createMockFinding, createMockRequest } from "./utils.js";
+import { createMockRequest } from "./utils.js";
 
 describe("Request", () => {
   it("should be able to get a request", async () => {

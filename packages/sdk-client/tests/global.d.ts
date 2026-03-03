@@ -1,4 +1,4 @@
-import type { Client, Project } from "@caido/sdk-client";
+import type { Client, Project } from "@/index.js";
 
 declare module "vitest" {
   interface Assertion<T = unknown> {
