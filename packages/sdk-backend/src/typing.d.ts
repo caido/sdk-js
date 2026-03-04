@@ -20,6 +20,13 @@ declare module "caido:plugin" {
   } from "caido:utils";
   import type { Database } from "sqlite";
 
+  type AnyFn = (...args: any[]) => any;
+  type InvalidCallbackMessage =
+    "Your callback must respect the format (sdk: SDK, ...args: unknown[]) => MaybePromise<unknown>";
+  type APICallback<T> = T extends AnyFn
+    ? (sdk: SDK, ...args: Parameters<T>) => ReturnType<T>
+    : InvalidCallbackMessage;
+
   /**
    * The SDK for the API RPC service.
    * @category API
@@ -45,10 +52,7 @@ declare module "caido:plugin" {
      * });
      * ```
      */
-    register(
-      name: keyof API,
-      callback: (sdk: SDK, ...args: any[]) => MaybePromise<any>,
-    ): void;
+    register<K extends keyof API>(name: K, callback: APICallback<API[K]>): void;
   };
 
   /**
