@@ -72,8 +72,8 @@ importers:
         version: 4.3.6
     devDependencies:
       '@caido/schema-proxy':
-        specifier: 0.4.0
-        version: 0.4.0
+        specifier: 0.55.3
+        version: 0.55.3
       '@graphql-codegen/cli':
         specifier: 5.0.3
         version: 5.0.3(@types/node@25.0.10)(graphql@16.12.0)(typescript@5.6.2)
@@ -545,8 +545,8 @@ packages:
   '@caido/quickjs-types@0.26.0':
     resolution: {integrity: sha512-Nnpu87fnTvVxEdLUQXAc9d763vj13GPcQEhSWireuLlDPDgxM/7dK8kZdOhGX/BhWRRZ7nUzNc3IdN+OVdsoSA==}
 
-  '@caido/schema-proxy@0.4.0':
-    resolution: {integrity: sha512-JDNkoNEUqH5fBX6TL3DZYXomWw+RN+EFbvQhnr24x4TK2lQHHo5grd+2fCNcwQ9ce1+q9zy7al8Z+PHM+bBG9A==}
+  '@caido/schema-proxy@0.55.3':
+    resolution: {integrity: sha512-NBrv47n7ILNbwF/lyJe52rPWWPnCrQDyDcO4416Crp3EKnAThja9TALbJ+pra2AMpLbBSpGkh3Zt+q79uP0ZVA==}
 
   '@caido/sdk-shared@0.1.1':
     resolution: {integrity: sha512-JAV5ajUqxZdXYPTmDEvIKBZon8I5uHq44ATj0Nj3BVpllRDUGY9kcBd+PXMD50+3lv1CvhR3/f6q24T0+4aVJQ==}
@@ -4519,7 +4519,7 @@ snapshots:
 
   '@caido/quickjs-types@0.26.0': {}
 
-  '@caido/schema-proxy@0.4.0': {}
+  '@caido/schema-proxy@0.55.3': {}
 
   '@caido/sdk-shared@0.1.1': {}
 
