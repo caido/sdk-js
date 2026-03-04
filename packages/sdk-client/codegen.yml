@@ -1,4 +1,4 @@
-schema: ./src/graphql/schema.graphql
+schema: ./node_modules/@caido/schema-proxy/schema.graphql
 documents:
   - ./src/graphql/documents/*.graphql
 

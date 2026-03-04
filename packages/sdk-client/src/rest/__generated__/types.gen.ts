@@ -482,5 +482,5 @@ export type GraphqlWsData = {
 };
 
 export type ClientOptions = {
-  baseUrl: `${string}://src` | (string & {});
+  baseUrl: `${string}://node_modules` | (string & {});
 };
