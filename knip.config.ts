@@ -13,6 +13,7 @@ const config: KnipConfig = {
     "packages/sdk-client": {
       project: ["src/**/*.ts!", "tests/**/*.ts!"],
       ignore: ["src/**/__generated__/**"],
+      ignoreDependencies: ["@caido/schema-proxy"],
     },
     "packages/server-auth": {
       project: ["src/**/*.ts!"],
