@@ -23,8 +23,8 @@
 This is the monorepo for all the JS SDK and related tooling of Caido. It contains the following packages:
 
 - `sdk-client`: SDK to interact with a Caido Instance as a client
-- `sdk-backend`: SDK definition for the Caido Backend
-- `sdk-frontend`: SDK definition for the Caido Frontend
+- `sdk-backend`: SDK definition for the Caido Plugin Backend
+- `sdk-frontend`: SDK definition for the Caido Plugin Frontend
 - `sdk-workflow`: SDK definition for Caido Workflows
 - `sdk-shared`: Typing helpers shared between SDKs
 - `quickjs-types`: Typing for the QuickJS Engine
