@@ -17,9 +17,7 @@ export const mapToInstanceSettings = (
   };
 };
 
-export const mapToAISettings = (
-  data: InstanceSettingsFullFragment,
-): AISettings => {
+const mapToAISettings = (data: InstanceSettingsFullFragment): AISettings => {
   const anthropic = data.aiProviders.anthropic;
   const google = data.aiProviders.google;
   const openai = data.aiProviders.openai;
@@ -50,7 +48,7 @@ export const mapToAISettings = (
   };
 };
 
-export const mapToAnalyticsSettings = (
+const mapToAnalyticsSettings = (
   data: InstanceSettingsFullFragment,
 ): AnalyticsSettings => {
   return {
@@ -60,7 +58,7 @@ export const mapToAnalyticsSettings = (
   };
 };
 
-export const mapToOnboardingSettings = (
+const mapToOnboardingSettings = (
   data: InstanceSettingsFullFragment,
 ): OnboardingSettings => {
   return {
