@@ -32,6 +32,10 @@ fragment OtherUserErrorFull on OtherUserError {
   ...UserErrorFull
 }
 
+fragment ReadOnlyUserErrorFull on ReadOnlyUserError {
+  ...UserErrorFull
+}
+
 fragment InvalidGlobTermsUserErrorFull on InvalidGlobTermsUserError {
   ...UserErrorFull
   terms
@@ -65,4 +69,11 @@ fragment RankUserErrorFull on RankUserError {
 fragment TaskInProgressUserErrorFull on TaskInProgressUserError {
   ...UserErrorFull
   taskId
+}
+
+fragment WorkflowUserErrorFull on WorkflowUserError {
+  ...UserErrorFull
+  node
+  message
+  reason
 }

@@ -16,6 +16,7 @@ import {
   ScopeSDK,
   TaskSDK,
   UserSDK,
+  WorkflowSDK,
 } from "@/sdks/index.js";
 import {
   type ConnectOptions,
@@ -39,6 +40,7 @@ import { sleep } from "@/utils/misc.js";
  * - `environment` - Higher-level environment SDK
  * - `hostedFile` - Higher-level hosted file SDK
  * - `request` - Higher-level request SDK
+ * - `workflow` - Higher-level workflow SDK
  *
  * @example
  * ```typescript
@@ -86,6 +88,9 @@ export class Client {
   /** Higher-level request SDK. */
   readonly request: RequestSDK;
 
+  /** Higher-level workflow SDK. */
+  readonly workflow: WorkflowSDK;
+
   /** Higher-level task SDK. */
   readonly task: TaskSDK;
 
@@ -122,6 +127,7 @@ export class Client {
     this.hostedFile = new HostedFileSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
     this.request = new RequestSDK(this.graphql);
+    this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
     this.replay = new ReplaySDK(this.graphql);
   }

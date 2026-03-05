@@ -9,6 +9,7 @@ export { RequestSDK } from "@/sdks/request.js";
 export { ReplaySDK } from "@/sdks/replay.js";
 export { TaskSDK, Task } from "@/sdks/task.js";
 export { FindingSDK } from "@/sdks/finding.js";
+export { WorkflowSDK } from "@/sdks/workflow.js";
 export {
   ReplaySessionSDK,
   ReplaySession,
