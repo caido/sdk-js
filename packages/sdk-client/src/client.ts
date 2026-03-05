@@ -9,6 +9,7 @@ import {
   FilterSDK,
   FindingSDK,
   HostedFileSDK,
+  InstanceSDK,
   PluginSDK,
   ProjectSDK,
   ReplaySDK,
@@ -39,6 +40,7 @@ import { sleep } from "@/utils/misc.js";
  * - `filter` - Higher-level filter preset SDK
  * - `environment` - Higher-level environment SDK
  * - `hostedFile` - Higher-level hosted file SDK
+ * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
  * - `workflow` - Higher-level workflow SDK
  *
@@ -81,6 +83,9 @@ export class Client {
 
   /** Higher-level hosted file SDK. */
   readonly hostedFile: HostedFileSDK;
+
+  /** Higher-level instance SDK. */
+  readonly instance: InstanceSDK;
 
   /** Higher-level finding SDK. */
   readonly finding: FindingSDK;
@@ -125,6 +130,7 @@ export class Client {
     this.filter = new FilterSDK(this.graphql);
     this.environment = new EnvironmentSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
+    this.instance = new InstanceSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
     this.request = new RequestSDK(this.graphql);
     this.workflow = new WorkflowSDK(this.graphql);

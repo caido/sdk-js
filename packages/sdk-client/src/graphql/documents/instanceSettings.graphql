@@ -1,0 +1,55 @@
+fragment InstanceAIProviderAnthropicFull on AIProviderAnthropic {
+  apiKey
+}
+
+fragment InstanceAIProviderGoogleFull on AIProviderGoogle {
+  apiKey
+}
+
+fragment InstanceAIProviderOpenAIFull on AIProviderOpenAI {
+  apiKey
+  url
+}
+
+fragment InstanceAIProviderOpenRouterFull on AIProviderOpenRouter {
+  apiKey
+}
+
+fragment InstanceSettingsFull on InstanceSettings {
+  aiProviders {
+    anthropic {
+      ...InstanceAIProviderAnthropicFull
+    }
+    google {
+      ...InstanceAIProviderGoogleFull
+    }
+    openai {
+      ...InstanceAIProviderOpenAIFull
+    }
+    openrouter {
+      ...InstanceAIProviderOpenRouterFull
+    }
+  }
+  analytic {
+    enabled
+    cloud
+    local
+  }
+  onboarding {
+    analytic
+  }
+}
+
+query InstanceSettings {
+  instanceSettings {
+    ...InstanceSettingsFull
+  }
+}
+
+mutation SetInstanceSettings($input: SetInstanceSettingsInput!) {
+  setInstanceSettings(input: $input) {
+    settings {
+      ...InstanceSettingsFull
+    }
+  }
+}
