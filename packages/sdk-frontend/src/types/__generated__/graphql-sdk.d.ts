@@ -5295,6 +5295,25 @@ export type RenameAssistantSessionMutation = {
         } | undefined | null;
     };
 };
+export type CreatedAssistantSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedAssistantSessionSubscription = {
+    createdAssistantSession: {
+        snapshot: number;
+        sessionEdge: {
+            cursor: string;
+            node: {
+                __typename: "AssistantSession";
+                id: string;
+                modelId: string;
+                name: string;
+                updatedAt: Date;
+                createdAt: Date;
+            };
+        };
+    };
+};
 export type CreatedAssistantMessageSubscriptionVariables = Exact<{
     [key: string]: never;
 }>;
@@ -30655,6 +30674,7 @@ export declare const SendAssistantMessageDocument = "\n    mutation sendAssistan
 export declare const CreateAssistantSessionDocument = "\n    mutation createAssistantSession($input: CreateAssistantSessionInput!) {\n  createAssistantSession(input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const DeleteAssistantSessionDocument = "\n    mutation deleteAssistantSession($id: ID!) {\n  deleteAssistantSession(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const RenameAssistantSessionDocument = "\n    mutation renameAssistantSession($id: ID!, $name: String!) {\n  renameAssistantSession(id: $id, name: $name) {\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
+export declare const CreatedAssistantSessionDocument = "\n    subscription createdAssistantSession {\n  createdAssistantSession {\n    sessionEdge {\n      cursor\n      node {\n        ...assistantSessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const CreatedAssistantMessageDocument = "\n    subscription createdAssistantMessage {\n  createdAssistantMessage {\n    messageEdge {\n      cursor\n      node {\n        ...assistantMessageFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedAssistantMessageTaskDocument = "\n    subscription createdAssistantMessageTask {\n  createdAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UpdatedAssistantMessageTaskDocument = "\n    subscription updatedAssistantMessageTask {\n  updatedAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
@@ -30987,6 +31007,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createAssistantSession(variables: CreateAssistantSessionMutationVariables, options?: C): Promise<CreateAssistantSessionMutation>;
     deleteAssistantSession(variables: DeleteAssistantSessionMutationVariables, options?: C): Promise<DeleteAssistantSessionMutation>;
     renameAssistantSession(variables: RenameAssistantSessionMutationVariables, options?: C): Promise<RenameAssistantSessionMutation>;
+    createdAssistantSession(variables?: CreatedAssistantSessionSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantSessionSubscription>;
     createdAssistantMessage(variables?: CreatedAssistantMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageSubscription>;
     createdAssistantMessageTask(variables?: CreatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageTaskSubscription>;
     updatedAssistantMessageTask(variables?: UpdatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAssistantMessageTaskSubscription>;
