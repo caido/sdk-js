@@ -200,6 +200,11 @@ export type OtherUserErrorFullFragment = {
   code: string;
 };
 
+export type ReadOnlyUserErrorFullFragment = {
+  __typename: "ReadOnlyUserError";
+  code: string;
+};
+
 export type InvalidGlobTermsUserErrorFullFragment = {
   __typename: "InvalidGlobTermsUserError";
   terms: Array<string>;
@@ -239,6 +244,14 @@ export type RankUserErrorFullFragment = {
 export type TaskInProgressUserErrorFullFragment = {
   __typename: "TaskInProgressUserError";
   taskId: string;
+  code: string;
+};
+
+export type WorkflowUserErrorFullFragment = {
+  __typename: "WorkflowUserError";
+  node?: string | undefined | null;
+  message: string;
+  reason: Types.WorkflowErrorReason;
   code: string;
 };
 
@@ -501,6 +514,43 @@ export const OtherUserErrorFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<OtherUserErrorFullFragment, unknown>;
+export const ReadOnlyUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ReadOnlyUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "ReadOnlyUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ReadOnlyUserErrorFullFragment, unknown>;
 export const InvalidGlobTermsUserErrorFullFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -775,3 +825,43 @@ export const TaskInProgressUserErrorFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<TaskInProgressUserErrorFullFragment, unknown>;
+export const WorkflowUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "WorkflowUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "WorkflowUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "node" } },
+          { kind: "Field", name: { kind: "Name", value: "message" } },
+          { kind: "Field", name: { kind: "Name", value: "reason" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WorkflowUserErrorFullFragment, unknown>;

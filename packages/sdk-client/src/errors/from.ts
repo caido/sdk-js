@@ -6,11 +6,17 @@ import {
   InvalidGlobTermsUserError,
   NameTakenUserError,
 } from "./form.js";
-import { NotFoundUserError, OtherUserError, RankUserError } from "./misc.js";
+import {
+  NotFoundUserError,
+  OtherUserError,
+  RankUserError,
+  ReadOnlyUserError,
+} from "./misc.js";
 import { PluginUserError, StoreUserError } from "./plugin.js";
 import { ProjectUserError } from "./project.js";
 import { TaskInProgressUserError } from "./tasks.js";
 import { NewerVersionUserError } from "./version.js";
+import { WorkflowUserError } from "./workflow.js";
 
 // prettier-ignore
 type ErrType<T> = InstanceType<
@@ -28,6 +34,8 @@ type ErrType<T> = InstanceType<
   E extends "StoreUserError" ? typeof StoreUserError :
   E extends "RankUserError" ? typeof RankUserError :
   E extends "TaskInProgressUserError" ? typeof TaskInProgressUserError :
+  E extends "ReadOnlyUserError" ? typeof ReadOnlyUserError :
+  E extends "WorkflowUserError" ? typeof WorkflowUserError :
   never :
   never
 >;
@@ -73,6 +81,17 @@ export const from = <T extends AllErrors>(error: T): ErrType<T> => {
 
       case "TaskInProgressUserError":
         return new TaskInProgressUserError(error.taskId);
+
+      case "ReadOnlyUserError":
+        return new ReadOnlyUserError();
+
+      case "WorkflowUserError":
+        return new WorkflowUserError(
+          error.code,
+          error.reason,
+          error.message,
+          error.node,
+        );
     }
   })() as ErrType<T>;
 };

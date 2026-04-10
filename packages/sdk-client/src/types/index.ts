@@ -12,6 +12,8 @@ export * from "./request.js";
 export * from "./replaySession.js";
 export * from "./replayCollection.js";
 export * from "./network.js";
+export * from "./workflow.js";
+export * from "./instanceSettings.js";
 
 /**
  * A unique Caido identifier per type.

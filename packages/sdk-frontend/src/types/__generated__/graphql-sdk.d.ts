@@ -1542,6 +1542,9 @@ export type Httpql = {
 export type HttpqlInput = {
     code: Scalars["String"]["input"];
 };
+export type HiddenStreamWsMessage = {
+    hiddenId: Scalars["ID"]["output"];
+};
 export type HideFindingsInput = {
     ids: Array<Scalars["ID"]["input"]>;
     reporter?: never;
@@ -1603,6 +1606,7 @@ export type InstallPluginPackagePayload = {
 export type InstanceSettings = {
     aiProviders: AiProviders;
     analytic: AnalyticStatus;
+    network: NetworkState;
     onboarding: OnboardingState;
 };
 export type InterceptEntry = {
@@ -1886,6 +1890,7 @@ export type MutationRoot = {
     selectEnvironment: SelectEnvironmentPayload;
     selectProject: SelectProjectPayload;
     sendAssistantMessage: SendAssistantMessagePayload;
+    sendReplayTaskMessage: SendReplayTaskMessagePayload;
     /** @deprecated Remove usage, no replacement */
     setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
     setGlobalConfigPort: SetConfigPortPayload;
@@ -1899,6 +1904,7 @@ export type MutationRoot = {
     startDeleteStreamWsMessageTask: StartDeleteStreamWsMessageTaskPayload;
     startExportRequestsTask: StartExportRequestsTaskPayload;
     startReplayTask: StartReplayTaskPayload;
+    stopReplayWsTasks: StopReplayWsTaskPayload;
     testAiProvider: TestAiProviderPayload;
     testTamperRule: TestTamperRulePayload;
     testUpstreamProxyHttp: TestUpstreamProxyHttpPayload;
@@ -2239,6 +2245,10 @@ export type MutationRootSendAssistantMessageArgs = {
     message?: InputMaybe<Scalars["String"]["input"]>;
     sessionId: Scalars["ID"]["input"];
 };
+export type MutationRootSendReplayTaskMessageArgs = {
+    input: SendReplayTaskMessageInput;
+    task: Scalars["ID"]["input"];
+};
 export type MutationRootSetActiveReplaySessionEntryArgs = {
     entryId: Scalars["ID"]["input"];
     id: Scalars["ID"]["input"];
@@ -2273,6 +2283,9 @@ export type MutationRootStartExportRequestsTaskArgs = {
 };
 export type MutationRootStartReplayTaskArgs = {
     sessionId: Scalars["ID"]["input"];
+};
+export type MutationRootStopReplayWsTasksArgs = {
+    taskIds: Array<Scalars["ID"]["input"]>;
 };
 export type MutationRootTestAiProviderArgs = {
     input: TestAiProviderInput;
@@ -2398,6 +2411,9 @@ export type MutationRootUploadHostedFileArgs = {
 export type NameTakenUserError = UserError & {
     code: Scalars["String"]["output"];
     name: Scalars["String"]["output"];
+};
+export type NetworkState = {
+    stack: SettingsNetworkStack;
 };
 export type NewerVersionUserError = UserError & {
     code: Scalars["String"]["output"];
@@ -2634,6 +2650,7 @@ export type QueryRoot = {
     replaySession?: Maybe<ReplaySession>;
     replaySessionCollections: ReplaySessionCollectionConnection;
     replaySessions: ReplaySessionConnection;
+    replayTasks: Array<ReplayTask>;
     request?: Maybe<Request>;
     requestOffset?: Maybe<RequestOffset>;
     requests: RequestConnection;
@@ -3055,6 +3072,13 @@ export type ReplayEntryOrderInput = {
     by: ReplayEntryOrderBy;
     ordering: Ordering;
 };
+export type ReplayEntryWs = ReplayEntry & {
+    createdAt: Scalars["Timestamp"]["output"];
+    error?: Maybe<Scalars["String"]["output"]>;
+    http: ReplayEntryHttp;
+    id: Scalars["ID"]["output"];
+    session: ReplaySession;
+};
 export type ReplayEnvironmentPreprocessor = {
     variableName: Scalars["String"]["output"];
 };
@@ -3374,10 +3398,26 @@ export type SelectProjectPayload = {
     error?: Maybe<SelectProjectPayloadError>;
 };
 export type SelectProjectPayloadError = OtherUserError | ProjectUserError | UnknownIdUserError;
+export type SelectedProjectPayload = {
+    currentProject?: Maybe<CurrentProject>;
+};
 export type SendAssistantMessageError = CloudUserError | OtherUserError | PermissionDeniedUserError | TaskInProgressUserError;
 export type SendAssistantMessagePayload = {
     error?: Maybe<SendAssistantMessageError>;
     task?: Maybe<AssistantMessageTask>;
+};
+export type SendReplayStreamWsMessage = {
+    data: Scalars["Blob"]["input"];
+    direction: StreamMessageDirection;
+    format: StreamWsMessageFormat;
+};
+export type SendReplayTaskMessageError = CloudUserError | OtherUserError | PermissionDeniedUserError | UnknownIdUserError;
+export type SendReplayTaskMessageInput = {
+    ws: SendReplayStreamWsMessage;
+};
+export type SendReplayTaskMessagePayload = {
+    error?: Maybe<SendReplayTaskMessageError>;
+    message?: Maybe<StreamMessage>;
 };
 export type SetActiveReplaySessionEntryPayload = {
     session?: Maybe<ReplaySession>;
@@ -3395,14 +3435,22 @@ export type SetConfigProjectPayload = {
 export type SetInstanceSettingsInput = {
     aiProvider: SettingsAiProviderInput;
     analytics?: never;
+    network?: never;
     onboarding?: never;
 } | {
     aiProvider?: never;
     analytics: SettingsAnalyticInput;
+    network?: never;
     onboarding?: never;
 } | {
     aiProvider?: never;
     analytics?: never;
+    network: SettingsNetworkInput;
+    onboarding?: never;
+} | {
+    aiProvider?: never;
+    analytics?: never;
+    network?: never;
     onboarding: SettingsOnboardingInput;
 };
 export type SetInstanceSettingsPayload = {
@@ -3443,6 +3491,14 @@ export type SettingsAiProviderInput = {
 export type SettingsAnalyticInput = {
     enabled: Scalars["Boolean"]["input"];
 };
+export type SettingsNetworkInput = {
+    stack: SettingsNetworkStack;
+};
+export declare const SettingsNetworkStack: {
+    readonly V1: "V1";
+    readonly V2: "V2";
+};
+export type SettingsNetworkStack = (typeof SettingsNetworkStack)[keyof typeof SettingsNetworkStack];
 export type SettingsOnboardingInput = {
     analytic: Scalars["Boolean"]["input"];
 };
@@ -3550,6 +3606,10 @@ export type StartedRestoreBackupTaskPayload = {
 export type StartedTaskPayload = {
     task: Task;
 };
+export type StopReplayWsTaskPayload = {
+    error?: Maybe<StopReplayWsTaskPayloadError>;
+};
+export type StopReplayWsTaskPayloadError = OtherUserError | UnknownIdUserError;
 export type Store = {
     pluginPackages: Array<StorePluginPackage>;
 };
@@ -3615,6 +3675,7 @@ export type StreamEdge = {
     /** The item at the end of the edge */
     node: Stream;
 };
+export type StreamMessage = StreamWsMessage;
 export declare const StreamMessageDirection: {
     readonly Client: "CLIENT";
     readonly Server: "SERVER";
@@ -3677,6 +3738,9 @@ export type StreamWsMessageEditRef = {
 };
 export declare const StreamWsMessageFormat: {
     readonly Binary: "BINARY";
+    readonly Close: "CLOSE";
+    readonly Ping: "PING";
+    readonly Pong: "PONG";
     readonly Text: "TEXT";
 };
 export type StreamWsMessageFormat = (typeof StreamWsMessageFormat)[keyof typeof StreamWsMessageFormat];
@@ -3757,6 +3821,7 @@ export type SubscriptionRoot = {
     finishedRestoreBackupTask: FinishedRestoreBackupTaskPayload;
     finishedTask: FinishedTaskPayload;
     installedBrowser: UploadedBrowserPayload;
+    selectedProject: SelectedProjectPayload;
     startedBackupTask: StartedBackupTaskPayload;
     startedDeleteInterceptEntriesTask: StartedDeleteInterceptEntriesTaskPayload;
     startedRestoreBackupTask: StartedRestoreBackupTaskPayload;
@@ -3785,6 +3850,7 @@ export type SubscriptionRoot = {
     updatedPlugin: UpdatedPluginPayload;
     updatedPluginPackage: UpdatedPluginPackagePayload;
     updatedProject: UpdatedProjectPayload;
+    updatedReplayEntryDraft: UpdatedReplayEntryDraftPayload;
     updatedReplaySession: UpdatedReplaySessionPayload;
     updatedReplaySessionCollection: UpdatedReplaySessionCollectionPayload;
     updatedRequest: UpdatedRequestPayload;
@@ -3840,6 +3906,9 @@ export type SubscriptionRootUpdatedRequestArgs = {
 };
 export type SubscriptionRootUpdatedSitemapEntryArgs = {
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type SubscriptionRootUpdatedStreamWsMessageArgs = {
+    filter?: InputMaybe<StreamQlInput>;
 };
 export type TamperExportScopeInput = {
     collections: Array<Scalars["ID"]["input"]>;
@@ -4838,6 +4907,10 @@ export type UpdatedPluginPayload = {
 export type UpdatedProjectPayload = {
     project: Project;
 };
+export type UpdatedReplayEntryDraftPayload = {
+    entry: ReplayEntry;
+    snapshot: Scalars["Snapshot"]["output"];
+};
 export type UpdatedReplaySessionCollectionPayload = {
     collectionEdge: ReplaySessionCollectionEdge;
     snapshot: Scalars["Snapshot"]["output"];
@@ -4871,13 +4944,14 @@ export type UpdatedSitemapEntryPayload = {
 export type UpdatedSitemapEntryPayloadRequestEdgeArgs = {
     order?: InputMaybe<RequestResponseOrderInput>;
 };
-export type UpdatedStreamWsMessagePayload = {
+export type UpdatedStreamWsMessage = {
     messageEdge: StreamWsMessageEdge;
     snapshot: Scalars["Snapshot"]["output"];
 };
-export type UpdatedStreamWsMessagePayloadMessageEdgeArgs = {
+export type UpdatedStreamWsMessageMessageEdgeArgs = {
     order?: InputMaybe<StreamWsMessageOrderInput>;
 };
+export type UpdatedStreamWsMessagePayload = HiddenStreamWsMessage | UpdatedStreamWsMessage;
 export type UpdatedTamperRuleCollectionPayload = {
     collectionEdge: TamperRuleCollectionEdge;
     snapshot: Scalars["Snapshot"]["output"];
@@ -4984,6 +5058,15 @@ export type UserSubscription = {
 };
 export type UserSubscriptionPlan = {
     name: Scalars["String"]["output"];
+};
+export declare const WsErrorReason: {
+    readonly CouldNotUpgradeConnection: "COULD_NOT_UPGRADE_CONNECTION";
+};
+export type WsErrorReason = (typeof WsErrorReason)[keyof typeof WsErrorReason];
+export type WsUserError = UserError & {
+    code: Scalars["String"]["output"];
+    message: Scalars["String"]["output"];
+    reason: WsErrorReason;
 };
 export type Workflow = {
     createdAt: Scalars["DateTime"]["output"];
@@ -5293,6 +5376,25 @@ export type RenameAssistantSessionMutation = {
             updatedAt: Date;
             createdAt: Date;
         } | undefined | null;
+    };
+};
+export type CreatedAssistantSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedAssistantSessionSubscription = {
+    createdAssistantSession: {
+        snapshot: number;
+        sessionEdge: {
+            cursor: string;
+            node: {
+                __typename: "AssistantSession";
+                id: string;
+                modelId: string;
+                name: string;
+                updatedAt: Date;
+                createdAt: Date;
+            };
+        };
     };
 };
 export type CreatedAssistantMessageSubscriptionVariables = Exact<{
@@ -8957,11 +9059,15 @@ type UserErrorFull_UnsupportedPlatformUserError_Fragment = {
     __typename: "UnsupportedPlatformUserError";
     code: string;
 };
+type UserErrorFull_WsUserError_Fragment = {
+    __typename: "WSUserError";
+    code: string;
+};
 type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AiUserError_Fragment | UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRangeUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_InvalidStreamQlUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AiUserError_Fragment | UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRangeUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_InvalidStreamQlUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WsUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -19088,6 +19194,18 @@ export type DeletedProjectSubscription = {
         deletedProjectId: string;
     };
 };
+export type SelectedProjectSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type SelectedProjectSubscription = {
+    selectedProject: {
+        currentProject?: {
+            project: {
+                id: string;
+            };
+        } | undefined | null;
+    };
+};
 export type CreateProjectMutationVariables = Exact<{
     input: CreateProjectInput;
 }>;
@@ -19627,6 +19745,145 @@ export type ReplayEntryHttpFullFragment = {
         };
     } | undefined | null;
 };
+export type ReplayEntryWsMetaFragment = {
+    __typename: "ReplayEntryWs";
+    id: string;
+    error?: string | undefined | null;
+    createdAt: Date;
+    session: {
+        id: string;
+    };
+    http: {
+        __typename: "ReplayEntryHttp";
+        id: string;
+        error?: string | undefined | null;
+        createdAt: Date;
+        raw: string;
+        session: {
+            id: string;
+        };
+        connection: {
+            __typename: "ConnectionInfo";
+            host: string;
+            port: number;
+            isTLS: boolean;
+            SNI?: string | undefined | null;
+        };
+        draft?: {
+            __typename: "ReplayEntryHttpDraft";
+            raw: string;
+            editorState: string;
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+            };
+        } | undefined | null;
+        settings: {
+            placeholders: Array<{
+                __typename: "ReplayPlaceholder";
+                inputRange: {
+                    start: number;
+                    end: number;
+                };
+                outputRange: {
+                    start: number;
+                    end: number;
+                };
+                preprocessors: Array<{
+                    __typename: "ReplayPreprocessor";
+                    options: {
+                        __typename: "ReplayEnvironmentPreprocessor";
+                        variableName: string;
+                    } | {
+                        __typename: "ReplayPrefixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplaySuffixPreprocessor";
+                        value: string;
+                    } | {
+                        __typename: "ReplayUrlEncodePreprocessor";
+                        charset?: string | undefined | null;
+                        nonAscii: boolean;
+                    } | {
+                        __typename: "ReplayWorkflowPreprocessor";
+                        id: string;
+                    };
+                }>;
+            }>;
+        };
+        request?: {
+            __typename: "Request";
+            id: string;
+            host: string;
+            port: number;
+            path: string;
+            query: string;
+            method: string;
+            edited: boolean;
+            isTls: boolean;
+            sni?: string | undefined | null;
+            length: number;
+            alteration: Alteration;
+            fileExtension?: string | undefined | null;
+            source: Source;
+            createdAt: Date;
+            metadata: {
+                __typename: "RequestMetadata";
+                id: string;
+                color?: string | undefined | null;
+            };
+            response?: {
+                __typename: "Response";
+                id: string;
+                statusCode: number;
+                roundtripTime: number;
+                length: number;
+                createdAt: Date;
+                alteration: Alteration;
+                edited: boolean;
+            } | undefined | null;
+            stream?: {
+                id: string;
+            } | undefined | null;
+        } | undefined | null;
+    };
+};
 export type ReplaySessionMetaHttpFragment = {
     __typename: "ReplaySessionHttp";
     id: string;
@@ -19761,6 +20018,144 @@ export type ReplaySessionMetaHttpFragment = {
                 id: string;
             } | undefined | null;
         } | undefined | null;
+    } | {
+        __typename: "ReplayEntryWs";
+        id: string;
+        error?: string | undefined | null;
+        createdAt: Date;
+        session: {
+            id: string;
+        };
+        http: {
+            __typename: "ReplayEntryHttp";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            raw: string;
+            session: {
+                id: string;
+            };
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            draft?: {
+                __typename: "ReplayEntryHttpDraft";
+                raw: string;
+                editorState: string;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+            } | undefined | null;
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            } | undefined | null;
+        };
     } | undefined | null;
     collection: {
         id: string;
@@ -19895,6 +20290,144 @@ export type ReplaySessionMetaHttpFragment = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         }>;
     };
     settings?: {
@@ -20081,6 +20614,144 @@ export type ReplaySessionMetaFragment = {
                 id: string;
             } | undefined | null;
         } | undefined | null;
+    } | {
+        __typename: "ReplayEntryWs";
+        id: string;
+        error?: string | undefined | null;
+        createdAt: Date;
+        session: {
+            id: string;
+        };
+        http: {
+            __typename: "ReplayEntryHttp";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            raw: string;
+            session: {
+                id: string;
+            };
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            draft?: {
+                __typename: "ReplayEntryHttpDraft";
+                raw: string;
+                editorState: string;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+            } | undefined | null;
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            } | undefined | null;
+        };
     } | undefined | null;
     collection: {
         id: string;
@@ -20215,6 +20886,144 @@ export type ReplaySessionMetaFragment = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         }>;
     };
     settings?: {
@@ -20361,6 +21170,144 @@ export type ReplaySessionCollectionMetaFragment = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
         collection: {
             id: string;
@@ -20495,6 +21442,144 @@ export type ReplaySessionCollectionMetaFragment = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             }>;
         };
         settings?: {
@@ -20672,6 +21757,144 @@ export type ReplayTaskMetaFragment = {
                 }>;
             };
         } | undefined | null;
+    } | {
+        __typename: "ReplayEntryWs";
+        id: string;
+        error?: string | undefined | null;
+        createdAt: Date;
+        session: {
+            id: string;
+        };
+        http: {
+            __typename: "ReplayEntryHttp";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            raw: string;
+            session: {
+                id: string;
+            };
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            draft?: {
+                __typename: "ReplayEntryHttpDraft";
+                raw: string;
+                editorState: string;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+            } | undefined | null;
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            } | undefined | null;
+        };
     };
 };
 export type ReplayPrefixPreprocessorFullFragment = {
@@ -20915,6 +22138,144 @@ export type ReplayEntryQuery = {
                 }>;
             };
         } | undefined | null;
+    } | {
+        __typename: "ReplayEntryWs";
+        id: string;
+        error?: string | undefined | null;
+        createdAt: Date;
+        session: {
+            id: string;
+        };
+        http: {
+            __typename: "ReplayEntryHttp";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            raw: string;
+            session: {
+                id: string;
+            };
+            connection: {
+                __typename: "ConnectionInfo";
+                host: string;
+                port: number;
+                isTLS: boolean;
+                SNI?: string | undefined | null;
+            };
+            draft?: {
+                __typename: "ReplayEntryHttpDraft";
+                raw: string;
+                editorState: string;
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+            } | undefined | null;
+            settings: {
+                placeholders: Array<{
+                    __typename: "ReplayPlaceholder";
+                    inputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    outputRange: {
+                        start: number;
+                        end: number;
+                    };
+                    preprocessors: Array<{
+                        __typename: "ReplayPreprocessor";
+                        options: {
+                            __typename: "ReplayEnvironmentPreprocessor";
+                            variableName: string;
+                        } | {
+                            __typename: "ReplayPrefixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplaySuffixPreprocessor";
+                            value: string;
+                        } | {
+                            __typename: "ReplayUrlEncodePreprocessor";
+                            charset?: string | undefined | null;
+                            nonAscii: boolean;
+                        } | {
+                            __typename: "ReplayWorkflowPreprocessor";
+                            id: string;
+                        };
+                    }>;
+                }>;
+            };
+            request?: {
+                __typename: "Request";
+                id: string;
+                host: string;
+                port: number;
+                path: string;
+                query: string;
+                method: string;
+                edited: boolean;
+                isTls: boolean;
+                sni?: string | undefined | null;
+                length: number;
+                alteration: Alteration;
+                fileExtension?: string | undefined | null;
+                source: Source;
+                createdAt: Date;
+                metadata: {
+                    __typename: "RequestMetadata";
+                    id: string;
+                    color?: string | undefined | null;
+                };
+                response?: {
+                    __typename: "Response";
+                    id: string;
+                    statusCode: number;
+                    roundtripTime: number;
+                    length: number;
+                    createdAt: Date;
+                    alteration: Alteration;
+                    edited: boolean;
+                } | undefined | null;
+                stream?: {
+                    id: string;
+                } | undefined | null;
+            } | undefined | null;
+        };
     } | undefined | null;
 };
 export type ActiveReplayEntryBySessionQueryVariables = Exact<{
@@ -21055,6 +22416,144 @@ export type ActiveReplayEntryBySessionQuery = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
         collection: {
             id: string;
@@ -21189,6 +22688,144 @@ export type ActiveReplayEntryBySessionQuery = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             }>;
         };
         settings?: {
@@ -21338,6 +22975,144 @@ export type ReplayEntriesBySessionQuery = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 };
             }>;
             pageInfo: {
@@ -21481,6 +23256,144 @@ export type ReplayEntriesBySessionQuery = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             }>;
         };
         activeEntry?: {
@@ -21612,6 +23525,144 @@ export type ReplayEntriesBySessionQuery = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
         collection: {
             id: string;
@@ -21756,6 +23807,144 @@ export type ReplaySessionEntriesQuery = {
                     id: string;
                 } | undefined | null;
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
         entries: {
             edges: Array<{
@@ -21889,6 +24078,144 @@ export type ReplaySessionEntriesQuery = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 };
             }>;
             pageInfo: {
@@ -22051,6 +24378,144 @@ export type ReplaySessionCollectionsQuery = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     } | undefined | null;
                     collection: {
                         id: string;
@@ -22185,6 +24650,144 @@ export type ReplaySessionCollectionsQuery = {
                                     id: string;
                                 } | undefined | null;
                             } | undefined | null;
+                        } | {
+                            __typename: "ReplayEntryWs";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            session: {
+                                id: string;
+                            };
+                            http: {
+                                __typename: "ReplayEntryHttp";
+                                id: string;
+                                error?: string | undefined | null;
+                                createdAt: Date;
+                                raw: string;
+                                session: {
+                                    id: string;
+                                };
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                draft?: {
+                                    __typename: "ReplayEntryHttpDraft";
+                                    raw: string;
+                                    editorState: string;
+                                    connection: {
+                                        __typename: "ConnectionInfo";
+                                        host: string;
+                                        port: number;
+                                        isTLS: boolean;
+                                        SNI?: string | undefined | null;
+                                    };
+                                    settings: {
+                                        placeholders: Array<{
+                                            __typename: "ReplayPlaceholder";
+                                            inputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            outputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            preprocessors: Array<{
+                                                __typename: "ReplayPreprocessor";
+                                                options: {
+                                                    __typename: "ReplayEnvironmentPreprocessor";
+                                                    variableName: string;
+                                                } | {
+                                                    __typename: "ReplayPrefixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplaySuffixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplayUrlEncodePreprocessor";
+                                                    charset?: string | undefined | null;
+                                                    nonAscii: boolean;
+                                                } | {
+                                                    __typename: "ReplayWorkflowPreprocessor";
+                                                    id: string;
+                                                };
+                                            }>;
+                                        }>;
+                                    };
+                                } | undefined | null;
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                                request?: {
+                                    __typename: "Request";
+                                    id: string;
+                                    host: string;
+                                    port: number;
+                                    path: string;
+                                    query: string;
+                                    method: string;
+                                    edited: boolean;
+                                    isTls: boolean;
+                                    sni?: string | undefined | null;
+                                    length: number;
+                                    alteration: Alteration;
+                                    fileExtension?: string | undefined | null;
+                                    source: Source;
+                                    createdAt: Date;
+                                    metadata: {
+                                        __typename: "RequestMetadata";
+                                        id: string;
+                                        color?: string | undefined | null;
+                                    };
+                                    response?: {
+                                        __typename: "Response";
+                                        id: string;
+                                        statusCode: number;
+                                        roundtripTime: number;
+                                        length: number;
+                                        createdAt: Date;
+                                        alteration: Alteration;
+                                        edited: boolean;
+                                    } | undefined | null;
+                                    stream?: {
+                                        id: string;
+                                    } | undefined | null;
+                                } | undefined | null;
+                            };
                         }>;
                     };
                     settings?: {
@@ -22366,6 +24969,144 @@ export type ClearReplayEntryDraftMutation = {
                     }>;
                 };
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
     };
 };
@@ -22540,6 +25281,144 @@ export type UpdateReplayEntryDraftMutation = {
                     }>;
                 };
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         } | undefined | null;
     };
 };
@@ -22683,6 +25562,144 @@ export type UpdateReplaySessionSettingsMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             collection: {
                 id: string;
@@ -22817,6 +25834,144 @@ export type UpdateReplaySessionSettingsMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -22971,6 +26126,144 @@ export type RenameReplaySessionCollectionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 } | undefined | null;
                 collection: {
                     id: string;
@@ -23105,6 +26398,144 @@ export type RenameReplaySessionCollectionMutation = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     }>;
                 };
                 settings?: {
@@ -23259,6 +26690,144 @@ export type CreateReplaySessionCollectionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 } | undefined | null;
                 collection: {
                     id: string;
@@ -23393,6 +26962,144 @@ export type CreateReplaySessionCollectionMutation = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     }>;
                 };
                 settings?: {
@@ -23551,6 +27258,144 @@ export type RenameReplaySessionMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             collection: {
                 id: string;
@@ -23685,6 +27530,144 @@ export type RenameReplaySessionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -23834,6 +27817,144 @@ export type SetActiveReplaySessionEntryMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             collection: {
                 id: string;
@@ -23968,6 +28089,144 @@ export type SetActiveReplaySessionEntryMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -24134,6 +28393,144 @@ export type CreateReplaySessionMutation = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     } | undefined | null;
                     collection: {
                         id: string;
@@ -24268,6 +28665,144 @@ export type CreateReplaySessionMutation = {
                                     id: string;
                                 } | undefined | null;
                             } | undefined | null;
+                        } | {
+                            __typename: "ReplayEntryWs";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            session: {
+                                id: string;
+                            };
+                            http: {
+                                __typename: "ReplayEntryHttp";
+                                id: string;
+                                error?: string | undefined | null;
+                                createdAt: Date;
+                                raw: string;
+                                session: {
+                                    id: string;
+                                };
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                draft?: {
+                                    __typename: "ReplayEntryHttpDraft";
+                                    raw: string;
+                                    editorState: string;
+                                    connection: {
+                                        __typename: "ConnectionInfo";
+                                        host: string;
+                                        port: number;
+                                        isTLS: boolean;
+                                        SNI?: string | undefined | null;
+                                    };
+                                    settings: {
+                                        placeholders: Array<{
+                                            __typename: "ReplayPlaceholder";
+                                            inputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            outputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            preprocessors: Array<{
+                                                __typename: "ReplayPreprocessor";
+                                                options: {
+                                                    __typename: "ReplayEnvironmentPreprocessor";
+                                                    variableName: string;
+                                                } | {
+                                                    __typename: "ReplayPrefixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplaySuffixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplayUrlEncodePreprocessor";
+                                                    charset?: string | undefined | null;
+                                                    nonAscii: boolean;
+                                                } | {
+                                                    __typename: "ReplayWorkflowPreprocessor";
+                                                    id: string;
+                                                };
+                                            }>;
+                                        }>;
+                                    };
+                                } | undefined | null;
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                                request?: {
+                                    __typename: "Request";
+                                    id: string;
+                                    host: string;
+                                    port: number;
+                                    path: string;
+                                    query: string;
+                                    method: string;
+                                    edited: boolean;
+                                    isTls: boolean;
+                                    sni?: string | undefined | null;
+                                    length: number;
+                                    alteration: Alteration;
+                                    fileExtension?: string | undefined | null;
+                                    source: Source;
+                                    createdAt: Date;
+                                    metadata: {
+                                        __typename: "RequestMetadata";
+                                        id: string;
+                                        color?: string | undefined | null;
+                                    };
+                                    response?: {
+                                        __typename: "Response";
+                                        id: string;
+                                        statusCode: number;
+                                        roundtripTime: number;
+                                        length: number;
+                                        createdAt: Date;
+                                        alteration: Alteration;
+                                        edited: boolean;
+                                    } | undefined | null;
+                                    stream?: {
+                                        id: string;
+                                    } | undefined | null;
+                                } | undefined | null;
+                            };
                         }>;
                     };
                     settings?: {
@@ -24405,6 +28940,144 @@ export type CreateReplaySessionMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             entries: {
                 nodes: Array<{
@@ -24536,6 +29209,144 @@ export type CreateReplaySessionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -24685,6 +29496,144 @@ export type MoveReplaySessionMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             collection: {
                 id: string;
@@ -24819,6 +29768,144 @@ export type MoveReplaySessionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -25002,6 +30089,144 @@ export type StartReplayTaskMutation = {
                         }>;
                     };
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             };
         } | undefined | null;
         error?: {
@@ -25166,6 +30391,144 @@ export type RankReplaySessionMutation = {
                         id: string;
                     } | undefined | null;
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             } | undefined | null;
             collection: {
                 id: string;
@@ -25300,6 +30663,144 @@ export type RankReplaySessionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 }>;
             };
             settings?: {
@@ -25466,6 +30967,144 @@ export type RankReplaySessionCollectionMutation = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 } | undefined | null;
                 collection: {
                     id: string;
@@ -25600,6 +31239,144 @@ export type RankReplaySessionCollectionMutation = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     }>;
                 };
                 settings?: {
@@ -25762,6 +31539,144 @@ export type CreatedReplaySessionSubscription = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 } | undefined | null;
                 collection: {
                     id: string;
@@ -25896,6 +31811,144 @@ export type CreatedReplaySessionSubscription = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     }>;
                 };
                 settings?: {
@@ -26047,6 +32100,144 @@ export type UpdatedReplaySessionSubscription = {
                             id: string;
                         } | undefined | null;
                     } | undefined | null;
+                } | {
+                    __typename: "ReplayEntryWs";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    session: {
+                        id: string;
+                    };
+                    http: {
+                        __typename: "ReplayEntryHttp";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        raw: string;
+                        session: {
+                            id: string;
+                        };
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        draft?: {
+                            __typename: "ReplayEntryHttpDraft";
+                            raw: string;
+                            editorState: string;
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                        } | undefined | null;
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                        request?: {
+                            __typename: "Request";
+                            id: string;
+                            host: string;
+                            port: number;
+                            path: string;
+                            query: string;
+                            method: string;
+                            edited: boolean;
+                            isTls: boolean;
+                            sni?: string | undefined | null;
+                            length: number;
+                            alteration: Alteration;
+                            fileExtension?: string | undefined | null;
+                            source: Source;
+                            createdAt: Date;
+                            metadata: {
+                                __typename: "RequestMetadata";
+                                id: string;
+                                color?: string | undefined | null;
+                            };
+                            response?: {
+                                __typename: "Response";
+                                id: string;
+                                statusCode: number;
+                                roundtripTime: number;
+                                length: number;
+                                createdAt: Date;
+                                alteration: Alteration;
+                                edited: boolean;
+                            } | undefined | null;
+                            stream?: {
+                                id: string;
+                            } | undefined | null;
+                        } | undefined | null;
+                    };
                 } | undefined | null;
                 collection: {
                     id: string;
@@ -26181,6 +32372,144 @@ export type UpdatedReplaySessionSubscription = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     }>;
                 };
                 settings?: {
@@ -26344,6 +32673,144 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     } | undefined | null;
                     collection: {
                         id: string;
@@ -26478,6 +32945,144 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     id: string;
                                 } | undefined | null;
                             } | undefined | null;
+                        } | {
+                            __typename: "ReplayEntryWs";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            session: {
+                                id: string;
+                            };
+                            http: {
+                                __typename: "ReplayEntryHttp";
+                                id: string;
+                                error?: string | undefined | null;
+                                createdAt: Date;
+                                raw: string;
+                                session: {
+                                    id: string;
+                                };
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                draft?: {
+                                    __typename: "ReplayEntryHttpDraft";
+                                    raw: string;
+                                    editorState: string;
+                                    connection: {
+                                        __typename: "ConnectionInfo";
+                                        host: string;
+                                        port: number;
+                                        isTLS: boolean;
+                                        SNI?: string | undefined | null;
+                                    };
+                                    settings: {
+                                        placeholders: Array<{
+                                            __typename: "ReplayPlaceholder";
+                                            inputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            outputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            preprocessors: Array<{
+                                                __typename: "ReplayPreprocessor";
+                                                options: {
+                                                    __typename: "ReplayEnvironmentPreprocessor";
+                                                    variableName: string;
+                                                } | {
+                                                    __typename: "ReplayPrefixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplaySuffixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplayUrlEncodePreprocessor";
+                                                    charset?: string | undefined | null;
+                                                    nonAscii: boolean;
+                                                } | {
+                                                    __typename: "ReplayWorkflowPreprocessor";
+                                                    id: string;
+                                                };
+                                            }>;
+                                        }>;
+                                    };
+                                } | undefined | null;
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                                request?: {
+                                    __typename: "Request";
+                                    id: string;
+                                    host: string;
+                                    port: number;
+                                    path: string;
+                                    query: string;
+                                    method: string;
+                                    edited: boolean;
+                                    isTls: boolean;
+                                    sni?: string | undefined | null;
+                                    length: number;
+                                    alteration: Alteration;
+                                    fileExtension?: string | undefined | null;
+                                    source: Source;
+                                    createdAt: Date;
+                                    metadata: {
+                                        __typename: "RequestMetadata";
+                                        id: string;
+                                        color?: string | undefined | null;
+                                    };
+                                    response?: {
+                                        __typename: "Response";
+                                        id: string;
+                                        statusCode: number;
+                                        roundtripTime: number;
+                                        length: number;
+                                        createdAt: Date;
+                                        alteration: Alteration;
+                                        edited: boolean;
+                                    } | undefined | null;
+                                    stream?: {
+                                        id: string;
+                                    } | undefined | null;
+                                } | undefined | null;
+                            };
                         }>;
                     };
                     settings?: {
@@ -26634,6 +33239,144 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 id: string;
                             } | undefined | null;
                         } | undefined | null;
+                    } | {
+                        __typename: "ReplayEntryWs";
+                        id: string;
+                        error?: string | undefined | null;
+                        createdAt: Date;
+                        session: {
+                            id: string;
+                        };
+                        http: {
+                            __typename: "ReplayEntryHttp";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            raw: string;
+                            session: {
+                                id: string;
+                            };
+                            connection: {
+                                __typename: "ConnectionInfo";
+                                host: string;
+                                port: number;
+                                isTLS: boolean;
+                                SNI?: string | undefined | null;
+                            };
+                            draft?: {
+                                __typename: "ReplayEntryHttpDraft";
+                                raw: string;
+                                editorState: string;
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                            } | undefined | null;
+                            settings: {
+                                placeholders: Array<{
+                                    __typename: "ReplayPlaceholder";
+                                    inputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    outputRange: {
+                                        start: number;
+                                        end: number;
+                                    };
+                                    preprocessors: Array<{
+                                        __typename: "ReplayPreprocessor";
+                                        options: {
+                                            __typename: "ReplayEnvironmentPreprocessor";
+                                            variableName: string;
+                                        } | {
+                                            __typename: "ReplayPrefixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplaySuffixPreprocessor";
+                                            value: string;
+                                        } | {
+                                            __typename: "ReplayUrlEncodePreprocessor";
+                                            charset?: string | undefined | null;
+                                            nonAscii: boolean;
+                                        } | {
+                                            __typename: "ReplayWorkflowPreprocessor";
+                                            id: string;
+                                        };
+                                    }>;
+                                }>;
+                            };
+                            request?: {
+                                __typename: "Request";
+                                id: string;
+                                host: string;
+                                port: number;
+                                path: string;
+                                query: string;
+                                method: string;
+                                edited: boolean;
+                                isTls: boolean;
+                                sni?: string | undefined | null;
+                                length: number;
+                                alteration: Alteration;
+                                fileExtension?: string | undefined | null;
+                                source: Source;
+                                createdAt: Date;
+                                metadata: {
+                                    __typename: "RequestMetadata";
+                                    id: string;
+                                    color?: string | undefined | null;
+                                };
+                                response?: {
+                                    __typename: "Response";
+                                    id: string;
+                                    statusCode: number;
+                                    roundtripTime: number;
+                                    length: number;
+                                    createdAt: Date;
+                                    alteration: Alteration;
+                                    edited: boolean;
+                                } | undefined | null;
+                                stream?: {
+                                    id: string;
+                                } | undefined | null;
+                            } | undefined | null;
+                        };
                     } | undefined | null;
                     collection: {
                         id: string;
@@ -26768,6 +33511,144 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     id: string;
                                 } | undefined | null;
                             } | undefined | null;
+                        } | {
+                            __typename: "ReplayEntryWs";
+                            id: string;
+                            error?: string | undefined | null;
+                            createdAt: Date;
+                            session: {
+                                id: string;
+                            };
+                            http: {
+                                __typename: "ReplayEntryHttp";
+                                id: string;
+                                error?: string | undefined | null;
+                                createdAt: Date;
+                                raw: string;
+                                session: {
+                                    id: string;
+                                };
+                                connection: {
+                                    __typename: "ConnectionInfo";
+                                    host: string;
+                                    port: number;
+                                    isTLS: boolean;
+                                    SNI?: string | undefined | null;
+                                };
+                                draft?: {
+                                    __typename: "ReplayEntryHttpDraft";
+                                    raw: string;
+                                    editorState: string;
+                                    connection: {
+                                        __typename: "ConnectionInfo";
+                                        host: string;
+                                        port: number;
+                                        isTLS: boolean;
+                                        SNI?: string | undefined | null;
+                                    };
+                                    settings: {
+                                        placeholders: Array<{
+                                            __typename: "ReplayPlaceholder";
+                                            inputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            outputRange: {
+                                                start: number;
+                                                end: number;
+                                            };
+                                            preprocessors: Array<{
+                                                __typename: "ReplayPreprocessor";
+                                                options: {
+                                                    __typename: "ReplayEnvironmentPreprocessor";
+                                                    variableName: string;
+                                                } | {
+                                                    __typename: "ReplayPrefixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplaySuffixPreprocessor";
+                                                    value: string;
+                                                } | {
+                                                    __typename: "ReplayUrlEncodePreprocessor";
+                                                    charset?: string | undefined | null;
+                                                    nonAscii: boolean;
+                                                } | {
+                                                    __typename: "ReplayWorkflowPreprocessor";
+                                                    id: string;
+                                                };
+                                            }>;
+                                        }>;
+                                    };
+                                } | undefined | null;
+                                settings: {
+                                    placeholders: Array<{
+                                        __typename: "ReplayPlaceholder";
+                                        inputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        outputRange: {
+                                            start: number;
+                                            end: number;
+                                        };
+                                        preprocessors: Array<{
+                                            __typename: "ReplayPreprocessor";
+                                            options: {
+                                                __typename: "ReplayEnvironmentPreprocessor";
+                                                variableName: string;
+                                            } | {
+                                                __typename: "ReplayPrefixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplaySuffixPreprocessor";
+                                                value: string;
+                                            } | {
+                                                __typename: "ReplayUrlEncodePreprocessor";
+                                                charset?: string | undefined | null;
+                                                nonAscii: boolean;
+                                            } | {
+                                                __typename: "ReplayWorkflowPreprocessor";
+                                                id: string;
+                                            };
+                                        }>;
+                                    }>;
+                                };
+                                request?: {
+                                    __typename: "Request";
+                                    id: string;
+                                    host: string;
+                                    port: number;
+                                    path: string;
+                                    query: string;
+                                    method: string;
+                                    edited: boolean;
+                                    isTls: boolean;
+                                    sni?: string | undefined | null;
+                                    length: number;
+                                    alteration: Alteration;
+                                    fileExtension?: string | undefined | null;
+                                    source: Source;
+                                    createdAt: Date;
+                                    metadata: {
+                                        __typename: "RequestMetadata";
+                                        id: string;
+                                        color?: string | undefined | null;
+                                    };
+                                    response?: {
+                                        __typename: "Response";
+                                        id: string;
+                                        statusCode: number;
+                                        roundtripTime: number;
+                                        length: number;
+                                        createdAt: Date;
+                                        alteration: Alteration;
+                                        edited: boolean;
+                                    } | undefined | null;
+                                    stream?: {
+                                        id: string;
+                                    } | undefined | null;
+                                } | undefined | null;
+                            };
                         }>;
                     };
                     settings?: {
@@ -28466,9 +35347,14 @@ export type CreatedStreamWsMessageSubscription = {
 };
 export type UpdatedStreamWsMessageSubscriptionVariables = Exact<{
     order: StreamWsMessageOrderInput;
+    filter?: InputMaybe<StreamQlInput>;
 }>;
 export type UpdatedStreamWsMessageSubscription = {
     updatedStreamWsMessage: {
+        __typename: "HiddenStreamWsMessage";
+        hiddenId: string;
+    } | {
+        __typename: "UpdatedStreamWsMessage";
         snapshot: number;
         messageEdge: {
             __typename: "StreamWsMessageEdge";
@@ -28719,6 +35605,144 @@ export type GetTasksQuery = {
                     }>;
                 };
             } | undefined | null;
+        } | {
+            __typename: "ReplayEntryWs";
+            id: string;
+            error?: string | undefined | null;
+            createdAt: Date;
+            session: {
+                id: string;
+            };
+            http: {
+                __typename: "ReplayEntryHttp";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                raw: string;
+                session: {
+                    id: string;
+                };
+                connection: {
+                    __typename: "ConnectionInfo";
+                    host: string;
+                    port: number;
+                    isTLS: boolean;
+                    SNI?: string | undefined | null;
+                };
+                draft?: {
+                    __typename: "ReplayEntryHttpDraft";
+                    raw: string;
+                    editorState: string;
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                } | undefined | null;
+                settings: {
+                    placeholders: Array<{
+                        __typename: "ReplayPlaceholder";
+                        inputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        outputRange: {
+                            start: number;
+                            end: number;
+                        };
+                        preprocessors: Array<{
+                            __typename: "ReplayPreprocessor";
+                            options: {
+                                __typename: "ReplayEnvironmentPreprocessor";
+                                variableName: string;
+                            } | {
+                                __typename: "ReplayPrefixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplaySuffixPreprocessor";
+                                value: string;
+                            } | {
+                                __typename: "ReplayUrlEncodePreprocessor";
+                                charset?: string | undefined | null;
+                                nonAscii: boolean;
+                            } | {
+                                __typename: "ReplayWorkflowPreprocessor";
+                                id: string;
+                            };
+                        }>;
+                    }>;
+                };
+                request?: {
+                    __typename: "Request";
+                    id: string;
+                    host: string;
+                    port: number;
+                    path: string;
+                    query: string;
+                    method: string;
+                    edited: boolean;
+                    isTls: boolean;
+                    sni?: string | undefined | null;
+                    length: number;
+                    alteration: Alteration;
+                    fileExtension?: string | undefined | null;
+                    source: Source;
+                    createdAt: Date;
+                    metadata: {
+                        __typename: "RequestMetadata";
+                        id: string;
+                        color?: string | undefined | null;
+                    };
+                    response?: {
+                        __typename: "Response";
+                        id: string;
+                        statusCode: number;
+                        roundtripTime: number;
+                        length: number;
+                        createdAt: Date;
+                        alteration: Alteration;
+                        edited: boolean;
+                    } | undefined | null;
+                    stream?: {
+                        id: string;
+                    } | undefined | null;
+                } | undefined | null;
+            };
         };
     } | {
         __typename: "WorkflowTask";
@@ -28948,6 +35972,144 @@ export type StartedTaskSubscription = {
                         }>;
                     };
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             };
         } | {
             __typename: "WorkflowTask";
@@ -29162,6 +36324,144 @@ export type FinishedTaskSubscription = {
                         }>;
                     };
                 } | undefined | null;
+            } | {
+                __typename: "ReplayEntryWs";
+                id: string;
+                error?: string | undefined | null;
+                createdAt: Date;
+                session: {
+                    id: string;
+                };
+                http: {
+                    __typename: "ReplayEntryHttp";
+                    id: string;
+                    error?: string | undefined | null;
+                    createdAt: Date;
+                    raw: string;
+                    session: {
+                        id: string;
+                    };
+                    connection: {
+                        __typename: "ConnectionInfo";
+                        host: string;
+                        port: number;
+                        isTLS: boolean;
+                        SNI?: string | undefined | null;
+                    };
+                    draft?: {
+                        __typename: "ReplayEntryHttpDraft";
+                        raw: string;
+                        editorState: string;
+                        connection: {
+                            __typename: "ConnectionInfo";
+                            host: string;
+                            port: number;
+                            isTLS: boolean;
+                            SNI?: string | undefined | null;
+                        };
+                        settings: {
+                            placeholders: Array<{
+                                __typename: "ReplayPlaceholder";
+                                inputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                outputRange: {
+                                    start: number;
+                                    end: number;
+                                };
+                                preprocessors: Array<{
+                                    __typename: "ReplayPreprocessor";
+                                    options: {
+                                        __typename: "ReplayEnvironmentPreprocessor";
+                                        variableName: string;
+                                    } | {
+                                        __typename: "ReplayPrefixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplaySuffixPreprocessor";
+                                        value: string;
+                                    } | {
+                                        __typename: "ReplayUrlEncodePreprocessor";
+                                        charset?: string | undefined | null;
+                                        nonAscii: boolean;
+                                    } | {
+                                        __typename: "ReplayWorkflowPreprocessor";
+                                        id: string;
+                                    };
+                                }>;
+                            }>;
+                        };
+                    } | undefined | null;
+                    settings: {
+                        placeholders: Array<{
+                            __typename: "ReplayPlaceholder";
+                            inputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            outputRange: {
+                                start: number;
+                                end: number;
+                            };
+                            preprocessors: Array<{
+                                __typename: "ReplayPreprocessor";
+                                options: {
+                                    __typename: "ReplayEnvironmentPreprocessor";
+                                    variableName: string;
+                                } | {
+                                    __typename: "ReplayPrefixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplaySuffixPreprocessor";
+                                    value: string;
+                                } | {
+                                    __typename: "ReplayUrlEncodePreprocessor";
+                                    charset?: string | undefined | null;
+                                    nonAscii: boolean;
+                                } | {
+                                    __typename: "ReplayWorkflowPreprocessor";
+                                    id: string;
+                                };
+                            }>;
+                        }>;
+                    };
+                    request?: {
+                        __typename: "Request";
+                        id: string;
+                        host: string;
+                        port: number;
+                        path: string;
+                        query: string;
+                        method: string;
+                        edited: boolean;
+                        isTls: boolean;
+                        sni?: string | undefined | null;
+                        length: number;
+                        alteration: Alteration;
+                        fileExtension?: string | undefined | null;
+                        source: Source;
+                        createdAt: Date;
+                        metadata: {
+                            __typename: "RequestMetadata";
+                            id: string;
+                            color?: string | undefined | null;
+                        };
+                        response?: {
+                            __typename: "Response";
+                            id: string;
+                            statusCode: number;
+                            roundtripTime: number;
+                            length: number;
+                            createdAt: Date;
+                            alteration: Alteration;
+                            edited: boolean;
+                        } | undefined | null;
+                        stream?: {
+                            id: string;
+                        } | undefined | null;
+                    } | undefined | null;
+                };
             };
         } | {
             __typename: "WorkflowTask";
@@ -29178,6 +36478,8 @@ export type FinishedTaskSubscription = {
             };
         };
         error?: {
+            code: string;
+        } | {
             code: string;
         } | {
             code: string;
@@ -30617,12 +37919,13 @@ export declare const ReplayPreprocessorFullFragmentDoc = "\n    fragment replayP
 export declare const ReplayPlaceholderFullFragmentDoc = "\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    ";
 export declare const ReplayEntryHttpDraftMetaFragmentDoc = "\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    ";
 export declare const ReplayEntryHttpMetaFragmentDoc = "\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ReplaySessionMetaHttpFragmentDoc = "\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    ";
+export declare const ReplayEntryWsMetaFragmentDoc = "\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const ReplaySessionMetaHttpFragmentDoc = "\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    ";
 export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    ";
 export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    ";
 export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
 export declare const ReplayEntryHttpFullFragmentDoc = "\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    ";
-export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    ";
+export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
 export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
@@ -30655,6 +37958,7 @@ export declare const SendAssistantMessageDocument = "\n    mutation sendAssistan
 export declare const CreateAssistantSessionDocument = "\n    mutation createAssistantSession($input: CreateAssistantSessionInput!) {\n  createAssistantSession(input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const DeleteAssistantSessionDocument = "\n    mutation deleteAssistantSession($id: ID!) {\n  deleteAssistantSession(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const RenameAssistantSessionDocument = "\n    mutation renameAssistantSession($id: ID!, $name: String!) {\n  renameAssistantSession(id: $id, name: $name) {\n    session {\n      ...assistantSessionMeta\n    }\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
+export declare const CreatedAssistantSessionDocument = "\n    subscription createdAssistantSession {\n  createdAssistantSession {\n    sessionEdge {\n      cursor\n      node {\n        ...assistantSessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const CreatedAssistantMessageDocument = "\n    subscription createdAssistantMessage {\n  createdAssistantMessage {\n    messageEdge {\n      cursor\n      node {\n        ...assistantMessageFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const CreatedAssistantMessageTaskDocument = "\n    subscription createdAssistantMessageTask {\n  createdAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const UpdatedAssistantMessageTaskDocument = "\n    subscription updatedAssistantMessageTask {\n  updatedAssistantMessageTask {\n    task {\n      ...assistantMessageTaskFull\n    }\n  }\n}\n    \n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    \n\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    \n\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    \n\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
@@ -30842,6 +38146,7 @@ export declare const CreatedPluginEventDocument = "\n    subscription createdPlu
 export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
+export declare const SelectedProjectDocument = "\n    subscription selectedProject {\n  selectedProject {\n    currentProject {\n      project {\n        id\n      }\n    }\n  }\n}\n    ";
 export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -30850,30 +38155,30 @@ export declare const PersistProjectDocument = "\n    mutation persistProject($id
 export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryHttpMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryHttpMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryHttpMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryHttpMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!) {\n  clearReplayEntryDraft(id: $id) {\n    entry {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!) {\n  replayEntry(id: $id) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ... on ReplayEntryHttp {\n              ...replayEntryHttpMeta\n            }\n            ... on ReplayEntryWs {\n              ...replayEntryWsMeta\n            }\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ... on ReplayEntryHttp {\n              ...replayEntryHttpMeta\n            }\n            ... on ReplayEntryWs {\n              ...replayEntryWsMeta\n            }\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!) {\n  clearReplayEntryDraft(id: $id) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryHttpMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryHttpMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpMeta\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpMeta\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQLInput) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
@@ -30924,12 +38229,12 @@ export declare const WebsocketMessageEditDocument = "\n    query websocketMessag
 export declare const StartDeleteStreamWsMessageTaskDocument = "\n    mutation startDeleteStreamWsMessageTask($input: StartDeleteStreamWsMessageTaskInput!) {\n  startDeleteStreamWsMessageTask(input: $input) {\n    task {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
 export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!) {\n  updatedStreamWsMessage {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!, $filter: StreamQLInput) {\n  updatedStreamWsMessage(filter: $filter) {\n    __typename\n    ... on UpdatedStreamWsMessage {\n      snapshot\n      messageEdge(order: $order) {\n        ...streamWsMessageEdgeMeta\n      }\n    }\n    ... on HiddenStreamWsMessage {\n      hiddenId\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const DeletedStreamWsMessagesDocument = "\n    subscription deletedStreamWsMessages {\n  deletedStreamWsMessages {\n    deletedIds\n  }\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWsMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
 export declare const UpstreamsDocument = "\n    query upstreams {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n  upstreamPlugins {\n    ...upstreamPluginFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
@@ -30987,6 +38292,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createAssistantSession(variables: CreateAssistantSessionMutationVariables, options?: C): Promise<CreateAssistantSessionMutation>;
     deleteAssistantSession(variables: DeleteAssistantSessionMutationVariables, options?: C): Promise<DeleteAssistantSessionMutation>;
     renameAssistantSession(variables: RenameAssistantSessionMutationVariables, options?: C): Promise<RenameAssistantSessionMutation>;
+    createdAssistantSession(variables?: CreatedAssistantSessionSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantSessionSubscription>;
     createdAssistantMessage(variables?: CreatedAssistantMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageSubscription>;
     createdAssistantMessageTask(variables?: CreatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<CreatedAssistantMessageTaskSubscription>;
     updatedAssistantMessageTask(variables?: UpdatedAssistantMessageTaskSubscriptionVariables, options?: C): AsyncIterable<UpdatedAssistantMessageTaskSubscription>;
@@ -31174,6 +38480,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     createdProject(variables?: CreatedProjectSubscriptionVariables, options?: C): AsyncIterable<CreatedProjectSubscription>;
     updatedProject(variables?: UpdatedProjectSubscriptionVariables, options?: C): AsyncIterable<UpdatedProjectSubscription>;
     deletedProject(variables?: DeletedProjectSubscriptionVariables, options?: C): AsyncIterable<DeletedProjectSubscription>;
+    selectedProject(variables?: SelectedProjectSubscriptionVariables, options?: C): AsyncIterable<SelectedProjectSubscription>;
     createProject(variables: CreateProjectMutationVariables, options?: C): Promise<CreateProjectMutation>;
     selectProject(variables: SelectProjectMutationVariables, options?: C): Promise<SelectProjectMutation>;
     deleteProject(variables: DeleteProjectMutationVariables, options?: C): Promise<DeleteProjectMutation>;

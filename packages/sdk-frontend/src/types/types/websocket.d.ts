@@ -17,7 +17,7 @@ export type StreamWsMessageMeta = Prettify<As<"StreamWsMessageMeta"> & {
         id: ID;
         length: number;
         direction: "CLIENT" | "SERVER";
-        format: "BINARY" | "TEXT";
+        format: "BINARY" | "CLOSE" | "PING" | "PONG" | "TEXT";
         createdAt: Date;
     };
 }>;

@@ -20,6 +20,7 @@ export {
 } from "./authorization.js";
 export { CloudUserError } from "./cloud.js";
 export { InstanceNotReadyError } from "./health.js";
+export { WorkflowUserError } from "./workflow.js";
 export {
   PluginFunctionCallError,
   PluginUserError,
