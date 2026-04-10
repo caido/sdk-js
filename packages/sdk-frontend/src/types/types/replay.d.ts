@@ -1,29 +1,6 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type ID, type Selection } from "./utils";
 /**
- * The connection information to use for the request.
- * @category Replay
- */
-type ConnectionInfo = {
-    /**
-     * The host to use for the request.
-     */
-    host: string;
-    /**
-     * The port to use for the request.
-     */
-    port: number;
-    /**
-     * Whether the request is TLS.
-     */
-    isTLS: boolean;
-    /**
-     * The SNI to use for the request.
-     * If not provided, the SNI will be inferred from the host.
-     */
-    SNI?: string;
-};
-/**
  * The slots in the Replay UI.
  * @category Replay
  */
@@ -132,6 +109,49 @@ export type ReplayCollection = {
  */
 export type SendRequestOptions = {
     /**
+     * The connection information to use for the request.
+     */
+    connectionInfo: {
+        /**
+         * The host to use for the request.
+         */
+        host: string;
+        /**
+         * The port to use for the request.
+         */
+        port: number;
+        /**
+         * Whether the request is TLS.
+         */
+        isTLS: boolean;
+        /**
+         * The SNI to use for the request.
+         * If not provided, the SNI will be inferred from the host.
+         */
+        SNI?: string;
+    };
+    /**
+     * The raw request to send.
+     */
+    raw: string;
+    /**
+     * Whether to update the content length automatically to match the body.
+     * Defaults to true.
+     */
+    updateContentLength?: boolean;
+    /**
+     * Whether to force close the connection by setting Connection: close header.
+     * Defaults to true.
+     */
+    connectionClose?: boolean;
+    /**
+     * Whether to overwrite the editor's draft content.
+     * If true, draft content will be overwritten with the new request.
+     * If false, the draft will be kept.
+     * Defaults to true.
+     */
+    overwriteDraft?: boolean;
+    /**
      * Whether to send the request in the background without updating the UI.
      * If true, the request will not update the UI.
      * If false, the UI will be updated to display the session and the new request.
@@ -163,7 +183,7 @@ export type SendRequestOptions = {
 export type RequestSource = {
     type: "Raw";
     raw: string;
-    connectionInfo: ConnectionInfo;
+    connectionInfo: SendRequestOptions["connectionInfo"];
 } | {
     type: "ID";
     id: string;

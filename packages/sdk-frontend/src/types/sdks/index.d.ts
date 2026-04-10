@@ -29,7 +29,6 @@ import type { SidebarSDK } from "./sidebar";
 import type { SitemapSDK } from "./sitemap";
 import type { StorageSDK } from "./storage";
 import type { UISDK } from "./ui";
-import type { WebsocketSDK } from "./websocket";
 import type { WindowSDK } from "./window";
 import type { WorkflowSDK } from "./workflows";
 /**
@@ -161,10 +160,6 @@ export type API<T extends BackendEndpoints = Record<string, never>, E extends Ba
      * Utilities to interact with the settings page.
      */
     settings: SettingsSDK;
-    /**
-     * Utilities to interact with the Websocket page.
-     */
-    websocket: WebsocketSDK;
     /**
      * @private
      * Utilities to track analytics events.

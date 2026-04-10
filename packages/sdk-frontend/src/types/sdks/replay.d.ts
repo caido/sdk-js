@@ -159,12 +159,18 @@ export type ReplaySDK = {
      * This will open the session tab if not already open, set it as the selected session, and display the specified entry.
      * @param sessionId The ID of the session containing the entry.
      * @param entryId The ID of the entry to show.
+     * @param options The options for showing the entry.
+     * @param options.overwriteDraft Whether to overwrite the request draft. If true, the draft will be removed and the entry's raw request will be shown. If false, the draft will be kept.
      * @example
      * ```ts
-     * await sdk.replay.showEntry(sessionId, entryId);
+     * await sdk.replay.showEntry(sessionId, entryId, {
+     *   overwriteDraft: true,
+     * });
      * ```
      */
-    showEntry: (sessionId: ID, entryId: ID) => Promise<void>;
+    showEntry: (sessionId: ID, entryId: ID, options?: {
+        overwriteDraft?: boolean;
+    }) => Promise<void>;
     /**
      * Get a replay entry by its ID.
      * @param entryId The ID of the entry to get.
