@@ -20,11 +20,28 @@ declare module "caido:plugin" {
   } from "caido:utils";
   import type { Database } from "sqlite";
 
+  type MaybePromise<T> = T | Promise<T>;
+
+  type AnyFn = (...args: any[]) => MaybePromise<any>;
+  type InvalidCallbackMessage =
+    "Your callback must respect the format (sdk: SDK, ...args: unknown[]) => MaybePromise<unknown>";
+  type ResolvedAPI<T> = T extends { api: infer A } ? A : T;
+  type APICallback<T> = T extends AnyFn
+    ? (sdk: SDK, ...args: Parameters<T>) => ReturnType<T>
+    : InvalidCallbackMessage;
+
+  type AnyVoidFn = (...args: any[]) => MaybePromise<void>;
+  type ResolvedEvents<T, Events> = T extends { events: infer A } ? A : Events;
+  type InvalidEventParametersMessage = "Invalid event parameters";
+  type EventParameters<T> = T extends AnyVoidFn
+    ? A
+    : InvalidEventParametersMessage;
+
   /**
    * The SDK for the API RPC service.
    * @category API
    */
-  export type APISDK<API = {}, Events = {}> = {
+  export type APISDK<SpecOrAPI = {}, Events = {}> = {
     /**
      * Sends an event to the frontend plugin.
      *
@@ -33,7 +50,10 @@ declare module "caido:plugin" {
      * sdk.api.send("myEvent", 5, "hello");
      * ```
      */
-    send(event: keyof Events, ...args: any[]): void;
+    send<K extends keyof ResolvedEvents<SpecOrAPI, Events>>(
+      event: K,
+      ...args: EventParameters<ResolvedEvents<SpecOrAPI, Events>[K]>
+    ): void;
 
     /**
      * Registers a new backend function for the RPC.
@@ -45,9 +65,9 @@ declare module "caido:plugin" {
      * });
      * ```
      */
-    register(
-      name: keyof API,
-      callback: (sdk: SDK, ...args: any[]) => MaybePromise<any>,
+    register<K extends keyof ResolvedAPI<SpecOrAPI>>(
+      name: K,
+      callback: APICallback<ResolvedAPI<SpecOrAPI>[K]>,
     ): void;
   };
 

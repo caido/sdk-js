@@ -3,6 +3,7 @@ minimumReleaseAgeExclude:
   - '@caido/quickjs-types'
   - '@caido/server-auth'
   - '@caido/schema-proxy'
+  - '@caido/sdk-shared'
 packages:
   - 'packages/*'
   - 'packages/server-auth/examples/*'
