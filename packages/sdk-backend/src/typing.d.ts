@@ -20,7 +20,9 @@ declare module "caido:plugin" {
   } from "caido:utils";
   import type { Database } from "sqlite";
 
-  type AnyFn = (...args: any[]) => any;
+  type MaybePromise<T> = T | Promise<T>;
+
+  type AnyFn = (...args: any[]) => MaybePromise<any>;
   type InvalidCallbackMessage =
     "Your callback must respect the format (sdk: SDK, ...args: unknown[]) => MaybePromise<unknown>";
   type ResolvedAPI<T> = T extends { api: infer A } ? A : T;
@@ -28,9 +30,10 @@ declare module "caido:plugin" {
     ? (sdk: SDK, ...args: Parameters<T>) => ReturnType<T>
     : InvalidCallbackMessage;
 
+  type AnyVoidFn = (...args: any[]) => MaybePromise<void>;
   type ResolvedEvents<T, Events> = T extends { events: infer A } ? A : Events;
   type InvalidEventParametersMessage = "Invalid event parameters";
-  type EventParameters<T> = T extends (...args: infer A) => void
+  type EventParameters<T> = T extends AnyVoidFn
     ? A
     : InvalidEventParametersMessage;
 
