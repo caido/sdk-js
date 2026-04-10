@@ -15,6 +15,21 @@ export type HTTPQL = string & {
     __httpql?: never;
 };
 /**
+ * A STREAMQL expression.
+ * @example `ws.raw.cont:"hello"`
+ * @category Utils
+ */
+export type StreamQL = string & {
+    __streamql?: never;
+};
+/**
+ * A query input.
+ * @example `"req.method.eq:'POST'"`
+ * @example `"ws.raw.cont:'hello'"`
+ * @category Utils
+ */
+export type QueryInput = HTTPQL | StreamQL;
+/**
  * A {@link https://fontawesome.com/icons|FontAwesome} icon class.
  * @example "fas fa-rocket"
  * @category Utils

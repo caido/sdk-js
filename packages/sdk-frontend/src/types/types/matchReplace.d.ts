@@ -48,7 +48,7 @@ export type Source = (typeof Source)[keyof typeof Source];
  * A discriminated union of all possible match and replace sections.
  * @category Match and Replace
  */
-export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionRequestSNI | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode;
+export type MatchReplaceSection = MatchReplaceSectionRequestAll | MatchReplaceSectionRequestBody | MatchReplaceSectionRequestFirstLine | MatchReplaceSectionRequestHeader | MatchReplaceSectionRequestMethod | MatchReplaceSectionRequestPath | MatchReplaceSectionRequestQuery | MatchReplaceSectionRequestSNI | MatchReplaceSectionResponseAll | MatchReplaceSectionResponseBody | MatchReplaceSectionResponseFirstLine | MatchReplaceSectionResponseHeader | MatchReplaceSectionResponseStatusCode | MatchReplaceSectionResponseWebsocket | MatchReplaceSectionRequestWebsocket;
 /**
  * A section for the entire request.
  * @category Match and Replace
@@ -98,6 +98,36 @@ export type MatchReplaceOperationStatusCode = KeepOperation<MatchReplaceOperatio
  */
 export type MatchReplaceOperationStatusCodeUpdate = {
     kind: "OperationStatusCodeUpdate";
+    replacer: MatchReplaceReplacer;
+};
+/**
+ * A section for the response websocket.
+ * @category Match and Replace
+ */
+export type MatchReplaceSectionResponseWebsocket = {
+    kind: "SectionResponseWebsocket";
+    operation: MatchReplaceOperationWebsocket;
+};
+/**
+ * A section for the request websocket.
+ * @category Match and Replace
+ */
+export type MatchReplaceSectionRequestWebsocket = {
+    kind: "SectionRequestWebsocket";
+    operation: MatchReplaceOperationWebsocket;
+};
+/**
+ * An operation for the response websocket section.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationWebsocket = KeepOperation<MatchReplaceOperationWebsocketRaw>;
+/**
+ * A raw operation for the response websocket section.
+ * @category Match and Replace
+ */
+export type MatchReplaceOperationWebsocketRaw = {
+    kind: "OperationWebsocketRaw";
+    matcher: MatchReplaceMatcherRaw;
     replacer: MatchReplaceReplacer;
 };
 /**
