@@ -1,6 +1,6 @@
 import type { Sdk as GraphqlSDK } from "../__generated__/graphql-sdk";
 import type { _AnalyticsSDK } from "../private/analytics";
-import { type BackendEndpoints, type BackendEvents } from "../types/backend";
+import { type BackendEndpoints, type BackendEvents, type BackendSpec } from "../types/backend";
 import type { AiSDK } from "./ai";
 import type { AssetsSDK } from "./assets";
 import type { AutomateSDK } from "./automate";
@@ -36,7 +36,7 @@ import type { WorkflowSDK } from "./workflows";
  * Utilities for frontend plugins.
  * @category SDK
  */
-export type API<T extends BackendEndpoints = Record<string, never>, E extends BackendEvents = Record<string, never>> = {
+export type API<T extends BackendEndpoints | BackendSpec = Record<string, never>, E extends BackendEvents = Record<string, never>> = {
     /**
      * Utilities to interact with the GraphQL API.
      */
