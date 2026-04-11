@@ -1,3 +1,21 @@
+import type { MaybePromise } from "@/utils/misc.js";
+
+export type PluginPackageSpec = {
+  manifestId: string;
+  api: Record<string, (...args: any[]) => MaybePromise<any>>;
+  events: Record<string, (...args: any[]) => MaybePromise<void>>;
+};
+
+/**
+ * Client-side callable surface for a plugin package’s `api` map: each backend
+ * function becomes `(...args) => Promise<Awaited<return>>` on the package handle.
+ */
+export type PluginPackageApiCallers<T extends PluginPackageSpec> = {
+  [K in keyof T["api"]]: T["api"][K] extends (...args: infer Args) => infer Ret
+    ? (...args: Args) => Promise<Awaited<Ret>>
+    : never;
+};
+
 export type InstallPluginPackageInput = {
   source:
     | {

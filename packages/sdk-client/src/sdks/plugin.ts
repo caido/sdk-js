@@ -2,7 +2,6 @@ import { NotFoundUserError, PluginFunctionCallError } from "@/errors/index.js";
 import {
   type GraphQLClient,
   InstallPluginPackageDocument,
-  type InstallPluginPackageInput,
   type PluginPackageMetaFragment,
   PluginPackagesDocument,
 } from "@/graphql/index.js";
@@ -15,11 +14,27 @@ import type {
   Plugin,
   PluginBackend,
   PluginFrontend,
+  PluginPackageApiCallers,
+  PluginPackageSpec,
   PluginWorkflow,
 } from "@/types/plugin.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import type { Json } from "@/utils/json.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+
+type InstallPluginPackageInput<T extends PluginPackageSpec> = {
+  force?: boolean;
+  source: PluginPackageSource<T>;
+};
+
+type PluginPackageSource<T extends PluginPackageSpec> =
+  | { file: File; manifestId?: never; url?: never }
+  | {
+      file?: never;
+      manifestId: T extends never ? string : T["manifestId"];
+      url?: never;
+    }
+  | { file?: never; manifestId?: never; url: string };
 
 /**
  * Higher-level SDK for plugin-related operations.
@@ -33,7 +48,14 @@ export class PluginSDK {
     this.rest = rest;
   }
 
-  async pluginPackage(manifestId: string): Promise<PluginPackage | undefined> {
+  /**
+   * Returns an installed package handle.
+   *
+   * Pass a {@link PluginPackageSpec} to get improved type safety.
+   */
+  async pluginPackage<T extends PluginPackageSpec = never>(
+    manifestId: T extends never ? string : T["manifestId"],
+  ): Promise<PluginPackageHandle<T> | undefined> {
     const result = await this.graphql.query(PluginPackagesDocument, {});
 
     const pluginPackage = result.pluginPackages.find(
@@ -43,7 +65,7 @@ export class PluginSDK {
       return undefined;
     }
 
-    return new PluginPackage(this.rest, pluginPackage);
+    return createPluginPackage<T>(this.rest, pluginPackage);
   }
 
   /**
@@ -52,17 +74,19 @@ export class PluginSDK {
    * @example
    * ```typescript
    * // Install from manifest ID
-   * const plugin = await client.plugin.install({ manifestId: "com.example.plugin" });
+   * const plugin = await client.plugin.install({ manifestId: "quickssrf" });
    *
    * // Install from file
    * const file = new File([buffer], "plugin.zip", { type: "application/zip" });
    * const plugin = await client.plugin.install({ file });
    *
    * // Force install
-   * const plugin = await client.plugin.install({ manifestId: "com.example.plugin", force: true });
+   * const plugin = await client.plugin.install({ manifestId: "quickssrf", force: true });
    * ```
    */
-  async install(options: InstallPluginPackageInput): Promise<PluginPackage> {
+  async install<T extends PluginPackageSpec = never>(
+    options: InstallPluginPackageInput<T>,
+  ): Promise<PluginPackageHandle<T>> {
     const source = isPresent(options.source.file)
       ? { file: options.source.file }
       : { manifestId: options.source.manifestId! };
@@ -80,8 +104,38 @@ export class PluginSDK {
       handleGraphQLError(payload.error);
     }
 
-    return new PluginPackage(this.rest, payload.package!);
+    return createPluginPackage<T>(this.rest, payload.package!);
   }
+}
+
+export type PluginPackageHandle<T extends PluginPackageSpec> = PluginPackage &
+  PluginPackageApiCallers<T>;
+
+const PROMISE_LIKE_KEYS = new Set(["then", "catch", "finally"]);
+
+function createPluginPackage<T extends PluginPackageSpec>(
+  rest: RestClient,
+  definition: PluginPackageMetaFragment,
+): PluginPackageHandle<T> {
+  const pkg = new PluginPackage(rest, definition);
+  return new Proxy(pkg, {
+    get(target, prop, _receiver) {
+      if (typeof prop === "string" && PROMISE_LIKE_KEYS.has(prop)) {
+        return undefined;
+      }
+      if (prop in target) {
+        return Reflect.get(target, prop, target);
+      }
+      if (typeof prop !== "string") {
+        return undefined;
+      }
+      return (...args: Array<Json>) =>
+        target.callFunction({
+          name: prop,
+          arguments: args,
+        });
+    },
+  }) as PluginPackageHandle<T>;
 }
 
 type CallFunctionInput = {
