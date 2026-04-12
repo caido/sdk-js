@@ -5,16 +5,34 @@ import {
   FilterPresetDocument,
   FilterPresetsDocument,
   type GraphQLClient,
+  type QueryInput,
   UpdateFilterPresetDocument,
 } from "@/graphql/index.js";
-import type {
-  CreateFilterPresetOptions,
-  FilterPreset,
-  ID,
-  UpdateFilterPresetOptions,
+import {
+  type CreateFilterPresetOptions,
+  FilterClauseKind,
+  type FilterPreset,
+  type ID,
+  type UpdateFilterPresetOptions,
 } from "@/types/index.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+
+const mapToFilterPresetClause = (
+  code: string,
+  kind?: FilterClauseKind,
+): QueryInput => {
+  switch (kind ?? FilterClauseKind.HTTPQL) {
+    case FilterClauseKind.HTTPQL:
+      return {
+        HTTPQL: { code },
+      };
+    case FilterClauseKind.StreamQL:
+      return {
+        streamQL: { code },
+      };
+  }
+};
 
 /**
  * Higher-level SDK for filter preset-related operations.
@@ -57,7 +75,7 @@ export class FilterSDK {
       input: {
         name: options.name,
         alias: options.alias,
-        clause: options.clause,
+        clause: mapToFilterPresetClause(options.clause, options.kind),
       },
     });
 
@@ -82,7 +100,7 @@ export class FilterSDK {
       input: {
         name: options.name,
         alias: options.alias,
-        clause: options.clause,
+        clause: mapToFilterPresetClause(options.clause, options.kind),
       },
     });
 

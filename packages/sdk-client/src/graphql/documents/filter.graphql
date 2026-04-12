@@ -1,8 +1,25 @@
+fragment HTTPQLQueryFull on HTTPQL {
+  __typename
+  code
+}
+
+fragment StreamQLQueryFull on StreamQL {
+  __typename
+  code
+}
+
 fragment FilterPresetFull on FilterPreset {
-    id
-    name
-    alias
-    clause
+  id
+  name
+  alias
+  clause {
+    ... on HTTPQL {
+      ...HTTPQLQueryFull
+    }
+    ... on StreamQL {
+      ...StreamQLQueryFull
+    }
+  }
 }
 
 query FilterPresets {

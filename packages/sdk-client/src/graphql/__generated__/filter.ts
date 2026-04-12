@@ -1,11 +1,20 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type HttpqlQueryFullFragment = { __typename: "HTTPQL"; code: string };
+
+export type StreamQlQueryFullFragment = {
+  __typename: "StreamQL";
+  code: string;
+};
+
 export type FilterPresetFullFragment = {
   id: string;
   name: string;
   alias: string;
-  clause: string;
+  clause:
+    | { __typename: "HTTPQL"; code: string }
+    | { __typename: "StreamQL"; code: string };
 };
 
 export type FilterPresetsQueryVariables = Types.Exact<{ [key: string]: never }>;
@@ -15,7 +24,9 @@ export type FilterPresetsQuery = {
     id: string;
     name: string;
     alias: string;
-    clause: string;
+    clause:
+      | { __typename: "HTTPQL"; code: string }
+      | { __typename: "StreamQL"; code: string };
   }>;
 };
 
@@ -25,7 +36,14 @@ export type FilterPresetQueryVariables = Types.Exact<{
 
 export type FilterPresetQuery = {
   filterPreset?:
-    | { id: string; name: string; alias: string; clause: string }
+    | {
+        id: string;
+        name: string;
+        alias: string;
+        clause:
+          | { __typename: "HTTPQL"; code: string }
+          | { __typename: "StreamQL"; code: string };
+      }
     | undefined
     | null;
 };
@@ -53,7 +71,14 @@ export type CreateFilterPresetMutation = {
       | undefined
       | null;
     filter?:
-      | { id: string; name: string; alias: string; clause: string }
+      | {
+          id: string;
+          name: string;
+          alias: string;
+          clause:
+            | { __typename: "HTTPQL"; code: string }
+            | { __typename: "StreamQL"; code: string };
+        }
       | undefined
       | null;
   };
@@ -73,7 +98,14 @@ export type UpdateFilterPresetMutation = {
       | undefined
       | null;
     filter?:
-      | { id: string; name: string; alias: string; clause: string }
+      | {
+          id: string;
+          name: string;
+          alias: string;
+          clause:
+            | { __typename: "HTTPQL"; code: string }
+            | { __typename: "StreamQL"; code: string };
+        }
       | undefined
       | null;
   };
@@ -87,6 +119,46 @@ export type DeleteFilterPresetMutation = {
   deleteFilterPreset: { deletedId?: string | undefined | null };
 };
 
+export const HttpqlQueryFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<HttpqlQueryFullFragment, unknown>;
+export const StreamQlQueryFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StreamQlQueryFullFragment, unknown>;
 export const FilterPresetFullFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -103,7 +175,77 @@ export const FilterPresetFullFragmentDoc = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "alias" } },
-          { kind: "Field", name: { kind: "Name", value: "clause" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "clause" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "HTTPQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HTTPQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "StreamQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "StreamQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
         ],
       },
     },
@@ -137,6 +279,36 @@ export const FilterPresetsDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "FilterPresetFull" },
       typeCondition: {
         kind: "NamedType",
@@ -148,7 +320,47 @@ export const FilterPresetsDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "alias" } },
-          { kind: "Field", name: { kind: "Name", value: "clause" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "clause" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "HTTPQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HTTPQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "StreamQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "StreamQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -202,6 +414,36 @@ export const FilterPresetDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "FilterPresetFull" },
       typeCondition: {
         kind: "NamedType",
@@ -213,7 +455,47 @@ export const FilterPresetDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "alias" } },
-          { kind: "Field", name: { kind: "Name", value: "clause" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "clause" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "HTTPQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HTTPQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "StreamQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "StreamQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -408,6 +690,36 @@ export const CreateFilterPresetDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "NameTakenUserErrorFull" },
       typeCondition: {
         kind: "NamedType",
@@ -516,7 +828,47 @@ export const CreateFilterPresetDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "alias" } },
-          { kind: "Field", name: { kind: "Name", value: "clause" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "clause" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "HTTPQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HTTPQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "StreamQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "StreamQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -689,6 +1041,36 @@ export const UpdateFilterPresetDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "HTTPQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "HTTPQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "StreamQLQueryFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "StreamQL" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "NameTakenUserErrorFull" },
       typeCondition: {
         kind: "NamedType",
@@ -753,7 +1135,47 @@ export const UpdateFilterPresetDocument = {
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
           { kind: "Field", name: { kind: "Name", value: "alias" } },
-          { kind: "Field", name: { kind: "Name", value: "clause" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "clause" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "HTTPQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "HTTPQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "InlineFragment",
+                  typeCondition: {
+                    kind: "NamedType",
+                    name: { kind: "Name", value: "StreamQL" },
+                  },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "FragmentSpread",
+                        name: { kind: "Name", value: "StreamQLQueryFull" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
     },

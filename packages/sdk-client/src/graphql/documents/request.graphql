@@ -50,7 +50,7 @@ query Requests(
   $after: String
   $last: Int
   $before: String
-  $filter: HTTPQL
+  $filter: HTTPQLInput
   $order: RequestResponseOrderInput
   $scopeId: ID
   $includeRequestRaw: Boolean!
