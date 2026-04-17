@@ -15,6 +15,14 @@ query PluginPackages {
   }
 }
 
+subscription CreatedPluginEvent {
+  createdPluginEvent {
+    pluginId
+    eventName
+    eventArgs
+  }
+}
+
 mutation InstallPluginPackage($input: InstallPluginPackageInput!) {
   installPluginPackage(input: $input) {
     package {

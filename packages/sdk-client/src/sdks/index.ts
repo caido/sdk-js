@@ -3,7 +3,11 @@ export { FilterSDK } from "@/sdks/filter.js";
 export { HostedFileSDK } from "@/sdks/hostedFile.js";
 export { InstanceSDK } from "@/sdks/instance.js";
 export { InstanceSettingsSDK } from "@/sdks/instanceSettings.js";
-export { PluginSDK } from "@/sdks/plugin.js";
+export {
+  PluginSDK,
+  PluginPackage,
+  type PluginPackageHandle,
+} from "@/sdks/plugin.js";
 export { ProjectSDK } from "@/sdks/project.js";
 export { ScopeSDK } from "@/sdks/scope.js";
 export { UserSDK } from "@/sdks/user.js";

@@ -4,6 +4,7 @@ minimumReleaseAgeExclude:
   - '@caido/server-auth'
   - '@caido/schema-proxy'
   - '@caido/sdk-shared'
+  - '@caido-community/quickssrf'
 packages:
   - 'packages/*'
   - 'packages/server-auth/examples/*'

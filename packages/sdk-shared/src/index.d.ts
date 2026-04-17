@@ -83,7 +83,7 @@ type AnyFn = (...args: any[]) => MaybePromise<any>;
 
 type AnyVoidFn = (...args: any[]) => MaybePromise<void>;
 
-type PluginPackageSpec = {
+export type PluginPackageSpec = {
   manifestId: string;
   api: Record<string, AnyFn>;
   events: Record<string, AnyVoidFn>;

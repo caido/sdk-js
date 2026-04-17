@@ -5,8 +5,8 @@ import { BaseError } from "./base.js";
 export class NetworkUserError extends BaseError {
   readonly __typename = "NetworkUserError";
 
-  constructor() {
-    super("A network error occured");
+  constructor(error: Error) {
+    super(`A network error occured: ${error.message}`);
   }
 }
 

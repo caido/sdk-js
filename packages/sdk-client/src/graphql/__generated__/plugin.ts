@@ -57,6 +57,18 @@ export type PluginPackagesQuery = {
   }>;
 };
 
+export type CreatedPluginEventSubscriptionVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type CreatedPluginEventSubscription = {
+  createdPluginEvent: {
+    pluginId: string;
+    eventName: string;
+    eventArgs: Array<string>;
+  };
+};
+
 export type InstallPluginPackageMutationVariables = Types.Exact<{
   input: Types.InstallPluginPackageInput;
 }>;
@@ -201,6 +213,36 @@ export const PluginPackagesDocument = {
     },
   ],
 } as unknown as DocumentNode<PluginPackagesQuery, PluginPackagesQueryVariables>;
+export const CreatedPluginEventDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "subscription",
+      name: { kind: "Name", value: "CreatedPluginEvent" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createdPluginEvent" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "pluginId" } },
+                { kind: "Field", name: { kind: "Name", value: "eventName" } },
+                { kind: "Field", name: { kind: "Name", value: "eventArgs" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CreatedPluginEventSubscription,
+  CreatedPluginEventSubscriptionVariables
+>;
 export const InstallPluginPackageDocument = {
   kind: "Document",
   definitions: [

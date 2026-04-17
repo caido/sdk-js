@@ -1,34 +1,5 @@
 import { Client } from "@caido/sdk-client";
-
-type Result<T> =
-  | {
-      kind: "Ok";
-      value: T;
-    }
-  | {
-      kind: "Error";
-      error: string;
-    };
-
-type QuickSSRFProvider = {
-  id: string;
-  name: string;
-  kind: string;
-  url: string;
-  enabled: boolean;
-  token?: string | undefined;
-};
-
-type QuickSSRFSession = {
-  id: string;
-  providerId: string;
-  providerKind: string;
-  title: string;
-  url: string;
-  status: string;
-  createdAt: string;
-  interactionCount: number;
-};
+import type { Spec as QuickSSRFSpec } from "@caido-community/quickssrf";
 
 async function main() {
   // Get the Caido instance URL from environment or use default
@@ -56,18 +27,15 @@ async function main() {
   await client.connect();
   console.log("✅ Connected to Caido instance");
 
-  const pluginPackage = await client.plugin.pluginPackage("quickssrf");
+  const pluginPackage =
+    await client.plugin.pluginPackage<QuickSSRFSpec>("quickssrf");
   if (pluginPackage === undefined) {
     console.error("❌ Error: Plugin package not found");
     process.exit(1);
   }
 
   // Get the providers
-  const providers = await pluginPackage.callFunction<
-    Result<QuickSSRFProvider[]>
-  >({
-    name: "getProviders",
-  });
+  const providers = await pluginPackage.getProviders();
   if (providers.kind === "Error") {
     console.error("❌ Error: Failed to get providers");
     console.error("   Error:", providers.error);
@@ -80,10 +48,7 @@ async function main() {
   console.log("✅ Providers:", providers.value);
 
   // Create a session
-  const session = await pluginPackage.callFunction<Result<QuickSSRFSession>>({
-    name: "createSession",
-    arguments: [providers.value[0]!.id],
-  });
+  const session = await pluginPackage.createSession(providers.value[0]!.id);
   if (session.kind === "Error") {
     console.error("❌ Error: Failed to create session");
     console.error("   Error:", session.error);

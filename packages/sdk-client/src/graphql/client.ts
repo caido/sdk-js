@@ -193,7 +193,7 @@ export class GraphQLClient {
 
     if (isPresent(error)) {
       if (isPresent(error.networkError)) {
-        throw new NetworkUserError();
+        throw new NetworkUserError(error.networkError);
       }
 
       const caidoErrors = error.graphQLErrors
