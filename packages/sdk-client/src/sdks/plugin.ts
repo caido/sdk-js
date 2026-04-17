@@ -1,4 +1,4 @@
-import { type PluginPackageSpec } from "@caido/sdk-shared";
+import type { PluginPackageSpec } from "@caido/sdk-shared";
 
 import { NotFoundUserError, PluginFunctionCallError } from "@/errors/index.js";
 import {
@@ -18,10 +18,15 @@ import type {
   PluginFrontend,
   PluginPackageApiCallers,
   PluginWorkflow,
+  SubscribeEventArgs,
+  SubscribeEventInput,
+  SubscribeEventName,
 } from "@/types/plugin.js";
+import { mapAsyncIterable } from "@/utils/asyncIterable.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import type { Json } from "@/utils/json.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+import { PluginEventBus } from "@/utils/pluginEventBus.js";
 
 type InstallPluginPackageInput<T extends PluginPackageSpec> = {
   force?: boolean;
@@ -43,10 +48,12 @@ type PluginPackageSource<T extends PluginPackageSpec> =
 export class PluginSDK {
   private readonly graphql: GraphQLClient;
   private readonly rest: RestClient;
+  private readonly events: PluginEventBus;
 
   constructor(graphql: GraphQLClient, rest: RestClient) {
     this.graphql = graphql;
     this.rest = rest;
+    this.events = new PluginEventBus(graphql);
   }
 
   /**
@@ -66,7 +73,7 @@ export class PluginSDK {
       return undefined;
     }
 
-    return createPluginPackage<T>(this.rest, pluginPackage);
+    return createPluginPackage<T>(this.rest, this.events, pluginPackage);
   }
 
   /**
@@ -105,20 +112,21 @@ export class PluginSDK {
       handleGraphQLError(payload.error);
     }
 
-    return createPluginPackage<T>(this.rest, payload.package!);
+    return createPluginPackage<T>(this.rest, this.events, payload.package!);
   }
 }
 
-export type PluginPackageHandle<T extends PluginPackageSpec> = PluginPackage &
-  PluginPackageApiCallers<T>;
+export type PluginPackageHandle<T extends PluginPackageSpec> =
+  PluginPackage<T> & PluginPackageApiCallers<T>;
 
 const PROMISE_LIKE_KEYS = new Set(["then", "catch", "finally"]);
 
 function createPluginPackage<T extends PluginPackageSpec>(
   rest: RestClient,
+  events: PluginEventBus,
   definition: PluginPackageMetaFragment,
 ): PluginPackageHandle<T> {
-  const pkg = new PluginPackage(rest, definition);
+  const pkg = new PluginPackage<T>(rest, events, definition);
   return new Proxy(pkg, {
     get(target, prop, _receiver) {
       if (typeof prop === "string" && PROMISE_LIKE_KEYS.has(prop)) {
@@ -155,12 +163,18 @@ type CallFunctionInput = {
   arguments?: Array<Json>;
 };
 
-export class PluginPackage {
+export class PluginPackage<T extends PluginPackageSpec = never> {
   private readonly rest: RestClient;
+  private readonly events: PluginEventBus;
   private readonly definition: PluginPackageMetaFragment;
 
-  constructor(rest: RestClient, definition: PluginPackageMetaFragment) {
+  constructor(
+    rest: RestClient,
+    events: PluginEventBus,
+    definition: PluginPackageMetaFragment,
+  ) {
     this.rest = rest;
+    this.events = events;
     this.definition = definition;
   }
 
@@ -211,22 +225,8 @@ export class PluginPackage {
    *
    * @throws Error if the plugin is not found or not a backend plugin.
    */
-  async callFunction<T>(input: CallFunctionInput): Promise<T> {
-    const plugin = this.definition.plugins.find((p) => {
-      if (p.__typename !== "PluginBackend") {
-        return false;
-      }
-
-      if (isPresent(input.manifestId) && p.manifestId !== input.manifestId) {
-        return false;
-      }
-
-      return true;
-    });
-
-    if (isAbsent(plugin)) {
-      throw new NotFoundUserError();
-    }
+  async callFunction<R>(input: CallFunctionInput): Promise<R> {
+    const plugin = this.findBackend(input.manifestId);
 
     const body: FunctionInput = {
       name: input.name,
@@ -241,11 +241,61 @@ export class PluginPackage {
     switch (payload.kind) {
       case "success": {
         const { returns } = payload;
-        if (isAbsent(returns)) return undefined as T;
-        return JSON.parse(returns) as T;
+        if (isAbsent(returns)) return undefined as R;
+        return JSON.parse(returns) as R;
       }
       case "error":
         throw new PluginFunctionCallError(input.name, payload.error);
     }
+  }
+
+  /**
+   * Subscribe to an event emitted by the plugin backend.
+   *
+   * Accepts either the event name directly or an input object with the name
+   * and an optional manifest ID (useful when the package has multiple backend
+   * plugins). The returned async iterable yields the typed event args each
+   * time the backend emits it; break out of the `for await` loop to
+   * unsubscribe.
+   *
+   * @example
+   * ```typescript
+   * for await (const [data] of pkg.subscribeEvent("my-event")) {
+   *   console.log(data);
+   * }
+   * ```
+   */
+  subscribeEvent<K extends SubscribeEventName<T>>(
+    nameOrInput: K | SubscribeEventInput<T, K>,
+  ): AsyncIterable<SubscribeEventArgs<T, K>> {
+    const input: SubscribeEventInput<T, K> =
+      typeof nameOrInput === "string" ? { name: nameOrInput } : nameOrInput;
+
+    const plugin = this.findBackend(input.manifestId);
+
+    return mapAsyncIterable(
+      (args) => args as SubscribeEventArgs<T, K>,
+      this.events.subscribe(plugin.id, input.name),
+    );
+  }
+
+  private findBackend(manifestId: string | undefined) {
+    const plugin = this.definition.plugins.find((p) => {
+      if (p.__typename !== "PluginBackend") {
+        return false;
+      }
+
+      if (isPresent(manifestId) && p.manifestId !== manifestId) {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (isAbsent(plugin)) {
+      throw new NotFoundUserError();
+    }
+
+    return plugin;
   }
 }
