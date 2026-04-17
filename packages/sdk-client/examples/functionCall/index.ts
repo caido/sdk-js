@@ -1,16 +1,33 @@
 import { Client } from "@caido/sdk-client";
 
-type QuickSSRFSettings = {
-  serverURL: string;
-  token: string;
-  pollingInterval: number;
-  correlationIdLength: number;
-  correlationIdNonceLength: number;
+type Result<T> =
+  | {
+      kind: "Ok";
+      value: T;
+    }
+  | {
+      kind: "Error";
+      error: string;
+    };
+
+type QuickSSRFProvider = {
+  id: string;
+  name: string;
+  kind: string;
+  url: string;
+  enabled: boolean;
+  token?: string | undefined;
 };
 
-type GenerateUrlResult = {
+type QuickSSRFSession = {
+  id: string;
+  providerId: string;
+  providerKind: string;
+  title: string;
   url: string;
-  uniqueId: string;
+  status: string;
+  createdAt: string;
+  interactionCount: number;
 };
 
 async function main() {
@@ -45,29 +62,34 @@ async function main() {
     process.exit(1);
   }
 
-  const settings = await pluginPackage.callFunction<QuickSSRFSettings>({
-    name: "getSettings",
+  // Get the providers
+  const providers = await pluginPackage.callFunction<
+    Result<QuickSSRFProvider[]>
+  >({
+    name: "getProviders",
   });
+  if (providers.kind === "Error") {
+    console.error("❌ Error: Failed to get providers");
+    console.error("   Error:", providers.error);
+    process.exit(1);
+  }
+  if (providers.value.length === 0) {
+    console.error("❌ Error: No providers found");
+    process.exit(1);
+  }
+  console.log("✅ Providers:", providers.value);
 
-  await pluginPackage.callFunction({
-    name: "startInteractsh",
-    arguments: [
-      {
-        serverURL: settings.serverURL,
-        token: settings.token,
-        pollingInterval: settings.pollingInterval,
-        correlationIdLength: settings.correlationIdLength,
-        correlationIdNonceLength: settings.correlationIdNonceLength,
-      },
-    ],
+  // Create a session
+  const session = await pluginPackage.callFunction<Result<QuickSSRFSession>>({
+    name: "createSession",
+    arguments: [providers.value[0]!.id],
   });
-
-  const result = await pluginPackage.callFunction<GenerateUrlResult>({
-    name: "generateInteractshUrl",
-    arguments: [settings.serverURL],
-  });
-
-  console.log("✅ Generated URL: ", result.url);
+  if (session.kind === "Error") {
+    console.error("❌ Error: Failed to create session");
+    console.error("   Error:", session.error);
+    process.exit(1);
+  }
+  console.log("✅ Session:", session.value);
 }
 
 main().catch((error: unknown) => {
