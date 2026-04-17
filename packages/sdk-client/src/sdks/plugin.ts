@@ -31,7 +31,7 @@ type PluginPackageSource<T extends PluginPackageSpec> =
   | { file: File; manifestId?: never; url?: never }
   | {
       file?: never;
-      manifestId: T extends never ? string : T["manifestId"];
+      manifestId: [T] extends [never] ? string : T["manifestId"];
       url?: never;
     }
   | { file?: never; manifestId?: never; url: string };
@@ -54,7 +54,7 @@ export class PluginSDK {
    * Pass a {@link PluginPackageSpec} to get improved type safety.
    */
   async pluginPackage<T extends PluginPackageSpec = never>(
-    manifestId: T extends never ? string : T["manifestId"],
+    manifestId: [T] extends [never] ? string : T["manifestId"],
   ): Promise<PluginPackageHandle<T> | undefined> {
     const result = await this.graphql.query(PluginPackagesDocument, {});
 
