@@ -1,3 +1,5 @@
+import { type PluginPackageSpec } from "@caido/sdk-shared";
+
 import { NotFoundUserError, PluginFunctionCallError } from "@/errors/index.js";
 import {
   type GraphQLClient,
@@ -15,7 +17,6 @@ import type {
   PluginBackend,
   PluginFrontend,
   PluginPackageApiCallers,
-  PluginPackageSpec,
   PluginWorkflow,
 } from "@/types/plugin.js";
 import { handleGraphQLError } from "@/utils/errors.js";

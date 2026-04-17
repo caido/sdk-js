@@ -1,10 +1,4 @@
-import type { MaybePromise } from "@/utils/misc.js";
-
-export type PluginPackageSpec = {
-  manifestId: string;
-  api: Record<string, (...args: any[]) => MaybePromise<any>>;
-  events: Record<string, (...args: any[]) => MaybePromise<void>>;
-};
+import type { PluginPackageSpec } from "@caido/sdk-shared";
 
 /**
  * Client-side callable surface for a plugin package’s `api` map: each backend
