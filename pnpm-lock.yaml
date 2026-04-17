@@ -153,6 +153,22 @@ importers:
         specifier: 5.6.2
         version: 5.6.2
 
+  packages/sdk-client/examples/pluginEvent:
+    dependencies:
+      '@caido-community/quickssrf':
+        specifier: 1.0.1-beta.1
+        version: 1.0.1-beta.1
+      '@caido/sdk-client':
+        specifier: workspace:*
+        version: link:../..
+    devDependencies:
+      '@types/node':
+        specifier: 25.0.10
+        version: 25.0.10
+      typescript:
+        specifier: 5.6.2
+        version: 5.6.2
+
   packages/sdk-client/examples/uploadFile:
     dependencies:
       '@caido/sdk-client':
