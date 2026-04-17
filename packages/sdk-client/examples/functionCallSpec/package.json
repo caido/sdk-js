@@ -7,7 +7,7 @@
     "start": "node ./index.ts"
   },
   "dependencies": {
-    "@caido-community/quickssrf": "1.0.1-beta.1",
+    "@caido-community/quickssrf": "1.0.2",
     "@caido/sdk-client": "workspace:*"
   },
   "devDependencies": {

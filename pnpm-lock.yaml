@@ -140,8 +140,8 @@ importers:
   packages/sdk-client/examples/functionCallSpec:
     dependencies:
       '@caido-community/quickssrf':
-        specifier: 1.0.1-beta.1
-        version: 1.0.1-beta.1
+        specifier: 1.0.2
+        version: 1.0.2
       '@caido/sdk-client':
         specifier: workspace:*
         version: link:../..
@@ -156,8 +156,8 @@ importers:
   packages/sdk-client/examples/pluginEvent:
     dependencies:
       '@caido-community/quickssrf':
-        specifier: 1.0.1-beta.1
-        version: 1.0.1-beta.1
+        specifier: 1.0.2
+        version: 1.0.2
       '@caido/sdk-client':
         specifier: workspace:*
         version: link:../..
@@ -571,8 +571,8 @@ packages:
     resolution: {integrity: sha512-xjk2xqYp25ePzAs0I08hN2lrbUDDQFfCjwq6MIEa8HwHa0WK8NfNtdvtXod8Ku2CbE1iui7qwWojGvjQiyrQeA==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  '@caido-community/quickssrf@1.0.1-beta.1':
-    resolution: {integrity: sha512-lC/0kFxJzzfiONVKGC7UnvABjggOB9pyQnCzoVu73Al7xpg9+FriH5SvoUrfaHtjJ/FinCf6IDbMBtvYBv1sVg==}
+  '@caido-community/quickssrf@1.0.2':
+    resolution: {integrity: sha512-yl2T5fo4oRjmMvxXHB/Nj1wtfTSg+wvQZcCWkt6PEf1viKp67kd5ZTBPEP6si+W/RV/4RH3Bmw39LCREUtYuag==}
 
   '@caido/eslint-config@0.8.0':
     resolution: {integrity: sha512-ps4beOseZwQfAC0/ckjyDc8YXCAsD4NDajrDAXkwec7NKd1Hf5TNFtByGDGVOoVreiL3a3UiN5WFgvfDspxtwg==}
@@ -588,9 +588,6 @@ packages:
 
   '@caido/sdk-shared@0.2.0':
     resolution: {integrity: sha512-pgzwCZSu9R7ggOQvnmspxcZ79plCrzWZ3jcv1t4ahqdov8D5Kl0GWNQsO7oj/Bve4vH/spOR3XZefCRCDhcjbw==}
-
-  '@caido/sdk-shared@0.2.1':
-    resolution: {integrity: sha512-pxioQ/SISu/Kd+dSur36ri5FXfFXEJShuq10CAZnHqV0L/x6vmXyIsJjTf9m0b7lrMmPnr6WncB/JWMSaVT1wA==}
 
   '@caido/sdk-shared@0.2.2':
     resolution: {integrity: sha512-qzfwXrjujNAmXxedQW2YI5Ls5h+Y/MvzHZxd10vnL6IJbRJStZGusDTnFYDWUyiQpCrc5kGuY3fLr8dYh3UHnw==}
@@ -4538,9 +4535,9 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0-beta.4
       '@babel/helper-validator-identifier': 8.0.0-beta.4
 
-  '@caido-community/quickssrf@1.0.1-beta.1':
+  '@caido-community/quickssrf@1.0.2':
     dependencies:
-      '@caido/sdk-shared': 0.2.1
+      '@caido/sdk-shared': 0.2.2
       zod: 4.3.6
 
   '@caido/eslint-config@0.8.0(@typescript-eslint/parser@8.26.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.2))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(typescript@5.6.2)':
@@ -4571,8 +4568,6 @@ snapshots:
   '@caido/schema-proxy@0.56.0': {}
 
   '@caido/sdk-shared@0.2.0': {}
-
-  '@caido/sdk-shared@0.2.1': {}
 
   '@caido/sdk-shared@0.2.2': {}
 
