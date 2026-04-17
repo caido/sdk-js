@@ -93,7 +93,7 @@ export type RequestsQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars["String"]["input"]>;
   last?: Types.InputMaybe<Types.Scalars["Int"]["input"]>;
   before?: Types.InputMaybe<Types.Scalars["String"]["input"]>;
-  filter?: Types.InputMaybe<Types.Scalars["HTTPQL"]["input"]>;
+  filter?: Types.InputMaybe<Types.HttpqlInput>;
   order?: Types.InputMaybe<Types.RequestResponseOrderInput>;
   scopeId?: Types.InputMaybe<Types.Scalars["ID"]["input"]>;
   includeRequestRaw: Types.Scalars["Boolean"]["input"];
@@ -610,7 +610,10 @@ export const RequestsDocument = {
             kind: "Variable",
             name: { kind: "Name", value: "filter" },
           },
-          type: { kind: "NamedType", name: { kind: "Name", value: "HTTPQL" } },
+          type: {
+            kind: "NamedType",
+            name: { kind: "Name", value: "HTTPQLInput" },
+          },
         },
         {
           kind: "VariableDefinition",

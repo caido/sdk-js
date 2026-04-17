@@ -86,7 +86,6 @@ export type Scalars = {
    */
   DateTime: { input: string; output: string };
   Duration: { input: number; output: number };
-  HTTPQL: { input: string; output: string };
   Image: { input: string; output: string };
   /** A scalar that can represent any JSON value. */
   JSON: { input: unknown; output: unknown };
@@ -293,14 +292,14 @@ export type AutomateEntry = {
 export type AutomateEntryRequestsArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<AutomateEntryRequestOrderInput>;
 };
 
 export type AutomateEntryRequestsByOffsetArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<AutomateEntryRequestOrderInput>;
@@ -840,7 +839,7 @@ export type CreateFilterPresetError =
 
 export type CreateFilterPresetInput = {
   alias: Scalars["Alias"]["input"];
-  clause: Scalars["HTTPQL"]["input"];
+  clause: QueryInput;
   name: Scalars["String"]["input"];
 };
 
@@ -930,7 +929,7 @@ export type CreateTamperRuleError =
 
 export type CreateTamperRuleInput = {
   collectionId: Scalars["ID"]["input"];
-  condition?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  condition?: InputMaybe<QueryInput>;
   name: Scalars["String"]["input"];
   section: TamperSectionInput;
   sources: Array<Source>;
@@ -1396,6 +1395,11 @@ export type DeleteSitemapEntriesPayload = {
   errors: Array<DeleteSitemapEntriesError>;
 };
 
+export type DeleteStreamWsMessageTask = Task & {
+  createdAt: Scalars["DateTime"]["output"];
+  id: Scalars["ID"]["output"];
+};
+
 export type DeleteTamperRuleCollectionPayload = {
   deletedId?: Maybe<Scalars["ID"]["output"]>;
 };
@@ -1527,6 +1531,10 @@ export type DeletedSitemapEntriesPayload = {
   snapshot: Scalars["Snapshot"]["output"];
 };
 
+export type DeletedStreamWsMessagesPayload = {
+  deletedIds: Array<Scalars["ID"]["output"]>;
+};
+
 export type DeletedTamperRuleCollectionPayload = {
   deletedCollectionId: Scalars["ID"]["output"];
   snapshot: Scalars["Snapshot"]["output"];
@@ -1619,7 +1627,7 @@ export type FilterClauseFindingInput = {
 
 export type FilterPreset = {
   alias: Scalars["Alias"]["output"];
-  clause: Scalars["HTTPQL"]["output"];
+  clause: Query;
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
 };
@@ -1793,6 +1801,14 @@ export type GuestUser = {
   settings?: Maybe<UserSettings>;
 };
 
+export type Httpql = {
+  code: Scalars["String"]["output"];
+};
+
+export type HttpqlInput = {
+  code: Scalars["String"]["input"];
+};
+
 export type HideFindingsInput =
   | { ids: Array<Scalars["ID"]["input"]>; reporter?: never }
   | { ids?: never; reporter: Scalars["String"]["input"] };
@@ -1949,12 +1965,12 @@ export type InterceptRequestMessage = InterceptMessage & {
 
 export type InterceptRequestOptions = {
   enabled: Scalars["Boolean"]["output"];
-  filter?: Maybe<Scalars["HTTPQL"]["output"]>;
+  filter?: Maybe<Query>;
 };
 
 export type InterceptRequestOptionsInput = {
   enabled: Scalars["Boolean"]["input"];
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<QueryInput>;
 };
 
 export type InterceptResponseMessage = InterceptMessage & {
@@ -1965,12 +1981,12 @@ export type InterceptResponseMessage = InterceptMessage & {
 
 export type InterceptResponseOptions = {
   enabled: Scalars["Boolean"]["output"];
-  filter?: Maybe<Scalars["HTTPQL"]["output"]>;
+  filter?: Maybe<Query>;
 };
 
 export type InterceptResponseOptionsInput = {
   enabled: Scalars["Boolean"]["input"];
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<QueryInput>;
 };
 
 export type InterceptScopeOptions = {
@@ -2121,6 +2137,8 @@ export type MutationRoot = {
   pauseIntercept: PauseInterceptPayload;
   persistProject: PersistProjectPayload;
   rankDnsRewrite: RankDnsRewritePayload;
+  rankReplaySession: RankReplaySessionPayload;
+  rankReplaySessionCollection: RankReplaySessionCollectionPayload;
   rankTamperRule: RankTamperRulePayload;
   rankUpstreamPlugin: RankUpstreamPluginPayload;
   rankUpstreamProxyHttp: RankUpstreamProxyHttpPayload;
@@ -2159,6 +2177,7 @@ export type MutationRoot = {
   setProjectConfigStream: SetProjectConfigStreamPayload;
   startAuthenticationFlow: StartAuthenticationFlowPayload;
   startAutomateTask: StartAutomateTaskPayload;
+  startDeleteStreamWsMessageTask: StartDeleteStreamWsMessageTaskPayload;
   startExportRequestsTask: StartExportRequestsTaskPayload;
   startReplayTask: StartReplayTaskPayload;
   testAiProvider: TestAiProviderPayload;
@@ -2333,7 +2352,7 @@ export type MutationRootDeleteHostedFileArgs = {
 };
 
 export type MutationRootDeleteInterceptEntriesArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
@@ -2449,6 +2468,16 @@ export type MutationRootPersistProjectArgs = {
 };
 
 export type MutationRootRankDnsRewriteArgs = {
+  id: Scalars["ID"]["input"];
+  input: RankInput;
+};
+
+export type MutationRootRankReplaySessionArgs = {
+  id: Scalars["ID"]["input"];
+  input: RankInput;
+};
+
+export type MutationRootRankReplaySessionCollectionArgs = {
   id: Scalars["ID"]["input"];
   input: RankInput;
 };
@@ -2610,6 +2639,10 @@ export type MutationRootSetProjectConfigStreamArgs = {
 
 export type MutationRootStartAutomateTaskArgs = {
   automateSessionId: Scalars["ID"]["input"];
+};
+
+export type MutationRootStartDeleteStreamWsMessageTaskArgs = {
+  input: StartDeleteStreamWsMessageTaskInput;
 };
 
 export type MutationRootStartExportRequestsTaskArgs = {
@@ -2944,6 +2977,12 @@ export type ProjectUserError = UserError & {
   reason: ProjectErrorReason;
 };
 
+export type Query = Httpql | StreamQl;
+
+export type QueryInput =
+  | { HTTPQL: HttpqlInput; streamQL?: never }
+  | { HTTPQL?: never; streamQL: StreamQlInput };
+
 export type QueryRoot = {
   assistantModels: Array<AssistantModel>;
   assistantSession?: Maybe<AssistantSession>;
@@ -3085,7 +3124,7 @@ export type QueryRootFindingsByOffsetArgs = {
 export type QueryRootInterceptEntriesArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<InterceptEntryOrderInput>;
@@ -3093,7 +3132,7 @@ export type QueryRootInterceptEntriesArgs = {
 };
 
 export type QueryRootInterceptEntriesByOffsetArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<InterceptEntryOrderInput>;
@@ -3105,7 +3144,7 @@ export type QueryRootInterceptEntryArgs = {
 };
 
 export type QueryRootInterceptEntryOffsetArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   id: Scalars["ID"]["input"];
   order?: InputMaybe<InterceptEntryOrderInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -3146,7 +3185,7 @@ export type QueryRootRequestArgs = {
 };
 
 export type QueryRootRequestOffsetArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   id: Scalars["ID"]["input"];
   order?: InputMaybe<RequestResponseOrderInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -3155,7 +3194,7 @@ export type QueryRootRequestOffsetArgs = {
 export type QueryRootRequestsArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<RequestResponseOrderInput>;
@@ -3163,7 +3202,7 @@ export type QueryRootRequestsArgs = {
 };
 
 export type QueryRootRequestsByOffsetArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<RequestResponseOrderInput>;
@@ -3269,6 +3308,26 @@ export type RankInput = {
   afterId?: InputMaybe<Scalars["ID"]["input"]>;
   beforeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
+
+export type RankReplaySessionCollectionPayload = {
+  collection?: Maybe<ReplaySessionCollection>;
+  error?: Maybe<RankSessionCollectionPayloadError>;
+};
+
+export type RankReplaySessionPayload = {
+  error?: Maybe<RankSessionPayloadError>;
+  session?: Maybe<ReplaySession>;
+};
+
+export type RankSessionCollectionPayloadError =
+  | OtherUserError
+  | RankUserError
+  | UnknownIdUserError;
+
+export type RankSessionPayloadError =
+  | OtherUserError
+  | RankUserError
+  | UnknownIdUserError;
 
 export type RankTamperRuleError =
   | OtherUserError
@@ -3551,6 +3610,7 @@ export type ReplaySession = {
   entries: ReplayEntryConnection;
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
+  rank: Scalars["Rank"]["output"];
 };
 
 export type ReplaySessionEntriesArgs = {
@@ -3564,6 +3624,7 @@ export type ReplaySessionEntriesArgs = {
 export type ReplaySessionCollection = {
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
+  rank: Scalars["Rank"]["output"];
   sessions: Array<ReplaySession>;
 };
 
@@ -3992,8 +4053,16 @@ export type StartAutomateTaskPayload = {
   automateTask?: Maybe<AutomateTask>;
 };
 
+export type StartDeleteStreamWsMessageTaskInput = {
+  ids: Array<Scalars["ID"]["input"]>;
+};
+
+export type StartDeleteStreamWsMessageTaskPayload = {
+  task?: Maybe<DeleteStreamWsMessageTask>;
+};
+
 export type StartExportRequestsTaskInput = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   format: DataExportFormat;
   includeRaw: Scalars["Boolean"]["input"];
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -4114,6 +4183,14 @@ export type StreamOrderInput = {
 
 export { StreamProtocol };
 
+export type StreamQl = {
+  code: Scalars["String"]["output"];
+};
+
+export type StreamQlInput = {
+  code: Scalars["String"]["input"];
+};
+
 export type StreamWsMessage = {
   edits: Array<StreamWsMessageEditRef>;
   head: StreamWsMessageEdit;
@@ -4220,6 +4297,7 @@ export type SubscriptionRoot = {
   deletedReplaySessionCollection: DeletedReplaySessionCollectionPayload;
   deletedScope: DeletedScopePayload;
   deletedSitemapEntry: DeletedSitemapEntriesPayload;
+  deletedStreamWsMessages: DeletedStreamWsMessagesPayload;
   deletedTamperRule: DeletedTamperRulePayload;
   deletedTamperRuleCollection: DeletedTamperRuleCollectionPayload;
   deletedUpstreamPlugin: DeletedUpstreamPluginPayload;
@@ -4284,11 +4362,11 @@ export type SubscriptionRootCreatedAuthenticationTokenArgs = {
 };
 
 export type SubscriptionRootCreatedAutomateEntryRequestArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
 };
 
 export type SubscriptionRootCreatedInterceptEntryArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
@@ -4297,7 +4375,7 @@ export type SubscriptionRootCreatedLogLinesArgs = {
 };
 
 export type SubscriptionRootCreatedRequestArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
@@ -4311,12 +4389,12 @@ export type SubscriptionRootCreatedStreamArgs = {
 };
 
 export type SubscriptionRootUpdatedInterceptEntryArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type SubscriptionRootUpdatedRequestArgs = {
-  filter?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
@@ -4632,7 +4710,7 @@ export type TamperReplacerWorkflowInput = {
 
 export type TamperRule = {
   collection: TamperRuleCollection;
-  condition?: Maybe<Scalars["HTTPQL"]["output"]>;
+  condition?: Maybe<Query>;
   enable?: Maybe<TamperRuleEnable>;
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
@@ -5243,7 +5321,7 @@ export type UpdateFilterPresetError =
 
 export type UpdateFilterPresetInput = {
   alias: Scalars["Alias"]["input"];
-  clause: Scalars["HTTPQL"]["input"];
+  clause: QueryInput;
   name: Scalars["String"]["input"];
 };
 
@@ -5294,7 +5372,7 @@ export type UpdateTamperRuleError =
   | UnknownIdUserError;
 
 export type UpdateTamperRuleInput = {
-  condition?: InputMaybe<Scalars["HTTPQL"]["input"]>;
+  condition?: InputMaybe<QueryInput>;
   name: Scalars["String"]["input"];
   section: TamperSectionInput;
   sources: Array<Source>;

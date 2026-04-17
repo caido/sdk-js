@@ -18,7 +18,7 @@ import type {
   ResponseOrderField,
 } from "@/types/index.js";
 import { ListBuilder, type ListBuilderVars } from "@/utils/list.js";
-import { isAbsent } from "@/utils/optional.js";
+import { isAbsent, isPresent } from "@/utils/optional.js";
 
 const REQUEST_ORDER_BY: Record<RequestOrderField, RequestResponseOrderBy> = {
   created_at: RequestResponseOrderBy.CreatedAt,
@@ -107,7 +107,7 @@ export class RequestsListBuilder extends ListBuilder<
       after: vars.after,
       last: vars.last,
       before: vars.before,
-      filter: vars.filter,
+      filter: isPresent(vars.filter) ? { code: vars.filter } : undefined,
       order: vars.order,
       scopeId: this.scopeId,
       includeRequestRaw: this.includeRequestRaw,

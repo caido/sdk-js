@@ -3,6 +3,19 @@ import { describe, expect, it } from "vitest";
 import { createMockRequest } from "./utils.js";
 
 describe("Request", () => {
+  it("should list requests matching an HTTPQL filter", async () => {
+    await createMockRequest();
+
+    const filter = 'req.host.ne:"perdu.com"';
+    const matched = await caido.request
+      .list()
+      .filter(filter)
+      .first(10)
+      .descending("req", "created_at");
+
+    expect(matched.edges.length).toBeGreaterThanOrEqual(0);
+  });
+
   it("should be able to get a request", async () => {
     await createMockRequest();
     await createMockRequest();

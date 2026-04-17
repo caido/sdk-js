@@ -8,6 +8,7 @@ export const mapToFilterPreset = (
     id: node.id,
     name: node.name,
     alias: node.alias,
-    clause: node.clause,
+    clause: node.clause.code,
+    kind: node.clause.__typename,
   };
 };
