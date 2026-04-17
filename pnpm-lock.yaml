@@ -47,8 +47,8 @@ importers:
   packages/sdk-client:
     dependencies:
       '@caido/sdk-shared':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.2.2
+        version: 0.2.2
       '@caido/server-auth':
         specifier: ^0.2.0
         version: 0.2.0(ws@8.19.0)
@@ -591,6 +591,9 @@ packages:
 
   '@caido/sdk-shared@0.2.1':
     resolution: {integrity: sha512-pxioQ/SISu/Kd+dSur36ri5FXfFXEJShuq10CAZnHqV0L/x6vmXyIsJjTf9m0b7lrMmPnr6WncB/JWMSaVT1wA==}
+
+  '@caido/sdk-shared@0.2.2':
+    resolution: {integrity: sha512-qzfwXrjujNAmXxedQW2YI5Ls5h+Y/MvzHZxd10vnL6IJbRJStZGusDTnFYDWUyiQpCrc5kGuY3fLr8dYh3UHnw==}
 
   '@caido/server-auth@0.2.0':
     resolution: {integrity: sha512-jQhhjOvr7bOkFZpAuoLDQNfddjAZrrmn1KzXIUHNRBmhkUko/4a2TzoUajawr5LjB8Gk5GX0LA9f+tGLA3J2Rg==}
@@ -4570,6 +4573,8 @@ snapshots:
   '@caido/sdk-shared@0.2.0': {}
 
   '@caido/sdk-shared@0.2.1': {}
+
+  '@caido/sdk-shared@0.2.2': {}
 
   '@caido/server-auth@0.2.0(ws@8.19.0)':
     dependencies:

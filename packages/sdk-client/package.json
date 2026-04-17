@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@caido/server-auth": "^0.2.0",
-    "@caido/sdk-shared": "^0.2.1",
+    "@caido/sdk-shared": "^0.2.2",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^6.0.0",
     "@urql/exchange-auth": "^3.0.0",
