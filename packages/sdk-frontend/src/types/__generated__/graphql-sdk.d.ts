@@ -781,6 +781,7 @@ export type CreateFilterPresetError = AliasTakenUserError | CloudUserError | Nam
 export type CreateFilterPresetInput = {
     alias: Scalars["Alias"]["input"];
     clause: QueryInput;
+    global: Scalars["Boolean"]["input"];
     name: Scalars["String"]["input"];
 };
 export type CreateFilterPresetPayload = {
@@ -820,6 +821,32 @@ export type CreateReplaySessionInput = {
 };
 export type CreateReplaySessionPayload = {
     session?: Maybe<ReplaySession>;
+};
+export type CreateRequestInput = {
+    alteration: Alteration;
+    host: Scalars["String"]["input"];
+    isTls: Scalars["Boolean"]["input"];
+    method: Scalars["String"]["input"];
+    parentId?: InputMaybe<Scalars["ID"]["input"]>;
+    path: Scalars["String"]["input"];
+    port: Scalars["Int"]["input"];
+    query: Scalars["String"]["input"];
+    raw: Scalars["Blob"]["input"];
+    response?: InputMaybe<CreateResponseInput>;
+    sni?: InputMaybe<Scalars["String"]["input"]>;
+    source: Source;
+};
+export type CreateRequestPayload = {
+    id: Scalars["ID"]["output"];
+    responseId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type CreateResponseInput = {
+    alteration: Alteration;
+    parentId?: InputMaybe<Scalars["ID"]["input"]>;
+    raw: Scalars["Blob"]["input"];
+    roundtripTime: Scalars["Int"]["input"];
+    source: Source;
+    statusCode: Scalars["Int"]["input"];
 };
 export type CreateScopeError = InvalidGlobTermsUserError | OtherUserError;
 export type CreateScopeInput = {
@@ -1400,6 +1427,7 @@ export type FilterClauseFindingInput = {
 export type FilterPreset = {
     alias: Scalars["Alias"]["output"];
     clause: Query;
+    global: Scalars["Boolean"]["output"];
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
 };
@@ -1807,6 +1835,7 @@ export type MutationRoot = {
     createProject: CreateProjectPayload;
     createReplaySession: CreateReplaySessionPayload;
     createReplaySessionCollection: CreateReplaySessionCollectionPayload;
+    createRequest: CreateRequestPayload;
     createScope: CreateScopePayload;
     createSitemapEntries: CreateSitemapEntriesPayload;
     createTamperRule: CreateTamperRulePayload;
@@ -1988,6 +2017,9 @@ export type MutationRootCreateReplaySessionArgs = {
 };
 export type MutationRootCreateReplaySessionCollectionArgs = {
     input: CreateReplaySessionCollectionInput;
+};
+export type MutationRootCreateRequestArgs = {
+    input: CreateRequestInput;
 };
 export type MutationRootCreateScopeArgs = {
     input: CreateScopeInput;
@@ -2648,6 +2680,7 @@ export type QueryRoot = {
     projects: Array<Project>;
     replayEntry?: Maybe<ReplayEntry>;
     replaySession?: Maybe<ReplaySession>;
+    replaySessionCollection?: Maybe<ReplaySessionCollection>;
     replaySessionCollections: ReplaySessionCollectionConnection;
     replaySessions: ReplaySessionConnection;
     replayTasks: Array<ReplayTask>;
@@ -2769,6 +2802,9 @@ export type QueryRootReplayEntryArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootReplaySessionArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type QueryRootReplaySessionCollectionArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootReplaySessionCollectionsArgs = {
@@ -4713,6 +4749,7 @@ export type UpdateFilterPresetError = AliasTakenUserError | NameTakenUserError |
 export type UpdateFilterPresetInput = {
     alias: Scalars["Alias"]["input"];
     clause: QueryInput;
+    global: Scalars["Boolean"]["input"];
     name: Scalars["String"]["input"];
 };
 export type UpdateFilterPresetPayload = {
@@ -9354,6 +9391,7 @@ export type FilterPresetFullFragment = {
     id: string;
     alias: string;
     name: string;
+    global: boolean;
     clause: {
         __typename: "HTTPQL";
         code: string;
@@ -9369,6 +9407,7 @@ export type FilterPresetEdgeFullFragment = {
         id: string;
         alias: string;
         name: string;
+        global: boolean;
         clause: {
             __typename: "HTTPQL";
             code: string;
@@ -9388,6 +9427,7 @@ export type CreateFilterPresetMutation = {
             id: string;
             alias: string;
             name: string;
+            global: boolean;
             clause: {
                 __typename: "HTTPQL";
                 code: string;
@@ -9429,6 +9469,7 @@ export type UpdateFilterPresetMutation = {
             id: string;
             alias: string;
             name: string;
+            global: boolean;
             clause: {
                 __typename: "HTTPQL";
                 code: string;
@@ -9468,6 +9509,7 @@ export type FilterPresetsQuery = {
         id: string;
         alias: string;
         name: string;
+        global: boolean;
         clause: {
             __typename: "HTTPQL";
             code: string;
@@ -9486,6 +9528,7 @@ export type FilterPresetQuery = {
         id: string;
         alias: string;
         name: string;
+        global: boolean;
         clause: {
             __typename: "HTTPQL";
             code: string;
@@ -9507,6 +9550,7 @@ export type CreatedFilterPresetSubscription = {
                 id: string;
                 alias: string;
                 name: string;
+                global: boolean;
                 clause: {
                     __typename: "HTTPQL";
                     code: string;
@@ -9530,6 +9574,7 @@ export type UpdatedFilterPresetSubscription = {
                 id: string;
                 alias: string;
                 name: string;
+                global: boolean;
                 clause: {
                     __typename: "HTTPQL";
                     code: string;
@@ -37831,7 +37876,7 @@ export declare const DataExportTaskMetaFieldsFragmentDoc = "\n    fragment dataE
 export declare const DataExportTaskMetaFragmentDoc = "\n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    ";
 export declare const HttpqlQueryFullFragmentDoc = "\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    ";
 export declare const StreamQlQueryFullFragmentDoc = "\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const FilterPresetFullFragmentDoc = "\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    ";
+export declare const FilterPresetFullFragmentDoc = "\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    ";
 export declare const FilterPresetEdgeFullFragmentDoc = "\n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    ";
 export declare const FindingMetaFragmentDoc = "\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const FindingEdgeMetaFragmentDoc = "\n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    ";
@@ -38056,13 +38101,13 @@ export declare const DataExportDocument = "\n    query dataExport($id: ID!) {\n 
 export declare const CreatedDataExportDocument = "\n    subscription createdDataExport {\n  createdDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        __typename\n        ... on DataExportStored {\n          ...dataExportStoredFullFields\n        }\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const UpdatedDataExportDocument = "\n    subscription updatedDataExport {\n  updatedDataExport {\n    dataExportEdge {\n      cursor\n      node {\n        __typename\n        ... on DataExportStored {\n          ...dataExportStoredFullFields\n        }\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DeletedDataExportDocument = "\n    subscription deletedDataExport {\n  deletedDataExport {\n    deletedDataExportId\n    snapshot\n  }\n}\n    ";
-export declare const CreateFilterPresetDocument = "\n    mutation createFilterPreset($input: CreateFilterPresetInput!) {\n  createFilterPreset(input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const UpdateFilterPresetDocument = "\n    mutation updateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {\n  updateFilterPreset(id: $id, input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreateFilterPresetDocument = "\n    mutation createFilterPreset($input: CreateFilterPresetInput!) {\n  createFilterPreset(input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const UpdateFilterPresetDocument = "\n    mutation updateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {\n  updateFilterPreset(id: $id, input: $input) {\n    filter {\n      ...filterPresetFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteFilterPresetDocument = "\n    mutation deleteFilterPreset($id: ID!) {\n  deleteFilterPreset(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const FilterPresetsDocument = "\n    query filterPresets {\n  filterPresets {\n    ...filterPresetFull\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const FilterPresetDocument = "\n    query filterPreset($id: ID!) {\n  filterPreset(id: $id) {\n    ...filterPresetFull\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const CreatedFilterPresetDocument = "\n    subscription createdFilterPreset {\n  createdFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const UpdatedFilterPresetDocument = "\n    subscription updatedFilterPreset {\n  updatedFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const FilterPresetsDocument = "\n    query filterPresets {\n  filterPresets {\n    ...filterPresetFull\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const FilterPresetDocument = "\n    query filterPreset($id: ID!) {\n  filterPreset(id: $id) {\n    ...filterPresetFull\n  }\n}\n    \n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const CreatedFilterPresetDocument = "\n    subscription createdFilterPreset {\n  createdFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const UpdatedFilterPresetDocument = "\n    subscription updatedFilterPreset {\n  updatedFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeletedFilterPresetDocument = "\n    subscription deletedFilterPreset {\n  deletedFilterPreset {\n    deletedFilterId\n  }\n}\n    ";
 export declare const GetFindingDocument = "\n    query getFinding($id: ID!) {\n  finding(id: $id) {\n    ...findingFull\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const GetFindingsBeforeDocument = "\n    query getFindingsBefore($before: String!, $last: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(before: $before, last: $last, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
