@@ -46,8 +46,11 @@ importers:
 
   packages/sdk-client:
     dependencies:
+      '@caido/sdk-shared':
+        specifier: ^0.2.1
+        version: 0.2.1
       '@caido/server-auth':
-        specifier: 0.2.0
+        specifier: ^0.2.0
         version: 0.2.0(ws@8.19.0)
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
@@ -123,6 +126,22 @@ importers:
 
   packages/sdk-client/examples/functionCall:
     dependencies:
+      '@caido/sdk-client':
+        specifier: workspace:*
+        version: link:../..
+    devDependencies:
+      '@types/node':
+        specifier: 25.0.10
+        version: 25.0.10
+      typescript:
+        specifier: 5.6.2
+        version: 5.6.2
+
+  packages/sdk-client/examples/functionCallSpec:
+    dependencies:
+      '@caido-community/quickssrf':
+        specifier: 1.0.1-beta.1
+        version: 1.0.1-beta.1
       '@caido/sdk-client':
         specifier: workspace:*
         version: link:../..
@@ -536,6 +555,9 @@ packages:
     resolution: {integrity: sha512-xjk2xqYp25ePzAs0I08hN2lrbUDDQFfCjwq6MIEa8HwHa0WK8NfNtdvtXod8Ku2CbE1iui7qwWojGvjQiyrQeA==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
+  '@caido-community/quickssrf@1.0.1-beta.1':
+    resolution: {integrity: sha512-lC/0kFxJzzfiONVKGC7UnvABjggOB9pyQnCzoVu73Al7xpg9+FriH5SvoUrfaHtjJ/FinCf6IDbMBtvYBv1sVg==}
+
   '@caido/eslint-config@0.8.0':
     resolution: {integrity: sha512-ps4beOseZwQfAC0/ckjyDc8YXCAsD4NDajrDAXkwec7NKd1Hf5TNFtByGDGVOoVreiL3a3UiN5WFgvfDspxtwg==}
     peerDependencies:
@@ -550,6 +572,9 @@ packages:
 
   '@caido/sdk-shared@0.2.0':
     resolution: {integrity: sha512-pgzwCZSu9R7ggOQvnmspxcZ79plCrzWZ3jcv1t4ahqdov8D5Kl0GWNQsO7oj/Bve4vH/spOR3XZefCRCDhcjbw==}
+
+  '@caido/sdk-shared@0.2.1':
+    resolution: {integrity: sha512-pxioQ/SISu/Kd+dSur36ri5FXfFXEJShuq10CAZnHqV0L/x6vmXyIsJjTf9m0b7lrMmPnr6WncB/JWMSaVT1wA==}
 
   '@caido/server-auth@0.2.0':
     resolution: {integrity: sha512-jQhhjOvr7bOkFZpAuoLDQNfddjAZrrmn1KzXIUHNRBmhkUko/4a2TzoUajawr5LjB8Gk5GX0LA9f+tGLA3J2Rg==}
@@ -4494,6 +4519,11 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0-beta.4
       '@babel/helper-validator-identifier': 8.0.0-beta.4
 
+  '@caido-community/quickssrf@1.0.1-beta.1':
+    dependencies:
+      '@caido/sdk-shared': 0.2.1
+      zod: 4.3.6
+
   '@caido/eslint-config@0.8.0(@typescript-eslint/parser@8.26.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.2))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(typescript@5.6.2)':
     dependencies:
       '@eslint/js': 9.17.0
@@ -4522,6 +4552,8 @@ snapshots:
   '@caido/schema-proxy@0.56.0': {}
 
   '@caido/sdk-shared@0.2.0': {}
+
+  '@caido/sdk-shared@0.2.1': {}
 
   '@caido/server-auth@0.2.0(ws@8.19.0)':
     dependencies:
