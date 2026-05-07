@@ -1,4 +1,5 @@
-import { type As, type ComponentDefinition, type ID, type Prettify } from "./utils";
+import { type EditorView } from "@codemirror/view";
+import { type As, type ComponentDefinition, type ComponentPropsWithSdk, type ID, type Prettify } from "./utils";
 /**
  * A draft request that has not yet been saved to the database.
  * @category Request
@@ -39,10 +40,42 @@ export type RequestFull = Prettify<As<"RequestFull"> & {
     raw: string;
 }>;
 /**
+ * The internal props for the request read-only view mode.
+ * @category Request
+ */
+export type RequestReadableViewModePropsInternal = {
+    request: RequestFull;
+    view: EditorView;
+};
+/**
+ * The internal props for the request writable view mode.
+ * @category Request
+ */
+export type RequestWritableViewModePropsInternal = {
+    request: RequestFull | undefined;
+    draft: RequestDraft;
+    view: EditorView;
+};
+/**
+ * The props for the request writable view mode.
+ * @category Request
+ */
+export type RequestWritableViewModeProps = ComponentPropsWithSdk<RequestWritableViewModePropsInternal>;
+/**
+ * The props for the request read-only view mode.
+ * @category Request
+ */
+export type RequestReadableViewModeProps = ComponentPropsWithSdk<RequestReadableViewModePropsInternal>;
+/**
+ * The props group for the request view mode.
+ * @category Request
+ */
+export type RequestViewModeProps = RequestReadableViewModeProps | RequestWritableViewModeProps | RequestReadableViewModePropsInternal | RequestWritableViewModePropsInternal;
+/**
  * Options for defining a custom request view mode.
  * @category Request
  */
-export type RequestViewModeOptions = {
+export type RequestViewModeOptions<TProps extends RequestViewModeProps> = {
     /**
      * The label of the view mode.
      */
@@ -50,7 +83,7 @@ export type RequestViewModeOptions = {
     /**
      * The component to render when the view mode is selected.
      */
-    view: ComponentDefinition;
+    view: ComponentDefinition<TProps>;
     /**
      * A function that determines if the view mode should be shown for a given request.
      */

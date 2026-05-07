@@ -1,8 +1,23 @@
 import { type CommandID } from "./commands";
-import { type ComponentDefinition, type Prettify } from "./utils";
+import { type ComponentDefinition, type ComponentPropsWithSdk, type Prettify } from "./utils";
 type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = Prettify<{
     type: TType;
 } & P>;
+/**
+ * The internal props for a slot content.
+ * @category Slots
+ */
+export type SlotContentPropsInternal = {};
+/**
+ * The props for a slot content.
+ * @category Slots
+ */
+export type SlotContentProps = ComponentPropsWithSdk<SlotContentPropsInternal>;
+/**
+ * The props group for a slot content.
+ * @category Slots
+ */
+export type SlotContentPropsGroup = SlotContentProps | SlotContentPropsInternal;
 /**
  * Content for a button slot.
  * @category Slots
@@ -16,8 +31,8 @@ export type ButtonSlotContent = DefineSlotContent<"Button", {
  * Content for a custom component slot.
  * @category Slots
  */
-export type CustomSlotContent = DefineSlotContent<"Custom", {
-    definition: ComponentDefinition;
+export type CustomSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = DefineSlotContent<"Custom", {
+    definition: ComponentDefinition<TProps>;
 }>;
 /**
  * Content for a command slot.
@@ -31,7 +46,7 @@ export type CommandSlotContent = DefineSlotContent<"Command", {
  * Union type of all possible slot content types.
  * @category Slots
  */
-export type SlotContent = ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+export type SlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
 /**
  * A function type for adding content to slots.
  * @category Slots

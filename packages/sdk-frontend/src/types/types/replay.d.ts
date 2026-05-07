@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
 import { type ID, type Selection } from "./utils";
 /**
  * The connection information to use for the request.
@@ -42,10 +42,12 @@ export declare const ReplaySlot: {
     readonly Topbar: "topbar";
 };
 export type ReplaySlot = (typeof ReplaySlot)[keyof typeof ReplaySlot];
-export type ReplaySlotContent = {
-    [ReplaySlot.SessionToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
-    [ReplaySlot.SessionToolbarSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
-    [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+/**
+ * Content that can be added to replay slots.
+ * @category Replay
+ */
+export type ReplaySlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
+    [K in ReplaySlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
 };
 /**
  * Options for opening a tab.
