@@ -1,6 +1,10 @@
 import type { PluginPackageSpec } from "@caido/sdk-shared";
 
-import { NotFoundUserError, PluginFunctionCallError } from "@/errors/index.js";
+import {
+  InvalidInputError,
+  NotFoundUserError,
+  PluginFunctionCallError,
+} from "@/errors/index.js";
 import {
   type GraphQLClient,
   InstallPluginPackageDocument,
@@ -13,10 +17,12 @@ import type {
   RestClient,
 } from "@/rest/index.js";
 import type {
+  InstallPluginPackageInput,
   Plugin,
   PluginBackend,
   PluginFrontend,
   PluginPackageApiCallers,
+  PluginPackageSource,
   PluginWorkflow,
   SubscribeEventArgs,
   SubscribeEventInput,
@@ -27,20 +33,6 @@ import { handleGraphQLError } from "@/utils/errors.js";
 import type { Json } from "@/utils/json.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 import { PluginEventBus } from "@/utils/pluginEventBus.js";
-
-type InstallPluginPackageInput<T extends PluginPackageSpec> = {
-  force?: boolean;
-  source: PluginPackageSource<T>;
-};
-
-type PluginPackageSource<T extends PluginPackageSpec> =
-  | { file: File; manifestId?: never; url?: never }
-  | {
-      file?: never;
-      manifestId: [T] extends [never] ? string : T["manifestId"];
-      url?: never;
-    }
-  | { file?: never; manifestId?: never; url: string };
 
 /**
  * Higher-level SDK for plugin-related operations.
@@ -95,9 +87,20 @@ export class PluginSDK {
   async install<T extends PluginPackageSpec = never>(
     options: InstallPluginPackageInput<T>,
   ): Promise<PluginPackageHandle<T>> {
-    const source = isPresent(options.source.file)
-      ? { file: options.source.file }
-      : { manifestId: options.source.manifestId! };
+    const sourceInput: PluginPackageSource<T> =
+      "source" in options ? options.source : options;
+
+    const source: PluginPackageSource<T> = isPresent(sourceInput.file)
+      ? { file: sourceInput.file }
+      : isPresent(sourceInput.url)
+        ? { url: sourceInput.url }
+        : isPresent(sourceInput.manifestId)
+          ? { manifestId: sourceInput.manifestId }
+          : (() => {
+              throw new InvalidInputError(
+                "Invalid plugin install source: expected file, url, or manifestId.",
+              );
+            })();
 
     const result = await this.graphql.mutation(InstallPluginPackageDocument, {
       input: {

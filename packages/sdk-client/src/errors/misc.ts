@@ -38,3 +38,14 @@ export class RankUserError extends BaseError {
     super(`Ranking failed: ${code}: ${reason.toString()}`);
   }
 }
+
+/**
+ * Error thrown when the SDK receives an invalid local input.
+ */
+export class InvalidInputError extends BaseError {
+  readonly __typename = "InvalidInputError";
+
+  constructor(message: string) {
+    super(message);
+  }
+}

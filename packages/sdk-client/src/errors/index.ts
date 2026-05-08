@@ -10,6 +10,7 @@ export {
   NoDataUserError,
 } from "./graphql.js";
 export {
+  InvalidInputError,
   NotFoundUserError,
   OtherUserError,
   ReadOnlyUserError,

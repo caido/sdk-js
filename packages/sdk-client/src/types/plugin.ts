@@ -46,16 +46,18 @@ export type SubscribeEventInput<
   manifestId?: string;
 };
 
-export type InstallPluginPackageInput = {
-  source:
-    | {
-        file: File;
-      }
-    | {
-        manifestId: string;
-      };
+export type PluginPackageSource<T extends PluginPackageSpec = never> =
+  | { file: File; manifestId?: never; url?: never }
+  | {
+      file?: never;
+      manifestId: [T] extends [never] ? string : T["manifestId"];
+      url?: never;
+    }
+  | { file?: never; manifestId?: never; url: string };
+
+export type InstallPluginPackageInput<T extends PluginPackageSpec = never> = {
   force?: boolean;
-};
+} & ({ source: PluginPackageSource<T> } | PluginPackageSource<T>);
 
 export type PluginBackend = {
   kind: "PluginBackend";
