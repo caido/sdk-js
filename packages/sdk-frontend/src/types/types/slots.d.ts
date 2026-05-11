@@ -1,5 +1,6 @@
+import { type API } from "../sdks";
 import { type CommandID } from "./commands";
-import { type ComponentDefinition, type ComponentPropsWithSdk, type Prettify } from "./utils";
+import { type ComponentDefinition, type Prettify } from "./utils";
 type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = Prettify<{
     type: TType;
 } & P>;
@@ -12,7 +13,9 @@ export type SlotContentPropsInternal = {};
  * The props for a slot content.
  * @category Slots
  */
-export type SlotContentProps = ComponentPropsWithSdk<SlotContentPropsInternal>;
+export type SlotContentProps = SlotContentPropsInternal & {
+    sdk: API;
+};
 /**
  * The props group for a slot content.
  * @category Slots

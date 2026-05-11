@@ -1,5 +1,6 @@
 import { type EditorView } from "@codemirror/view";
-import { type As, type ComponentDefinition, type ComponentPropsWithSdk, type ID, type Prettify } from "./utils";
+import { type API } from "../sdks";
+import { type As, type ComponentDefinition, type ID, type Prettify } from "./utils";
 /**
  * A draft request that has not yet been saved to the database.
  * @category Request
@@ -60,12 +61,16 @@ export type RequestWritableViewModePropsInternal = {
  * The props for the request writable view mode.
  * @category Request
  */
-export type RequestWritableViewModeProps = ComponentPropsWithSdk<RequestWritableViewModePropsInternal>;
+export type RequestWritableViewModeProps = RequestWritableViewModePropsInternal & {
+    sdk: API;
+};
 /**
  * The props for the request read-only view mode.
  * @category Request
  */
-export type RequestReadableViewModeProps = ComponentPropsWithSdk<RequestReadableViewModePropsInternal>;
+export type RequestReadableViewModeProps = RequestReadableViewModePropsInternal & {
+    sdk: API;
+};
 /**
  * The props group for the request view mode.
  * @category Request

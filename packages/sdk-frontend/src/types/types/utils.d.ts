@@ -56,7 +56,7 @@ export type ComponentPropsWithSdk<TProps extends ComponentProps> = TProps & {
  */
 export type ComponentDefinition<TProps = ComponentProps> = {
     component: VueComponent<TProps>;
-    props?: TProps;
+    props?: ComponentProps;
     events?: Record<string, (...args: unknown[]) => void>;
 };
 /**

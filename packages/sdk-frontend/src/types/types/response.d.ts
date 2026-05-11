@@ -1,6 +1,7 @@
 import { type EditorView } from "@codemirror/view";
+import { type API } from "../sdks";
 import type { RequestFull, RequestMeta } from "./request";
-import type { As, ComponentDefinition, ComponentPropsWithSdk, ID, Prettify } from "./utils";
+import type { As, ComponentDefinition, ID, Prettify } from "./utils";
 /**
  * A complete response with all metadata and raw content.
  * @category Response
@@ -25,7 +26,9 @@ export type ResponseViewModePropsInternal = {
  * The props for the response view mode.
  * @category Response
  */
-export type ResponseViewModeProps = ComponentPropsWithSdk<ResponseViewModePropsInternal>;
+export type ResponseViewModeProps = ResponseViewModePropsInternal & {
+    sdk: API;
+};
 /**
  * Options for defining a custom response view mode.
  * @category Response

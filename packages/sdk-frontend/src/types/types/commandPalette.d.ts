@@ -1,4 +1,4 @@
-import { type ComponentPropsWithSdk } from "./utils";
+import { type API } from "../sdks";
 /**
  * The internal props for the command palette view.
  * @category Command Palette
@@ -17,4 +17,6 @@ export type CommandPaletteViewPropsInternal = {
  * The props for the command palette view.
  * @category Command Palette
  */
-export type CommandPaletteViewProps = ComponentPropsWithSdk<CommandPaletteViewPropsInternal>;
+export type CommandPaletteViewProps = CommandPaletteViewPropsInternal & {
+    sdk: API;
+};
