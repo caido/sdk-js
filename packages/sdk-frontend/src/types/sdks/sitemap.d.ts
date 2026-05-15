@@ -1,6 +1,6 @@
 import type { Extension } from "@codemirror/state";
-import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import type { RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions } from "../types/response";
 import type { SitemapEntry, SitemapEntryChildStateUpdateEvent, SitemapRootEntry } from "../types/sitemap";
 import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
@@ -53,12 +53,12 @@ export type SitemapSDK = {
      * Add a custom request view mode.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions<RequestReadableViewModeProps>) => void;
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions) => void;
     /**
      * Add an indicator to a sitemap session.
      * Indicators are displayed next to the entry name in the collections tree.

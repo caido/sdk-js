@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type ID, type Selection } from "./utils";
 /**
  * Represents a scope.
@@ -37,12 +37,9 @@ export declare const ScopeSlot: {
     readonly CreateHeader: "create-header";
 };
 export type ScopeSlot = (typeof ScopeSlot)[keyof typeof ScopeSlot];
-/**
- * Content that can be added to scope slots.
- * @category Scopes
- */
-export type ScopeSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in ScopeSlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type ScopeSlotContent = {
+    [ScopeSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [ScopeSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
  * Event fired when the current scope changes.

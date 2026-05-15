@@ -1,5 +1,3 @@
-import { type EditorView } from "@codemirror/view";
-import { type API } from "../sdks";
 import type { RequestFull, RequestMeta } from "./request";
 import type { As, ComponentDefinition, ID, Prettify } from "./utils";
 /**
@@ -15,25 +13,10 @@ export type ResponseFull = Prettify<As<"ResponseFull"> & {
     createdAt: Date;
 }>;
 /**
- * The internal props for the response view mode.
- * @category Response
- */
-export type ResponseViewModePropsInternal = {
-    response: ResponseFull;
-    view: EditorView;
-};
-/**
- * The props for the response view mode.
- * @category Response
- */
-export type ResponseViewModeProps = ResponseViewModePropsInternal & {
-    sdk: API;
-};
-/**
  * Options for defining a custom response view mode.
  * @category Response
  */
-export type ResponseViewModeOptions<TProps extends ResponseViewModeProps | ResponseViewModePropsInternal> = {
+export type ResponseViewModeOptions = {
     /**
      * The label of the view mode.
      */
@@ -41,7 +24,7 @@ export type ResponseViewModeOptions<TProps extends ResponseViewModeProps | Respo
     /**
      * The component to render when the view mode is selected.
      */
-    view: ComponentDefinition<TProps>;
+    view: ComponentDefinition;
     /**
      * A function that determines if the view mode should be shown for a given response.
      */

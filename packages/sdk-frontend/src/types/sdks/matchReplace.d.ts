@@ -1,6 +1,6 @@
 import { type CurrentMatchReplaceRuleChangeEvent, type MatchReplaceCollection, type MatchReplaceRule, type MatchReplaceSection, type MatchReplaceSlotContent, type Source } from "../types/matchReplace";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { AddIndicatorOptions, ID, Indicator, ListenerHandle, QueryInput } from "../types/utils";
+import type { AddIndicatorOptions, HTTPQL, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with the Match and Replace page.
  * @category Match and Replace
@@ -73,13 +73,13 @@ export type MatchReplaceSDK = {
      * Create a rule.
      * @param options - The options for the rule.
      * @param options.name - The name of the rule.
-     * @param options.query - The query to match the rule against.
+     * @param options.query - The HTTPQL query to match the rule against.
      * @param options.collectionId - The ID of the collection the rule belongs to.
      * @param options.sources - The sources the rule belongs to.
      */
     createRule: (options: {
         name: string;
-        query: QueryInput;
+        query: HTTPQL;
         section: MatchReplaceSection;
         collectionId: ID;
         sources: Array<Source>;
@@ -89,13 +89,13 @@ export type MatchReplaceSDK = {
      * @param id - The ID of the rule.
      * @param options - The new values for the rule.
      * @param options.name - The new name of the rule.
-     * @param options.query - The new query of the rule.
+     * @param options.query - The new HTTPQL query of the rule.
      * @param options.section - The new section of the rule.
      * @param options.sources - The new sources of the rule.
      */
     updateRule: (id: ID, options: {
         name: string;
-        query?: QueryInput;
+        query?: HTTPQL;
         section: MatchReplaceSection;
         sources: Array<Source>;
     }) => Promise<MatchReplaceRule>;

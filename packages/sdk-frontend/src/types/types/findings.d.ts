@@ -1,6 +1,6 @@
 import { type ID, type Selection } from "./utils";
 /**
- * Represents a {@link https://docs.caido.io/app/quickstart/findings.html|Finding}.
+ * Represents a {@link https://docs.caido.io/reference/features/logging/findings|Finding}.
  * @category Findings
  */
 export type Finding = {

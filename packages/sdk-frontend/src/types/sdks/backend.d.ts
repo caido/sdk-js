@@ -1,17 +1,11 @@
-import { type BackendEndpoints, type BackendEvents, type BackendSpec } from "../types/backend";
+import { type BackendEndpoints, type BackendEvents } from "../types/backend";
 import type { PromisifiedReturnType } from "../types/utils";
-type ResolvedAPI<T> = T extends {
-    api: infer A;
-} ? A : T;
-type ResolvedEvents<T, E> = T extends {
-    events: infer A;
-} ? A : E;
 /**
  * Utilities to interact with the backend plugin.
  * @category Backend
  */
-export type BackendSDK<T extends BackendEndpoints | BackendSpec, E extends BackendEvents> = {
-    [K in keyof ResolvedAPI<T>]: (...args: Parameters<ResolvedAPI<T>[K]>) => PromisifiedReturnType<ResolvedAPI<T>[K]>;
+export type BackendSDK<T extends BackendEndpoints, E extends BackendEvents> = {
+    [K in keyof T]: (...args: Parameters<T[K]>) => PromisifiedReturnType<T[K]>;
 } & {
     /**
      * Subscribe to a backend event.
@@ -19,8 +13,7 @@ export type BackendSDK<T extends BackendEndpoints | BackendSpec, E extends Backe
      * @param callback The callback to call when the event is emitted.
      * @returns An object with a `stop` method that can be called to stop listening to the event.
      */
-    onEvent: <K extends keyof ResolvedEvents<T, E>>(event: K, callback: ResolvedEvents<T, E>[K]) => {
+    onEvent: <K extends keyof E>(event: K, callback: E[K]) => {
         stop: () => void;
     };
 };
-export {};

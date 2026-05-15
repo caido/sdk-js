@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 /**
  * The slots in the Footer UI.
  * @category Footer
@@ -12,6 +12,7 @@ export type FooterSlot = (typeof FooterSlot)[keyof typeof FooterSlot];
  * Content that can be added to footer slots.
  * @category Footer
  */
-export type FooterSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in FooterSlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type FooterSlotContent = {
+    [FooterSlot.FooterSlotPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [FooterSlot.FooterSlotSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
