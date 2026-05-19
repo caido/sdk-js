@@ -12,3 +12,11 @@ export type BackendEndpoints = {
 export type BackendEvents = {
     [key: string]: (...args: any[]) => void;
 };
+/**
+ * A specification for the backend plugin.
+ * @category Backend
+ */
+export type BackendSpec = {
+    api: BackendEndpoints;
+    events: BackendEvents;
+};

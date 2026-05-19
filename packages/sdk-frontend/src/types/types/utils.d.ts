@@ -1,4 +1,5 @@
 import { type Component as VueComponent } from "vue";
+import { type API } from "../index";
 /**
  * A unique Caido identifier per type.
  * @category Utils
@@ -15,6 +16,21 @@ export type HTTPQL = string & {
     __httpql?: never;
 };
 /**
+ * A STREAMQL expression.
+ * @example `ws.raw.cont:"hello"`
+ * @category Utils
+ */
+export type StreamQL = string & {
+    __streamql?: never;
+};
+/**
+ * A query input.
+ * @example `"req.method.eq:'POST'"`
+ * @example `"ws.raw.cont:'hello'"`
+ * @category Utils
+ */
+export type QueryInput = HTTPQL | StreamQL;
+/**
  * A {@link https://fontawesome.com/icons|FontAwesome} icon class.
  * @example "fas fa-rocket"
  * @category Utils
@@ -23,12 +39,24 @@ export type Icon = string & {
     __icon?: never;
 };
 /**
+ * A set of properties that can be passed to a component.
+ * @category Utils
+ */
+export type ComponentProps = Record<string, unknown>;
+/**
+ * A set of properties that can be passed to a component definition with the SDK.
+ * @category Utils
+ */
+export type ComponentPropsWithSdk<TProps extends ComponentProps> = TProps & {
+    sdk: API;
+};
+/**
  * A custom component that will be rendered in the UI.
  * @category Utils
  */
-export type ComponentDefinition = {
-    component: VueComponent;
-    props?: Record<string, unknown>;
+export type ComponentDefinition<TProps = ComponentProps> = {
+    component: VueComponent<TProps>;
+    props?: ComponentProps;
     events?: Record<string, (...args: unknown[]) => void>;
 };
 /**

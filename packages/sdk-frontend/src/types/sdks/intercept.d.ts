@@ -1,5 +1,5 @@
-import type { RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions } from "../types/response";
+import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
+import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with the Intercept page.
@@ -20,10 +20,10 @@ export type InterceptSDK = {
      * Add a custom request view mode.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions) => void;
+    addRequestViewMode: (options: RequestViewModeOptions<RequestWritableViewModeProps>) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
 };

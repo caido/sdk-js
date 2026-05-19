@@ -1,3 +1,4 @@
+import { type CommandPaletteViewProps } from "../types/commandPalette";
 import { type CommandID } from "../types/commands";
 import { type ComponentDefinition } from "../types/utils";
 /**
@@ -6,7 +7,7 @@ import { type ComponentDefinition } from "../types/utils";
  */
 export type CommandPaletteView = {
     type: "Custom";
-    definition: ComponentDefinition;
+    definition: ComponentDefinition<CommandPaletteViewProps>;
 };
 /**
  * Utilities to interact with the command palette.
