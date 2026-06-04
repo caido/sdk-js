@@ -1,5 +1,5 @@
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
-import { type ID, type Selection } from "./utils";
+import { type AddIndicatorOptions, type ID, type Selection } from "./utils";
 /**
  * The connection information to use for the request.
  * @category Replay
@@ -207,6 +207,17 @@ export type ReplayCollectionCreatedEvent = {
 export type ReplayPageContext = {
     kind: "Replay";
     selection: Selection<ReplaySessionId>;
+};
+/**
+ * Options for adding an indicator to a replay session.
+ * @category Replay
+ */
+export type AddSessionIndicatorOptions = AddIndicatorOptions & {
+    /**
+     * Includes the indicator icon on the session's replay tab.
+     * @default false
+     */
+    showTabIcon?: boolean;
 };
 /**
  * A unique replay session identifier.

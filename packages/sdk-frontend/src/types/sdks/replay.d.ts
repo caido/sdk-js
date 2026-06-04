@@ -1,9 +1,9 @@
 import { type Extension } from "@codemirror/state";
-import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
 import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
+import type { ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -235,11 +235,12 @@ export type ReplaySDK = {
      * const indicator = sdk.replay.addSessionIndicator(sessionId, {
      *   icon: "fas fa-exclamation-triangle",
      *   description: "Security warning",
+     *   showTabIcon: true,
      * });
      *
      * // Later, remove the indicator
      * indicator.remove();
      *
      */
-    addSessionIndicator: (sessionId: ID, indicator: AddIndicatorOptions) => Indicator;
+    addSessionIndicator: (sessionId: ID, indicator: AddSessionIndicatorOptions) => Indicator;
 };

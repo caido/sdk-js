@@ -4,7 +4,7 @@ export type { _AnalyticsSDK } from "./private/analytics";
 export type { MessageViewModeOptions, StreamWsMessageMeta, MessageViewModePropsInternal, MessageViewModeProps, } from "./types/websocket";
 export type { CommandContext, CommandContextRequest, CommandContextRequestRow, CommandContextResponse, CommandContextBase, } from "./types/commands";
 export type { MenuItem } from "./types/menu";
-export { type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";
+export { type AddSessionIndicatorOptions, type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";
 export type { AutomateSession, AutomateEntry } from "./types/automate";
 export type { SitemapEntry, SitemapRootEntry, ChildState, } from "./types/sitemap";
 export { SearchSlot, type SearchSlotContent } from "./types/search";
