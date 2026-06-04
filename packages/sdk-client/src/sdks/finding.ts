@@ -1,12 +1,14 @@
 import { mapToPageInfo } from "@/convert/connection.js";
 import { mapToFinding } from "@/convert/finding.js";
 import type {
+  DeleteFindingsInput,
   FilterClauseFindingInput,
   FindingOrderInput,
   GraphQLClient,
 } from "@/graphql/index.js";
 import {
   CreateFindingDocument,
+  DeleteFindingsDocument,
   FindingDocument,
   FindingsDocument,
   UpdateFindingDocument,
@@ -133,5 +135,12 @@ export class FindingSDK {
       throw new Error("updateFinding returned no finding");
     }
     return mapToFinding(finding);
+  }
+
+  /**
+   * Delete one or more findings.
+   */
+  async delete(input?: DeleteFindingsInput): Promise<void> {
+    await this.graphql.mutation(DeleteFindingsDocument, { input });
   }
 }
