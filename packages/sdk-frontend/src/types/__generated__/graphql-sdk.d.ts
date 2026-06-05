@@ -50978,25 +50978,6 @@ export type ClearSitemapEntriesMutation = {
         deletedIds: Array<string>;
     };
 };
-export type ExportSitemapEntriesMutationVariables = Exact<{
-    input: ExportSitemapEntriesInput;
-}>;
-export type ExportSitemapEntriesMutation = {
-    exportSitemapEntries: {
-        export?: {
-            downloadUri: string;
-            id: string;
-        } | undefined | null;
-        error?: {
-            __typename: "OtherUserError";
-            code: string;
-        } | {
-            __typename: "PermissionDeniedUserError";
-            code: string;
-            permissionDeniedReason: PermissionDeniedErrorReason;
-        } | undefined | null;
-    };
-};
 export type CreatedSitemapEntrySubscriptionVariables = Exact<{
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
@@ -54719,7 +54700,6 @@ export declare const SitemapEntryChildrenDocument = "\n    query sitemapEntryChi
 export declare const SitemapEntryRequestsDocument = "\n    query sitemapEntryRequests($id: ID!, $after: String, $before: String, $first: Int, $last: Int) {\n  sitemapEntry(id: $id) {\n    ...sitemapEntryMeta\n    requests(after: $after, before: $before, first: $first, last: $last) {\n      edges {\n        cursor\n        node {\n          ...requestMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const DeleteSitemapEntriesDocument = "\n    mutation deleteSitemapEntries($ids: [ID!]!) {\n  deleteSitemapEntries(ids: $ids) {\n    deletedIds\n    errors {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const ClearSitemapEntriesDocument = "\n    mutation clearSitemapEntries {\n  clearSitemapEntries {\n    deletedIds\n  }\n}\n    ";
-export declare const ExportSitemapEntriesDocument = "\n    mutation exportSitemapEntries($input: ExportSitemapEntriesInput!) {\n  exportSitemapEntries(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const DeletedSitemapEntryDocument = "\n    subscription deletedSitemapEntry {\n  deletedSitemapEntry {\n    deletedIds\n    snapshot\n  }\n}\n    ";
@@ -55063,7 +55043,6 @@ export declare function getSdk<C>(requester: Requester<C>): {
     sitemapEntryRequests(variables: SitemapEntryRequestsQueryVariables, options?: C): Promise<SitemapEntryRequestsQuery>;
     deleteSitemapEntries(variables: DeleteSitemapEntriesMutationVariables, options?: C): Promise<DeleteSitemapEntriesMutation>;
     clearSitemapEntries(variables?: ClearSitemapEntriesMutationVariables, options?: C): Promise<ClearSitemapEntriesMutation>;
-    exportSitemapEntries(variables: ExportSitemapEntriesMutationVariables, options?: C): Promise<ExportSitemapEntriesMutation>;
     createdSitemapEntry(variables?: CreatedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<CreatedSitemapEntrySubscription>;
     updatedSitemapEntry(variables?: UpdatedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<UpdatedSitemapEntrySubscription>;
     deletedSitemapEntry(variables?: DeletedSitemapEntrySubscriptionVariables, options?: C): AsyncIterable<DeletedSitemapEntrySubscription>;

@@ -1,5 +1,4 @@
 import { type Component as VueComponent } from "vue";
-import { type API } from "../index";
 /**
  * A unique Caido identifier per type.
  * @category Utils
@@ -39,24 +38,12 @@ export type Icon = string & {
     __icon?: never;
 };
 /**
- * A set of properties that can be passed to a component.
- * @category Utils
- */
-export type ComponentProps = Record<string, unknown>;
-/**
- * A set of properties that can be passed to a component definition with the SDK.
- * @category Utils
- */
-export type ComponentPropsWithSdk<TProps extends ComponentProps> = TProps & {
-    sdk: API;
-};
-/**
  * A custom component that will be rendered in the UI.
  * @category Utils
  */
-export type ComponentDefinition<TProps = ComponentProps> = {
-    component: VueComponent<TProps>;
-    props?: ComponentProps;
+export type ComponentDefinition = {
+    component: VueComponent;
+    props?: Record<string, unknown>;
     events?: Record<string, (...args: unknown[]) => void>;
 };
 /**

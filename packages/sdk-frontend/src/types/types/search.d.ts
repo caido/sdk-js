@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 /**
  * The slots in the Search UI.
  * @category Search
@@ -10,12 +10,8 @@ export declare const SearchSlot: {
     readonly ToolbarPrimary: "search-toolbar-primary";
 };
 export type SearchSlot = (typeof SearchSlot)[keyof typeof SearchSlot];
-/**
- * Content that can be added to search slots.
- * @category Search
- */
-export type SearchSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in SearchSlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type SearchSlotContent = {
+    [SearchSlot.ToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
  * Search page context.

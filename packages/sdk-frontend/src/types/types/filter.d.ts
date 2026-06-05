@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type HTTPQL, type ID, type Selection } from "./utils";
 /**
  * Represents a filter.
@@ -42,8 +42,9 @@ export type FilterSlot = (typeof FilterSlot)[keyof typeof FilterSlot];
  * Content that can be added to filter slots.
  * @category Filter
  */
-export type FilterSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in FilterSlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type FilterSlotContent = {
+    [FilterSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [FilterSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
  * Event fired when the current filter changes.

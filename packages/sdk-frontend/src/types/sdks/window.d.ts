@@ -1,6 +1,6 @@
 import type { Editor } from "../types/editor";
-import type { ListenerHandle } from "../types/utils";
-import { type Dialog, type DialogComponent, type DialogOptions, type GlobalContext } from "../types/window";
+import type { ComponentDefinition, ListenerHandle } from "../types/utils";
+import { type Dialog, type DialogOptions, type GlobalContext } from "../types/window";
 /**
  * Utilities to interact with the active page.
  * @category Window
@@ -34,7 +34,7 @@ export type WindowSDK = {
      * @param options.closable Whether the close icon is hidden . Defaults to false
      * @returns A dialog object that can be used to close the dialog.
      */
-    showDialog: (component: DialogComponent, options?: DialogOptions) => Dialog;
+    showDialog: (component: ComponentDefinition, options?: DialogOptions) => Dialog;
     /**
      * Get the current global context.
      * @returns The current global context.

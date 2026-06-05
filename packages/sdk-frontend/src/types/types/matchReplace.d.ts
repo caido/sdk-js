@@ -1,4 +1,4 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
 import { type HTTPQL, type ID, type Selection } from "./utils";
 /**
  * A rule in Match and Replace.
@@ -448,8 +448,9 @@ export type MatchReplaceSlot = (typeof MatchReplaceSlot)[keyof typeof MatchRepla
  * Content that can be added to match and replace slots.
  * @category Match and Replace
  */
-export type MatchReplaceSlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in MatchReplaceSlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type MatchReplaceSlotContent = {
+    [MatchReplaceSlot.UpdateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [MatchReplaceSlot.CreateHeader]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
  * Event fired when the current match and replace rule changes.
