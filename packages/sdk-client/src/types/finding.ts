@@ -44,3 +44,20 @@ export type UpdateFindingOptions = {
   /** Whether the finding is hidden. */
   hidden: boolean;
 };
+
+/**
+ * Options for deleting findings.
+ * This is a discriminated union that allows deleting either by specific IDs or by reporter name.
+ * @category Finding
+ */
+export type DeleteFindingOptions =
+  | {
+      /** Array of finding IDs to delete. */
+      ids: ID[];
+      reporter?: never;
+    }
+  | {
+      ids?: never;
+      /** Reporter name to delete all findings by. */
+      reporter: string;
+    };
