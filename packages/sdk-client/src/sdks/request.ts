@@ -1,6 +1,8 @@
+import { encodeBlob } from "@/convert/blob.js";
 import { mapToPageInfo } from "@/convert/connection.js";
-import { mapToRequestResponseOpt, mapToResponse } from "@/convert/request.js";
+import { mapToRequestResponseOpt } from "@/convert/request.js";
 import {
+  CreateRequestDocument,
   type GraphQLClient,
   Ordering,
   RequestDocument,
@@ -10,6 +12,7 @@ import {
 } from "@/graphql/index.js";
 import type {
   ConnectionQueryResult,
+  CreateRequestOptions,
   HTTPQL,
   ID,
   RequestGetOptions,
@@ -17,6 +20,7 @@ import type {
   RequestResponseOpt,
   ResponseOrderField,
 } from "@/types/index.js";
+import { handleGraphQLError } from "@/utils/errors.js";
 import { ListBuilder, type ListBuilderVars } from "@/utils/list.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
@@ -159,5 +163,60 @@ export class RequestSDK {
       return undefined;
     }
     return mapToRequestResponseOpt(result.request);
+  }
+
+  /**
+   * Create a request.
+   *
+   * @param options - The options for the creation.
+   * @returns The created request and optional response.
+   */
+  async create(options: CreateRequestOptions): Promise<RequestResponseOpt> {
+    // Determine isTls from port if not explicitly provided
+    const isTls =
+      options.isTls !== undefined
+        ? options.isTls
+        : [443, 8443].includes(options.port);
+
+    const result = await this.graphql.mutation(CreateRequestDocument, {
+      input: {
+        host: options.host,
+        method: options.method,
+        path: options.path,
+        port: options.port,
+        query: options.query,
+        raw: encodeBlob(options.raw),
+        alteration: options.alteration,
+        source: options.source,
+        isTls,
+        parentId: options.parentId,
+        response: options.response
+          ? {
+              raw: encodeBlob(options.response.raw),
+              statusCode: options.response.statusCode,
+              roundtripTime: options.response.roundtripTime,
+              alteration: options.response.alteration,
+              source: options.response.source,
+              parentId: options.response.parentId,
+            }
+          : undefined,
+        sni: options.sni,
+      },
+    });
+
+    const payload = result.createRequest;
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    const requestId = payload.id as ID;
+
+    // Fetch the created request
+    const createdRequest = await this.get(requestId);
+    if (isAbsent(createdRequest)) {
+      throw new Error("Created request could not be fetched");
+    }
+
+    return createdRequest;
   }
 }

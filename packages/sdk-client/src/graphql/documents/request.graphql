@@ -79,3 +79,16 @@ query Requests(
     }
   }
 }
+
+mutation CreateRequest($input: CreateRequestInput!) {
+  createRequest(input: $input) {
+    error {
+      __typename
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    id
+    responseId
+  }
+}

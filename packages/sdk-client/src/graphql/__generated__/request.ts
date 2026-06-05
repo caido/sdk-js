@@ -88,6 +88,41 @@ export type ResponseQuery = {
     | null;
 };
 
+export type CreateRequestMutationVariables = Types.Exact<{
+  input: {
+    host: Types.Scalars["String"]["input"];
+    method: Types.Scalars["String"]["input"];
+    path: Types.Scalars["String"]["input"];
+    port: Types.Scalars["Port"]["input"];
+    query: Types.Scalars["String"]["input"];
+    raw: Types.Scalars["Blob"]["input"];
+    alteration: Types.Scalars["String"]["input"];
+    source: Types.Scalars["String"]["input"];
+    isTls?: Types.InputMaybe<Types.Scalars["Boolean"]["input"]>;
+    parentId?: Types.InputMaybe<Types.Scalars["ID"]["input"]>;
+    response?: Types.InputMaybe<{
+      raw: Types.Scalars["Blob"]["input"];
+      statusCode: Types.Scalars["Int"]["input"];
+      roundtripTime: Types.Scalars["Int"]["input"];
+      alteration: Types.Scalars["String"]["input"];
+      source: Types.Scalars["String"]["input"];
+      parentId?: Types.InputMaybe<Types.Scalars["ID"]["input"]>;
+    }>;
+    sni?: Types.InputMaybe<Types.Scalars["String"]["input"]>;
+  };
+}>;
+
+export type CreateRequestMutation = {
+  createRequest: {
+    error?:
+      | { __typename: "OtherUserError"; code: string }
+      | undefined
+      | null;
+    id: string;
+    responseId?: string | undefined | null;
+  };
+};
+
 export type RequestsQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars["Int"]["input"]>;
   after?: Types.InputMaybe<Types.Scalars["String"]["input"]>;
@@ -567,6 +602,128 @@ export const ResponseDocument = {
     },
   ],
 } as unknown as DocumentNode<ResponseQuery, ResponseQueryVariables>;
+export const CreateRequestDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "CreateRequest" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "input" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "CreateRequestInput" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "createRequest" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "input" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "input" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "error" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "__typename" },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: { kind: "Name", value: "OtherUserError" },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "OtherUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "responseId" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OtherUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "OtherUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CreateRequestMutation,
+  CreateRequestMutationVariables
+>;
 export const RequestsDocument = {
   kind: "Document",
   definitions: [

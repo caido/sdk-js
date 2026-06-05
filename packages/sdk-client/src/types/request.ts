@@ -113,3 +113,55 @@ export type RequestGetOptions = {
   /** Include response raw body. Default true. */
   responseRaw?: boolean;
 };
+
+/**
+ * Options for creating a request.
+ * @category Request
+ */
+export type CreateRequestOptions = {
+  /** The host of the request. */
+  host: string;
+  /** The HTTP method of the request. */
+  method: string;
+  /** The path of the request. */
+  path: string;
+  /** The port of the request. */
+  port: number;
+  /** The query string of the request. */
+  query: string;
+  /** The raw request payload. */
+  raw: string | Uint8Array;
+  /** The alteration type of the request. */
+  alteration: "MANUAL" | "NONE" | "TAMPER";
+  /** The source of the request. */
+  source:
+    | "AUTOMATE"
+    | "IMPORT"
+    | "INTERCEPT"
+    | "PLUGIN"
+    | "REPLAY"
+    | "SAMPLE"
+    | "WORKFLOW";
+  /** Whether the request uses TLS (optional, defaults based on port if not provided). */
+  isTls?: boolean;
+  /** The parent request ID (optional). */
+  parentId?: ID;
+  /** The response for the request (optional). */
+  response?: {
+    raw: string | Uint8Array;
+    statusCode: number;
+    roundtripTime: number;
+    alteration: "MANUAL" | "NONE" | "TAMPER";
+    source:
+      | "AUTOMATE"
+      | "IMPORT"
+      | "INTERCEPT"
+      | "PLUGIN"
+      | "REPLAY"
+      | "SAMPLE"
+      | "WORKFLOW";
+    parentId?: ID;
+  };
+  /** The SNI hostname (optional). */
+  sni?: string;
+};
