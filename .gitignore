@@ -1,4 +1,8 @@
 node_modules/
-docs/
+**/docs/*
+!**/docs/adr
 dist/
 .secrets.json
+.agents
+.claude
+.cursor
