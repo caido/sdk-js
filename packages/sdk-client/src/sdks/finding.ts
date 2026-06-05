@@ -7,6 +7,7 @@ import type {
 } from "@/graphql/index.js";
 import {
   CreateFindingDocument,
+  DeleteFindingsDocument,
   FindingDocument,
   FindingsDocument,
   UpdateFindingDocument,
@@ -14,6 +15,7 @@ import {
 import {
   type ConnectionQueryResult,
   type CreateFindingOptions,
+  type DeleteFindingOptions,
   type Finding,
   type ID,
   type UpdateFindingOptions,
@@ -133,5 +135,29 @@ export class FindingSDK {
       throw new Error("updateFinding returned no finding");
     }
     return mapToFinding(finding);
+  }
+
+  /**
+   * Delete one or more findings.
+   *
+   * Delete findings by providing either a list of finding IDs or a reporter name.
+   * If no options are provided, all findings will be deleted.
+   *
+   * @param options - The options for the deletion. Can be a discriminated union of:
+   *   - An object with `ids` array to delete specific findings by ID
+   *   - An object with `reporter` string to delete all findings by a reporter
+   *   - `undefined` to delete all findings
+   * @example
+   * // Delete specific findings by ID
+   * await client.findings.delete({ ids: ["finding-1", "finding-2"] });
+   *
+   * // Delete all findings by a reporter
+   * await client.findings.delete({ reporter: "eslint" });
+   *
+   * // Delete all findings
+   * await client.findings.delete();
+   */
+  async delete(options?: DeleteFindingOptions): Promise<void> {
+    await this.graphql.mutation(DeleteFindingsDocument, { input: options });
   }
 }
