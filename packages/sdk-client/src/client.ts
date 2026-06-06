@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  DNSRewriteSDK,
   EnvironmentSDK,
   FilterSDK,
   FindingSDK,
@@ -43,6 +44,7 @@ import { sleep } from "@/utils/misc.js";
  * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
  * - `workflow` - Higher-level workflow SDK
+ * - `dnsRewrite` - Higher-level DNS rewrite SDK
  *
  * @example
  * ```typescript
@@ -102,6 +104,9 @@ export class Client {
   /** Higher-level replay SDK. */
   readonly replay: ReplaySDK;
 
+  /** Higher-level DNS rewrite SDK. */
+  readonly dnsRewrite: DNSRewriteSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -136,6 +141,7 @@ export class Client {
     this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
     this.replay = new ReplaySDK(this.graphql);
+    this.dnsRewrite = new DNSRewriteSDK(this.graphql);
   }
 
   /**

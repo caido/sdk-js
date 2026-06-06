@@ -1,0 +1,33 @@
+fragment DnsRewriteFull on DnsRewrite {
+  id
+  allowlist
+  denylist
+  enabled
+  rank
+  resolution {
+    __typename
+    ... on DnsIpResolver {
+      ip
+    }
+    ... on DnsUpstreamResolver {
+      id
+    }
+  }
+}
+
+mutation CreateDnsRewrite($input: CreateDnsRewriteInput!) {
+  createDnsRewrite(input: $input) {
+    error {
+      __typename
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+    }
+    rewrite {
+      ...DnsRewriteFull
+    }
+  }
+}
