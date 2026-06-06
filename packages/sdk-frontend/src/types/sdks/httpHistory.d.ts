@@ -1,7 +1,7 @@
 import type { Extension } from "@codemirror/state";
 import type { HTTPHistorySlotContent } from "../types/httpHistory";
-import type { RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions } from "../types/response";
+import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { HTTPQL, ID } from "../types/utils";
 /**
@@ -43,12 +43,12 @@ export type HTTPHistorySDK = {
      * Add a custom request view mode.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions) => void;
+    addRequestViewMode: (options: RequestViewModeOptions<RequestReadableViewModeProps>) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
     /**
      * Scrolls the HTTP History table to a specific entry.
      * @param id The ID of the entry to scroll to.
