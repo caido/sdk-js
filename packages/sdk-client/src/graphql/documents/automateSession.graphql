@@ -1,0 +1,42 @@
+fragment AutomateSessionFull on AutomateSession {
+    id
+    name
+    createdAt
+    raw
+}
+
+query AutomateSessions {
+  automateSessions {
+    nodes {
+      ...AutomateSessionFull
+    }
+  }
+}
+
+query AutomateSession($id: ID!) {
+  automateSession(id: $id) {
+    ...AutomateSessionFull
+  }
+}
+
+mutation CreateAutomateSession($input: CreateAutomateSessionInput!) {
+  createAutomateSession(input: $input) {
+    session {
+      ...AutomateSessionFull
+    }
+  }
+}
+
+mutation DeleteAutomateSession($id: ID!) {
+  deleteAutomateSession(id: $id) {
+    deletedAutomateSessionId
+  }
+}
+
+mutation RenameAutomateSession($id: ID!, $name: String!) {
+  renameAutomateSession(id: $id, name: $name) {
+    session {
+      ...AutomateSessionFull
+    }
+  }
+}

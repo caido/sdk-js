@@ -1,0 +1,87 @@
+fragment HTTPQLQueryFull on HTTPQL {
+  __typename
+  code
+}
+
+fragment StreamQLQueryFull on StreamQL {
+  __typename
+  code
+}
+
+fragment FilterPresetFull on FilterPreset {
+  id
+  name
+  alias
+  clause {
+    ... on HTTPQL {
+      ...HTTPQLQueryFull
+    }
+    ... on StreamQL {
+      ...StreamQLQueryFull
+    }
+  }
+}
+
+query FilterPresets {
+  filterPresets {
+    ...FilterPresetFull
+  }
+}
+
+query FilterPreset($id: ID!) {
+  filterPreset(id: $id) {
+    ...FilterPresetFull
+  }
+}
+
+mutation CreateFilterPreset($input: CreateFilterPresetInput!) {
+  createFilterPreset(input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on AliasTakenUserError {
+        ...AliasTakenUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    filter {
+      ...FilterPresetFull
+    }
+  }
+}
+
+mutation UpdateFilterPreset($id: ID!, $input: UpdateFilterPresetInput!) {
+  updateFilterPreset(id: $id, input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on AliasTakenUserError {
+        ...AliasTakenUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    filter {
+      ...FilterPresetFull
+    }
+  }
+}
+
+mutation DeleteFilterPreset($id: ID!) {
+  deleteFilterPreset(id: $id) {
+    deletedId
+  }
+}

@@ -1,0 +1,59 @@
+fragment ScopeFull on Scope {
+    id
+    name
+    allowlist
+    denylist
+    indexed
+}
+
+query Scopes {
+  scopes {
+    ...ScopeFull
+  }
+}
+
+query Scope($id: ID!) {
+  scope(id: $id) {
+    ...ScopeFull
+  }
+}
+
+mutation CreateScope($input: CreateScopeInput!) {
+  createScope(input: $input) {
+    error {
+      __typename
+      ... on InvalidGlobTermsUserError {
+        ...InvalidGlobTermsUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    scope {
+      ...ScopeFull
+    }
+  }
+}
+
+mutation UpdateScope($id: ID!, $input: UpdateScopeInput!) {
+  updateScope(id: $id, input: $input) {
+    error {
+      __typename
+      ... on InvalidGlobTermsUserError {
+        ...InvalidGlobTermsUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    scope {
+      ...ScopeFull
+    }
+  }
+}
+
+mutation DeleteScope($id: ID!) {
+  deleteScope(id: $id) {
+    deletedId
+  }
+}

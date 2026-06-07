@@ -1,0 +1,84 @@
+fragment WorkflowFull on Workflow {
+  id
+  name
+  kind
+  definition
+  enabled
+  global
+  readOnly
+  createdAt
+  updatedAt
+}
+
+query Workflows {
+  workflows {
+    ...WorkflowFull
+  }
+}
+
+query Workflow($id: ID!) {
+  workflow(id: $id) {
+    ...WorkflowFull
+  }
+}
+
+mutation CreateWorkflow($input: CreateWorkflowInput!) {
+  createWorkflow(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+    }
+    workflow {
+      ...WorkflowFull
+    }
+  }
+}
+
+mutation UpdateWorkflow($id: ID!, $input: UpdateWorkflowInput!) {
+  updateWorkflow(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on ReadOnlyUserError {
+        ...ReadOnlyUserErrorFull
+      }
+    }
+    workflow {
+      ...WorkflowFull
+    }
+  }
+}
+
+mutation DeleteWorkflow($id: ID!) {
+  deleteWorkflow(id: $id) {
+    deletedId
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on ReadOnlyUserError {
+        ...ReadOnlyUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}

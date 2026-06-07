@@ -94,4 +94,4 @@ _Avoid_: REST versioning
 
 **Version-gated field**:
 An optional field on an SDK type whose value is only populated when the connected instance's schema supports it. Documented with a JSDoc `@since` tag naming the instance version the field was introduced.
-_Avoid_: feature flag field, conditional property
+_Avoid_: feature flag field, conditional propertyment AutomateSessionSDK.create() method with full CRUD coverage)

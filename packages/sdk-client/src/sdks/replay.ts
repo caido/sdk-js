@@ -158,6 +158,93 @@ export class ReplaySDK {
     return this.waitForReplayTask(task);
   }
 
+  private async sendLatest(
+    sessionId: ID,
+    options: ReplaySendOptions,
+  ): Promise<ReplaySendResult> {
+    const session = await this.sessions.get(sessionId);
+    if (isAbsent(session) || session.type !== "HTTP") {
+      throw new OtherUserError("INTERNAL", "SDK only supports HTTP sessions");
+    }
+    let targetEntryId = session.activeEntry?.id;
+    if (isAbsent(targetEntryId)) {
+      const entries = session.entries;
+      if (entries.edges.length === 0) {
+        throw new OtherUserError("INTERNAL", "Replay session has no entries");
+      }
+      targetEntryId = entries.edges[entries.edges.length - 1]?.node.id;
+    }
+    if (isAbsent(targetEntryId)) {
+      throw new OtherUserError(
+        "INTERNAL",
+        "Replay session has no active entry",
+      );
+    }
+
+    // Update the draft on the target Entry
+    await this.graphql.mutation(UpdateReplayEntryDraftDocument, {
+      id: targetEntryId,
+      input: {
+        http: {
+          connection: {
+            host: options.connection.host,
+            port: options.connection.port,
+            isTLS: options.connection.isTLS,
+            SNI: options.connection.SNI,
+          },
+          editorState: encodeBlob(options.raw),
+          raw: encodeBlob(options.raw),
+          settings: {
+            placeholders:
+              settings.placeholders?.map((placeholder) => ({
+                inputRange: placeholder.inputRange,
+                outputRange: placeholder.outputRange,
+                preprocessors: placeholder.preprocessors ?? [],
+              })) ?? [],
+          },
+        },
+      },
+    });
+
+    // Update the session settings if needed
+    if (
+      (settings.connectionClose !== undefined &&
+        settings.connectionClose !== session.settings?.connectionClose) ||
+      (settings.updateContentLength !== undefined &&
+        settings.updateContentLength !== session.settings?.updateContentLength)
+    ) {
+      await this.graphql.mutation(UpdateReplaySessionSettingsDocument, {
+        id: sessionId as string,
+        input: {
+          http: {
+            connectionClose:
+              settings.connectionClose ??
+              session.settings?.connectionClose ??
+              false,
+            updateContentLength:
+              settings.updateContentLength ??
+              session.settings?.updateContentLength ??
+              true,
+          },
+        },
+      });
+    }
+
+    // Start the replay task
+    const result = await this.graphql.mutation(LatestStartReplayTaskDocument, {
+      sessionId: sessionId as string,
+    });
+
+    const payload = result.startReplayTask;
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+    const task = new ReplayTask(this.graphql, payload.task!);
+
+    // Wait for task to finish
+    return this.waitForReplayTask(task);
+  }
+
   private async sendV056(
     sessionId: ID,
     options: ReplaySendOptions,

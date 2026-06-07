@@ -1,0 +1,37 @@
+fragment HostedFileFull on HostedFile {
+    id
+    name
+    path
+    size
+    status
+    createdAt
+    updatedAt
+}
+
+query HostedFiles {
+  hostedFiles {
+    ...HostedFileFull
+  }
+}
+
+mutation UploadHostedFile($input: UploadHostedFileInput!) {
+  uploadHostedFile(input: $input) {
+    hostedFile {
+      ...HostedFileFull
+    }
+  }
+}
+
+mutation RenameHostedFile($id: ID!, $name: String!) {
+  renameHostedFile(id: $id, name: $name) {
+    hostedFile {
+      ...HostedFileFull
+    }
+  }
+}
+
+mutation DeleteHostedFile($id: ID!) {
+  deleteHostedFile(id: $id) {
+    deletedId
+  }
+}

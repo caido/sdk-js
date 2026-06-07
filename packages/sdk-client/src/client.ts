@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  AutomateSessionSDK,
   EnvironmentSDK,
   FilterSDK,
   FindingSDK,
@@ -83,6 +84,9 @@ export class Client {
   /** Higher-level filter preset SDK. */
   readonly filter: FilterSDK;
 
+  /** Higher-level automate session SDK. */
+  readonly automateSession: AutomateSessionSDK;
+
   /** Higher-level environment SDK. */
   readonly environment: EnvironmentSDK;
 
@@ -135,6 +139,7 @@ export class Client {
     this.project = new ProjectSDK(this.graphql);
     this.scope = new ScopeSDK(this.graphql);
     this.filter = new FilterSDK(this.graphql);
+    this.automateSession = new AutomateSessionSDK(this.graphql);
     this.environment = new EnvironmentSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
     this.instance = new InstanceSDK(this.graphql);

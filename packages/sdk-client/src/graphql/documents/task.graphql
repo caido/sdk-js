@@ -1,0 +1,50 @@
+fragment TaskMeta on Task {
+  __typename
+  id
+  createdAt
+}
+
+fragment ReplayTaskMeta on ReplayTask {
+  ...TaskMeta
+  replayEntry {
+    id
+  }
+}
+
+query Tasks {
+  tasks {
+    ...TaskMeta
+    ... on ReplayTask {
+      ...ReplayTaskMeta
+    }
+  }
+}
+
+mutation cancelTask($id: ID!) {
+  cancelTask(id: $id) {
+    cancelledId
+    error {
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+subscription FinishedTask {
+  finishedTask {
+    task {
+      ...TaskMeta
+      ... on ReplayTask {
+        ...ReplayTaskMeta
+      }
+    }
+    status
+    error {
+      code
+    }
+  }
+}

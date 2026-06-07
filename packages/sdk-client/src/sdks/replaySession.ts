@@ -53,6 +53,7 @@ export class ReplaySessionsListBuilder extends ListBuilder<
   never,
   never
 > {
+<<<<<<< HEAD
   constructor(
     graphql: GraphQLClient,
     private readonly version: Version,
@@ -64,10 +65,17 @@ export class ReplaySessionsListBuilder extends ListBuilder<
     vars: ListBuilderVars<never, never>,
   ): Promise<ConnectionQueryResult<ReplaySession>> {
     const variables = {
+=======
+  override async query(
+    vars: ListBuilderVars<never, never>,
+  ): Promise<ConnectionQueryResult<ReplaySession>> {
+    const result = await this.graphql.query(ReplaySessionsDocument, {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       first: vars.first,
       after: vars.after,
       last: vars.last,
       before: vars.before,
+<<<<<<< HEAD
     };
 
     if (await this.version.gte(TransportVersion.V0_57)) {
@@ -92,15 +100,23 @@ export class ReplaySessionsListBuilder extends ListBuilder<
       V056ReplaySessionsDocument,
       variables,
     );
+=======
+    });
+
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
     return {
       pageInfo: mapToPageInfo(result.replaySessions.pageInfo),
       edges: result.replaySessions.edges.map((edge) => ({
         cursor: edge.cursor,
+<<<<<<< HEAD
         node: new ReplaySession(
           this.graphql,
           this.version,
           versioned(TransportVersion.V0_56, edge.node),
         ),
+=======
+        node: new ReplaySession(this.graphql, edge.node),
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       })),
     };
   }
@@ -116,11 +132,15 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
   private includeRequestRaw = true;
   private includeResponseRaw = true;
 
+<<<<<<< HEAD
   constructor(
     graphql: GraphQLClient,
     private readonly version: Version,
     sessionId: ID,
   ) {
+=======
+  constructor(graphql: GraphQLClient, sessionId: ID) {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
     super(graphql);
     this.sessionId = sessionId;
   }
@@ -145,7 +165,11 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
   override async query(
     vars: ListBuilderVars<never, never>,
   ): Promise<ConnectionQueryResult<ReplayEntry>> {
+<<<<<<< HEAD
     const variables = {
+=======
+    const result = await this.graphql.query(ReplaySessionEntriesDocument, {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       id: this.sessionId,
       after: vars.after,
       before: vars.before,
@@ -154,6 +178,7 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
       includeReplayRaw: this.includeReplayRaw,
       includeRequestRaw: this.includeRequestRaw,
       includeResponseRaw: this.includeResponseRaw,
+<<<<<<< HEAD
     };
 
     if (await this.version.gte(TransportVersion.V0_57)) {
@@ -192,6 +217,10 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
     );
     const entries = result.replaySession?.entries;
     if (isAbsent(entries)) {
+=======
+    });
+    if (isAbsent(result.replaySession)) {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       return {
         pageInfo: {
           hasNextPage: false,
@@ -202,6 +231,7 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
         edges: [],
       };
     }
+<<<<<<< HEAD
 
     return {
       pageInfo: mapToPageInfo(entries.pageInfo),
@@ -211,6 +241,13 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
           this.graphql,
           versioned(TransportVersion.V0_56, edge.node),
         ),
+=======
+    return {
+      pageInfo: mapToPageInfo(result.replaySession.entries.pageInfo),
+      edges: result.replaySession.entries.edges.map((edge) => ({
+        cursor: edge.cursor,
+        node: new ReplayEntry(this.graphql, edge.node),
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       })),
     };
   }
@@ -219,11 +256,15 @@ export class ReplaySessionEntriesListBuilder extends ListBuilder<
  * SDK for replay sessions.
  */
 export class ReplaySessionSDK {
+<<<<<<< HEAD
   constructor(
     private readonly graphql: GraphQLClient,
     private readonly version: Version,
     private readonly entries: ReplayEntrySDK,
   ) {}
+=======
+  constructor(private readonly graphql: GraphQLClient) {}
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
 
   /**
    * List replay sessions.
@@ -231,7 +272,11 @@ export class ReplaySessionSDK {
    * const sessions = await client.replay.sessions.list().first(50);
    */
   list(): ReplaySessionsListBuilder {
+<<<<<<< HEAD
     return new ReplaySessionsListBuilder(this.graphql, this.version);
+=======
+    return new ReplaySessionsListBuilder(this.graphql);
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -240,6 +285,7 @@ export class ReplaySessionSDK {
    * @returns The replay session, or undefined if it does not exist.
    */
   async get(id: ID): Promise<ReplaySession | undefined> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       const result = await this.graphql.query(LatestReplaySessionDocument, {
         id: id as string,
@@ -255,16 +301,23 @@ export class ReplaySessionSDK {
     }
 
     const result = await this.graphql.query(V056ReplaySessionDocument, {
+=======
+    const result = await this.graphql.query(ReplaySessionDocument, {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       id: id as string,
     });
     if (isAbsent(result.replaySession)) {
       return undefined;
     }
+<<<<<<< HEAD
     return new ReplaySession(
       this.graphql,
       this.version,
       versioned(TransportVersion.V0_56, result.replaySession),
     );
+=======
+    return new ReplaySession(this.graphql, result.replaySession);
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -273,6 +326,7 @@ export class ReplaySessionSDK {
    * @returns The created replay session.
    */
   async create(options?: CreateReplaySessionOptions): Promise<ReplaySession> {
+<<<<<<< HEAD
     const requestSource = mapRequestSource(options?.requestSource);
 
     if (await this.version.gte(TransportVersion.V0_57)) {
@@ -317,6 +371,30 @@ export class ReplaySessionSDK {
         input,
       },
     );
+=======
+    const input: { collectionId?: string; requestSource?: unknown } = {};
+    if (options?.collectionId)
+      input.collectionId = options.collectionId as string;
+    if (options?.requestSource) {
+      input.requestSource =
+        "id" in options.requestSource
+          ? { id: options.requestSource.id }
+          : {
+              raw: {
+                connectionInfo: options.requestSource.connection,
+                raw: options.requestSource.raw,
+              },
+            };
+    }
+    const result = await this.graphql.mutation(CreateReplaySessionDocument, {
+      input: input as {
+        collectionId?: string;
+        requestSource?:
+          | { id: string }
+          | { raw: { connectionInfo: ConnectionInfoInput; raw: string } };
+      },
+    });
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
     const session = result.createReplaySession.session;
     if (isAbsent(session)) {
       throw new OtherUserError(
@@ -324,11 +402,15 @@ export class ReplaySessionSDK {
         "createReplaySession returned no session",
       );
     }
+<<<<<<< HEAD
     return new ReplaySession(
       this.graphql,
       this.version,
       versioned(TransportVersion.V0_56, session),
     );
+=======
+    return new ReplaySession(this.graphql, session);
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -336,12 +418,18 @@ export class ReplaySessionSDK {
    * @param ids - The IDs of the replay sessions to delete.
    */
   async delete(ids: ID[]): Promise<void> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       await this.graphql.mutation(LatestDeleteReplaySessionsDocument, { ids });
       return;
     }
 
     await this.graphql.mutation(V056DeleteReplaySessionsDocument, { ids });
+=======
+    await this.graphql.mutation(DeleteReplaySessionsDocument, {
+      ids,
+    });
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -351,6 +439,7 @@ export class ReplaySessionSDK {
    * @returns The moved replay session.
    */
   async move(id: ID, collectionId: ID): Promise<ReplaySession> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       const result = await this.graphql.mutation(
         LatestMoveReplaySessionDocument,
@@ -374,6 +463,9 @@ export class ReplaySessionSDK {
     }
 
     const result = await this.graphql.mutation(V056MoveReplaySessionDocument, {
+=======
+    const result = await this.graphql.mutation(MoveReplaySessionDocument, {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       id: id as string,
       collectionId: collectionId as string,
     });
@@ -384,11 +476,15 @@ export class ReplaySessionSDK {
         "moveReplaySession returned no session",
       );
     }
+<<<<<<< HEAD
     return new ReplaySession(
       this.graphql,
       this.version,
       versioned(TransportVersion.V0_56, session),
     );
+=======
+    return new ReplaySession(this.graphql, session);
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -398,6 +494,7 @@ export class ReplaySessionSDK {
    * @returns The renamed replay session.
    */
   async rename(id: ID, name: string): Promise<ReplaySession> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       const result = await this.graphql.mutation(
         LatestRenameReplaySessionDocument,
@@ -427,6 +524,12 @@ export class ReplaySessionSDK {
         name,
       },
     );
+=======
+    const result = await this.graphql.mutation(RenameReplaySessionDocument, {
+      id: id as string,
+      name,
+    });
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
     const session = result.renameReplaySession.session;
     if (isAbsent(session)) {
       throw new OtherUserError(
@@ -434,11 +537,15 @@ export class ReplaySessionSDK {
         "renameReplaySession returned no session",
       );
     }
+<<<<<<< HEAD
     return new ReplaySession(
       this.graphql,
       this.version,
       versioned(TransportVersion.V0_56, session),
     );
+=======
+    return new ReplaySession(this.graphql, session);
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
@@ -447,6 +554,7 @@ export class ReplaySessionSDK {
    * @param entryId - The ID of the entry to set as active.
    */
   async setActiveEntry(sessionId: ID, entryId: ID): Promise<void> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       await this.graphql.mutation(LatestSetActiveReplaySessionEntryDocument, {
         id: sessionId,
@@ -456,6 +564,9 @@ export class ReplaySessionSDK {
     }
 
     await this.graphql.mutation(V056SetActiveReplaySessionEntryDocument, {
+=======
+    await this.graphql.mutation(SetActiveReplaySessionEntryDocument, {
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       id: sessionId,
       entryId,
     });
@@ -472,6 +583,7 @@ export class ReplaySession {
   readonly activeEntryId: ID | undefined;
 
   private readonly graphql: GraphQLClient;
+<<<<<<< HEAD
   private readonly version: Version;
   private readonly entrySdk: ReplayEntrySDK;
 
@@ -503,12 +615,22 @@ export class ReplaySession {
         break;
       }
     }
+=======
+
+  constructor(graphql: GraphQLClient, data: ReplaySessionMetaFragment) {
+    this.graphql = graphql;
+    this.id = data.id;
+    this.name = data.name;
+    this.collectionId = data.collection.id;
+    this.activeEntryId = data.activeEntry?.id ?? undefined;
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
   }
 
   /**
    * Set the active entry for this session.
    */
   async setActiveEntry(entryId: ID): Promise<ReplaySession> {
+<<<<<<< HEAD
     if (await this.version.gte(TransportVersion.V0_57)) {
       const result = await this.graphql.mutation(
         LatestSetActiveReplaySessionEntryDocument,
@@ -531,6 +653,10 @@ export class ReplaySession {
 
     const result = await this.graphql.mutation(
       V056SetActiveReplaySessionEntryDocument,
+=======
+    const result = await this.graphql.mutation(
+      SetActiveReplaySessionEntryDocument,
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)
       {
         id: this.id,
         entryId,
@@ -540,6 +666,7 @@ export class ReplaySession {
     if (isAbsent(session)) {
       return this;
     }
+<<<<<<< HEAD
     return new ReplaySession(
       this.graphql,
       this.version,
@@ -573,3 +700,12 @@ const mapRequestSource = (
     },
   };
 };
+=======
+    return new ReplaySession(this.graphql, session);
+  }
+
+  entries(): ReplaySessionEntriesListBuilder {
+    return new ReplaySessionEntriesListBuilder(this.graphql, this.id);
+  }
+}
+>>>>>>> f0a176c (Implement AutomateSessionSDK.create() method with full CRUD coverage)

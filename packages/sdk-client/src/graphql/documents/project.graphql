@@ -1,0 +1,103 @@
+fragment ProjectFull on Project {
+    id
+    name
+    path
+    status
+    temporary
+    createdAt
+    updatedAt
+    version
+    size
+    readOnly
+}
+
+query Projects {
+  projects {
+    ...ProjectFull
+  }
+}
+
+mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        ...NameTakenUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    project {
+      ...ProjectFull
+    }
+  }
+}
+
+mutation DeleteProject($id: ID!) {
+  deleteProject(id: $id) {
+    deletedId
+    error {
+      __typename
+      ... on ProjectUserError {
+        ...ProjectUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+mutation RenameProject($id: ID!, $name: String!) {
+  renameProject(id: $id, name: $name) {
+    error {
+      __typename
+      ... on NameTakenUserError {
+        code
+        name
+      }
+      ... on UnknownIdUserError {
+        code
+        id
+      }
+      ... on OtherUserError {
+        code
+      }
+    }
+    project {
+      ...ProjectFull
+    }
+  }
+}
+
+mutation SelectProject($id: ID!) {
+  selectProject(id: $id) {
+    currentProject {
+      project {
+        ...ProjectFull
+      }
+    }
+    error {
+      __typename
+      ... on ProjectUserError {
+        ...ProjectUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
