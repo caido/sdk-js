@@ -14,3 +14,11 @@ export type Backup = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+/**
+ * Options for creating a backup
+ */
+export type CreateBackupOptions = {
+  /** The project ID to create a backup for */
+  projectId: ID;
+};

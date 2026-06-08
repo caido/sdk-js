@@ -5,7 +5,7 @@ import {
   CreateBackupDocument,
   type GraphQLClient,
 } from "@/graphql/index.js";
-import type { Backup, ID } from "@/types/index.js";
+import type { Backup, CreateBackupOptions, ID } from "@/types/index.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isPresent } from "@/utils/optional.js";
 
@@ -45,9 +45,9 @@ export class BackupSDK {
   /**
    * Create a new backup.
    */
-  async create(projectId: ID): Promise<Backup> {
+  async create(options: CreateBackupOptions): Promise<Backup> {
     const result = await this.graphql.mutation(CreateBackupDocument, {
-      projectId: projectId as string,
+      projectId: options.projectId as string,
     });
 
     const payload = result.createBackup;
