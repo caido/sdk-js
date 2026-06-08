@@ -61,8 +61,18 @@ export type UserErrorFull_InvalidHttpqlUserError_Fragment = {
   code: string;
 };
 
+export type UserErrorFull_InvalidRangeUserError_Fragment = {
+  __typename: "InvalidRangeUserError";
+  code: string;
+};
+
 export type UserErrorFull_InvalidRegexUserError_Fragment = {
   __typename: "InvalidRegexUserError";
+  code: string;
+};
+
+export type UserErrorFull_InvalidStreamQlUserError_Fragment = {
+  __typename: "InvalidStreamQLUserError";
   code: string;
 };
 
@@ -131,6 +141,11 @@ export type UserErrorFull_UnsupportedPlatformUserError_Fragment = {
   code: string;
 };
 
+export type UserErrorFull_WsUserError_Fragment = {
+  __typename: "WSUserError";
+  code: string;
+};
+
 export type UserErrorFull_WorkflowUserError_Fragment = {
   __typename: "WorkflowUserError";
   code: string;
@@ -149,7 +164,9 @@ export type UserErrorFullFragment =
   | UserErrorFull_InternalUserError_Fragment
   | UserErrorFull_InvalidGlobTermsUserError_Fragment
   | UserErrorFull_InvalidHttpqlUserError_Fragment
+  | UserErrorFull_InvalidRangeUserError_Fragment
   | UserErrorFull_InvalidRegexUserError_Fragment
+  | UserErrorFull_InvalidStreamQlUserError_Fragment
   | UserErrorFull_NameTakenUserError_Fragment
   | UserErrorFull_NewerVersionUserError_Fragment
   | UserErrorFull_OtherUserError_Fragment
@@ -163,6 +180,7 @@ export type UserErrorFullFragment =
   | UserErrorFull_TaskInProgressUserError_Fragment
   | UserErrorFull_UnknownIdUserError_Fragment
   | UserErrorFull_UnsupportedPlatformUserError_Fragment
+  | UserErrorFull_WsUserError_Fragment
   | UserErrorFull_WorkflowUserError_Fragment;
 
 export type CloudUserErrorFullFragment = {

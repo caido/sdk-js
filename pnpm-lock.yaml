@@ -67,6 +67,9 @@ importers:
       graphql-ws:
         specifier: ^6.0.0
         version: 6.0.7(graphql@16.12.0)(ws@8.19.0)
+      semver:
+        specifier: ^7.8.0
+        version: 7.8.1
       wonka:
         specifier: ^6.0.0
         version: 6.3.5
@@ -75,8 +78,11 @@ importers:
         version: 4.3.6
     devDependencies:
       '@caido/schema-proxy':
-        specifier: 0.56.0
-        version: 0.56.0
+        specifier: 0.57.0
+        version: 0.57.0
+      '@caido/schema-proxy-v0.56':
+        specifier: npm:@caido/schema-proxy@0.56.0
+        version: '@caido/schema-proxy@0.56.0'
       '@graphql-codegen/cli':
         specifier: 5.0.3
         version: 5.0.3(@types/node@25.0.10)(graphql@16.12.0)(typescript@5.6.2)
@@ -98,6 +104,9 @@ importers:
       '@types/node':
         specifier: 25.0.10
         version: 25.0.10
+      '@types/semver':
+        specifier: 7.7.1
+        version: 7.7.1
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -585,6 +594,9 @@ packages:
 
   '@caido/schema-proxy@0.56.0':
     resolution: {integrity: sha512-kChcDH45cQiSf1AA2t7WIC3fMKjqOnPC6Cl8aOaZYN2AI9T5ZaHVDlnzpTIX9tm+Ptq4+hfDGioyGMasgBF+Ww==}
+
+  '@caido/schema-proxy@0.57.0':
+    resolution: {integrity: sha512-EEq6OIfk46ZZoao2U76NkFf0qYusJHv39P8InU9W4fGMA2NihDs9wuBn6o3FH2QlN7gXCp+l8wAII4ao675xVg==}
 
   '@caido/sdk-shared@0.2.0':
     resolution: {integrity: sha512-pgzwCZSu9R7ggOQvnmspxcZ79plCrzWZ3jcv1t4ahqdov8D5Kl0GWNQsO7oj/Bve4vH/spOR3XZefCRCDhcjbw==}
@@ -1622,6 +1634,9 @@ packages:
 
   '@types/node@25.0.10':
     resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -3501,8 +3516,8 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.3:
-    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
+  semver@7.8.1:
+    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -4566,6 +4581,8 @@ snapshots:
   '@caido/quickjs-types@0.26.0': {}
 
   '@caido/schema-proxy@0.56.0': {}
+
+  '@caido/schema-proxy@0.57.0': {}
 
   '@caido/sdk-shared@0.2.0': {}
 
@@ -5684,6 +5701,8 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/semver@7.7.1': {}
+
   '@types/unist@3.0.3': {}
 
   '@types/ws@8.18.1':
@@ -5745,7 +5764,7 @@ snapshots:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.3
+      semver: 7.8.1
       ts-api-utils: 2.4.0(typescript@5.6.2)
       typescript: 5.6.2
     transitivePeerDependencies:
@@ -6538,7 +6557,7 @@ snapshots:
   eslint-compat-utils@0.5.1(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
       eslint: 9.39.2(jiti@2.6.1)
-      semver: 7.7.3
+      semver: 7.8.1
 
   eslint-config-prettier@10.1.1(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
@@ -6572,7 +6591,7 @@ snapshots:
       find-up: 5.0.0
       globals: 15.15.0
       lodash.memoize: 4.1.2
-      semver: 7.7.3
+      semver: 7.8.1
 
   eslint-plugin-es-x@7.8.0(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
@@ -6620,7 +6639,7 @@ snapshots:
       globals: 15.15.0
       ignore: 5.3.2
       minimatch: 9.0.5
-      semver: 7.7.3
+      semver: 7.8.1
 
   eslint-plugin-no-unsanitized@4.1.2(eslint@9.39.2(jiti@2.6.1)):
     dependencies:
@@ -6642,7 +6661,7 @@ snapshots:
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 7.1.1
-      semver: 7.7.3
+      semver: 7.8.1
       vue-eslint-parser: 10.2.0(eslint@9.39.2(jiti@2.6.1))
       xml-name-validator: 4.0.0
     optionalDependencies:
@@ -7888,7 +7907,7 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.3: {}
+  semver@7.8.1: {}
 
   sentence-case@3.0.4:
     dependencies:
@@ -8147,7 +8166,7 @@ snapshots:
       picomatch: 4.0.3
       rolldown: 1.0.0-rc.1
       rolldown-plugin-dts: 0.21.8(oxc-resolver@11.17.0)(rolldown@1.0.0-rc.1)(typescript@5.6.2)
-      semver: 7.7.3
+      semver: 7.8.1
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
@@ -8364,7 +8383,7 @@ snapshots:
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
       esquery: 1.7.0
-      semver: 7.7.3
+      semver: 7.8.1
     transitivePeerDependencies:
       - supports-color
 

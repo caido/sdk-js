@@ -4,7 +4,7 @@ import { z } from "zod";
 import {
   AuthorizationErrorReason,
   CloudErrorReason,
-} from "./__generated__/enums.js";
+} from "@/transport/latest/__generated__/enums.js";
 
 import {
   AuthorizationUserError,

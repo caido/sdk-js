@@ -1,4 +1,4 @@
-import type { ConnectionInfoFullFragment } from "@/graphql/__generated__/connectionInfo.js";
+import type { ConnectionInfoFullFragment } from "@/transport/latest/__generated__/connectionInfo.js";
 import type { ConnectionInfo } from "@/types/index.js";
 
 export const mapToConnectionInfo = (

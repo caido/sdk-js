@@ -8,8 +8,24 @@ const config: UserWorkspaceConfig = defineConfig({
     }),
   ],
   test: {
-    setupFiles: ["./tests/setup.ts"],
     fileParallelism: false,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          include: ["src/**/*.spec.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "integration",
+          include: ["tests/**/*.spec.ts"],
+          setupFiles: ["./tests/setup.ts"],
+        },
+      },
+    ],
   },
 });
 

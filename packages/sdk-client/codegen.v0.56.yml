@@ -1,9 +1,14 @@
-schema: ./node_modules/@caido/schema-proxy/schema.graphql
+schema: ./node_modules/@caido/schema-proxy-v0.56/schema.graphql
 documents:
-  - ./src/transport/latest/documents/*.graphql
+  - ./src/transport/v0.56/documents/*.graphql
+  - ./src/transport/latest/documents/connectionInfo.graphql
+  - ./src/transport/latest/documents/request.graphql
+  - ./src/transport/latest/documents/range.graphql
+  - ./src/transport/latest/documents/errors.graphql
+  - ./src/transport/latest/documents/task.graphql
 
 generates:
-  ./src/transport/latest/__generated__/enums.ts:
+  ./src/transport/v0.56/__generated__/enums.ts:
     plugins:
       - typescript
     config:
@@ -11,13 +16,13 @@ generates:
         typeNames: keep
       onlyEnums: true
 
-  ./src/transport/latest/__generated__/types.ts:
+  ./src/transport/v0.56/__generated__/types.ts:
     plugins:
       - typescript
     config:
       enumValues: './enums.js'
 
-  ./src/transport/latest/__generated__/:
+  ./src/transport/v0.56/__generated__/:
     plugins:
       - typescript-operations
       - typed-document-node
@@ -25,7 +30,7 @@ generates:
     presetConfig:
       folder: ../__generated__
       extension: .ts
-      baseTypesPath: ./types.js.js # Hack to add the js extension
+      baseTypesPath: ./types.js.js
     config:
       useTypeImports: true
 
