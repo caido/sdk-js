@@ -67,6 +67,9 @@ importers:
       graphql-ws:
         specifier: ^6.0.0
         version: 6.0.7(graphql@16.12.0)(ws@8.19.0)
+      semver:
+        specifier: ^7.8.1
+        version: 7.8.1
       wonka:
         specifier: ^6.0.0
         version: 6.3.5
@@ -98,6 +101,9 @@ importers:
       '@types/node':
         specifier: 25.0.10
         version: 25.0.10
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -1622,6 +1628,9 @@ packages:
 
   '@types/node@25.0.10':
     resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -3503,6 +3512,11 @@ packages:
 
   semver@7.7.3:
     resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.1:
+    resolution: {integrity: sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5683,6 +5697,8 @@ snapshots:
   '@types/node@25.0.10':
     dependencies:
       undici-types: 7.16.0
+
+  '@types/semver@7.7.1': {}
 
   '@types/unist@3.0.3': {}
 
@@ -7889,6 +7905,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.3: {}
+
+  semver@7.8.1: {}
 
   sentence-case@3.0.4:
     dependencies:

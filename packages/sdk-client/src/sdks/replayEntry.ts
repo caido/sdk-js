@@ -9,12 +9,16 @@ import type {
 import { ReplayEntryDocument } from "@/graphql/index.js";
 import type { ConnectionInfo, ID, Request, Response } from "@/types/index.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+import type { Version } from "@/version.js";
 
 /**
  * SDK for replay entries.
  */
 export class ReplayEntrySDK {
-  constructor(private readonly graphql: GraphQLClient) {}
+  constructor(
+    private readonly graphql: GraphQLClient,
+    private readonly _version: Version,
+  ) {}
 
   /**
    * Get a replay session by ID.

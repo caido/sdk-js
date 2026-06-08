@@ -1,5 +1,6 @@
 import type { AuthOptions } from "@/auth/types.js";
 import type { Logger } from "@/logger.js";
+import type { Version } from "@/version.js";
 
 /**
  * Options for creating a new Caido client.
@@ -13,6 +14,12 @@ export interface ClientOptions {
 
   /** Request configuration */
   request?: RequestOptions;
+
+  /**
+   * Known instance version. Skips lazy `/health` fetch for version resolution.
+   * @example Version.of("0.55.0")
+   */
+  version?: Version;
 
   /**
    * Logger instance for debug/info/warn/error output.

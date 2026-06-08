@@ -26,6 +26,7 @@ import {
   type ReadyOptions,
 } from "@/types/index.js";
 import { sleep } from "@/utils/misc.js";
+import { Version } from "@/version.js";
 
 /**
  * Caido client for interacting with a Caido instance.
@@ -33,6 +34,7 @@ import { sleep } from "@/utils/misc.js";
  * Provides access to:
  * - `graphql` - Low-level GraphQL client (execute queries/mutations, subscribe)
  * - `rest` - Low-level REST client (GET, POST)
+ * - `version` - Instance version handle (lazy `/health` or seeded)
  * - `user` - Higher-level user SDK
  * - `plugin` - Higher-level plugin SDK
  * - `project` - Higher-level project SDK
@@ -62,6 +64,9 @@ export class Client {
 
   /** Low-level REST client for making HTTP requests. */
   readonly rest: RestClient;
+
+  /** Instance version handle. Resolves lazily via `/health` unless seeded. */
+  readonly version: Version;
 
   /** Higher-level user SDK. */
   readonly user: UserSDK;
@@ -123,6 +128,8 @@ export class Client {
 
     this.rest = new RestClient(options.url, this.auth, logger, options.request);
 
+    this.version = options.version ?? Version.lazy(this.rest);
+
     this.user = new UserSDK(this.graphql);
     this.plugin = new PluginSDK(this.graphql, this.rest);
     this.project = new ProjectSDK(this.graphql);
@@ -135,7 +142,7 @@ export class Client {
     this.request = new RequestSDK(this.graphql);
     this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
-    this.replay = new ReplaySDK(this.graphql);
+    this.replay = new ReplaySDK(this.graphql, this.version);
   }
 
   /**

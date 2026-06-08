@@ -1,9 +1,9 @@
 schema: ./node_modules/@caido/schema-proxy/schema.graphql
 documents:
-  - ./src/graphql/documents/*.graphql
+  - ./src/transport/latest/documents/*.graphql
 
 generates:
-  ./src/graphql/__generated__/enums.ts:
+  ./src/transport/latest/__generated__/enums.ts:
     plugins:
       - typescript
     config:
@@ -11,13 +11,13 @@ generates:
         typeNames: keep
       onlyEnums: true
 
-  ./src/graphql/__generated__/types.ts:
+  ./src/transport/latest/__generated__/types.ts:
     plugins:
       - typescript
     config:
       enumValues: './enums.js'
 
-  ./src/graphql/__generated__/:
+  ./src/transport/latest/__generated__/:
     plugins:
       - typescript-operations
       - typed-document-node

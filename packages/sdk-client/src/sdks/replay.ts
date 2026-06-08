@@ -10,6 +10,7 @@ import { StartReplayTaskDocument } from "@/graphql/index.js";
 import type { ID, ReplaySendOptions, ReplaySendResult } from "@/types/index.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+import type { Version } from "@/version.js";
 
 /**
  * Top-level Replay SDK: sessions, collections, and send().
@@ -22,10 +23,13 @@ export class ReplaySDK {
 
   private readonly tasks: TaskSDK;
 
-  constructor(private readonly graphql: GraphQLClient) {
+  constructor(
+    private readonly graphql: GraphQLClient,
+    private readonly version: Version,
+  ) {
     this.sessions = new ReplaySessionSDK(graphql);
     this.collections = new ReplayCollectionSDK(graphql);
-    this.entries = new ReplayEntrySDK(graphql);
+    this.entries = new ReplayEntrySDK(graphql, version);
     this.tasks = new TaskSDK(graphql);
   }
 

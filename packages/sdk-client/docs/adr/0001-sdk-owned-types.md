@@ -1,6 +1,6 @@
 # SDK-owned types, not transport types
 
-High-level SDK methods (`sdks/`, `types/`, `convert/`) must expose SDK-owned abstractions for inputs and outputs — never GraphQL or REST generated types. Transport types (`graphql/__generated__/`, `rest/__generated__/`) are internal wiring only; they may appear in `sdks/` and `convert/` at the boundary (operation documents, fragments, `satisfies <TransportInput>`) but must not leak into `types/` or method signatures consumers rely on. Low-level `client.graphql` / `client.rest` are intentional escape hatches and out of scope.
+High-level SDK methods (`sdks/`, `types/`, `convert/`) must expose SDK-owned abstractions for inputs and outputs — never GraphQL or REST generated types. Transport types (`transport/latest/__generated__/`, `rest/__generated__/`) are internal wiring only; they may appear in `sdks/` and `convert/` at the boundary (operation documents, fragments, `satisfies <TransportInput>`) but must not leak into `types/` or method signatures consumers rely on. Canonical mappers live in `transport/latest/convert/`; `convert/` re-exports latest for stable import paths. Low-level `client.graphql` / `client.rest` are intentional escape hatches and out of scope.
 
 ## Rules for contributors and agents
 
