@@ -16,13 +16,19 @@ concurrency:
 
 jobs:
   test-sdk-client:
-    name: Test SDK Client
+    name: Test SDK Client (${{ matrix.caido-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        caido-version:
+          - 0.56.0
+          - 0.57.0
 
     services:
       caido:
-        image: caido/caido:latest
+        image: caido/caido:${{ matrix.caido-version }}
         ports:
           - 8080:8080
         env:
