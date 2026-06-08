@@ -24,6 +24,7 @@ jobs:
         with:
           working_directory: .
           version: ${{ vars.CI__MISE_VERSION }}
+          experimental: true # Necessary for custom backend plugins
 
       - name: Install dependencies
         run: pnpm install
