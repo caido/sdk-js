@@ -56,11 +56,6 @@ export const AuthorizationErrorReason = {
 export type AuthorizationErrorReason =
   (typeof AuthorizationErrorReason)[keyof typeof AuthorizationErrorReason];
 export const AutomateEntryRequestOrderBy = {
-  Extract_0: "EXTRACT_0",
-  Extract_1: "EXTRACT_1",
-  Extract_2: "EXTRACT_2",
-  Extract_3: "EXTRACT_3",
-  Extract_4: "EXTRACT_4",
   Id: "ID",
   Payload_0: "PAYLOAD_0",
   Payload_1: "PAYLOAD_1",
@@ -68,7 +63,6 @@ export const AutomateEntryRequestOrderBy = {
   Payload_3: "PAYLOAD_3",
   Payload_4: "PAYLOAD_4",
   Position: "POSITION",
-  ReqCreatedAt: "REQ_CREATED_AT",
   RespLength: "RESP_LENGTH",
   RespRoundtripTime: "RESP_ROUNDTRIP_TIME",
   RespStatusCode: "RESP_STATUS_CODE",
@@ -287,13 +281,6 @@ export const ReplayEntryOrderBy = {
 
 export type ReplayEntryOrderBy =
   (typeof ReplayEntryOrderBy)[keyof typeof ReplayEntryOrderBy];
-export const ReplaySessionKind = {
-  Http: "HTTP",
-  Ws: "WS",
-} as const;
-
-export type ReplaySessionKind =
-  (typeof ReplaySessionKind)[keyof typeof ReplaySessionKind];
 export const RequestResponseOrderBy = {
   CreatedAt: "CREATED_AT",
   FileExtension: "FILE_EXTENSION",
@@ -310,13 +297,6 @@ export const RequestResponseOrderBy = {
 
 export type RequestResponseOrderBy =
   (typeof RequestResponseOrderBy)[keyof typeof RequestResponseOrderBy];
-export const SettingsNetworkStack = {
-  V1: "V1",
-  V2: "V2",
-} as const;
-
-export type SettingsNetworkStack =
-  (typeof SettingsNetworkStack)[keyof typeof SettingsNetworkStack];
 export const SitemapDescendantsDepth = {
   All: "ALL",
   Direct: "DIRECT",
@@ -384,9 +364,6 @@ export type StreamProtocol =
   (typeof StreamProtocol)[keyof typeof StreamProtocol];
 export const StreamWsMessageFormat = {
   Binary: "BINARY",
-  Close: "CLOSE",
-  Ping: "PING",
-  Pong: "PONG",
   Text: "TEXT",
 } as const;
 
@@ -405,12 +382,6 @@ export const TaskStatus = {
 } as const;
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
-export const WSErrorReason = {
-  CouldNotUpgradeConnection: "COULD_NOT_UPGRADE_CONNECTION",
-  ServerUnresponsive: "SERVER_UNRESPONSIVE",
-} as const;
-
-export type WSErrorReason = (typeof WSErrorReason)[keyof typeof WSErrorReason];
 export const WorkflowErrorReason = {
   ExecutionError: "EXECUTION_ERROR",
   InvalidInput: "INVALID_INPUT",

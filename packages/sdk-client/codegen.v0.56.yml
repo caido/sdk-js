@@ -1,0 +1,68 @@
+schema: ./node_modules/@caido/schema-proxy-v0.56/schema.graphql
+documents:
+  - ./src/transport/v0.56/documents/*.graphql
+  - ./src/transport/latest/documents/connectionInfo.graphql
+  - ./src/transport/latest/documents/request.graphql
+  - ./src/transport/latest/documents/range.graphql
+  - ./src/transport/latest/documents/errors.graphql
+  - ./src/transport/latest/documents/task.graphql
+
+generates:
+  ./src/transport/v0.56/__generated__/enums.ts:
+    plugins:
+      - typescript
+    config:
+      namingConvention:
+        typeNames: keep
+      onlyEnums: true
+
+  ./src/transport/v0.56/__generated__/types.ts:
+    plugins:
+      - typescript
+    config:
+      enumValues: './enums.js'
+
+  ./src/transport/v0.56/__generated__/:
+    plugins:
+      - typescript-operations
+      - typed-document-node
+    preset: near-operation-file
+    presetConfig:
+      folder: ../__generated__
+      extension: .ts
+      baseTypesPath: ./types.js.js
+    config:
+      useTypeImports: true
+
+config:
+  declarationKind: type
+  maybeValue: 'T | undefined | null'
+  strictScalars: true
+  skipTypename: true
+  dedupeFragments: true
+  enumsAsConst: true
+  scalars:
+    DateTime: string
+    Duration: number
+    Blob: string
+    Port: number
+    Timestamp: string
+    Snapshot: number
+    Rank: string
+    Token: string
+    Url: string
+    JSON: unknown
+    JsonObject: Record<string, unknown>
+    Upload: File
+    Image: string
+    Sensitive: string
+    Uri: string
+    Alias: string
+    HTTPQL: string
+    JsonRaw: string
+    Version: string
+    Binary: string
+
+hooks:
+  afterAllFileWrite:
+    - prettier --write

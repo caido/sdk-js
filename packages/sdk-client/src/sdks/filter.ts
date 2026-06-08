@@ -76,6 +76,7 @@ export class FilterSDK {
         name: options.name,
         alias: options.alias,
         clause: mapToFilterPresetClause(options.clause, options.kind),
+        global: options.global ?? false,
       },
     });
 
@@ -101,6 +102,7 @@ export class FilterSDK {
         name: options.name,
         alias: options.alias,
         clause: mapToFilterPresetClause(options.clause, options.kind),
+        global: options.global ?? false,
       },
     });
 

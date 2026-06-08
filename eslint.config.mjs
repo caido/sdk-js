@@ -32,7 +32,7 @@ export default [
   {
     name: "SDK Client",
     ignores: [
-      "packages/sdk-client/src/graphql/__generated__/**",
+      "packages/sdk-client/src/transport/**/__generated__/**",
       "packages/sdk-client/src/rest/__generated__/**"
     ]
   }

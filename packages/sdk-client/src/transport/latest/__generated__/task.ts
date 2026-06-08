@@ -35,7 +35,7 @@ export type ReplayTaskMetaFragment = {
   __typename: "ReplayTask";
   id: string;
   createdAt: string;
-  replayEntry: { id: string };
+  replayEntry: { id: string } | { id: string };
 };
 
 export type TasksQueryVariables = Types.Exact<{ [key: string]: never }>;
@@ -48,7 +48,7 @@ export type TasksQuery = {
         __typename: "ReplayTask";
         id: string;
         createdAt: string;
-        replayEntry: { id: string };
+        replayEntry: { id: string } | { id: string };
       }
     | { __typename: "WorkflowTask"; id: string; createdAt: string }
   >;
@@ -87,10 +87,13 @@ export type FinishedTaskSubscription = {
           __typename: "ReplayTask";
           id: string;
           createdAt: string;
-          replayEntry: { id: string };
+          replayEntry: { id: string } | { id: string };
         }
       | { __typename: "WorkflowTask"; id: string; createdAt: string };
     error?:
+      | { code: string }
+      | { code: string }
+      | { code: string }
       | { code: string }
       | { code: string }
       | { code: string }

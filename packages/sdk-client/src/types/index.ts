@@ -7,6 +7,7 @@ export * from "./hostedFile.js";
 export * from "./plugin.js";
 export * from "./health.js";
 export * from "./semver.js";
+export * from "./versioned.js";
 export * from "./finding.js";
 export * from "./connection.js";
 export * from "./request.js";

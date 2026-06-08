@@ -32,9 +32,7 @@ import { RankErrorReason } from "./enums.js";
 import { RedirectStrategy } from "./enums.js";
 import { RenderFailedErrorReason } from "./enums.js";
 import { ReplayEntryOrderBy } from "./enums.js";
-import { ReplaySessionKind } from "./enums.js";
 import { RequestResponseOrderBy } from "./enums.js";
-import { SettingsNetworkStack } from "./enums.js";
 import { SitemapDescendantsDepth } from "./enums.js";
 import { SitemapEntryKind } from "./enums.js";
 import { Source } from "./enums.js";
@@ -46,7 +44,6 @@ import { StreamProtocol } from "./enums.js";
 import { StreamWsMessageFormat } from "./enums.js";
 import { StreamWsMessageOrderBy } from "./enums.js";
 import { TaskStatus } from "./enums.js";
-import { WSErrorReason } from "./enums.js";
 import { WorkflowErrorReason } from "./enums.js";
 import { WorkflowKind } from "./enums.js";
 export type Maybe<T> = T | undefined | null;
@@ -316,15 +313,9 @@ export type AutomateEntryEdge = {
   node: AutomateEntry;
 };
 
-export type AutomateEntryExtract = {
-  name: Scalars["String"]["output"];
-  raw: Scalars["Blob"]["output"];
-};
-
 export type AutomateEntryRequest = {
   automateEntryId: Scalars["ID"]["output"];
   error?: Maybe<Scalars["String"]["output"]>;
-  extracts: Array<AutomateEntryExtract>;
   payloads: Array<AutomateEntryRequestPayload>;
   request: Request;
   sequenceId: Scalars["ID"]["output"];
@@ -359,24 +350,6 @@ export type AutomateEntryRequestOrderInput = {
 export type AutomateEntryRequestPayload = {
   position?: Maybe<Scalars["Int"]["output"]>;
   raw?: Maybe<Scalars["Blob"]["output"]>;
-};
-
-export type AutomateExtractor = AutomateExtractorRegex;
-
-export type AutomateExtractorInput = {
-  automateExtractorRegex: AutomateExtractorRegexInput;
-};
-
-export type AutomateExtractorRegex = {
-  body: Scalars["Boolean"]["output"];
-  regex: Scalars["String"]["output"];
-  workflowId?: Maybe<Scalars["ID"]["output"]>;
-};
-
-export type AutomateExtractorRegexInput = {
-  body: Scalars["Boolean"]["input"];
-  regex: Scalars["String"]["input"];
-  workflowId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type AutomateHostedFilePayload = {
@@ -563,7 +536,6 @@ export type AutomateSessionEdge = {
 export type AutomateSettings = {
   closeConnection: Scalars["Boolean"]["output"];
   concurrency: AutomateConcurrencySetting;
-  extractors: Array<AutomateExtractor>;
   payloads: Array<AutomatePayload>;
   placeholders: Array<AutomatePlaceholder>;
   redirect: AutomateRedirectSetting;
@@ -575,7 +547,6 @@ export type AutomateSettings = {
 export type AutomateSettingsInput = {
   closeConnection: Scalars["Boolean"]["input"];
   concurrency: AutomateConcurrencySettingInput;
-  extractors: Array<AutomateExtractorInput>;
   payloads: Array<AutomatePayloadInput>;
   placeholders: Array<AutomatePlaceholderInput>;
   redirect: AutomateRedirectSettingInput;
@@ -749,10 +720,6 @@ export type CertificateUserError = UserError & {
   reason: CertificateErrorReason;
 };
 
-export type ClearReplayEntryDraftPayload = {
-  entry?: Maybe<ReplayEntry>;
-};
-
 export type ClearSitemapEntriesPayload = {
   deletedIds: Array<Scalars["ID"]["output"]>;
 };
@@ -873,7 +840,6 @@ export type CreateFilterPresetError =
 export type CreateFilterPresetInput = {
   alias: Scalars["Alias"]["input"];
   clause: QueryInput;
-  global: Scalars["Boolean"]["input"];
   name: Scalars["String"]["input"];
 };
 
@@ -920,50 +886,13 @@ export type CreateReplaySessionCollectionPayload = {
   collection?: Maybe<ReplaySessionCollection>;
 };
 
-export type CreateReplaySessionError =
-  | CloudUserError
-  | OtherUserError
-  | PermissionDeniedUserError;
-
 export type CreateReplaySessionInput = {
   collectionId?: InputMaybe<Scalars["ID"]["input"]>;
-  kind: ReplaySessionKind;
   requestSource?: InputMaybe<RequestSourceInput>;
-  settings?: InputMaybe<ReplaySessionSettingsInput>;
 };
 
 export type CreateReplaySessionPayload = {
-  error?: Maybe<CreateReplaySessionError>;
   session?: Maybe<ReplaySession>;
-};
-
-export type CreateRequestInput = {
-  alteration: Alteration;
-  host: Scalars["String"]["input"];
-  isTls: Scalars["Boolean"]["input"];
-  method: Scalars["String"]["input"];
-  parentId?: InputMaybe<Scalars["ID"]["input"]>;
-  path: Scalars["String"]["input"];
-  port: Scalars["Int"]["input"];
-  query: Scalars["String"]["input"];
-  raw: Scalars["Blob"]["input"];
-  response?: InputMaybe<CreateResponseInput>;
-  sni?: InputMaybe<Scalars["String"]["input"]>;
-  source: Source;
-};
-
-export type CreateRequestPayload = {
-  id: Scalars["ID"]["output"];
-  responseId?: Maybe<Scalars["ID"]["output"]>;
-};
-
-export type CreateResponseInput = {
-  alteration: Alteration;
-  parentId?: InputMaybe<Scalars["ID"]["input"]>;
-  raw: Scalars["Blob"]["input"];
-  roundtripTime: Scalars["Int"]["input"];
-  source: Source;
-  statusCode: Scalars["Int"]["input"];
 };
 
 export type CreateScopeError = InvalidGlobTermsUserError | OtherUserError;
@@ -1318,11 +1247,6 @@ export { DataExportFormat };
 export type DataExportOnDemand = DataExport & {
   downloadUri: Scalars["Uri"]["output"];
   id: Scalars["ID"]["output"];
-};
-
-export type DataExportSettingsInput = {
-  format: DataExportFormat;
-  includeRaw: Scalars["Boolean"]["input"];
 };
 
 export { DataExportStatus };
@@ -1686,22 +1610,6 @@ export type ExportFindingsPayload = {
   export?: Maybe<DataExportOnDemand>;
 };
 
-export type ExportSitemapEntriesError =
-  | OtherUserError
-  | PermissionDeniedUserError;
-
-export type ExportSitemapEntriesFilter = { ids: Array<Scalars["ID"]["input"]> };
-
-export type ExportSitemapEntriesInput = {
-  filter: ExportSitemapEntriesFilter;
-  settings: DataExportSettingsInput;
-};
-
-export type ExportSitemapEntriesPayload = {
-  error?: Maybe<ExportSitemapEntriesError>;
-  export?: Maybe<DataExportOnDemand>;
-};
-
 export type ExportTamperError = OtherUserError | PermissionDeniedUserError;
 
 export type ExportTamperInput = {
@@ -1720,7 +1628,6 @@ export type FilterClauseFindingInput = {
 export type FilterPreset = {
   alias: Scalars["Alias"]["output"];
   clause: Query;
-  global: Scalars["Boolean"]["output"];
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
 };
@@ -1902,10 +1809,6 @@ export type HttpqlInput = {
   code: Scalars["String"]["input"];
 };
 
-export type HiddenStreamWsMessage = {
-  hiddenId: Scalars["ID"]["output"];
-};
-
 export type HideFindingsInput =
   | { ids: Array<Scalars["ID"]["input"]>; reporter?: never }
   | { ids?: never; reporter: Scalars["String"]["input"] };
@@ -1977,7 +1880,6 @@ export type InstallPluginPackagePayload = {
 export type InstanceSettings = {
   aiProviders: AiProviders;
   analytic: AnalyticStatus;
-  network: NetworkState;
   onboarding: OnboardingState;
 };
 
@@ -2125,19 +2027,9 @@ export type InvalidHttpqlUserError = UserError & {
   query: Scalars["String"]["output"];
 };
 
-export type InvalidRangeUserError = UserError & {
-  code: Scalars["String"]["output"];
-  range: Range;
-};
-
 export type InvalidRegexUserError = UserError & {
   code: Scalars["String"]["output"];
   term: Scalars["String"]["output"];
-};
-
-export type InvalidStreamQlUserError = UserError & {
-  code: Scalars["String"]["output"];
-  query: Scalars["String"]["output"];
 };
 
 export type LocalizeWorkflowError =
@@ -2180,7 +2072,6 @@ export type MutationRoot = {
   cancelBackupTask: CancelBackupTaskPayload;
   cancelRestoreBackupTask: CancelRestoreBackupTaskPayload;
   cancelTask: CancelTaskPayload;
-  clearReplayEntryDraft: ClearReplayEntryDraftPayload;
   clearSitemapEntries: ClearSitemapEntriesPayload;
   createAssistantSession: CreateAssistantSessionPayload;
   createAutomateSession: CreateAutomateSessionPayload;
@@ -2193,7 +2084,6 @@ export type MutationRoot = {
   createProject: CreateProjectPayload;
   createReplaySession: CreateReplaySessionPayload;
   createReplaySessionCollection: CreateReplaySessionCollectionPayload;
-  createRequest: CreateRequestPayload;
   createScope: CreateScopePayload;
   createSitemapEntries: CreateSitemapEntriesPayload;
   createTamperRule: CreateTamperRulePayload;
@@ -2230,7 +2120,6 @@ export type MutationRoot = {
   dropInterceptMessage: DropInterceptMessagePayload;
   duplicateAutomateSession: DuplicateAutomateSessionPayload;
   exportFindings: ExportFindingsPayload;
-  exportSitemapEntries: ExportSitemapEntriesPayload;
   exportTamper: ExportTamperPayload;
   forwardInterceptMessage: ForwardInterceptMessagePayload;
   globalizeWorkflow: GlobalizeWorkflowPayload;
@@ -2278,8 +2167,6 @@ export type MutationRoot = {
   selectEnvironment: SelectEnvironmentPayload;
   selectProject: SelectProjectPayload;
   sendAssistantMessage: SendAssistantMessagePayload;
-  sendReplayTaskMessage: SendReplayTaskMessagePayload;
-  sendReplayTaskMessageDraft: SendReplayTaskMessagePayload;
   /** @deprecated Remove usage, no replacement */
   setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
   setGlobalConfigPort: SetConfigPortPayload;
@@ -2293,9 +2180,7 @@ export type MutationRoot = {
   startDeleteStreamWsMessageTask: StartDeleteStreamWsMessageTaskPayload;
   startExportRequestsTask: StartExportRequestsTaskPayload;
   startReplayTask: StartReplayTaskPayload;
-  stopReplayWsTasks: StopReplayWsTaskPayload;
   testAiProvider: TestAiProviderPayload;
-  testExtractor: TestExtractorPayload;
   testTamperRule: TestTamperRulePayload;
   testUpstreamProxyHttp: TestUpstreamProxyHttpPayload;
   testUpstreamProxySocks: TestUpstreamProxySocksPayload;
@@ -2318,8 +2203,6 @@ export type MutationRoot = {
   updateEnvironment: UpdateEnvironmentPayload;
   updateFilterPreset: UpdateFilterPresetPayload;
   updateFinding: UpdateFindingPayload;
-  updateReplayEntryDraft: UpdateReplayEntryDraftPayload;
-  updateReplaySessionSettings: UpdateReplaySessionSettingsPayload;
   updateRequestMetadata: UpdateRequestMetadataPayload;
   updateScope: UpdateScopePayload;
   updateTamperRule: UpdateTamperRulePayload;
@@ -2345,11 +2228,6 @@ export type MutationRootCancelRestoreBackupTaskArgs = {
 
 export type MutationRootCancelTaskArgs = {
   id: Scalars["ID"]["input"];
-};
-
-export type MutationRootClearReplayEntryDraftArgs = {
-  id: Scalars["ID"]["input"];
-  kind: ReplaySessionKind;
 };
 
 export type MutationRootCreateAssistantSessionArgs = {
@@ -2395,10 +2273,6 @@ export type MutationRootCreateReplaySessionArgs = {
 
 export type MutationRootCreateReplaySessionCollectionArgs = {
   input: CreateReplaySessionCollectionInput;
-};
-
-export type MutationRootCreateRequestArgs = {
-  input: CreateRequestInput;
 };
 
 export type MutationRootCreateScopeArgs = {
@@ -2540,10 +2414,6 @@ export type MutationRootDuplicateAutomateSessionArgs = {
 
 export type MutationRootExportFindingsArgs = {
   input: ExportFindingsInput;
-};
-
-export type MutationRootExportSitemapEntriesArgs = {
-  input: ExportSitemapEntriesInput;
 };
 
 export type MutationRootExportTamperArgs = {
@@ -2737,15 +2607,6 @@ export type MutationRootSendAssistantMessageArgs = {
   sessionId: Scalars["ID"]["input"];
 };
 
-export type MutationRootSendReplayTaskMessageArgs = {
-  input: SendReplayTaskMessageInput;
-  task: Scalars["ID"]["input"];
-};
-
-export type MutationRootSendReplayTaskMessageDraftArgs = {
-  task: Scalars["ID"]["input"];
-};
-
 export type MutationRootSetActiveReplaySessionEntryArgs = {
   entryId: Scalars["ID"]["input"];
   id: Scalars["ID"]["input"];
@@ -2789,19 +2650,12 @@ export type MutationRootStartExportRequestsTaskArgs = {
 };
 
 export type MutationRootStartReplayTaskArgs = {
+  input: StartReplayTaskInput;
   sessionId: Scalars["ID"]["input"];
-};
-
-export type MutationRootStopReplayWsTasksArgs = {
-  taskIds: Array<Scalars["ID"]["input"]>;
 };
 
 export type MutationRootTestAiProviderArgs = {
   input: TestAiProviderInput;
-};
-
-export type MutationRootTestExtractorArgs = {
-  input: TestExtractorInput;
 };
 
 export type MutationRootTestTamperRuleArgs = {
@@ -2901,16 +2755,6 @@ export type MutationRootUpdateFindingArgs = {
   input: UpdateFindingInput;
 };
 
-export type MutationRootUpdateReplayEntryDraftArgs = {
-  id: Scalars["ID"]["input"];
-  input: UpdateReplayEntryDraftInput;
-};
-
-export type MutationRootUpdateReplaySessionSettingsArgs = {
-  id: Scalars["ID"]["input"];
-  input: ReplaySessionSettingsInput;
-};
-
 export type MutationRootUpdateRequestMetadataArgs = {
   id: Scalars["ID"]["input"];
   input: UpdateRequestMetadataInput;
@@ -2957,10 +2801,6 @@ export type MutationRootUploadHostedFileArgs = {
 export type NameTakenUserError = UserError & {
   code: Scalars["String"]["output"];
   name: Scalars["String"]["output"];
-};
-
-export type NetworkState = {
-  stack: SettingsNetworkStack;
 };
 
 export type NewerVersionUserError = UserError & {
@@ -3184,7 +3024,6 @@ export type QueryRoot = {
   projects: Array<Project>;
   replayEntry?: Maybe<ReplayEntry>;
   replaySession?: Maybe<ReplaySession>;
-  replaySessionCollection?: Maybe<ReplaySessionCollection>;
   replaySessionCollections: ReplaySessionCollectionConnection;
   replaySessions: ReplaySessionConnection;
   request?: Maybe<Request>;
@@ -3321,14 +3160,9 @@ export type QueryRootInterceptMessagesArgs = {
 
 export type QueryRootReplayEntryArgs = {
   id: Scalars["ID"]["input"];
-  sessionKind: ReplaySessionKind;
 };
 
 export type QueryRootReplaySessionArgs = {
-  id: Scalars["ID"]["input"];
-};
-
-export type QueryRootReplaySessionCollectionArgs = {
   id: Scalars["ID"]["input"];
 };
 
@@ -3411,7 +3245,6 @@ export type QueryRootStreamWsMessageEditArgs = {
 export type QueryRootStreamWsMessagesArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
-  filter?: InputMaybe<StreamQlInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<StreamWsMessageOrderInput>;
@@ -3419,7 +3252,6 @@ export type QueryRootStreamWsMessagesArgs = {
 };
 
 export type QueryRootStreamWsMessagesByOffsetArgs = {
-  filter?: InputMaybe<StreamQlInput>;
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<StreamWsMessageOrderInput>;
@@ -3429,18 +3261,18 @@ export type QueryRootStreamWsMessagesByOffsetArgs = {
 export type QueryRootStreamsArgs = {
   after?: InputMaybe<Scalars["String"]["input"]>;
   before?: InputMaybe<Scalars["String"]["input"]>;
-  filter?: InputMaybe<StreamQlInput>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
   last?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<StreamOrderInput>;
+  protocol: StreamProtocol;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryRootStreamsByOffsetArgs = {
-  filter?: InputMaybe<StreamQlInput>;
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   offset?: InputMaybe<Scalars["Int"]["input"]>;
   order?: InputMaybe<StreamOrderInput>;
+  protocol: StreamProtocol;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
@@ -3646,10 +3478,14 @@ export type RenderRequestPayload = {
 };
 
 export type ReplayEntry = {
+  connection: ConnectionInfo;
   createdAt: Scalars["Timestamp"]["output"];
   error?: Maybe<Scalars["String"]["output"]>;
   id: Scalars["ID"]["output"];
+  raw: Scalars["Blob"]["output"];
+  request?: Maybe<Request>;
   session: ReplaySession;
+  settings: ReplayEntrySettings;
 };
 
 export type ReplayEntryConnection = {
@@ -3671,33 +3507,6 @@ export type ReplayEntryEdge = {
   node: ReplayEntry;
 };
 
-export type ReplayEntryHttp = ReplayEntry & {
-  connection: ConnectionInfo;
-  createdAt: Scalars["Timestamp"]["output"];
-  draft?: Maybe<ReplayEntryHttpDraft>;
-  error?: Maybe<Scalars["String"]["output"]>;
-  id: Scalars["ID"]["output"];
-  raw: Scalars["Blob"]["output"];
-  request?: Maybe<Request>;
-  session: ReplaySession;
-  settings: ReplayEntryHttpSettings;
-};
-
-export type ReplayEntryHttpDraft = {
-  connection: ConnectionInfo;
-  editorState: Scalars["Blob"]["output"];
-  raw: Scalars["Blob"]["output"];
-  settings: ReplayEntryHttpSettings;
-};
-
-export type ReplayEntryHttpSettings = {
-  placeholders: Array<ReplayPlaceholder>;
-};
-
-export type ReplayEntryHttpSettingsInput = {
-  placeholders: Array<ReplayPlaceholderInput>;
-};
-
 export { ReplayEntryOrderBy };
 
 export type ReplayEntryOrderInput = {
@@ -3705,26 +3514,14 @@ export type ReplayEntryOrderInput = {
   ordering: Ordering;
 };
 
-export type ReplayEntryWs = ReplayEntry & {
-  createdAt: Scalars["Timestamp"]["output"];
-  draft?: Maybe<ReplayEntryWsDraft>;
-  error?: Maybe<Scalars["String"]["output"]>;
-  http: ReplayEntryHttp;
-  id: Scalars["ID"]["output"];
-  messages: Array<StreamWsMessage>;
-  session: ReplaySession;
-  stream?: Maybe<Stream>;
+export type ReplayEntrySettings = {
+  placeholders: Array<ReplayPlaceholder>;
 };
 
-export type ReplayEntryWsDraft = {
-  direction: StreamMessageDirection;
-  editorState: Scalars["Blob"]["output"];
-  format: StreamWsMessageFormat;
-  raw: Scalars["Blob"]["output"];
-};
-
-export type ReplayEntryWsSettingsInput = {
-  serverTimeoutMs: Scalars["Int"]["input"];
+export type ReplayEntrySettingsInput = {
+  connectionClose: Scalars["Boolean"]["input"];
+  placeholders: Array<ReplayPlaceholderInput>;
+  updateContentLength: Scalars["Boolean"]["input"];
 };
 
 export type ReplayEnvironmentPreprocessor = {
@@ -3808,9 +3605,20 @@ export type ReplayPreprocessorOptionsInput =
     };
 
 export type ReplaySession = {
+  activeEntry?: Maybe<ReplayEntry>;
+  collection: ReplaySessionCollection;
+  entries: ReplayEntryConnection;
   id: Scalars["ID"]["output"];
   name: Scalars["String"]["output"];
   rank: Scalars["Rank"]["output"];
+};
+
+export type ReplaySessionEntriesArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  order?: InputMaybe<ReplayEntryOrderInput>;
 };
 
 export type ReplaySessionCollection = {
@@ -3858,57 +3666,6 @@ export type ReplaySessionEdge = {
   node: ReplaySession;
 };
 
-export type ReplaySessionHttp = ReplaySession & {
-  activeEntry?: Maybe<ReplayEntry>;
-  collection: ReplaySessionCollection;
-  entries: ReplayEntryConnection;
-  id: Scalars["ID"]["output"];
-  name: Scalars["String"]["output"];
-  rank: Scalars["Rank"]["output"];
-  settings?: Maybe<ReplaySessionHttpSettings>;
-};
-
-export type ReplaySessionHttpEntriesArgs = {
-  after?: InputMaybe<Scalars["String"]["input"]>;
-  before?: InputMaybe<Scalars["String"]["input"]>;
-  first?: InputMaybe<Scalars["Int"]["input"]>;
-  last?: InputMaybe<Scalars["Int"]["input"]>;
-  order?: InputMaybe<ReplayEntryOrderInput>;
-};
-
-export type ReplaySessionHttpSettings = {
-  connectionClose: Scalars["Boolean"]["output"];
-  updateContentLength: Scalars["Boolean"]["output"];
-};
-
-export type ReplaySessionHttpSettingsInput = {
-  connectionClose: Scalars["Boolean"]["input"];
-  updateContentLength: Scalars["Boolean"]["input"];
-};
-
-export { ReplaySessionKind };
-
-export type ReplaySessionSettingsInput = {
-  http: ReplaySessionHttpSettingsInput;
-};
-
-export type ReplaySessionWs = ReplaySession & {
-  activeEntry?: Maybe<ReplayEntry>;
-  collection: ReplaySessionCollection;
-  entries: ReplayEntryConnection;
-  id: Scalars["ID"]["output"];
-  name: Scalars["String"]["output"];
-  rank: Scalars["Rank"]["output"];
-};
-
-export type ReplaySessionWsEntriesArgs = {
-  after?: InputMaybe<Scalars["String"]["input"]>;
-  before?: InputMaybe<Scalars["String"]["input"]>;
-  first?: InputMaybe<Scalars["Int"]["input"]>;
-  last?: InputMaybe<Scalars["Int"]["input"]>;
-  order?: InputMaybe<ReplayEntryOrderInput>;
-};
-
 export type ReplaySuffixPreprocessor = {
   value: Scalars["String"]["output"];
 };
@@ -3921,7 +3678,6 @@ export type ReplayTask = Task & {
   createdAt: Scalars["DateTime"]["output"];
   id: Scalars["ID"]["output"];
   replayEntry: ReplayEntry;
-  sessionKind: ReplaySessionKind;
 };
 
 export type ReplayUrlEncodePreprocessor = {
@@ -4134,10 +3890,6 @@ export type SelectProjectPayloadError =
   | ProjectUserError
   | UnknownIdUserError;
 
-export type SelectedProjectPayload = {
-  currentProject?: Maybe<CurrentProject>;
-};
-
 export type SendAssistantMessageError =
   | CloudUserError
   | OtherUserError
@@ -4147,25 +3899,6 @@ export type SendAssistantMessageError =
 export type SendAssistantMessagePayload = {
   error?: Maybe<SendAssistantMessageError>;
   task?: Maybe<AssistantMessageTask>;
-};
-
-export type SendReplayStreamWsMessage = {
-  data: Scalars["Blob"]["input"];
-  direction: StreamMessageDirection;
-  format: StreamWsMessageFormat;
-};
-
-export type SendReplayTaskMessageError =
-  | CloudUserError
-  | OtherUserError
-  | PermissionDeniedUserError
-  | UnknownIdUserError;
-
-export type SendReplayTaskMessageInput = { ws: SendReplayStreamWsMessage };
-
-export type SendReplayTaskMessagePayload = {
-  error?: Maybe<SendReplayTaskMessageError>;
-  message?: Maybe<StreamMessage>;
 };
 
 export type SetActiveReplaySessionEntryPayload = {
@@ -4189,25 +3922,12 @@ export type SetInstanceSettingsInput =
   | {
       aiProvider: SettingsAiProviderInput;
       analytics?: never;
-      network?: never;
       onboarding?: never;
     }
-  | {
-      aiProvider?: never;
-      analytics: SettingsAnalyticInput;
-      network?: never;
-      onboarding?: never;
-    }
+  | { aiProvider?: never; analytics: SettingsAnalyticInput; onboarding?: never }
   | {
       aiProvider?: never;
       analytics?: never;
-      network: SettingsNetworkInput;
-      onboarding?: never;
-    }
-  | {
-      aiProvider?: never;
-      analytics?: never;
-      network?: never;
       onboarding: SettingsOnboardingInput;
     };
 
@@ -4262,12 +3982,6 @@ export type SettingsAiProviderInput =
 export type SettingsAnalyticInput = {
   enabled: Scalars["Boolean"]["input"];
 };
-
-export type SettingsNetworkInput = {
-  stack: SettingsNetworkStack;
-};
-
-export { SettingsNetworkStack };
 
 export type SettingsOnboardingInput = {
   analytic: Scalars["Boolean"]["input"];
@@ -4367,8 +4081,13 @@ export type StartReplayTaskError =
   | CloudUserError
   | OtherUserError
   | PermissionDeniedUserError
-  | TaskInProgressUserError
-  | UnknownIdUserError;
+  | TaskInProgressUserError;
+
+export type StartReplayTaskInput = {
+  connection: ConnectionInfoInput;
+  raw: Scalars["Blob"]["input"];
+  settings: ReplayEntrySettingsInput;
+};
 
 export type StartReplayTaskPayload = {
   error?: Maybe<StartReplayTaskError>;
@@ -4390,12 +4109,6 @@ export type StartedRestoreBackupTaskPayload = {
 export type StartedTaskPayload = {
   task: Task;
 };
-
-export type StopReplayWsTaskPayload = {
-  error?: Maybe<StopReplayWsTaskPayloadError>;
-};
-
-export type StopReplayWsTaskPayloadError = OtherUserError | UnknownIdUserError;
 
 export type Store = {
   pluginPackages: Array<StorePluginPackage>;
@@ -4458,8 +4171,6 @@ export type StreamEdge = {
   /** The item at the end of the edge */
   node: Stream;
 };
-
-export type StreamMessage = StreamWsMessage;
 
 export { StreamMessageDirection };
 
@@ -4599,7 +4310,6 @@ export type SubscriptionRoot = {
   finishedRestoreBackupTask: FinishedRestoreBackupTaskPayload;
   finishedTask: FinishedTaskPayload;
   installedBrowser: UploadedBrowserPayload;
-  selectedProject: SelectedProjectPayload;
   startedBackupTask: StartedBackupTaskPayload;
   startedDeleteInterceptEntriesTask: StartedDeleteInterceptEntriesTaskPayload;
   startedRestoreBackupTask: StartedRestoreBackupTaskPayload;
@@ -4628,8 +4338,6 @@ export type SubscriptionRoot = {
   updatedPlugin: UpdatedPluginPayload;
   updatedPluginPackage: UpdatedPluginPackagePayload;
   updatedProject: UpdatedProjectPayload;
-  updatedReplayEntryDraft: UpdatedReplayEntryDraftPayload;
-  updatedReplayEntryWs: UpdatedReplayEntryWsPayload;
   updatedReplaySession: UpdatedReplaySessionPayload;
   updatedReplaySessionCollection: UpdatedReplaySessionCollectionPayload;
   updatedRequest: UpdatedRequestPayload;
@@ -4680,10 +4388,6 @@ export type SubscriptionRootCreatedStreamArgs = {
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
-export type SubscriptionRootCreatedStreamWsMessageArgs = {
-  filter?: InputMaybe<StreamQlInput>;
-};
-
 export type SubscriptionRootUpdatedInterceptEntryArgs = {
   filter?: InputMaybe<HttpqlInput>;
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
@@ -4696,10 +4400,6 @@ export type SubscriptionRootUpdatedRequestArgs = {
 
 export type SubscriptionRootUpdatedSitemapEntryArgs = {
   scopeId?: InputMaybe<Scalars["ID"]["input"]>;
-};
-
-export type SubscriptionRootUpdatedStreamWsMessageArgs = {
-  filter?: InputMaybe<StreamQlInput>;
 };
 
 export type TamperExportScopeInput =
@@ -4986,22 +4686,6 @@ export type TamperOperationStatusCodeUpdateInput = {
   replacer: TamperReplacerInput;
 };
 
-export type TamperOperationStreamWsMessage = TamperOperationStreamWsMessageRaw;
-
-export type TamperOperationStreamWsMessageInput = {
-  raw: TamperOperationStreamWsMessageRawInput;
-};
-
-export type TamperOperationStreamWsMessageRaw = {
-  matcher: TamperMatcherRaw;
-  replacer: TamperReplacer;
-};
-
-export type TamperOperationStreamWsMessageRawInput = {
-  matcher: TamperMatcherRawInput;
-  replacer: TamperReplacerInput;
-};
-
 export type TamperReplacer = TamperReplacerTerm | TamperReplacerWorkflow;
 
 export type TamperReplacerInput =
@@ -5065,9 +4749,7 @@ export type TamperSection =
   | TamperSectionResponseBody
   | TamperSectionResponseFirstLine
   | TamperSectionResponseHeader
-  | TamperSectionResponseStatusCode
-  | TamperSectionStreamWsMessageDownstream
-  | TamperSectionStreamWsMessageUpstream;
+  | TamperSectionResponseStatusCode;
 
 export type TamperSectionInput =
   | {
@@ -5084,8 +4766,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5101,8 +4781,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5118,8 +4796,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5135,8 +4811,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5152,8 +4826,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5169,8 +4841,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5186,8 +4856,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5203,8 +4871,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5220,8 +4886,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5237,8 +4901,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5254,8 +4916,6 @@ export type TamperSectionInput =
       responseFirstLine: TamperSectionResponseFirstLineInput;
       responseHeader?: never;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5271,8 +4931,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader: TamperSectionResponseHeaderInput;
       responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
     }
   | {
       requestAll?: never;
@@ -5288,42 +4946,6 @@ export type TamperSectionInput =
       responseFirstLine?: never;
       responseHeader?: never;
       responseStatusCode: TamperSectionResponseStatusCodeInput;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream?: never;
-    }
-  | {
-      requestAll?: never;
-      requestBody?: never;
-      requestFirstLine?: never;
-      requestHeader?: never;
-      requestMethod?: never;
-      requestPath?: never;
-      requestQuery?: never;
-      requestSNI?: never;
-      responseAll?: never;
-      responseBody?: never;
-      responseFirstLine?: never;
-      responseHeader?: never;
-      responseStatusCode?: never;
-      streamWsMessageDownstream: TamperSectionStreamWsMessageInput;
-      streamWsMessageUpstream?: never;
-    }
-  | {
-      requestAll?: never;
-      requestBody?: never;
-      requestFirstLine?: never;
-      requestHeader?: never;
-      requestMethod?: never;
-      requestPath?: never;
-      requestQuery?: never;
-      requestSNI?: never;
-      responseAll?: never;
-      responseBody?: never;
-      responseFirstLine?: never;
-      responseHeader?: never;
-      responseStatusCode?: never;
-      streamWsMessageDownstream?: never;
-      streamWsMessageUpstream: TamperSectionStreamWsMessageInput;
     };
 
 export type TamperSectionRequestAll = {
@@ -5430,18 +5052,6 @@ export type TamperSectionResponseStatusCodeInput = {
   operation: TamperOperationStatusCodeInput;
 };
 
-export type TamperSectionStreamWsMessageDownstream = {
-  operation: TamperOperationStreamWsMessage;
-};
-
-export type TamperSectionStreamWsMessageInput = {
-  operation: TamperOperationStreamWsMessageInput;
-};
-
-export type TamperSectionStreamWsMessageUpstream = {
-  operation: TamperOperationStreamWsMessage;
-};
-
 export type TamperSummary = {
   collectionsCreated: Scalars["Int"]["output"];
   rulesImported: Scalars["Int"]["output"];
@@ -5490,15 +5100,6 @@ export type TestAiProviderInput =
 export type TestAiProviderPayload = {
   error?: Maybe<TestAiProviderError>;
   success?: Maybe<Scalars["Boolean"]["output"]>;
-};
-
-export type TestExtractorInput = {
-  extractor: AutomateExtractorInput;
-  testInput: Scalars["Blob"]["input"];
-};
-
-export type TestExtractorPayload = {
-  extracts?: Maybe<Array<Scalars["Blob"]["output"]>>;
 };
 
 export type TestTamperRuleError = InvalidRegexUserError | OtherUserError;
@@ -5721,7 +5322,6 @@ export type UpdateFilterPresetError =
 export type UpdateFilterPresetInput = {
   alias: Scalars["Alias"]["input"];
   clause: QueryInput;
-  global: Scalars["Boolean"]["input"];
   name: Scalars["String"]["input"];
 };
 
@@ -5741,33 +5341,6 @@ export type UpdateFindingInput = {
 export type UpdateFindingPayload = {
   error?: Maybe<UpdateFindingError>;
   finding?: Maybe<Finding>;
-};
-
-export type UpdateReplayEntryDraftInput =
-  | { http: UpdateReplayEntryHttpDraftInput; ws?: never }
-  | { http?: never; ws: UpdateReplayEntryWsDraftInput };
-
-export type UpdateReplayEntryDraftPayload = {
-  entry?: Maybe<ReplayEntry>;
-};
-
-export type UpdateReplayEntryHttpDraftInput = {
-  connection: ConnectionInfoInput;
-  editorState: Scalars["Blob"]["input"];
-  raw: Scalars["Blob"]["input"];
-  settings: ReplayEntryHttpSettingsInput;
-};
-
-export type UpdateReplayEntryWsDraftInput = {
-  direction: StreamMessageDirection;
-  editorState: Scalars["Blob"]["input"];
-  format: StreamWsMessageFormat;
-  raw: Scalars["Blob"]["input"];
-  settings: ReplayEntryWsSettingsInput;
-};
-
-export type UpdateReplaySessionSettingsPayload = {
-  session?: Maybe<ReplaySession>;
 };
 
 export type UpdateRequestMetadataInput = {
@@ -5987,16 +5560,6 @@ export type UpdatedProjectPayload = {
   project: Project;
 };
 
-export type UpdatedReplayEntryDraftPayload = {
-  entry: ReplayEntry;
-  snapshot: Scalars["Snapshot"]["output"];
-};
-
-export type UpdatedReplayEntryWsPayload = {
-  entry?: Maybe<ReplayEntryWs>;
-  snapshot: Scalars["Snapshot"]["output"];
-};
-
 export type UpdatedReplaySessionCollectionPayload = {
   collectionEdge: ReplaySessionCollectionEdge;
   snapshot: Scalars["Snapshot"]["output"];
@@ -6038,18 +5601,14 @@ export type UpdatedSitemapEntryPayloadRequestEdgeArgs = {
   order?: InputMaybe<RequestResponseOrderInput>;
 };
 
-export type UpdatedStreamWsMessage = {
+export type UpdatedStreamWsMessagePayload = {
   messageEdge: StreamWsMessageEdge;
   snapshot: Scalars["Snapshot"]["output"];
 };
 
-export type UpdatedStreamWsMessageMessageEdgeArgs = {
+export type UpdatedStreamWsMessagePayloadMessageEdgeArgs = {
   order?: InputMaybe<StreamWsMessageOrderInput>;
 };
-
-export type UpdatedStreamWsMessagePayload =
-  | HiddenStreamWsMessage
-  | UpdatedStreamWsMessage;
 
 export type UpdatedTamperRuleCollectionPayload = {
   collectionEdge: TamperRuleCollectionEdge;
@@ -6182,14 +5741,6 @@ export type UserSubscription = {
 
 export type UserSubscriptionPlan = {
   name: Scalars["String"]["output"];
-};
-
-export { WSErrorReason };
-
-export type WsUserError = UserError & {
-  code: Scalars["String"]["output"];
-  message: Scalars["String"]["output"];
-  reason: WSErrorReason;
 };
 
 export type Workflow = {

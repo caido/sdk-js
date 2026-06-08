@@ -31,6 +31,11 @@ export type CreateFilterPresetOptions = {
   clause: string;
   /** The kind of the filter preset. Defaults to HTTPQL. */
   kind?: FilterClauseKind;
+  /**
+   * Whether the preset is global.
+   * @since 0.57.0
+   */
+  global?: boolean;
 };
 
 /**
@@ -45,4 +50,9 @@ export type UpdateFilterPresetOptions = {
   clause: string;
   /** The kind of the filter preset. Defaults to HTTPQL. */
   kind?: FilterClauseKind;
+  /**
+   * Whether the preset is global.
+   * @since 0.57.0
+   */
+  global?: boolean;
 };
