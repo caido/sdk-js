@@ -1,0 +1,41 @@
+fragment BackupFull on Backup {
+    id
+    name
+    status
+    size
+    path
+    createdAt
+    updatedAt
+}
+
+query Backups {
+  backups {
+    ...BackupFull
+  }
+}
+
+query Backup($id: ID!) {
+  backup(id: $id) {
+    ...BackupFull
+  }
+}
+
+mutation CreateBackup($projectId: ID!) {
+  createBackup(projectId: $projectId) {
+    error {
+      __typename
+      ... on TaskInProgressUserError {
+        taskId
+        code
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    task {
+      backup {
+        ...BackupFull
+      }
+    }
+  }
+}
