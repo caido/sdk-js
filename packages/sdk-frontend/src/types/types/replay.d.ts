@@ -220,6 +220,11 @@ export type AddSessionIndicatorOptions = AddIndicatorOptions & {
     showTabIcon?: boolean;
 };
 /**
+ * Options for adding an indicator to a replay collection.
+ * @category Replay
+ */
+export type AddCollectionIndicatorOptions = AddIndicatorOptions;
+/**
  * A unique replay session identifier.
  * @category Replay
  */

@@ -1,5 +1,5 @@
 import { type Extension } from "@codemirror/state";
-import { type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
 import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
 import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
@@ -243,4 +243,22 @@ export type ReplaySDK = {
      *
      */
     addSessionIndicator: (sessionId: ID, indicator: AddSessionIndicatorOptions) => Indicator;
+    /**
+     * Add an indicator to a replay collection.
+     * Indicators are displayed next to the collection name in the collections tree.
+     * @param collectionId The ID of the collection to add the indicator to.
+     * @param indicator The indicator configuration.
+     * @returns A handle object with a `remove` method to remove the indicator.
+     * @example
+     *
+     * const indicator = sdk.replay.addCollectionIndicator(collectionId, {
+     *   icon: "fas fa-folder-open",
+     *   description: "Has unresolved findings",
+     * });
+     *
+     * // Later, remove the indicator
+     * indicator.remove();
+     *
+     */
+    addCollectionIndicator: (collectionId: ID, indicator: AddCollectionIndicatorOptions) => Indicator;
 };
