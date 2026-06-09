@@ -15,3 +15,4 @@ export * from "./__generated__/task.js";
 export * from "./__generated__/workflow.js";
 export * from "./__generated__/connectionInfo.js";
 export * from "./__generated__/instanceSettings.js";
+export * from "./__generated__/dnsUpstream.js";

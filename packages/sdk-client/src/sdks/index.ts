@@ -28,3 +28,4 @@ export {
   ReplayCollectionsListBuilder,
 } from "@/sdks/replayCollection.js";
 export { ReplayEntrySDK, ReplayEntry } from "@/sdks/replayEntry.js";
+export { DNSUpstreamSDK } from "@/sdks/dnsUpstream.js";
