@@ -45,6 +45,20 @@ export type ReplaySDK = {
      */
     getCurrentSession: () => ReplaySession | undefined;
     /**
+     * Get the entry currently displayed in the active replay session.
+     * @returns The active entry, or undefined if no entry is currently loaded.
+     * @example
+     * ```ts
+     * const currentEntry = sdk.replay.getCurrentEntry();
+     * if (currentEntry) {
+     *   console.log(`Currently viewing entry ${currentEntry.id}`);
+     * } else {
+     *   console.log("No entry is currently displayed");
+     * }
+     * ```
+     */
+    getCurrentEntry: () => ReplayEntry | undefined;
+    /**
      * Rename a session.
      * @param id The ID of the session to rename.
      * @param name The new name of the session.
