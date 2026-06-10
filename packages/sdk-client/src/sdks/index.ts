@@ -16,6 +16,7 @@ export { ReplaySDK } from "@/sdks/replay.js";
 export { TaskSDK, Task } from "@/sdks/task.js";
 export { FindingSDK } from "@/sdks/finding.js";
 export { WorkflowSDK } from "@/sdks/workflow.js";
+export { AssistantSessionSDK } from "@/sdks/assistantSession.js";
 export {
   ReplaySessionSDK,
   ReplaySession,
