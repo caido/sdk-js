@@ -1,0 +1,27 @@
+fragment AssistantSessionMeta on AssistantSession {
+  id
+  modelId
+  name
+  updatedAt
+  createdAt
+}
+
+mutation CreateAssistantSession($input: CreateAssistantSessionInput!) {
+  createAssistantSession(input: $input) {
+    error {
+      __typename
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+    }
+    session {
+      ...AssistantSessionMeta
+    }
+  }
+}
