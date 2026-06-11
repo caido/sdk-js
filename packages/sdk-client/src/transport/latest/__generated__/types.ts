@@ -937,6 +937,8 @@ export type CreateReplaySessionPayload = {
   session?: Maybe<ReplaySession>;
 };
 
+export type CreateRequestError = OtherUserError | UnknownIdUserError;
+
 export type CreateRequestInput = {
   alteration: Alteration;
   host: Scalars["String"]["input"];
@@ -953,8 +955,8 @@ export type CreateRequestInput = {
 };
 
 export type CreateRequestPayload = {
-  id: Scalars["ID"]["output"];
-  responseId?: Maybe<Scalars["ID"]["output"]>;
+  error?: Maybe<CreateRequestError>;
+  request?: Maybe<Request>;
 };
 
 export type CreateResponseInput = {

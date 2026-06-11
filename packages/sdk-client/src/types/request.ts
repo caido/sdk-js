@@ -113,3 +113,32 @@ export type RequestGetOptions = {
   /** Include response raw body. Default true. */
   responseRaw?: boolean;
 };
+
+/**
+ * Options for creating a request.
+ * @category Request
+ */
+export type CreateRequestOptions = {
+  /** The host of the request. */
+  host: string;
+  /** The HTTP method of the request. */
+  method: string;
+  /** The path of the request. */
+  path: string;
+  /** The port of the request. */
+  port: number;
+  /** The query string of the request. */
+  query: string;
+  /** The raw request bytes. */
+  raw: Uint8Array;
+  /** The alteration applied to the request. */
+  alteration: string;
+  /** The source of the request. */
+  source: string;
+  /** The ID of the parent request, if any. */
+  parentId?: ID;
+  /** The raw response bytes, if any. */
+  response?: Uint8Array;
+  /** The SNI hostname, if any. */
+  sni?: string;
+};

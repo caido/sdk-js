@@ -2,15 +2,14 @@ import { type GraphQLError } from "graphql";
 import { z } from "zod";
 
 import {
-  AuthorizationErrorReason,
-  CloudErrorReason,
-} from "@/transport/latest/__generated__/enums.js";
-
-import {
   AuthorizationUserError,
   CloudUserError,
   OtherUserError,
 } from "@/errors/index.js";
+import {
+  AuthorizationErrorReason,
+  CloudErrorReason,
+} from "@/transport/latest/__generated__/enums.js";
 import { isPresent } from "@/utils/optional.js";
 
 const ErrorCodes = {
