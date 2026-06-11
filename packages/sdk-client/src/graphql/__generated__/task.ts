@@ -1,6 +1,7 @@
+import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+
 import type * as Types from "./types.js";
 
-import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type TaskMeta_DataExportTask_Fragment = {
   __typename: "DataExportTask";
   id: string;
@@ -90,36 +91,7 @@ export type FinishedTaskSubscription = {
           replayEntry: { id: string };
         }
       | { __typename: "WorkflowTask"; id: string; createdAt: string };
-    error?:
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | { code: string }
-      | undefined
-      | null;
+    error?: { code: string } | undefined | null;
   };
 };
 

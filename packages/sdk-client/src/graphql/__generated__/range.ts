@@ -1,6 +1,7 @@
+import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+
 import type * as Types from "./types.js";
 
-import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type RangeFullFragment = { start: number; end: number };
 
 export const RangeFullFragmentDoc = {

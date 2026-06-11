@@ -1,5 +1,3 @@
-import semver from "semver";
-
 import type { RestClient } from "@/rest/index.js";
 import { healthSchema } from "@/types/health.js";
 import type { SemverLiteral } from "@/types/semver.js";
@@ -56,7 +54,20 @@ export class Version {
    */
   async gte(threshold: SemverLiteral): Promise<boolean> {
     const current = await this.get();
-    return semver.gte(current, threshold);
+    const [currentMajor, currentMinor, currentPatch] = current
+      .split(".")
+      .map(Number) as [number, number, number];
+    const [thresholdMajor, thresholdMinor, thresholdPatch] = threshold
+      .split(".")
+      .map(Number) as [number, number, number];
+
+    if (currentMajor !== thresholdMajor) {
+      return currentMajor > thresholdMajor;
+    }
+    if (currentMinor !== thresholdMinor) {
+      return currentMinor > thresholdMinor;
+    }
+    return currentPatch >= thresholdPatch;
   }
 
   private async fetchFromHealth(): Promise<SemverLiteral> {
