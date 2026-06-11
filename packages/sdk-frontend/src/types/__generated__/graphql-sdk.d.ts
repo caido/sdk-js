@@ -853,11 +853,9 @@ export type CreateReplaySessionPayload = {
     session?: Maybe<ReplaySession>;
 };
 export type CreateRequestInput = {
-    alteration: Alteration;
     host: Scalars["String"]["input"];
     isTls: Scalars["Boolean"]["input"];
     method: Scalars["String"]["input"];
-    parentId?: InputMaybe<Scalars["ID"]["input"]>;
     path: Scalars["String"]["input"];
     port: Scalars["Int"]["input"];
     query: Scalars["String"]["input"];
@@ -871,11 +869,8 @@ export type CreateRequestPayload = {
     responseId?: Maybe<Scalars["ID"]["output"]>;
 };
 export type CreateResponseInput = {
-    alteration: Alteration;
-    parentId?: InputMaybe<Scalars["ID"]["input"]>;
     raw: Scalars["Blob"]["input"];
     roundtripTime: Scalars["Int"]["input"];
-    source: Source;
     statusCode: Scalars["Int"]["input"];
 };
 export type CreateScopeError = InvalidGlobTermsUserError | OtherUserError;
@@ -1974,6 +1969,7 @@ export type MutationRoot = {
     setGlobalConfigProject: SetConfigProjectPayload;
     setInstanceSettings: SetInstanceSettingsPayload;
     setInterceptOptions: SetInterceptOptionsPayload;
+    setPassthroughOptions: SetPassthroughOptionsPayload;
     setPluginData: SetPluginDataPayload;
     setProjectConfigStream: SetProjectConfigStreamPayload;
     startAuthenticationFlow: StartAuthenticationFlowPayload;
@@ -2353,6 +2349,9 @@ export type MutationRootSetInstanceSettingsArgs = {
 export type MutationRootSetInterceptOptionsArgs = {
     input: InterceptOptionsInput;
 };
+export type MutationRootSetPassthroughOptionsArgs = {
+    input: PassthroughOptionsInput;
+};
 export type MutationRootSetPluginDataArgs = {
     data: Scalars["JSON"]["input"];
     id: Scalars["ID"]["input"];
@@ -2531,6 +2530,22 @@ export type PageInfo = {
     hasPreviousPage: Scalars["Boolean"]["output"];
     /** When paginating backwards, the cursor to continue. */
     startCursor?: Maybe<Scalars["String"]["output"]>;
+};
+export type PassthroughOptions = {
+    passthroughOptions?: Maybe<PassthroughOptionsObject>;
+};
+export type PassthroughOptionsInput = {
+    outofscope: Scalars["Boolean"]["input"];
+    targets: PassthroughTargets;
+};
+export type PassthroughOptionsObject = {
+    allowlist?: Maybe<Array<Scalars["String"]["output"]>>;
+    denylist?: Maybe<Array<Scalars["String"]["output"]>>;
+    outOfScope: Scalars["Boolean"]["output"];
+};
+export type PassthroughTargets = {
+    allowlist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+    denylist?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 export type PauseAutomateTaskError = OtherUserError | UnknownIdUserError;
 export type PauseAutomateTaskPayload = {
@@ -2735,6 +2750,7 @@ export type QueryRoot = {
     interceptMessages: InterceptMessageConnection;
     interceptOptions: InterceptOptions;
     interceptStatus: InterceptStatus;
+    passthroughOptions: PassthroughOptions;
     pluginPackages: Array<PluginPackage>;
     projects: Array<Project>;
     replayEntry?: Maybe<ReplayEntry>;
@@ -3587,6 +3603,9 @@ export type SetInstanceSettingsPayload = {
 export type SetInterceptOptionsPayload = {
     options: InterceptOptions;
 };
+export type SetPassthroughOptionsPayload = {
+    options: PassthroughOptions;
+};
 export type SetPluginDataError = OtherUserError | PluginUserError | UnknownIdUserError;
 export type SetPluginDataPayload = {
     error?: Maybe<SetPluginDataError>;
@@ -3975,6 +3994,7 @@ export type SubscriptionRoot = {
     updatedInterceptEntry: UpdatedInterceptEntryPayload;
     updatedInterceptOptions: UpdatedInterceptOptionsPayload;
     updatedInterceptStatus: UpdatedInterceptStatusPayload;
+    updatedPassthroughOptions: UpdatedPassthroughOptionsPayload;
     updatedPlugin: UpdatedPluginPayload;
     updatedPluginPackage: UpdatedPluginPackagePayload;
     updatedProject: UpdatedProjectPayload;
@@ -5045,6 +5065,9 @@ export type UpdatedInterceptOptionsPayload = {
 };
 export type UpdatedInterceptStatusPayload = {
     status: InterceptStatus;
+};
+export type UpdatedPassthroughOptionsPayload = {
+    options: PassthroughOptions;
 };
 export type UpdatedPluginPackagePayload = {
     package: PluginPackage;
@@ -9086,6 +9109,11 @@ export type UpdatedEnvironmentSubscription = {
             id: string;
             name: string;
             version: number;
+            variables: Array<{
+                name: string;
+                value: string;
+                kind: EnvironmentVariableKind;
+            }>;
         };
     };
 };
@@ -54544,7 +54572,7 @@ export declare const UpdateEnvironmentDocument = "\n    mutation updateEnvironme
 export declare const DeleteEnvironmentDocument = "\n    mutation deleteEnvironment($id: ID!) {\n  deleteEnvironment(id: $id) {\n    deletedId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const SelectEnvironmentDocument = "\n    mutation selectEnvironment($id: ID) {\n  selectEnvironment(id: $id) {\n    environment {\n      ...environmentFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedEnvironmentDocument = "\n    subscription createdEnvironment {\n  createdEnvironment {\n    environment {\n      ...environmentMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
-export declare const UpdatedEnvironmentDocument = "\n    subscription updatedEnvironment {\n  updatedEnvironment {\n    environment {\n      ...environmentMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    ";
+export declare const UpdatedEnvironmentDocument = "\n    subscription updatedEnvironment {\n  updatedEnvironment {\n    environment {\n      ...environmentFull\n    }\n    snapshot\n  }\n}\n    \n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const DeletedEnvironmentDocument = "\n    subscription deletedEnvironment {\n  deletedEnvironment {\n    deletedEnvironmentId\n    snapshot\n  }\n}\n    ";
 export declare const UpdatedEnvironmentContextDocument = "\n    subscription updatedEnvironmentContext {\n  updatedEnvironmentContext {\n    environmentContext {\n      ...environmentContextFull\n    }\n  }\n}\n    \n    fragment environmentContextFull on EnvironmentContext {\n  global {\n    ...environmentFull\n  }\n  selected {\n    ...environmentFull\n  }\n}\n    \n\n    fragment environmentFull on Environment {\n  ...environmentMeta\n  variables {\n    ...environmentVariableFull\n  }\n}\n    \n\n    fragment environmentMeta on Environment {\n  __typename\n  id\n  name\n  version\n}\n    \n\n    fragment environmentVariableFull on EnvironmentVariable {\n  name\n  value\n  kind\n}\n    ";
 export declare const RenameDataExportDocument = "\n    mutation renameDataExport($id: ID!, $name: String!) {\n  renameDataExport(id: $id, name: $name) {\n    export {\n      __typename\n      ... on DataExportStored {\n        ...dataExportStoredFullFields\n      }\n    }\n  }\n}\n    \n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
