@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  DNSUpstreamSDK,
   EnvironmentSDK,
   FilterSDK,
   FindingSDK,
@@ -41,6 +42,7 @@ import { Version } from "@/version.js";
  * - `scope` - Higher-level scope SDK
  * - `filter` - Higher-level filter preset SDK
  * - `environment` - Higher-level environment SDK
+ * - `dnsUpstream` - Higher-level DNS upstream SDK
  * - `hostedFile` - Higher-level hosted file SDK
  * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
@@ -85,6 +87,9 @@ export class Client {
 
   /** Higher-level environment SDK. */
   readonly environment: EnvironmentSDK;
+
+  /** Higher-level DNS upstream SDK. */
+  readonly dnsUpstream: DNSUpstreamSDK;
 
   /** Higher-level hosted file SDK. */
   readonly hostedFile: HostedFileSDK;
@@ -136,6 +141,7 @@ export class Client {
     this.scope = new ScopeSDK(this.graphql);
     this.filter = new FilterSDK(this.graphql);
     this.environment = new EnvironmentSDK(this.graphql);
+    this.dnsUpstream = new DNSUpstreamSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
     this.instance = new InstanceSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
