@@ -1,6 +1,8 @@
+import { encodeBlob } from "@/convert/blob.js";
 import { mapToPageInfo } from "@/convert/connection.js";
-import { mapToRequestResponseOpt, mapToResponse } from "@/convert/request.js";
+import { mapToRequestResponseOpt } from "@/convert/request.js";
 import {
+  CreateRequestDocument,
   type GraphQLClient,
   Ordering,
   RequestDocument,
@@ -10,6 +12,7 @@ import {
 } from "@/graphql/index.js";
 import type {
   ConnectionQueryResult,
+  CreateRequestOptions,
   HTTPQL,
   ID,
   RequestGetOptions,
@@ -17,6 +20,7 @@ import type {
   RequestResponseOpt,
   ResponseOrderField,
 } from "@/types/index.js";
+import { handleGraphQLError } from "@/utils/errors.js";
 import { ListBuilder, type ListBuilderVars } from "@/utils/list.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
@@ -159,5 +163,40 @@ export class RequestSDK {
       return undefined;
     }
     return mapToRequestResponseOpt(result.request);
+  }
+
+  /**
+   * Create a request.
+   *
+   * @param options - The options for the creation.
+   * @returns The created request and optional response.
+   */
+  async create(options: CreateRequestOptions): Promise<RequestResponseOpt> {
+    const result = await this.graphql.mutation(CreateRequestDocument, {
+      input: {
+        host: options.host,
+        method: options.method,
+        path: options.path,
+        port: options.port,
+        query: options.query,
+        raw: encodeBlob(options.raw),
+        alteration: options.alteration as any,
+        source: options.source as any,
+        isTls: false,
+        parentId: options.parentId,
+        sni: options.sni,
+      },
+      includeRequestRaw: true,
+      includeResponseRaw: true,
+    });
+    const payload = result.createRequest;
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+    const request = payload.request;
+    if (isAbsent(request)) {
+      throw new Error("createRequest returned no request");
+    }
+    return mapToRequestResponseOpt(request);
   }
 }

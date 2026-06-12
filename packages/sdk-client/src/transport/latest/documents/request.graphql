@@ -79,3 +79,24 @@ query Requests(
     }
   }
 }
+
+mutation CreateRequest(
+  $input: CreateRequestInput!
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  createRequest(input: $input) {
+    error {
+      __typename
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+    }
+    request {
+      ...RequestFull
+    }
+  }
+}
