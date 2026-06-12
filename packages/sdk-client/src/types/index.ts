@@ -17,6 +17,7 @@ export * from "./network.js";
 export * from "./workflow.js";
 export * from "./instanceSettings.js";
 export * from "./dnsUpstream.js";
+export * from "./dnsRewrite.js";
 
 /**
  * A unique Caido identifier per type.
