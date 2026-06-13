@@ -1,0 +1,15 @@
+fragment BackupFull on Backup {
+  id
+  name
+  path
+  size
+  status
+  createdAt
+  updatedAt
+}
+
+query Backups {
+  backups {
+    ...BackupFull
+  }
+}

@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  BackupSDK,
   DNSUpstreamSDK,
   EnvironmentSDK,
   FilterSDK,
@@ -44,6 +45,7 @@ import { Version } from "@/version.js";
  * - `environment` - Higher-level environment SDK
  * - `dnsUpstream` - Higher-level DNS upstream SDK
  * - `hostedFile` - Higher-level hosted file SDK
+ * - `backup` - Higher-level backup SDK
  * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
  * - `workflow` - Higher-level workflow SDK
@@ -94,6 +96,9 @@ export class Client {
   /** Higher-level hosted file SDK. */
   readonly hostedFile: HostedFileSDK;
 
+  /** Higher-level backup SDK. */
+  readonly backup: BackupSDK;
+
   /** Higher-level instance SDK. */
   readonly instance: InstanceSDK;
 
@@ -143,6 +148,7 @@ export class Client {
     this.environment = new EnvironmentSDK(this.graphql);
     this.dnsUpstream = new DNSUpstreamSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
+    this.backup = new BackupSDK(this.graphql);
     this.instance = new InstanceSDK(this.graphql);
     this.finding = new FindingSDK(this.graphql);
     this.request = new RequestSDK(this.graphql);
