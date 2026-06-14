@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  BackupSDK,
   DNSUpstreamSDK,
   EnvironmentSDK,
   FilterSDK,
@@ -47,6 +48,7 @@ import { Version } from "@/version.js";
  * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
  * - `workflow` - Higher-level workflow SDK
+ * - `backup` - Higher-level backup SDK
  *
  * @example
  * ```typescript
@@ -112,6 +114,9 @@ export class Client {
   /** Higher-level replay SDK. */
   readonly replay: ReplaySDK;
 
+  /** Higher-level backup SDK. */
+  readonly backup: BackupSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -149,6 +154,7 @@ export class Client {
     this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
     this.replay = new ReplaySDK(this.graphql, this.version);
+    this.backup = new BackupSDK(this.graphql);
   }
 
   /**
