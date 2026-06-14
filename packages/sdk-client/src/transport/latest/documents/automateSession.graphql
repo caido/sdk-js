@@ -1,0 +1,174 @@
+fragment AutomateSessionFull on AutomateSession {
+    id
+    name
+    createdAt
+    connection {
+        ...ConnectionInfoFull
+    }
+    entries {
+        id
+        name
+        createdAt
+        raw
+        settings {
+            closeConnection
+            concurrency {
+                delay
+                workers
+            }
+            extractors {
+                ... on AutomateExtractorRegex {
+                    body
+                    regex
+                    workflowId
+                }
+            }
+            payloads {
+                options {
+                    ... on AutomateSimpleListPayload {
+                        list
+                    }
+                    ... on AutomateNumberPayload {
+                        increments
+                        minLength
+                        range {
+                            start
+                            end
+                        }
+                    }
+                    ... on AutomateNullPayload {
+                        quantity
+                    }
+                    ... on AutomateHostedFilePayload {
+                        id
+                        delimiter
+                    }
+                }
+                preprocessors {
+                    options {
+                        ... on AutomatePrefixPreprocessor {
+                            value
+                        }
+                        ... on AutomateSuffixPreprocessor {
+                            value
+                        }
+                    }
+                }
+            }
+            placeholders {
+                start
+                end
+            }
+            redirect {
+                max
+                strategy
+            }
+            retryOnFailure {
+                maximumRetries
+                backoff
+            }
+            strategy
+            updateContentLength
+        }
+        connection {
+            ...ConnectionInfoFull
+        }
+    }
+    settings {
+        closeConnection
+        concurrency {
+            delay
+            workers
+        }
+        extractors {
+            ... on AutomateExtractorRegex {
+                body
+                regex
+                workflowId
+            }
+        }
+        payloads {
+            options {
+                ... on AutomateSimpleListPayload {
+                    list
+                }
+                ... on AutomateNumberPayload {
+                    increments
+                    minLength
+                    range {
+                        start
+                        end
+                    }
+                }
+                ... on AutomateNullPayload {
+                    quantity
+                }
+                ... on AutomateHostedFilePayload {
+                    id
+                    delimiter
+                }
+            }
+            preprocessors {
+                options {
+                    ... on AutomatePrefixPreprocessor {
+                        value
+                    }
+                    ... on AutomateSuffixPreprocessor {
+                        value
+                    }
+                }
+            }
+        }
+        placeholders {
+            start
+            end
+        }
+        redirect {
+            max
+            strategy
+        }
+        retryOnFailure {
+            maximumRetries
+            backoff
+        }
+        strategy
+        updateContentLength
+    }
+    raw
+}
+
+query AutomateSessions {
+  automateSessions {
+    nodes {
+      ...AutomateSessionFull
+    }
+  }
+}
+
+query AutomateSession($id: ID!) {
+  automateSession(id: $id) {
+    ...AutomateSessionFull
+  }
+}
+
+mutation CreateAutomateSession($input: CreateAutomateSessionInput!) {
+  createAutomateSession(input: $input) {
+    session {
+      ...AutomateSessionFull
+    }
+  }
+}
+
+mutation DeleteAutomateSession($automateSessionId: ID!) {
+  deleteAutomateSession(automateSessionId: $automateSessionId) {
+    deletedId
+  }
+}
+
+mutation RenameAutomateSession($automateSessionId: ID!, $name: String!) {
+  renameAutomateSession(automateSessionId: $automateSessionId, name: $name) {
+    session {
+      ...AutomateSessionFull
+    }
+  }
+}

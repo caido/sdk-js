@@ -1,6 +1,7 @@
 export * from "./__generated__/viewer.js";
 export * from "./__generated__/types.js";
 export * from "./__generated__/enums.js";
+export * from "./__generated__/automateSession.js";
 export * from "./__generated__/environment.js";
 export * from "./__generated__/errors.js";
 export * from "./__generated__/filter.js";
