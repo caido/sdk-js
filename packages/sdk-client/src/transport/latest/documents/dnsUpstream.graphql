@@ -9,3 +9,11 @@ query DnsUpstreams {
     ...DnsUpstreamFull
   }
 }
+
+mutation CreateDnsUpstream($input: CreateDNSUpstreamInput!) {
+  createDnsUpstream(input: $input) {
+    upstream {
+      ...DnsUpstreamFull
+    }
+  }
+}

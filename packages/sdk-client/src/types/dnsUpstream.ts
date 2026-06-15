@@ -8,3 +8,13 @@ export type DNSUpstream = {
   ip: string;
   name: string;
 };
+
+/**
+ * Options for creating a DNS upstream resolver
+ */
+export type CreateDNSUpstreamOptions = {
+  /** The IP address of the upstream resolver */
+  ip: string;
+  /** The name of the upstream resolver */
+  name: string;
+};
