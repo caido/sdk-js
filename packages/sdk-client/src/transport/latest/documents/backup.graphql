@@ -1,0 +1,14 @@
+mutation DeleteBackup($id: ID!) {
+  deleteBackup(id: $id) {
+    deletedId
+    error {
+      __typename
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+      ... on TaskInProgressUserError {
+        ...TaskInProgressUserErrorFull
+      }
+    }
+  }
+}

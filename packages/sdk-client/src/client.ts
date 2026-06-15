@@ -5,6 +5,7 @@ import { ConsoleLogger } from "@/logger.js";
 import type { ClientOptions } from "@/options.js";
 import { RestClient } from "@/rest/index.js";
 import {
+  BackupSDK,
   DNSUpstreamSDK,
   EnvironmentSDK,
   FilterSDK,
@@ -37,6 +38,7 @@ import { Version } from "@/version.js";
  * - `rest` - Low-level REST client (GET, POST)
  * - `version` - Instance version handle (lazy `/health` or seeded)
  * - `user` - Higher-level user SDK
+ * - `backup` - Higher-level backup SDK
  * - `plugin` - Higher-level plugin SDK
  * - `project` - Higher-level project SDK
  * - `scope` - Higher-level scope SDK
@@ -72,6 +74,9 @@ export class Client {
 
   /** Higher-level user SDK. */
   readonly user: UserSDK;
+
+  /** Higher-level backup SDK. */
+  readonly backup: BackupSDK;
 
   /** Higher-level plugin SDK. */
   readonly plugin: PluginSDK;
@@ -136,6 +141,7 @@ export class Client {
     this.version = options.version ?? Version.lazy(this.rest);
 
     this.user = new UserSDK(this.graphql);
+    this.backup = new BackupSDK(this.graphql);
     this.plugin = new PluginSDK(this.graphql, this.rest);
     this.project = new ProjectSDK(this.graphql);
     this.scope = new ScopeSDK(this.graphql);
