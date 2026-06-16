@@ -16,6 +16,7 @@ import {
   ReplaySDK,
   RequestSDK,
   ScopeSDK,
+  TamperRuleCollectionSDK,
   TaskSDK,
   UserSDK,
   WorkflowSDK,
@@ -47,6 +48,7 @@ import { Version } from "@/version.js";
  * - `instance` - Higher-level instance SDK
  * - `request` - Higher-level request SDK
  * - `workflow` - Higher-level workflow SDK
+ * - `tamperRuleCollection` - Higher-level tamper rule collection SDK
  *
  * @example
  * ```typescript
@@ -112,6 +114,9 @@ export class Client {
   /** Higher-level replay SDK. */
   readonly replay: ReplaySDK;
 
+  /** Higher-level tamper rule collection SDK. */
+  readonly tamperRuleCollection: TamperRuleCollectionSDK;
+
   private readonly auth: AuthManager;
 
   constructor(options: ClientOptions) {
@@ -149,6 +154,7 @@ export class Client {
     this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
     this.replay = new ReplaySDK(this.graphql, this.version);
+    this.tamperRuleCollection = new TamperRuleCollectionSDK(this.graphql);
   }
 
   /**

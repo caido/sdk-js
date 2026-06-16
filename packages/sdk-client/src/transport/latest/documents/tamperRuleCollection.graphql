@@ -1,0 +1,16 @@
+fragment TamperRuleCollectionFull on TamperRuleCollection {
+    id
+    name
+    rules {
+        id
+        name
+    }
+}
+
+mutation CreateTamperRuleCollection($input: CreateTamperRuleCollectionInput!) {
+  createTamperRuleCollection(input: $input) {
+    collection {
+      ...TamperRuleCollectionFull
+    }
+  }
+}

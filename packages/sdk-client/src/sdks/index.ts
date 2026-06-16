@@ -29,3 +29,4 @@ export {
 } from "@/sdks/replayCollection.js";
 export { ReplayEntrySDK, ReplayEntry } from "@/sdks/replayEntry.js";
 export { DNSUpstreamSDK } from "@/sdks/dnsUpstream.js";
+export { TamperRuleCollectionSDK } from "@/sdks/tamperRuleCollection.js";
