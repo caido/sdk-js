@@ -1,0 +1,25 @@
+fragment BackupFull on Backup {
+  id
+  name
+  path
+  size
+  status
+  createdAt
+  updatedAt
+  downloadUri
+  project {
+    id
+  }
+}
+
+query Backups {
+  backups {
+    ...BackupFull
+  }
+}
+
+query Backup($id: ID!) {
+  backup(id: $id) {
+    ...BackupFull
+  }
+}
