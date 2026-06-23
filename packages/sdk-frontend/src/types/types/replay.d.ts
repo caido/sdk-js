@@ -225,6 +225,19 @@ export type AddSessionIndicatorOptions = AddIndicatorOptions & {
  */
 export type AddCollectionIndicatorOptions = AddIndicatorOptions;
 /**
+ * The kind of a replay session.
+ * @category Replay
+ */
+export declare const ReplaySessionKind: {
+    readonly Http: "HTTP";
+    readonly Ws: "WS";
+};
+/**
+ * The kind of a replay session.
+ * @category Replay
+ */
+export type ReplaySessionKind = (typeof ReplaySessionKind)[keyof typeof ReplaySessionKind];
+/**
  * A unique replay session identifier.
  * @category Replay
  */
