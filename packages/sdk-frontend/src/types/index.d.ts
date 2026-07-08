@@ -1,3 +1,5 @@
+import type { DefineComponent } from "vue";
+import type { HTTPQLEditorProps } from "./types/httpqlEditor";
 export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions, DialogComponent } from "./types/window";
 export type { _AnalyticsSDK } from "./private/analytics";
@@ -48,3 +50,7 @@ export type { SearchPageContext } from "./types/search";
 export type { SitemapPageContext } from "./types/sitemap";
 export type { MatchReplacePageContext } from "./types/matchReplace";
 export type { WorkflowsPageContext } from "./types/workflows";
+export type { HTTPQLEditorProps };
+export declare const HTTPQLEditor: DefineComponent<HTTPQLEditorProps & {
+    modelValue?: string;
+}>;
