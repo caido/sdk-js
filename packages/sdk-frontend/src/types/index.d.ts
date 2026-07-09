@@ -25,7 +25,7 @@ export { SettingsSlot, type SettingsSlotContent, type SettingsPluginSlotContent,
 export type { EnvironmentVariable } from "./types/environment";
 export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./types/workflows";
 export type { ListenerHandle, AddIndicatorOptions, Indicator, ComponentProps, ComponentPropsWithSdk, } from "./types/utils";
-export type { AIProvider, AILanguageModelSettings, AIReasoningSettings, AIUpstreamProvider, AIUpstreamProviderId, AIUpstreamProviderStatus, } from "./types/ai";
+export type { AIProvider, AILanguageModelSettings, AIReasoningSettings, AIUpstreamProvider, AIUpstreamProviderApi, AIUpstreamProviderId, } from "./types/ai";
 export type { SelectedProjectChangeEvent } from "./types/projects";
 export type { CommandPaletteViewProps, CommandPaletteViewPropsInternal, } from "./types/commandPalette";
 export type { CommandPaletteView } from "./sdks/commandPalette";
