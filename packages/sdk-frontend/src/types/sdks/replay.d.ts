@@ -4,6 +4,7 @@ import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../ty
 import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID, Indicator, ListenerHandle } from "../types/utils";
+import type { MessageViewModeOptions, MessageViewModeProps } from "../types/websocket";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -165,6 +166,11 @@ export type ReplaySDK = {
      * @param options The view mode options.
      */
     addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
+    /**
+     * Add a custom WebSocket message view mode.
+     * @param options The view mode options.
+     */
+    addWebsocketMessageViewMode: (options: MessageViewModeOptions<MessageViewModeProps>) => void;
     /**
      * Send a request to the Replay backend.
      * @param request The request to send.
