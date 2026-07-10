@@ -1,5 +1,5 @@
+import { type ListenerHandle } from "src/types/utils";
 import { type HostedFile } from "../types/files";
-import { type ListenerHandle } from "../types/utils";
 /**
  * SDK for interacting with the Files page.
  * @category Files

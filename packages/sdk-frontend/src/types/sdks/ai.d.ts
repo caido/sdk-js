@@ -10,8 +10,8 @@ export type AiSDK = {
      */
     createProvider: () => AIProvider;
     /**
-     * Gets the list of configured upstream AI providers.
-     * @returns An array of configured AI upstream providers.
+     * Gets the list of upstream AI providers with their configuration status.
+     * @returns An array of AI upstream providers with their configuration status.
      */
     getUpstreamProviders: () => AIUpstreamProvider[];
 };

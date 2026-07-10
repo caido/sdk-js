@@ -26,18 +26,19 @@ export type AIProvider = ProviderV3 & ((modelId: string, settings?: AILanguageMo
  * AI upstream provider ID.
  * @category AI
  */
-export type AIUpstreamProviderId = string;
-/**
- * The response API a provider speaks.
- * @category AI
- */
-export type AIUpstreamProviderApi = "ANTHROPIC" | "GEMINI" | "OPENAI_COMPLETION" | "OPENAI_RESPONSE" | "OPENROUTER";
+export type AIUpstreamProviderId = "anthropic" | "google" | "openai" | "openrouter";
 /**
  * AI upstream provider information.
- * Only configured providers are returned.
  * @category AI
  */
 export type AIUpstreamProvider = {
     id: AIUpstreamProviderId;
-    api: AIUpstreamProviderApi;
+    status: AIUpstreamProviderStatus;
 };
+/**
+ * AI upstream provider status.
+ * Ready: The upstream provider is ready to use.
+ * Missing: The upstream provider is not configured.
+ * @category AI
+ */
+export type AIUpstreamProviderStatus = "Ready" | "Missing";

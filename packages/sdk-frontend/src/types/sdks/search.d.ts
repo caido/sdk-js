@@ -1,6 +1,6 @@
 import type { Extension } from "@codemirror/state";
-import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import type { RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions } from "../types/response";
 import type { SearchSlot, SearchSlotContent } from "../types/search";
 import type { HTTPQL, ID } from "../types/utils";
 /**
@@ -37,12 +37,12 @@ export type SearchSDK = {
      * Add a custom request view mode.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions<RequestReadableViewModeProps>) => void;
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions) => void;
     /**
      * Scrolls the Search table to a specific request.
      * @param id The ID of the request to scroll to.

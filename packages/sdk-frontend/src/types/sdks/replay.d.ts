@@ -1,10 +1,9 @@
 import { type Extension } from "@codemirror/state";
-import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySessionKind, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
-import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import { type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import type { RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
-import type { ID, Indicator, ListenerHandle } from "../types/utils";
-import type { MessageViewModeOptions, MessageViewModeProps } from "../types/websocket";
+import type { AddIndicatorOptions, ID, Indicator, ListenerHandle } from "../types/utils";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -28,13 +27,9 @@ export type ReplaySDK = {
     getTabs: () => ReplayTab[];
     /**
      * Get the list of all replay sessions.
-     * @param options The options for getting the sessions.
-     * @param options.collectionId The ID of the collection to get the sessions for.
      * @returns The list of all replay sessions.
      */
-    getSessions: (options?: {
-        collectionId?: ID;
-    }) => ReplaySession[];
+    getSessions: () => ReplaySession[];
     /**
      * Get the currently selected replay session.
      * @returns The currently selected replay session, or undefined if no session is selected.
@@ -49,20 +44,6 @@ export type ReplaySDK = {
      * ```
      */
     getCurrentSession: () => ReplaySession | undefined;
-    /**
-     * Get the entry currently displayed in the active replay session.
-     * @returns The active entry, or undefined if no entry is currently loaded.
-     * @example
-     * ```ts
-     * const currentEntry = sdk.replay.getCurrentEntry();
-     * if (currentEntry) {
-     *   console.log(`Currently viewing entry ${currentEntry.id}`);
-     * } else {
-     *   console.log("No entry is currently displayed");
-     * }
-     * ```
-     */
-    getCurrentEntry: () => ReplayEntry | undefined;
     /**
      * Rename a session.
      * @param id The ID of the session to rename.
@@ -84,22 +65,10 @@ export type ReplaySDK = {
     deleteSessions: (sessionIds: ID[]) => Promise<ID[]>;
     /**
      * Create a session.
-     * @param source The source of the session to create.
-     * @param collectionId The ID of the collection to add the session to.
-     * @example
-     * ```ts
-     * sdk.replay.createSession({
-     *   type: "Raw",
-     *   raw: "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n",
-     *   connectionInfo: {
-     *     host: "example.com",
-     *     port: 443,
-     *     isTLS: true,
-     *   },
-     * });
-     * ```
+     * @param sessionId The ID of the request to add.
+     * @param collectionId The ID of the collection to add the request.
      */
-    createSession: (source: RequestSource, collectionId?: ID, sessionKind?: ReplaySessionKind) => Promise<ReplaySession>;
+    createSession: (source: RequestSource, collectionId?: ID) => Promise<void>;
     /**
      * Get the list of all replay collections.
      * @returns The list of all replay collections.
@@ -160,17 +129,12 @@ export type ReplaySDK = {
      * Add a custom view mode for requests.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions<RequestWritableViewModeProps>) => void;
+    addRequestViewMode: (options: RequestViewModeOptions) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
-    /**
-     * Add a custom WebSocket message view mode.
-     * @param options The view mode options.
-     */
-    addWebsocketMessageViewMode: (options: MessageViewModeOptions<MessageViewModeProps>) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions) => void;
     /**
      * Send a request to the Replay backend.
      * @param request The request to send.
@@ -271,30 +235,11 @@ export type ReplaySDK = {
      * const indicator = sdk.replay.addSessionIndicator(sessionId, {
      *   icon: "fas fa-exclamation-triangle",
      *   description: "Security warning",
-     *   showTabIcon: true,
      * });
      *
      * // Later, remove the indicator
      * indicator.remove();
      *
      */
-    addSessionIndicator: (sessionId: ID, indicator: AddSessionIndicatorOptions) => Indicator;
-    /**
-     * Add an indicator to a replay collection.
-     * Indicators are displayed next to the collection name in the collections tree.
-     * @param collectionId The ID of the collection to add the indicator to.
-     * @param indicator The indicator configuration.
-     * @returns A handle object with a `remove` method to remove the indicator.
-     * @example
-     *
-     * const indicator = sdk.replay.addCollectionIndicator(collectionId, {
-     *   icon: "fas fa-folder-open",
-     *   description: "Has unresolved findings",
-     * });
-     *
-     * // Later, remove the indicator
-     * indicator.remove();
-     *
-     */
-    addCollectionIndicator: (collectionId: ID, indicator: AddCollectionIndicatorOptions) => Indicator;
+    addSessionIndicator: (sessionId: ID, indicator: AddIndicatorOptions) => Indicator;
 };

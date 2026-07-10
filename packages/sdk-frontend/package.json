@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-frontend",
-  "version": "0.57.1-beta.14",
+  "version": "0.57.1",
   "description": "Typing for the Caido Frontend SDK",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "repository": "https://github.com/caido/sdk-js/",
@@ -16,8 +16,8 @@
   },
   "peerDependencies": {
     "@ai-sdk/provider": "^3.0.1",
-    "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
+    "@codemirror/state": "^6.0.0",
     "vue": "^3.0.0"
   },
   "peerDependenciesMeta": {}

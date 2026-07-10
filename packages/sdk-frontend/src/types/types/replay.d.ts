@@ -1,5 +1,5 @@
-import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
-import { type AddIndicatorOptions, type ID, type Selection } from "./utils";
+import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent } from "./slots";
+import { type ID, type Selection } from "./utils";
 /**
  * The connection information to use for the request.
  * @category Replay
@@ -42,12 +42,10 @@ export declare const ReplaySlot: {
     readonly Topbar: "topbar";
 };
 export type ReplaySlot = (typeof ReplaySlot)[keyof typeof ReplaySlot];
-/**
- * Content that can be added to replay slots.
- * @category Replay
- */
-export type ReplaySlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = {
-    [K in ReplaySlot]: ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
+export type ReplaySlotContent = {
+    [ReplaySlot.SessionToolbarPrimary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [ReplaySlot.SessionToolbarSecondary]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
+    [ReplaySlot.Topbar]: ButtonSlotContent | CustomSlotContent | CommandSlotContent;
 };
 /**
  * Options for opening a tab.
@@ -208,35 +206,6 @@ export type ReplayPageContext = {
     kind: "Replay";
     selection: Selection<ReplaySessionId>;
 };
-/**
- * Options for adding an indicator to a replay session.
- * @category Replay
- */
-export type AddSessionIndicatorOptions = AddIndicatorOptions & {
-    /**
-     * Includes the indicator icon on the session's replay tab.
-     * @default false
-     */
-    showTabIcon?: boolean;
-};
-/**
- * Options for adding an indicator to a replay collection.
- * @category Replay
- */
-export type AddCollectionIndicatorOptions = AddIndicatorOptions;
-/**
- * The kind of a replay session.
- * @category Replay
- */
-export declare const ReplaySessionKind: {
-    readonly Http: "HTTP";
-    readonly Ws: "WS";
-};
-/**
- * The kind of a replay session.
- * @category Replay
- */
-export type ReplaySessionKind = (typeof ReplaySessionKind)[keyof typeof ReplaySessionKind];
 /**
  * A unique replay session identifier.
  * @category Replay
