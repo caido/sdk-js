@@ -15,6 +15,7 @@ import type { ReplayPageContext } from "./replay";
 import type { ScopePageContext } from "./scopes";
 import type { SearchPageContext } from "./search";
 import type { SitemapPageContext } from "./sitemap";
+import type { ComponentDefinition, ComponentProps, ComponentPropsWithSdk } from "./utils";
 import { type WebsocketPageContext } from "./websocket";
 import type { WorkflowsPageContext } from "./workflows";
 /**
@@ -29,6 +30,11 @@ export type DialogOptions = {
     modal?: boolean;
     position?: "left" | "right" | "top" | "bottom" | "center" | "topleft" | "topright" | "bottomleft" | "bottomright";
 };
+/**
+ * The component definition for a dialog.
+ * @category Window
+ */
+export type DialogComponent = ComponentDefinition<ComponentPropsWithSdk<ComponentProps>>;
 /**
  * A dialog instance that can be closed programmatically.
  * @category Window

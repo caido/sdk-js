@@ -1,7 +1,7 @@
 import type { Extension } from "@codemirror/state";
 import { type Finding } from "../types/findings";
-import type { RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions } from "../types/response";
+import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
+import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with findings
@@ -33,10 +33,10 @@ export type FindingsSDK = {
      * Add a custom request view mode.
      * @param options The view mode options.
      */
-    addRequestViewMode: (options: RequestViewModeOptions) => void;
+    addRequestViewMode: (options: RequestViewModeOptions<RequestReadableViewModeProps>) => void;
     /**
      * Add a custom response view mode.
      * @param options The view mode options.
      */
-    addResponseViewMode: (options: ResponseViewModeOptions) => void;
+    addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
 };
