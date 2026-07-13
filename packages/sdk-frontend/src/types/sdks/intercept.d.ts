@@ -1,5 +1,5 @@
-import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import type { RequestFull, RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
+import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { ID } from "../types/utils";
 /**
  * Utilities to interact with the Intercept page.
@@ -11,6 +11,16 @@ export type InterceptSDK = {
      * @returns The current scope ID.
      */
     getScopeId: () => ID | undefined;
+    /**
+     * Get the currently selected request.
+     * @returns The currently selected request.
+     */
+    getSelectedRequest: () => RequestFull | undefined;
+    /**
+     * Get the currently selected response.
+     * @returns The currently selected response.
+     */
+    getSelectedResponse: () => ResponseFull | undefined;
     /**
      * Set the current scope.
      * @param scopeId The ID of the scope to set.

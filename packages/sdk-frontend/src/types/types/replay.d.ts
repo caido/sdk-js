@@ -1,3 +1,5 @@
+import type { RequestFull } from "./request";
+import type { ResponseFull } from "./response";
 import { type ButtonSlotContent, type CommandSlotContent, type CustomSlotContent, type SlotContentProps, type SlotContentPropsGroup } from "./slots";
 import { type AddIndicatorOptions, type ID, type Selection } from "./utils";
 /**
@@ -109,6 +111,35 @@ export type ReplayEntry = {
      * The ID of the request associated with this entry, if any.
      */
     requestId?: ID;
+};
+/**
+ * The currently selected Replay exchange.
+ * @category Replay
+ */
+export type ReplaySelectedExchange = {
+    kind: typeof ReplaySessionKind.Http;
+    entryId: ID;
+    sessionId: ID;
+    request: RequestFull;
+    response?: ResponseFull;
+} | {
+    kind: typeof ReplaySessionKind.Ws;
+    entryId: ID;
+    sessionId: ID;
+    streamId?: ID;
+    activeTab: "http-upgrade" | "messages";
+    upgradeRequest?: RequestFull;
+    upgradeResponse?: ResponseFull;
+    message?: ReplayWebSocketMessage;
+};
+/**
+ * The currently edited WebSocket message in Replay.
+ * @category Replay
+ */
+export type ReplayWebSocketMessage = {
+    raw: string;
+    direction: "CLIENT" | "SERVER";
+    format: "BINARY" | "CLOSE" | "PING" | "PONG" | "TEXT";
 };
 /**
  * A collection in Replay.

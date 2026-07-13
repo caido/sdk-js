@@ -1,7 +1,7 @@
 import { type Extension } from "@codemirror/state";
-import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySessionKind, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
-import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySelectedExchange, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySessionKind, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import type { RequestFull, RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
+import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID, Indicator, ListenerHandle } from "../types/utils";
 import type { MessageViewModeOptions, MessageViewModeProps } from "../types/websocket";
@@ -63,6 +63,21 @@ export type ReplaySDK = {
      * ```
      */
     getCurrentEntry: () => ReplayEntry | undefined;
+    /**
+     * Get the currently selected Replay exchange.
+     * @returns The currently selected Replay exchange.
+     */
+    getSelectedExchange: () => ReplaySelectedExchange | undefined;
+    /**
+     * Get the currently selected request.
+     * @returns The currently selected request.
+     */
+    getSelectedRequest: () => RequestFull | undefined;
+    /**
+     * Get the currently selected response.
+     * @returns The currently selected response.
+     */
+    getSelectedResponse: () => ResponseFull | undefined;
     /**
      * Rename a session.
      * @param id The ID of the session to rename.
