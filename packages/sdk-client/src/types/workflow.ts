@@ -34,3 +34,25 @@ export type UpdateWorkflowOptions = {
   /** The workflow definition payload */
   definition: Record<string, unknown>;
 };
+
+/**
+ * Options for testing a convert workflow
+ */
+export type TestWorkflowConvertOptions = {
+  /** Discriminator for the workflow kind */
+  kind: "convert";
+  /** The workflow definition payload */
+  definition: Record<string, unknown>;
+  /** The input data to run through the workflow */
+  data: string | Uint8Array;
+};
+
+/**
+ * Result of testing a convert workflow
+ */
+export type TestWorkflowConvertResult = {
+  /** The output data produced by the workflow, if any */
+  output?: Uint8Array;
+  /** The run state of the workflow execution, if any */
+  runState?: Record<string, unknown>;
+};
