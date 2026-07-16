@@ -82,3 +82,11 @@ export type TestWorkflowHttpResult = {
   /** The run state of the workflow execution, if any */
   runState?: Record<string, unknown>;
 };
+
+/**
+ * Result of running a convert workflow
+ */
+export type RunConvertWorkflowResult = {
+  /** The output data produced by the workflow, if any */
+  output?: Uint8Array;
+};

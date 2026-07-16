@@ -1,10 +1,12 @@
 import { decodeBlob } from "./blob.js";
 
 import type {
+  RunConvertWorkflowMutation,
   TestWorkflowConvertMutation,
   WorkflowFullFragment,
 } from "@/graphql/index.js";
 import type {
+  RunConvertWorkflowResult,
   TestWorkflowConvertResult,
   TestWorkflowHttpResult,
   Workflow,
@@ -38,5 +40,13 @@ export const mapToTestWorkflowHttpResult = (payload: {
 }): TestWorkflowHttpResult => {
   return {
     runState: payload.runState ?? undefined,
+  };
+};
+
+export const mapToRunConvertWorkflowResult = (
+  payload: RunConvertWorkflowMutation["runConvertWorkflow"],
+): RunConvertWorkflowResult => {
+  return {
+    output: decodeBlob(payload.output ?? undefined),
   };
 };

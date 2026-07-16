@@ -11,6 +11,13 @@ fragment ReplayTaskMeta on ReplayTask {
   }
 }
 
+fragment WorkflowTaskMeta on WorkflowTask {
+  ...TaskMeta
+  workflow {
+    id
+  }
+}
+
 query Tasks {
   tasks {
     ...TaskMeta

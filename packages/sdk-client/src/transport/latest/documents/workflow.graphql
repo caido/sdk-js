@@ -154,3 +154,41 @@ mutation ToggleWorkflow($id: ID!, $enabled: Boolean!) {
     }
   }
 }
+
+mutation RunConvertWorkflow($id: ID!, $input: Blob!) {
+  runConvertWorkflow(id: $id, input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    output
+  }
+}
+
+mutation RunActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {
+  runActiveWorkflow(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    task {
+      ...WorkflowTaskMeta
+    }
+  }
+}

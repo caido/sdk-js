@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { createMockRequest } from "./utils.js";
+
 const CONVERT_HEX_ENCODE_DEFINITION: Record<string, unknown> = {
   edition: 2,
   id: "convert-1",
@@ -223,5 +225,35 @@ describe("Workflow", () => {
 
     const enabled = await caido.workflow.toggle(created.id, true);
     expect(enabled.enabled).toBe(true);
+  });
+
+  it("should run a convert workflow against input data", async () => {
+    const created = await caido.workflow.create({
+      definition: CONVERT_HEX_ENCODE_DEFINITION,
+      global: false,
+    });
+
+    const result = await caido.workflow.runConvert(created.id, "TEST");
+
+    expect(result.output).toBeDefined();
+    expect(new TextDecoder().decode(result.output)).toBe("0x54,0x45,0x53,0x54");
+  });
+
+  it("should run an active workflow against a request", async () => {
+    await createMockRequest();
+    const requests = await caido.request
+      .list()
+      .first(1)
+      .descending("req", "created_at");
+    expect(requests.edges.length).toBeGreaterThan(0);
+    const requestId = requests.edges[0]!.node.request.id;
+
+    const created = await caido.workflow.create({
+      definition: ACTIVE_SET_COLOR_DEFINITION,
+      global: false,
+    });
+
+    const task = await caido.workflow.runActive(created.id, requestId);
+    expect(task.id).toBeDefined();
   });
 });

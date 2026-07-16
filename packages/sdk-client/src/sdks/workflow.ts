@@ -1,5 +1,8 @@
+import { WorkflowTask } from "./task.js";
+
 import { encodeBlob } from "@/convert/blob.js";
 import {
+  mapToRunConvertWorkflowResult,
   mapToTestWorkflowConvertResult,
   mapToTestWorkflowHttpResult,
   mapToWorkflow,
@@ -8,6 +11,8 @@ import {
   CreateWorkflowDocument,
   DeleteWorkflowDocument,
   type GraphQLClient,
+  RunActiveWorkflowDocument,
+  RunConvertWorkflowDocument,
   TestWorkflowActiveDocument,
   TestWorkflowConvertDocument,
   TestWorkflowPassiveDocument,
@@ -19,6 +24,7 @@ import {
 import type {
   CreateWorkflowOptions,
   ID,
+  RunConvertWorkflowResult,
   TestWorkflowConvertOptions,
   TestWorkflowConvertResult,
   TestWorkflowHttpOptions,
@@ -223,5 +229,51 @@ export class WorkflowSDK {
     }
 
     return mapToTestWorkflowHttpResult(payload);
+  }
+
+  /**
+   * Run a convert workflow against input data.
+   */
+  async runConvert(
+    id: ID,
+    data: string | Uint8Array,
+  ): Promise<RunConvertWorkflowResult> {
+    const result = await this.graphql.mutation(RunConvertWorkflowDocument, {
+      id,
+      input: encodeBlob(data),
+    });
+
+    const payload = result.runConvertWorkflow;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    return mapToRunConvertWorkflowResult(payload);
+  }
+
+  /**
+   * Run an active workflow against an existing request.
+   *
+   * Active workflows produce no output; the returned task can be used to track
+   * the run.
+   */
+  async runActive(id: ID, requestId: ID): Promise<WorkflowTask> {
+    const result = await this.graphql.mutation(RunActiveWorkflowDocument, {
+      id,
+      input: { requestId },
+    });
+
+    const payload = result.runActiveWorkflow;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    if (isAbsent(payload.task)) {
+      throw new Error("Run active workflow returned no task");
+    }
+
+    return new WorkflowTask(this.graphql, payload.task);
   }
 }
