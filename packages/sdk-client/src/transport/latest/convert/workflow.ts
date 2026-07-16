@@ -4,7 +4,11 @@ import type {
   TestWorkflowConvertMutation,
   WorkflowFullFragment,
 } from "@/graphql/index.js";
-import type { TestWorkflowConvertResult, Workflow } from "@/types/index.js";
+import type {
+  TestWorkflowConvertResult,
+  TestWorkflowHttpResult,
+  Workflow,
+} from "@/types/index.js";
 
 export const mapToWorkflow = (node: WorkflowFullFragment): Workflow => {
   return {
@@ -25,6 +29,14 @@ export const mapToTestWorkflowConvertResult = (
 ): TestWorkflowConvertResult => {
   return {
     output: decodeBlob(payload.output ?? undefined),
+    runState: payload.runState ?? undefined,
+  };
+};
+
+export const mapToTestWorkflowHttpResult = (payload: {
+  runState?: Record<string, unknown> | null;
+}): TestWorkflowHttpResult => {
+  return {
     runState: payload.runState ?? undefined,
   };
 };

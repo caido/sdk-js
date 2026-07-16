@@ -59,6 +59,101 @@ const CONVERT_HEX_ENCODE_DEFINITION: Record<string, unknown> = {
   },
 };
 
+const PASSIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
+  edition: 2,
+  id: "passive-1",
+  name: "Passive 1",
+  description: "",
+  kind: "passive",
+  graph: {
+    nodes: [
+      {
+        id: 1,
+        alias: "on_intercept_request",
+        name: "On Intercept Request",
+        definition_id: "caido/on-intercept-request",
+        version: "*",
+        inputs: [],
+        display: null,
+      },
+      {
+        id: 2,
+        alias: "set_color",
+        name: "Set Color",
+        definition_id: "caido/color-set",
+        version: "*",
+        inputs: [
+          { alias: "color", value: { kind: "string", data: "red" } },
+          {
+            alias: "request",
+            value: { kind: "ref", data: "$on_intercept_request.request" },
+          },
+        ],
+        display: null,
+      },
+    ],
+    edges: [
+      {
+        source: { node_id: 1, exec_alias: "exec" },
+        target: { node_id: 2, exec_alias: "exec" },
+      },
+    ],
+  },
+};
+
+const ACTIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
+  edition: 2,
+  id: "active-1",
+  name: "Active 1",
+  description: "",
+  kind: "active",
+  graph: {
+    nodes: [
+      {
+        id: 1,
+        alias: "active_start",
+        name: "Active Start",
+        definition_id: "caido/active-start",
+        version: "*",
+        inputs: [],
+        display: null,
+      },
+      {
+        id: 2,
+        alias: "set_color",
+        name: "Set Color",
+        definition_id: "caido/color-set",
+        version: "*",
+        inputs: [
+          { alias: "color", value: { kind: "string", data: "red" } },
+          {
+            alias: "request",
+            value: { kind: "ref", data: "$active_start.request" },
+          },
+        ],
+        display: null,
+      },
+    ],
+    edges: [
+      {
+        source: { node_id: 1, exec_alias: "exec" },
+        target: { node_id: 2, exec_alias: "exec" },
+      },
+    ],
+  },
+};
+
+const TEST_CONNECTION = {
+  host: "localhost",
+  port: 5956,
+  isTLS: false,
+};
+
+const TEST_REQUEST_RAW =
+  "GET /health/other HTTP/1.1\r\nHost: localhost:5956\r\n\r\n";
+
+const TEST_RESPONSE_RAW = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
+
 describe("Workflow", () => {
   it("should be able to perform workflow CRUD operations", async () => {
     const existing = await caido.workflow.list();
@@ -91,5 +186,26 @@ describe("Workflow", () => {
 
     expect(result.output).toBeDefined();
     expect(new TextDecoder().decode(result.output)).toBe("0x54,0x45,0x53,0x54");
+  });
+
+  it("should test a passive workflow against a request", async () => {
+    const result = await caido.workflow.testPassive({
+      definition: PASSIVE_SET_COLOR_DEFINITION,
+      request: { connection: TEST_CONNECTION, raw: TEST_REQUEST_RAW },
+    });
+
+    expect(result.runState).toBeDefined();
+    expect(JSON.stringify(result.runState)).toContain("set_color");
+  });
+
+  it("should test an active workflow against a request and response", async () => {
+    const result = await caido.workflow.testActive({
+      definition: ACTIVE_SET_COLOR_DEFINITION,
+      request: { connection: TEST_CONNECTION, raw: TEST_REQUEST_RAW },
+      response: { raw: TEST_RESPONSE_RAW },
+    });
+
+    expect(result.runState).toBeDefined();
+    expect(JSON.stringify(result.runState)).toContain("set_color");
   });
 });

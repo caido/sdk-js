@@ -1,4 +1,4 @@
-import type { ID } from "./index.js";
+import type { ConnectionInfoInput, ID } from "./index.js";
 
 import type { WorkflowKind } from "@/graphql/index.js";
 
@@ -51,6 +51,34 @@ export type TestWorkflowConvertOptions = {
 export type TestWorkflowConvertResult = {
   /** The output data produced by the workflow, if any */
   output?: Uint8Array;
+  /** The run state of the workflow execution, if any */
+  runState?: Record<string, unknown>;
+};
+
+/**
+ * Options for testing a passive or active workflow
+ */
+export type TestWorkflowHttpOptions = {
+  /** The workflow definition payload */
+  definition: Record<string, unknown>;
+  /** The request to run through the workflow */
+  request: {
+    /** The connection info of the request */
+    connection: ConnectionInfoInput;
+    /** The raw request bytes */
+    raw: string | Uint8Array;
+  };
+  /** The optional response to run through the workflow */
+  response?: {
+    /** The raw response bytes */
+    raw: string | Uint8Array;
+  };
+};
+
+/**
+ * Result of testing a passive or active workflow
+ */
+export type TestWorkflowHttpResult = {
   /** The run state of the workflow execution, if any */
   runState?: Record<string, unknown>;
 };

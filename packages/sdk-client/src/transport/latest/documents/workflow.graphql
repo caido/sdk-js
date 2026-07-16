@@ -101,3 +101,39 @@ mutation TestWorkflowConvert($input: TestWorkflowConvertInput!) {
     runState
   }
 }
+
+mutation TestWorkflowPassive($input: TestWorkflowPassiveInput!) {
+  testWorkflowPassive(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    runState
+  }
+}
+
+mutation TestWorkflowActive($input: TestWorkflowActiveInput!) {
+  testWorkflowActive(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    runState
+  }
+}

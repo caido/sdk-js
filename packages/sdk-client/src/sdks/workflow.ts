@@ -1,13 +1,16 @@
 import { encodeBlob } from "@/convert/blob.js";
 import {
   mapToTestWorkflowConvertResult,
+  mapToTestWorkflowHttpResult,
   mapToWorkflow,
 } from "@/convert/workflow.js";
 import {
   CreateWorkflowDocument,
   DeleteWorkflowDocument,
   type GraphQLClient,
+  TestWorkflowActiveDocument,
   TestWorkflowConvertDocument,
+  TestWorkflowPassiveDocument,
   UpdateWorkflowDocument,
   WorkflowDocument,
   WorkflowsDocument,
@@ -17,11 +20,29 @@ import type {
   ID,
   TestWorkflowConvertOptions,
   TestWorkflowConvertResult,
+  TestWorkflowHttpOptions,
+  TestWorkflowHttpResult,
   UpdateWorkflowOptions,
 } from "@/types/index.js";
 import type { Workflow as WorkflowType } from "@/types/workflow.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+
+const buildTestWorkflowHttpInput = (options: TestWorkflowHttpOptions) => ({
+  definition: options.definition,
+  request: {
+    connectionInfo: {
+      host: options.request.connection.host,
+      port: options.request.connection.port,
+      isTLS: options.request.connection.isTLS,
+      SNI: options.request.connection.SNI,
+    },
+    raw: encodeBlob(options.request.raw),
+  },
+  response: isPresent(options.response)
+    ? { raw: encodeBlob(options.response.raw) }
+    : undefined,
+});
 
 /**
  * Higher-level SDK for workflow-related operations.
@@ -139,5 +160,45 @@ export class WorkflowSDK {
     }
 
     return mapToTestWorkflowConvertResult(payload);
+  }
+
+  /**
+   * Test a passive workflow against a request and optional response without
+   * saving it.
+   */
+  async testPassive(
+    options: TestWorkflowHttpOptions,
+  ): Promise<TestWorkflowHttpResult> {
+    const result = await this.graphql.mutation(TestWorkflowPassiveDocument, {
+      input: buildTestWorkflowHttpInput(options),
+    });
+
+    const payload = result.testWorkflowPassive;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    return mapToTestWorkflowHttpResult(payload);
+  }
+
+  /**
+   * Test an active workflow against a request and optional response without
+   * saving it.
+   */
+  async testActive(
+    options: TestWorkflowHttpOptions,
+  ): Promise<TestWorkflowHttpResult> {
+    const result = await this.graphql.mutation(TestWorkflowActiveDocument, {
+      input: buildTestWorkflowHttpInput(options),
+    });
+
+    const payload = result.testWorkflowActive;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    return mapToTestWorkflowHttpResult(payload);
   }
 }
