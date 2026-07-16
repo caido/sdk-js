@@ -142,6 +142,33 @@ export type DeleteWorkflowMutation = {
   };
 };
 
+export type TestWorkflowConvertMutationVariables = Types.Exact<{
+  input: Types.TestWorkflowConvertInput;
+}>;
+
+export type TestWorkflowConvertMutation = {
+  testWorkflowConvert: {
+    output?: string | undefined | null;
+    runState?: Record<string, unknown> | undefined | null;
+    error?:
+      | { __typename: "OtherUserError"; code: string }
+      | {
+          __typename: "PermissionDeniedUserError";
+          code: string;
+          permissionReason: Types.PermissionDeniedErrorReason;
+        }
+      | {
+          __typename: "WorkflowUserError";
+          node?: string | undefined | null;
+          message: string;
+          reason: Types.WorkflowErrorReason;
+          code: string;
+        }
+      | undefined
+      | null;
+  };
+};
+
 export const WorkflowFullFragmentDoc = {
   kind: "Document",
   definitions: [
@@ -988,4 +1015,206 @@ export const DeleteWorkflowDocument = {
 } as unknown as DocumentNode<
   DeleteWorkflowMutation,
   DeleteWorkflowMutationVariables
+>;
+export const TestWorkflowConvertDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "TestWorkflowConvert" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "input" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "TestWorkflowConvertInput" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "testWorkflowConvert" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "input" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "input" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "error" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "__typename" },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: { kind: "Name", value: "WorkflowUserError" },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "WorkflowUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: {
+                            kind: "Name",
+                            value: "PermissionDeniedUserError",
+                          },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "PermissionDeniedUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: "InlineFragment",
+                        typeCondition: {
+                          kind: "NamedType",
+                          name: { kind: "Name", value: "OtherUserError" },
+                        },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            {
+                              kind: "FragmentSpread",
+                              name: {
+                                kind: "Name",
+                                value: "OtherUserErrorFull",
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                { kind: "Field", name: { kind: "Name", value: "output" } },
+                { kind: "Field", name: { kind: "Name", value: "runState" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "WorkflowUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "WorkflowUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "node" } },
+          { kind: "Field", name: { kind: "Name", value: "message" } },
+          { kind: "Field", name: { kind: "Name", value: "reason" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "PermissionDeniedUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "PermissionDeniedUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          {
+            kind: "Field",
+            alias: { kind: "Name", value: "permissionReason" },
+            name: { kind: "Name", value: "reason" },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OtherUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "OtherUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  TestWorkflowConvertMutation,
+  TestWorkflowConvertMutationVariables
 >;

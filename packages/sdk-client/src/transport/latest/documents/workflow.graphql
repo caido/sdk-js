@@ -82,3 +82,22 @@ mutation DeleteWorkflow($id: ID!) {
     }
   }
 }
+
+mutation TestWorkflowConvert($input: TestWorkflowConvertInput!) {
+  testWorkflowConvert(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    output
+    runState
+  }
+}

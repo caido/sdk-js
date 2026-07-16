@@ -1,8 +1,13 @@
-import { mapToWorkflow } from "@/convert/workflow.js";
+import { encodeBlob } from "@/convert/blob.js";
+import {
+  mapToTestWorkflowConvertResult,
+  mapToWorkflow,
+} from "@/convert/workflow.js";
 import {
   CreateWorkflowDocument,
   DeleteWorkflowDocument,
   type GraphQLClient,
+  TestWorkflowConvertDocument,
   UpdateWorkflowDocument,
   WorkflowDocument,
   WorkflowsDocument,
@@ -10,6 +15,8 @@ import {
 import type {
   CreateWorkflowOptions,
   ID,
+  TestWorkflowConvertOptions,
+  TestWorkflowConvertResult,
   UpdateWorkflowOptions,
 } from "@/types/index.js";
 import type { Workflow as WorkflowType } from "@/types/workflow.js";
@@ -110,5 +117,27 @@ export class WorkflowSDK {
     if (isPresent(payload.error)) {
       handleGraphQLError(payload.error);
     }
+  }
+
+  /**
+   * Test a convert workflow against input data without saving it.
+   */
+  async testConvert(
+    options: TestWorkflowConvertOptions,
+  ): Promise<TestWorkflowConvertResult> {
+    const result = await this.graphql.mutation(TestWorkflowConvertDocument, {
+      input: {
+        definition: options.definition,
+        data: encodeBlob(options.data),
+      },
+    });
+
+    const payload = result.testWorkflowConvert;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    return mapToTestWorkflowConvertResult(payload);
   }
 }
