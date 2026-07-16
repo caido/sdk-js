@@ -208,4 +208,20 @@ describe("Workflow", () => {
     expect(result.runState).toBeDefined();
     expect(JSON.stringify(result.runState)).toContain("set_color");
   });
+
+  it("should toggle a workflow's enabled state", async () => {
+    const existing = await caido.workflow.list();
+    expect(existing.length).toBeGreaterThan(0);
+
+    const created = await caido.workflow.create({
+      definition: existing[0]!.definition,
+      global: false,
+    });
+
+    const disabled = await caido.workflow.toggle(created.id, false);
+    expect(disabled.enabled).toBe(false);
+
+    const enabled = await caido.workflow.toggle(created.id, true);
+    expect(enabled.enabled).toBe(true);
+  });
 });
