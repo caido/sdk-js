@@ -187,11 +187,15 @@ describe("ENG-874 workflow stack (full lifecycle)", () => {
 
     // 3. toggle() each: true -> false -> true
     for (const created of [convert, passive, active]) {
-      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(true);
+      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(
+        true,
+      );
       expect((await caido.workflow.toggle(created.id, false)).enabled).toBe(
         false,
       );
-      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(true);
+      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(
+        true,
+      );
     }
     console.log("[3] toggle true->false->true PASS for all three");
 
@@ -218,8 +222,12 @@ describe("ENG-874 workflow stack (full lifecycle)", () => {
       "[4] testConvert output PASS; testPassive + testActive runState PASS",
     );
 
-    // 5. runConvert (assert output) + runActive (assert task, no output)
-    const runConvert = await caido.workflow.runConvert(convert.id, bytes("TEST"));
+    // 5. run convert (assert output) + run active (assert task, no output)
+    const runConvert = await caido.workflow.run({
+      kind: "convert",
+      id: convert.id,
+      data: bytes("TEST"),
+    });
     expect(new TextDecoder().decode(runConvert.output)).toBe(
       "0x54,0x45,0x53,0x54",
     );
@@ -232,10 +240,14 @@ describe("ENG-874 workflow stack (full lifecycle)", () => {
     expect(requests.edges.length).toBeGreaterThan(0);
     const requestId = requests.edges[0]!.node.request.id;
 
-    const task = await caido.workflow.runActive(active.id, requestId);
+    const task = await caido.workflow.run({
+      kind: "active",
+      id: active.id,
+      requestId,
+    });
     expect(task.id).toBeDefined();
     console.log(
-      `[5] runConvert output PASS; runActive task=${task.id} (no output) PASS`,
+      `[5] run convert output PASS; run active task=${task.id} (no output) PASS`,
     );
 
     // 6. update() then delete() — gone from list()

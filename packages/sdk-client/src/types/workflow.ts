@@ -90,3 +90,27 @@ export type RunConvertWorkflowResult = {
   /** The output data produced by the workflow, if any */
   output?: Uint8Array;
 };
+
+/**
+ * Options for running a convert workflow
+ */
+export type RunConvertWorkflowOptions = {
+  /** Discriminator for the workflow kind */
+  kind: "convert";
+  /** The ID of the workflow to run */
+  id: ID;
+  /** The input data to run through the workflow */
+  data: string | Uint8Array;
+};
+
+/**
+ * Options for running an active workflow
+ */
+export type RunActiveWorkflowOptions = {
+  /** Discriminator for the workflow kind */
+  kind: "active";
+  /** The ID of the workflow to run */
+  id: ID;
+  /** The ID of an existing request to run the workflow against */
+  requestId: ID;
+};

@@ -233,7 +233,11 @@ describe("Workflow", () => {
       global: false,
     });
 
-    const result = await caido.workflow.runConvert(created.id, "TEST");
+    const result = await caido.workflow.run({
+      kind: "convert",
+      id: created.id,
+      data: "TEST",
+    });
 
     expect(result.output).toBeDefined();
     expect(new TextDecoder().decode(result.output)).toBe("0x54,0x45,0x53,0x54");
@@ -253,7 +257,11 @@ describe("Workflow", () => {
       global: false,
     });
 
-    const task = await caido.workflow.runActive(created.id, requestId);
+    const task = await caido.workflow.run({
+      kind: "active",
+      id: created.id,
+      requestId,
+    });
     expect(task.id).toBeDefined();
   });
 });
