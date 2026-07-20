@@ -11,6 +11,7 @@ import {
   TestWorkflowActiveDocument,
   TestWorkflowConvertDocument,
   TestWorkflowPassiveDocument,
+  ToggleWorkflowDocument,
   UpdateWorkflowDocument,
   WorkflowDocument,
   WorkflowsDocument,
@@ -138,6 +139,28 @@ export class WorkflowSDK {
     if (isPresent(payload.error)) {
       handleGraphQLError(payload.error);
     }
+  }
+
+  /**
+   * Toggle a workflow's enabled state.
+   */
+  async toggle(id: ID, enabled: boolean): Promise<WorkflowType> {
+    const result = await this.graphql.mutation(ToggleWorkflowDocument, {
+      id,
+      enabled,
+    });
+
+    const payload = result.toggleWorkflow;
+
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+
+    if (isAbsent(payload.workflow)) {
+      throw new Error("Toggle workflow returned no workflow");
+    }
+
+    return mapToWorkflow(payload.workflow);
   }
 
   /**

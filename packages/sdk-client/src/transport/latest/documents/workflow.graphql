@@ -137,3 +137,20 @@ mutation TestWorkflowActive($input: TestWorkflowActiveInput!) {
     runState
   }
 }
+
+mutation ToggleWorkflow($id: ID!, $enabled: Boolean!) {
+  toggleWorkflow(id: $id, enabled: $enabled) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    workflow {
+      ...WorkflowFull
+    }
+  }
+}
