@@ -179,7 +179,8 @@ describe("Workflow", () => {
   });
 
   it("should test a convert workflow against input data", async () => {
-    const result = await caido.workflow.testConvert({
+    const result = await caido.workflow.test({
+      kind: "convert",
       definition: CONVERT_HEX_ENCODE_DEFINITION,
       data: "TEST",
     });

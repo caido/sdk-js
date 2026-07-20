@@ -164,25 +164,32 @@ export class WorkflowSDK {
   }
 
   /**
-   * Test a convert workflow against input data without saving it.
+   * Test a workflow against input without saving it.
    */
-  async testConvert(
+  async test(
     options: TestWorkflowConvertOptions,
   ): Promise<TestWorkflowConvertResult> {
-    const result = await this.graphql.mutation(TestWorkflowConvertDocument, {
-      input: {
-        definition: options.definition,
-        data: encodeBlob(options.data),
-      },
-    });
+    switch (options.kind) {
+      case "convert": {
+        const result = await this.graphql.mutation(
+          TestWorkflowConvertDocument,
+          {
+            input: {
+              definition: options.definition,
+              data: encodeBlob(options.data),
+            },
+          },
+        );
 
-    const payload = result.testWorkflowConvert;
+        const payload = result.testWorkflowConvert;
 
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
+        if (isPresent(payload.error)) {
+          handleGraphQLError(payload.error);
+        }
+
+        return mapToTestWorkflowConvertResult(payload);
+      }
     }
-
-    return mapToTestWorkflowConvertResult(payload);
   }
 
   /**

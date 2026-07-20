@@ -39,6 +39,8 @@ export type UpdateWorkflowOptions = {
  * Options for testing a convert workflow
  */
 export type TestWorkflowConvertOptions = {
+  /** Discriminator for the workflow kind */
+  kind: "convert";
   /** The workflow definition payload */
   definition: Record<string, unknown>;
   /** The input data to run through the workflow */
