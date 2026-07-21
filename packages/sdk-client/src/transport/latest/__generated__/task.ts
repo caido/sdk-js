@@ -38,6 +38,13 @@ export type ReplayTaskMetaFragment = {
   replayEntry: { id: string } | { id: string };
 };
 
+export type WorkflowTaskMetaFragment = {
+  __typename: "WorkflowTask";
+  id: string;
+  createdAt: string;
+  workflow: { id: string };
+};
+
 export type TasksQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type TasksQuery = {
@@ -192,6 +199,51 @@ export const ReplayTaskMetaFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ReplayTaskMetaFragment, unknown>;
+export const WorkflowTaskMetaFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "WorkflowTaskMeta" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "WorkflowTask" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "FragmentSpread", name: { kind: "Name", value: "TaskMeta" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "workflow" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "TaskMeta" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "Task" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "createdAt" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<WorkflowTaskMetaFragment, unknown>;
 export const TasksDocument = {
   kind: "Document",
   definitions: [

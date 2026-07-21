@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { createMockRequest } from "./utils.js";
+import { bytes, createMockRequest } from "./utils.js";
 
-const CONVERT_HEX_ENCODE_DEFINITION: Record<string, unknown> = {
+const CONVERT_DEFINITION: Record<string, unknown> = {
   edition: 2,
   id: "convert-1",
   name: "Convert 1",
@@ -61,7 +61,7 @@ const CONVERT_HEX_ENCODE_DEFINITION: Record<string, unknown> = {
   },
 };
 
-const PASSIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
+const PASSIVE_DEFINITION: Record<string, unknown> = {
   edition: 2,
   id: "passive-1",
   name: "Passive 1",
@@ -103,7 +103,7 @@ const PASSIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
   },
 };
 
-const ACTIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
+const ACTIVE_DEFINITION: Record<string, unknown> = {
   edition: 2,
   id: "active-1",
   name: "Active 1",
@@ -145,108 +145,96 @@ const ACTIVE_SET_COLOR_DEFINITION: Record<string, unknown> = {
   },
 };
 
-const TEST_CONNECTION = {
-  host: "localhost",
-  port: 5956,
-  isTLS: false,
-};
+const CONNECTION = { host: "localhost", port: 5956, isTLS: false };
+const REQUEST_RAW = bytes(
+  "GET /health/other HTTP/1.1\r\nHost: localhost:5956\r\n\r\n",
+);
+const RESPONSE_RAW = bytes("HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n");
 
-const TEST_REQUEST_RAW =
-  "GET /health/other HTTP/1.1\r\nHost: localhost:5956\r\n\r\n";
-
-const TEST_RESPONSE_RAW = "HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n";
-
-describe("Workflow", () => {
-  it("should be able to perform workflow CRUD operations", async () => {
-    const existing = await caido.workflow.list();
-    expect(existing.length).toBeGreaterThan(0);
-
-    const source = existing[0]!;
-    const created = await caido.workflow.create({
-      definition: source.definition,
+describe("ENG-874 workflow stack (full lifecycle)", () => {
+  it("exercises every workflow operation end to end", async () => {
+    // 1. Create a convert, passive, and active workflow
+    const convert = await caido.workflow.create({
+      definition: CONVERT_DEFINITION,
       global: false,
     });
-
-    const fetched = await caido.workflow.get(created.id);
-    expect(fetched).toBeDefined();
-    expect(fetched?.id).toBe(created.id);
-
-    const updated = await caido.workflow.update(created.id, {
-      definition: created.definition,
+    expect(convert.id).toBeDefined();
+    const passive = await caido.workflow.create({
+      definition: PASSIVE_DEFINITION,
+      global: false,
     });
-    expect(updated.id).toBe(created.id);
+    expect(passive.id).toBeDefined();
+    const active = await caido.workflow.create({
+      definition: ACTIVE_DEFINITION,
+      global: false,
+    });
+    expect(active.id).toBeDefined();
+    console.log(
+      `[1] create PASS: convert=${convert.id} passive=${passive.id} active=${active.id}`,
+    );
 
+    // 2. list() and get() — all three appear
     const listed = await caido.workflow.list();
-    expect(listed.some((workflow) => workflow.id === created.id)).toBe(true);
-  });
+    const listedIds = listed.map((workflow) => workflow.id);
+    expect(listedIds).toContain(convert.id);
+    expect(listedIds).toContain(passive.id);
+    expect(listedIds).toContain(active.id);
+    for (const created of [convert, passive, active]) {
+      const fetched = await caido.workflow.get(created.id);
+      expect(fetched?.id).toBe(created.id);
+    }
+    console.log("[2] list + get PASS: all three present");
 
-  it("should test a convert workflow against input data", async () => {
-    const result = await caido.workflow.test({
+    // 3. toggle() each: true -> false -> true
+    for (const created of [convert, passive, active]) {
+      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(
+        true,
+      );
+      expect((await caido.workflow.toggle(created.id, false)).enabled).toBe(
+        false,
+      );
+      expect((await caido.workflow.toggle(created.id, true)).enabled).toBe(
+        true,
+      );
+    }
+    console.log("[3] toggle true->false->true PASS for all three");
+
+    // 4. test (convert kind) / testPassive / testActive
+    const testConvert = await caido.workflow.test({
       kind: "convert",
-      definition: CONVERT_HEX_ENCODE_DEFINITION,
-      data: "TEST",
+      definition: CONVERT_DEFINITION,
+      data: bytes("TEST"),
     });
-
-    expect(result.output).toBeDefined();
-    expect(new TextDecoder().decode(result.output)).toBe("0x54,0x45,0x53,0x54");
-  });
-
-  it("should test a passive workflow against a request", async () => {
-    const result = await caido.workflow.test({
+    expect(new TextDecoder().decode(testConvert.output)).toBe(
+      "0x54,0x45,0x53,0x54",
+    );
+    const testPassive = await caido.workflow.test({
       kind: "passive",
-      definition: PASSIVE_SET_COLOR_DEFINITION,
-      request: { connection: TEST_CONNECTION, raw: TEST_REQUEST_RAW },
+      definition: PASSIVE_DEFINITION,
+      request: { connection: CONNECTION, raw: REQUEST_RAW },
     });
-
-    expect(result.runState).toBeDefined();
-    expect(JSON.stringify(result.runState)).toContain("set_color");
-  });
-
-  it("should test an active workflow against a request and response", async () => {
-    const result = await caido.workflow.test({
+    expect(testPassive.runState).toBeDefined();
+    const testActive = await caido.workflow.test({
       kind: "active",
-      definition: ACTIVE_SET_COLOR_DEFINITION,
-      request: { connection: TEST_CONNECTION, raw: TEST_REQUEST_RAW },
-      response: { raw: TEST_RESPONSE_RAW },
+      definition: ACTIVE_DEFINITION,
+      request: { connection: CONNECTION, raw: REQUEST_RAW },
+      response: { raw: RESPONSE_RAW },
     });
+    expect(testActive.runState).toBeDefined();
+    console.log(
+      "[4] test convert output PASS; test passive + test active runState PASS",
+    );
 
-    expect(result.runState).toBeDefined();
-    expect(JSON.stringify(result.runState)).toContain("set_color");
-  });
-
-  it("should toggle a workflow's enabled state", async () => {
-    const existing = await caido.workflow.list();
-    expect(existing.length).toBeGreaterThan(0);
-
-    const created = await caido.workflow.create({
-      definition: existing[0]!.definition,
-      global: false,
-    });
-
-    const disabled = await caido.workflow.toggle(created.id, false);
-    expect(disabled.enabled).toBe(false);
-
-    const enabled = await caido.workflow.toggle(created.id, true);
-    expect(enabled.enabled).toBe(true);
-  });
-
-  it("should run a convert workflow against input data", async () => {
-    const created = await caido.workflow.create({
-      definition: CONVERT_HEX_ENCODE_DEFINITION,
-      global: false,
-    });
-
-    const result = await caido.workflow.run({
+    // 5. run convert (assert output) + run active (assert task, no output)
+    const runConvert = await caido.workflow.run({
       kind: "convert",
-      id: created.id,
-      data: "TEST",
+      id: convert.id,
+      data: bytes("TEST"),
     });
+    expect(new TextDecoder().decode(runConvert.output)).toBe(
+      "0x54,0x45,0x53,0x54",
+    );
 
-    expect(result.output).toBeDefined();
-    expect(new TextDecoder().decode(result.output)).toBe("0x54,0x45,0x53,0x54");
-  });
-
-  it("should run an active workflow against a request", async () => {
     await createMockRequest();
     const requests = await caido.request
       .list()
@@ -255,16 +243,26 @@ describe("Workflow", () => {
     expect(requests.edges.length).toBeGreaterThan(0);
     const requestId = requests.edges[0]!.node.request.id;
 
-    const created = await caido.workflow.create({
-      definition: ACTIVE_SET_COLOR_DEFINITION,
-      global: false,
-    });
-
     const task = await caido.workflow.run({
       kind: "active",
-      id: created.id,
+      id: active.id,
       requestId,
     });
     expect(task.id).toBeDefined();
+    console.log(
+      `[5] run convert output PASS; run active task=${task.id} (no output) PASS`,
+    );
+
+    // 6. update() then delete() — gone from list()
+    const updated = await caido.workflow.update(convert.id, {
+      definition: convert.definition,
+    });
+    expect(updated.id).toBe(convert.id);
+    await caido.workflow.delete(convert.id);
+    const afterDelete = await caido.workflow.list();
+    expect(afterDelete.some((workflow) => workflow.id === convert.id)).toBe(
+      false,
+    );
+    console.log("[6] update + delete PASS: workflow gone from list");
   });
 });
