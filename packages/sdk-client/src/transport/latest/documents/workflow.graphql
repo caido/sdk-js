@@ -82,3 +82,113 @@ mutation DeleteWorkflow($id: ID!) {
     }
   }
 }
+
+mutation TestWorkflowConvert($input: TestWorkflowConvertInput!) {
+  testWorkflowConvert(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    output
+    runState
+  }
+}
+
+mutation TestWorkflowPassive($input: TestWorkflowPassiveInput!) {
+  testWorkflowPassive(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    runState
+  }
+}
+
+mutation TestWorkflowActive($input: TestWorkflowActiveInput!) {
+  testWorkflowActive(input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    runState
+  }
+}
+
+mutation ToggleWorkflow($id: ID!, $enabled: Boolean!) {
+  toggleWorkflow(id: $id, enabled: $enabled) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    workflow {
+      ...WorkflowFull
+    }
+  }
+}
+
+mutation RunConvertWorkflow($id: ID!, $input: Blob!) {
+  runConvertWorkflow(id: $id, input: $input) {
+    error {
+      __typename
+      ... on WorkflowUserError {
+        ...WorkflowUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    output
+  }
+}
+
+mutation RunActiveWorkflow($id: ID!, $input: RunActiveWorkflowInput!) {
+  runActiveWorkflow(id: $id, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    task {
+      ...WorkflowTaskMeta
+    }
+  }
+}

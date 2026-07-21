@@ -2,6 +2,7 @@ import type {
   GraphQLClient,
   ReplayTaskMetaFragment,
   TaskMetaFragment,
+  WorkflowTaskMetaFragment,
 } from "@/graphql/index.js";
 import {
   CancelTaskDocument,
@@ -90,5 +91,14 @@ export class ReplayTask extends Task {
   constructor(graphql: GraphQLClient, data: ReplayTaskMetaFragment) {
     super(graphql, data);
     this.replayEntryId = data.replayEntry.id;
+  }
+}
+
+export class WorkflowTask extends Task {
+  readonly workflowId: ID;
+
+  constructor(graphql: GraphQLClient, data: WorkflowTaskMetaFragment) {
+    super(graphql, data);
+    this.workflowId = data.workflow.id;
   }
 }
