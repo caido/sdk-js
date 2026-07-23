@@ -1,3 +1,4 @@
+export * from "./__generated__/certificate.js";
 export * from "./__generated__/viewer.js";
 export * from "./__generated__/types.js";
 export * from "./__generated__/enums.js";

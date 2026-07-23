@@ -1,5 +1,6 @@
 import type {
   AliasTakenUserErrorFullFragment,
+  CertificateUserErrorFullFragment,
   CloudUserErrorFullFragment,
   InvalidGlobTermsUserErrorFullFragment,
   NameTakenUserErrorFullFragment,
@@ -19,6 +20,7 @@ import type {
 export type AllErrors =
   | UnknownIdUserErrorFullFragment
   | AliasTakenUserErrorFullFragment
+  | CertificateUserErrorFullFragment
   | InvalidGlobTermsUserErrorFullFragment
   | PermissionDeniedUserErrorFullFragment
   | NameTakenUserErrorFullFragment

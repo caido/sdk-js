@@ -3,6 +3,7 @@ export type { AllErrors } from "./allErrors.js";
 export { from } from "./from.js";
 
 export { BaseError } from "./base.js";
+export { CertificateUserError } from "./certificate.js";
 export { TokenRefreshError } from "./auth.js";
 export {
   NetworkUserError,
