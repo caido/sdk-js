@@ -218,6 +218,12 @@ export type OtherUserErrorFullFragment = {
   code: string;
 };
 
+export type CertificateUserErrorFullFragment = {
+  __typename: "CertificateUserError";
+  reason: Types.CertificateErrorReason;
+  code: string;
+};
+
 export type ReadOnlyUserErrorFullFragment = {
   __typename: "ReadOnlyUserError";
   code: string;
@@ -532,6 +538,44 @@ export const OtherUserErrorFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<OtherUserErrorFullFragment, unknown>;
+export const CertificateUserErrorFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "CertificateUserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "CertificateUserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
+          { kind: "Field", name: { kind: "Name", value: "reason" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CertificateUserErrorFullFragment, unknown>;
 export const ReadOnlyUserErrorFullFragmentDoc = {
   kind: "Document",
   definitions: [

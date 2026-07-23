@@ -1,5 +1,6 @@
 import type { AllErrors } from "./allErrors.js";
 import { PermissionDeniedUserError } from "./authorization.js";
+import { CertificateUserError } from "./certificate.js";
 import { CloudUserError } from "./cloud.js";
 import {
   AliasTakenUserError,
@@ -23,6 +24,7 @@ type ErrType<T> = InstanceType<
   T extends { __typename: infer E } ?
   E extends "UnknownIdUserError" ? typeof NotFoundUserError :
   E extends "AliasTakenUserError" ? typeof AliasTakenUserError :
+  E extends "CertificateUserError" ? typeof CertificateUserError :
   E extends "PermissionDeniedUserError" ? typeof PermissionDeniedUserError :
   E extends "NameTakenUserError" ? typeof NameTakenUserError :
   E extends "InvalidGlobTermsUserError" ? typeof InvalidGlobTermsUserError :
@@ -57,6 +59,9 @@ export const from = <T extends AllErrors>(error: T): ErrType<T> => {
 
       case "AliasTakenUserError":
         return new AliasTakenUserError(error);
+
+      case "CertificateUserError":
+        return new CertificateUserError(error.reason);
 
       case "InvalidGlobTermsUserError":
         return new InvalidGlobTermsUserError(error.terms);

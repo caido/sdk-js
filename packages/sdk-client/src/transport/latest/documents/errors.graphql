@@ -32,6 +32,11 @@ fragment OtherUserErrorFull on OtherUserError {
   ...UserErrorFull
 }
 
+fragment CertificateUserErrorFull on CertificateUserError {
+  ...UserErrorFull
+  reason
+}
+
 fragment ReadOnlyUserErrorFull on ReadOnlyUserError {
   ...UserErrorFull
 }

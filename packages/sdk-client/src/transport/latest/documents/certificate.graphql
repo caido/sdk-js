@@ -1,0 +1,27 @@
+query GetCertificate($password: Sensitive) {
+  runtime {
+    certificate {
+      p12(password: $password)
+    }
+  }
+}
+
+mutation ImportCertificate($input: ImportCertificateInput!) {
+  importCertificate(input: $input) {
+    error {
+      __typename
+      ... on CertificateUserError {
+        ...CertificateUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+mutation RegenerateCertificate {
+  regenerateCertificate {
+    success
+  }
+}
