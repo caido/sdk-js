@@ -86,6 +86,7 @@ declare module "caido:plugin" {
      * @returns The value or undefined if the key is not defined.
      */
     get<T extends KVValue>(key: string): Promise<T | undefined>;
+
     /**
      * Sets a value in the key-value store.
      *
@@ -93,6 +94,7 @@ declare module "caido:plugin" {
      * @param value The value to set.
      */
     set<T extends KVValue>(key: string, value: T): Promise<void>;
+
     /**
      * Deletes a key-value pair from the key-value store.
      *
@@ -101,6 +103,28 @@ declare module "caido:plugin" {
      * @param key The key to delete.
      */
     del(key: string): Promise<void>;
+
+    /**
+     * Registers a callback for when a key-value pair is set.
+     *
+     * @param event The event to register for.
+     * @param callback The callback to register.
+     */
+    on(
+      event: "set",
+      callback: <T extends KVValue>(
+        key: string,
+        value: T,
+      ) => MaybePromise<void>,
+    ): void;
+
+    /**
+     * Registers a callback for when a key-value pair is deleted.
+     *
+     * @param event The event to register for.
+     * @param callback The callback to register.
+     */
+    on(event: "delete", callback: (key: string) => MaybePromise<void>): void;
   };
 
   /**
