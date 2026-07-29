@@ -38,6 +38,72 @@ declare module "caido:plugin" {
     : InvalidEventParametersMessage;
 
   /**
+   * Represents any valid value for the key-value store.
+   * It needs to be serializable to JSON.
+   * @category KV
+   */
+  export type KVValue =
+    | string
+    | number
+    | boolean
+    | KVValue[]
+    | null
+    | { [key: string]: KVValue };
+
+  /**
+   * Options for defining a key-value pair.
+   * @category KV
+   */
+  type KVDefineOptions = {
+    /**
+     * Whether the key-value pair is exportable.
+     *
+     * Usually this should be true for keys that are settings that you would want to
+     * transfer between Caido instances.
+     *
+     * @default false
+     */
+    exportable?: boolean | undefined;
+  };
+
+  /**
+   * The SDK for the key-value store.
+   * @category KV
+   */
+  export type KVSDK = {
+    /**
+     * Defines a new key-value pair. Only call this once per key.
+     * If the key is not defined, it will be created at first set with default options.
+     *
+     * @param key The key to define.
+     * @param options The options for the key.
+     */
+    define(key: string, options: KVDefineOptions): Promise<void>;
+    /**
+     * Gets a value from the key-value store.
+     *
+     * @param key The key to get.
+     * @returns The value or undefined if the key is not defined.
+     */
+    get<T extends KVValue>(key: string): Promise<T | undefined>;
+    /**
+     * Sets a value in the key-value store.
+     *
+     * @param key The key to set.
+     * @param value The value to set.
+     */
+    set<T extends KVValue>(key: string, value: T): Promise<void>;
+    /**
+     * Deletes a key-value pair from the key-value store.
+     *
+     * No-op if the key is not defined.
+     *
+     * @param key The key to delete.
+     */
+    del(key: string): Promise<void>;
+  };
+
+  /**
    * The SDK for the API RPC service.
    * @category API
    */
@@ -279,5 +345,9 @@ declare module "caido:plugin" {
      * The SDK for the Net service.
      */
     net: NetSDK;
+    /**
+     * The SDK for the Key-Value store.
+     */
+    kv: KVSDK;
   }
 }
