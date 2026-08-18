@@ -1193,7 +1193,16 @@ export type DataImportResult = {
     id: Scalars["ID"]["output"];
     summary?: Maybe<DataImportSummary>;
 };
-export type DataImportSummary = FindingsSummary | TamperSummary;
+export type DataImportSummary = FindingsSummary | PluginPackageDataSummary | TamperSummary;
+export type DefinePluginPackageDataError = OtherUserError | UnknownIdUserError;
+export type DefinePluginPackageDataInput = {
+    flags: PluginPackageDataFlagsInput;
+    key: Scalars["String"]["input"];
+};
+export type DefinePluginPackageDataPayload = {
+    error?: Maybe<DefinePluginPackageDataError>;
+    success: Scalars["Boolean"]["output"];
+};
 export type DeleteAiProviderError = OtherUserError | UnknownIdUserError;
 export type DeleteAiProviderPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
@@ -1264,6 +1273,11 @@ export type DeleteInterceptEntryError = OtherUserError | UnknownIdUserError;
 export type DeleteInterceptEntryPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
     userError?: Maybe<DeleteInterceptEntryError>;
+};
+export type DeletePluginPackageDataError = OtherUserError | UnknownIdUserError;
+export type DeletePluginPackageDataPayload = {
+    error?: Maybe<DeletePluginPackageDataError>;
+    success: Scalars["Boolean"]["output"];
 };
 export type DeleteProjectPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
@@ -1368,6 +1382,10 @@ export type DeletedInterceptMessagePayload = {
     deletedMessageId: Scalars["ID"]["output"];
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type DeletedPluginPackageDataPayload = {
+    key: Scalars["String"]["output"];
+    packageId: Scalars["ID"]["output"];
+};
 export type DeletedPluginPackagePayload = {
     deletedPackageId: Scalars["ID"]["output"];
 };
@@ -1466,6 +1484,14 @@ export type ExportFindingsInput = {
 };
 export type ExportFindingsPayload = {
     error?: Maybe<ExportFindingsError>;
+    export?: Maybe<DataExportOnDemand>;
+};
+export type ExportPluginPackageDataError = OtherUserError | PermissionDeniedUserError;
+export type ExportPluginPackageDataInput = {
+    filter: PluginPackageDataFilter;
+};
+export type ExportPluginPackageDataPayload = {
+    error?: Maybe<ExportPluginPackageDataError>;
     export?: Maybe<DataExportOnDemand>;
 };
 export type ExportSitemapEntriesError = OtherUserError | PermissionDeniedUserError;
@@ -1678,12 +1704,21 @@ export type ImportCertificatePayload = {
 };
 export type ImportDataInput = {
     findings: ImportFindingsInput;
+    pluginPackageData?: never;
     tamper?: never;
 } | {
     findings?: never;
+    pluginPackageData: ImportPluginPackageDataInput;
+    tamper?: never;
+} | {
+    findings?: never;
+    pluginPackageData?: never;
     tamper: ImportTamperRuleInput;
 };
 export type ImportFindingsInput = {
+    file: Scalars["Upload"]["input"];
+};
+export type ImportPluginPackageDataInput = {
     file: Scalars["Upload"]["input"];
 };
 export type ImportTamperRuleInput = {
@@ -1926,6 +1961,7 @@ export type MutationRoot = {
     createUpstreamProxyHttp: CreateUpstreamProxyHttpPayload;
     createUpstreamProxySocks: CreateUpstreamProxySocksPayload;
     createWorkflow: CreateWorkflowPayload;
+    definePluginPackageData: DefinePluginPackageDataPayload;
     deleteAIProvider: DeleteAiProviderPayload;
     deleteAssistantSession: DeleteAssistantSessionPayload;
     deleteAutomateEntries: DeleteAutomateEntriesPayload;
@@ -1941,6 +1977,7 @@ export type MutationRoot = {
     deleteHostedFile: DeleteHostedFilePayload;
     deleteInterceptEntries: DeleteInterceptEntriesPayload;
     deleteInterceptEntry: DeleteInterceptEntryPayload;
+    deletePluginPackageData: DeletePluginPackageDataPayload;
     deleteProject: DeleteProjectPayload;
     deleteReplaySessionCollection: DeleteReplaySessionCollectionPayload;
     deleteReplaySessions: DeleteReplaySessionsPayload;
@@ -1956,6 +1993,7 @@ export type MutationRoot = {
     duplicateAutomateSession: DuplicateAutomateSessionPayload;
     exportAutomateEntries: ExportAutomateEntriesPayload;
     exportFindings: ExportFindingsPayload;
+    exportPluginPackageData: ExportPluginPackageDataPayload;
     exportSitemapEntries: ExportSitemapEntriesPayload;
     exportTamper: ExportTamperPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
@@ -2016,6 +2054,7 @@ export type MutationRoot = {
     setInterceptOptions: SetInterceptOptionsPayload;
     setPassthroughOptions: SetPassthroughOptionsPayload;
     setPluginData: SetPluginDataPayload;
+    setPluginPackageData: SetPluginPackageDataPayload;
     setProjectConfigStream: SetProjectConfigStreamPayload;
     startAuthenticationFlow: StartAuthenticationFlowPayload;
     startAutomateTask: StartAutomateTaskPayload;
@@ -2145,6 +2184,10 @@ export type MutationRootCreateUpstreamProxySocksArgs = {
 export type MutationRootCreateWorkflowArgs = {
     input: CreateWorkflowInput;
 };
+export type MutationRootDefinePluginPackageDataArgs = {
+    id: Scalars["ID"]["input"];
+    input: DefinePluginPackageDataInput;
+};
 export type MutationRootDeleteAiProviderArgs = {
     id: Scalars["ID"]["input"];
 };
@@ -2187,6 +2230,10 @@ export type MutationRootDeleteInterceptEntriesArgs = {
 };
 export type MutationRootDeleteInterceptEntryArgs = {
     id: Scalars["ID"]["input"];
+};
+export type MutationRootDeletePluginPackageDataArgs = {
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
 };
 export type MutationRootDeleteProjectArgs = {
     id: Scalars["ID"]["input"];
@@ -2232,6 +2279,9 @@ export type MutationRootExportAutomateEntriesArgs = {
 };
 export type MutationRootExportFindingsArgs = {
     input: ExportFindingsInput;
+};
+export type MutationRootExportPluginPackageDataArgs = {
+    input: ExportPluginPackageDataInput;
 };
 export type MutationRootExportSitemapEntriesArgs = {
     input: ExportSitemapEntriesInput;
@@ -2422,6 +2472,11 @@ export type MutationRootSetPassthroughOptionsArgs = {
 export type MutationRootSetPluginDataArgs = {
     data: Scalars["JSON"]["input"];
     id: Scalars["ID"]["input"];
+};
+export type MutationRootSetPluginPackageDataArgs = {
+    data: Scalars["JSON"]["input"];
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
 };
 export type MutationRootSetProjectConfigStreamArgs = {
     input: ProjectConfigStreamInput;
@@ -2724,6 +2779,24 @@ export type PluginPackage = {
     plugins: Array<Plugin>;
     version: Scalars["String"]["output"];
 };
+export type PluginPackageData = {
+    flags: PluginPackageDataFlags;
+    key: Scalars["String"]["output"];
+    package: PluginPackage;
+    value?: Maybe<Scalars["JSON"]["output"]>;
+};
+export type PluginPackageDataFilter = {
+    ids: Array<Scalars["ID"]["input"]>;
+};
+export type PluginPackageDataFlags = {
+    exportable: Scalars["Boolean"]["output"];
+};
+export type PluginPackageDataFlagsInput = {
+    exportable?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+export type PluginPackageDataSummary = {
+    packagesImported: Scalars["Int"]["output"];
+};
 export declare const PluginPackageOrigin: {
     readonly File: "FILE";
     readonly Store: "STORE";
@@ -2857,6 +2930,9 @@ export type QueryRoot = {
     interceptOptions: InterceptOptions;
     interceptStatus: InterceptStatus;
     passthroughOptions: PassthroughOptions;
+    pluginPackage?: Maybe<PluginPackage>;
+    pluginPackageByManifest?: Maybe<PluginPackage>;
+    pluginPackageData?: Maybe<PluginPackageData>;
     pluginPackages: Array<PluginPackage>;
     projects: Array<Project>;
     replayEntry?: Maybe<ReplayEntry>;
@@ -2977,6 +3053,16 @@ export type QueryRootInterceptMessagesArgs = {
     first?: InputMaybe<Scalars["Int"]["input"]>;
     kind: InterceptKind;
     last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+export type QueryRootPluginPackageArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type QueryRootPluginPackageByManifestArgs = {
+    manifestId: Scalars["ID"]["input"];
+};
+export type QueryRootPluginPackageDataArgs = {
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
 };
 export type QueryRootReplayEntryArgs = {
     id: Scalars["ID"]["input"];
@@ -3765,6 +3851,11 @@ export type SetPluginDataPayload = {
     error?: Maybe<SetPluginDataError>;
     plugin?: Maybe<Plugin>;
 };
+export type SetPluginPackageDataError = OtherUserError | UnknownIdUserError;
+export type SetPluginPackageDataPayload = {
+    error?: Maybe<SetPluginPackageDataError>;
+    success: Scalars["Boolean"]["output"];
+};
 export type SetProjectConfigStreamPayload = {
     config: ProjectConfigStream;
 };
@@ -4094,6 +4185,7 @@ export type SubscriptionRoot = {
     deletedInterceptEntry: DeletedInterceptEntryPayload;
     deletedInterceptMessage: DeletedInterceptMessagePayload;
     deletedPluginPackage: DeletedPluginPackagePayload;
+    deletedPluginPackageData: DeletedPluginPackageDataPayload;
     deletedProject: DeletedProjectPayload;
     deletedReplaySession: DeletedReplaySessionPayload;
     deletedReplaySessionCollection: DeletedReplaySessionCollectionPayload;
@@ -4142,6 +4234,7 @@ export type SubscriptionRoot = {
     updatedPassthroughOptions: UpdatedPassthroughOptionsPayload;
     updatedPlugin: UpdatedPluginPayload;
     updatedPluginPackage: UpdatedPluginPackagePayload;
+    updatedPluginPackageData: UpdatedPluginPackageDataPayload;
     updatedProject: UpdatedProjectPayload;
     updatedReplayEntryDraft: UpdatedReplayEntryDraftPayload;
     updatedReplayEntryWs: UpdatedReplayEntryWsPayload;
@@ -4190,9 +4283,15 @@ export type SubscriptionRootCreatedStreamArgs = {
 export type SubscriptionRootCreatedStreamWsMessageArgs = {
     filter?: InputMaybe<StreamQlInput>;
 };
+export type SubscriptionRootDeletedPluginPackageDataArgs = {
+    packageId?: InputMaybe<Scalars["ID"]["input"]>;
+};
 export type SubscriptionRootUpdatedInterceptEntryArgs = {
     filter?: InputMaybe<HttpqlInput>;
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type SubscriptionRootUpdatedPluginPackageDataArgs = {
+    packageId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 export type SubscriptionRootUpdatedRequestArgs = {
     filter?: InputMaybe<HttpqlInput>;
@@ -5235,6 +5334,9 @@ export type UpdatedInterceptStatusPayload = {
 export type UpdatedPassthroughOptionsPayload = {
     options: PassthroughOptions;
 };
+export type UpdatedPluginPackageDataPayload = {
+    packageData: PluginPackageData;
+};
 export type UpdatedPluginPackagePayload = {
     package: PluginPackage;
 };
@@ -5472,10 +5574,12 @@ export type AiProviderFullFragment = {
 export type TestAiProviderPayloadFullFragment = {
     success?: boolean | undefined | null;
     error?: {
-        code: string;
+        __typename: "AIUserError";
         message: string;
         reason: AiErrorReason;
+        code: string;
     } | {
+        __typename: "OtherUserError";
         code: string;
     } | undefined | null;
 };
@@ -5558,10 +5662,12 @@ export type TestAiProviderMutation = {
     testAIProvider: {
         success?: boolean | undefined | null;
         error?: {
-            code: string;
+            __typename: "AIUserError";
             message: string;
             reason: AiErrorReason;
+            code: string;
         } | {
+            __typename: "OtherUserError";
             code: string;
         } | undefined | null;
     };
@@ -9484,6 +9590,12 @@ export type UpdatedEnvironmentContextSubscription = {
             } | undefined | null;
         };
     };
+};
+export type AiUserErrorFullFragment = {
+    __typename: "AIUserError";
+    message: string;
+    reason: AiErrorReason;
+    code: string;
 };
 export type WsUserErrorFullFragment = {
     __typename: "WSUserError";
@@ -123598,15 +123710,16 @@ export type TestWorkflowPassiveMutation = {
     };
 };
 export declare const AiProviderFullFragmentDoc = "\n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
-export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAIProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
+export declare const UserErrorFullFragmentDoc = "\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
+export declare const AiUserErrorFullFragmentDoc = "\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    ";
+export declare const OtherUserErrorFullFragmentDoc = "\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const TestAiProviderPayloadFullFragmentDoc = "\n    fragment testAIProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      ...aiUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n  success\n}\n    ";
 export declare const AssistantModelFullFragmentDoc = "\n    fragment assistantModelFull on AssistantModel {\n  __typename\n  id\n  name\n  tokenCredit\n}\n    ";
 export declare const AssistantSessionMetaFragmentDoc = "\n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
 export declare const AssistantMessageFullFragmentDoc = "\n    fragment assistantMessageFull on AssistantMessage {\n  __typename\n  id\n  content\n  role\n  session {\n    id\n  }\n}\n    ";
 export declare const AssistantSessionFullFragmentDoc = "\n    fragment assistantSessionFull on AssistantSession {\n  ...assistantSessionMeta\n  messages {\n    ...assistantMessageFull\n  }\n}\n    ";
-export declare const UserErrorFullFragmentDoc = "\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
 export declare const AssistantUserErrorFullFragmentDoc = "\n    fragment assistantUserErrorFull on AssistantUserError {\n  ...userErrorFull\n  assistantReason: reason\n}\n    ";
 export declare const AuthenticationUserErrorFullFragmentDoc = "\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const OtherUserErrorFullFragmentDoc = "\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CloudUserErrorFullFragmentDoc = "\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
 export declare const AssistantMessageTaskFullFragmentDoc = "\n    fragment assistantMessageTaskFull on AssistantMessageTask {\n  __typename\n  id\n  message {\n    ...assistantMessageFull\n  }\n  session {\n    ...assistantSessionMeta\n  }\n  error {\n    ... on AssistantUserError {\n      ...assistantUserErrorFull\n    }\n    ... on AuthenticationUserError {\n      ...authenticationUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on CloudUserError {\n      ...cloudUserErrorFull\n    }\n  }\n}\n    ";
 export declare const AssistantUsageFullFragmentDoc = "\n    fragment assistantUsageFull on AssistantUsage {\n  __typename\n  balance\n}\n    ";
@@ -123829,7 +123942,7 @@ export declare const AiProvidersDocument = "\n    query aiProviders {\n  aiProvi
 export declare const CreateAiProviderDocument = "\n    mutation createAIProvider($input: CreateAIProviderInput!) {\n  createAIProvider(input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const UpdateAiProviderDocument = "\n    mutation updateAIProvider($id: ID!, $input: UpdateAIProviderInput!) {\n  updateAIProvider(id: $id, input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteAiProviderDocument = "\n    mutation deleteAIProvider($id: ID!) {\n  deleteAIProvider(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const TestAiProviderDocument = "\n    mutation testAIProvider($input: TestAIProviderInput!) {\n  testAIProvider(input: $input) {\n    ...testAIProviderPayloadFull\n  }\n}\n    \n    fragment testAIProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      code\n      message\n      reason\n    }\n    ... on OtherUserError {\n      code\n    }\n  }\n  success\n}\n    ";
+export declare const TestAiProviderDocument = "\n    mutation testAIProvider($input: TestAIProviderInput!) {\n  testAIProvider(input: $input) {\n    ...testAIProviderPayloadFull\n  }\n}\n    \n    fragment testAIProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      ...aiUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n  success\n}\n    \n\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedAiProviderDocument = "\n    subscription createdAIProvider {\n  createdAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
 export declare const UpdatedAiProviderDocument = "\n    subscription updatedAIProvider {\n  updatedAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
 export declare const DeletedAiProviderDocument = "\n    subscription deletedAIProvider {\n  deletedAIProvider {\n    deletedProviderId\n  }\n}\n    ";
