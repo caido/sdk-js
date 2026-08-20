@@ -42,21 +42,23 @@ export class TaskSDK {
   }
 
   finished(
-    filter: (taskResult: TaskResult) => boolean,
+    filter?: (taskResult: TaskResult) => boolean,
   ): AsyncIterable<TaskResult> {
-    return filterAsyncIterable(
-      filter,
-      mapAsyncIterable((event) => {
-        const task = new Task(this.graphql, event.finishedTask.task);
-        return {
-          task,
-          status: event.finishedTask.status as TaskStatus,
-          error: event.finishedTask.error
-            ? { code: event.finishedTask.error.code }
-            : undefined,
-        };
-      }, this.graphql.subscribe(FinishedTaskDocument)),
-    );
+    const results = mapAsyncIterable((event) => {
+      const task = new Task(this.graphql, event.finishedTask.task);
+      return {
+        task,
+        status: event.finishedTask.status as TaskStatus,
+        error: event.finishedTask.error
+          ? { code: event.finishedTask.error.code }
+          : undefined,
+      };
+    }, this.graphql.subscribe(FinishedTaskDocument));
+
+    if (filter === undefined) {
+      return results;
+    }
+    return filterAsyncIterable(filter, results);
   }
 }
 

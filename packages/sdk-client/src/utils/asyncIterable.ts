@@ -18,3 +18,24 @@ export async function* filterAsyncIterable<T>(
     }
   }
 }
+
+export function bufferAsyncIterable<T>(
+  source: AsyncIterable<T>,
+): AsyncIterable<T> {
+  const iterator = source[Symbol.asyncIterator]();
+  const first = iterator.next();
+
+  return {
+    async *[Symbol.asyncIterator]() {
+      try {
+        let result = await first;
+        while (result.done !== true) {
+          yield result.value;
+          result = await iterator.next();
+        }
+      } finally {
+        await iterator.return?.(undefined);
+      }
+    },
+  };
+}
