@@ -20,6 +20,7 @@ import {
   type ReplaySendResult,
   TransportVersion,
 } from "@/types/index.js";
+import { bufferAsyncIterable } from "@/utils/asyncIterable.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 import type { Version } from "@/version.js";
@@ -143,19 +144,20 @@ export class ReplaySDK {
       });
     }
 
-    // Start the replay task
-    const result = await this.graphql.mutation(LatestStartReplayTaskDocument, {
-      sessionId: sessionId as string,
+    return this.waitForReplayTask(async () => {
+      const result = await this.graphql.mutation(
+        LatestStartReplayTaskDocument,
+        {
+          sessionId: sessionId as string,
+        },
+      );
+
+      const payload = result.startReplayTask;
+      if (isPresent(payload.error)) {
+        handleGraphQLError(payload.error);
+      }
+      return new ReplayTask(this.graphql, payload.task!);
     });
-
-    const payload = result.startReplayTask;
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
-    }
-    const task = new ReplayTask(this.graphql, payload.task!);
-
-    // Wait for task to finish
-    return this.waitForReplayTask(task);
   }
 
   private async sendV056(
@@ -183,25 +185,35 @@ export class ReplaySDK {
       },
     } satisfies StartReplayTaskInput;
 
-    const result = await this.graphql.mutation(V056StartReplayTaskDocument, {
-      sessionId: sessionId as string,
-      input,
+    return this.waitForReplayTask(async () => {
+      const result = await this.graphql.mutation(V056StartReplayTaskDocument, {
+        sessionId: sessionId as string,
+        input,
+      });
+
+      const payload = result.startReplayTask;
+      if (isPresent(payload.error)) {
+        handleGraphQLError(payload.error);
+      }
+      return new ReplayTask(this.graphql, payload.task!);
     });
-
-    const payload = result.startReplayTask;
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
-    }
-    const task = new ReplayTask(this.graphql, payload.task!);
-
-    // Wait for task to finish
-    return this.waitForReplayTask(task);
   }
 
-  private async waitForReplayTask(task: ReplayTask): Promise<ReplaySendResult> {
-    for await (const result of this.tasks.finished(
-      (finished) => finished.task.id === task.id,
-    )) {
+  /**
+   * Open the finished-task subscription before running `start`, then resolve
+   * when the started task finishes.
+   */
+  private async waitForReplayTask(
+    start: () => Promise<ReplayTask>,
+  ): Promise<ReplaySendResult> {
+    const finished = bufferAsyncIterable(this.tasks.finished());
+    const task = await start();
+
+    for await (const result of finished) {
+      if (result.task.id !== task.id) {
+        continue;
+      }
+
       const entry = await this.entries.get(task.replayEntryId);
       if (isAbsent(entry)) {
         throw new OtherUserError("INTERNAL", "Replay entry not found");
