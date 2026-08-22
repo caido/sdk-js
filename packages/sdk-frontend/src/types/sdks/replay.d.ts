@@ -1,10 +1,9 @@
 import { type Extension } from "@codemirror/state";
-import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySelectedExchange, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySessionKind, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
-import type { RequestFull, RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
-import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type CurrentReplaySessionChangeEvent, type OpenTabOptions, type ReplayCollection, type ReplayCollectionCreatedEvent, type ReplayEntry, type ReplaySession, type ReplaySessionCreatedEvent, type ReplaySlotContent, type ReplayTab, type RequestSource, type SendRequestOptions } from "../types/replay";
+import type { RequestViewModeOptions, RequestWritableViewModeProps } from "../types/request";
+import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import { type DefineAddToSlotFn } from "../types/slots";
 import type { ID, Indicator, ListenerHandle } from "../types/utils";
-import type { MessageViewModeOptions, MessageViewModeProps } from "../types/websocket";
 /**
  * Utilities to interact with Replay.
  * @category Replay
@@ -28,13 +27,9 @@ export type ReplaySDK = {
     getTabs: () => ReplayTab[];
     /**
      * Get the list of all replay sessions.
-     * @param options The options for getting the sessions.
-     * @param options.collectionId The ID of the collection to get the sessions for.
      * @returns The list of all replay sessions.
      */
-    getSessions: (options?: {
-        collectionId?: ID;
-    }) => ReplaySession[];
+    getSessions: () => ReplaySession[];
     /**
      * Get the currently selected replay session.
      * @returns The currently selected replay session, or undefined if no session is selected.
@@ -64,21 +59,6 @@ export type ReplaySDK = {
      */
     getCurrentEntry: () => ReplayEntry | undefined;
     /**
-     * Get the currently selected Replay exchange.
-     * @returns The currently selected Replay exchange.
-     */
-    getSelectedExchange: () => ReplaySelectedExchange | undefined;
-    /**
-     * Get the currently selected request.
-     * @returns The currently selected request.
-     */
-    getSelectedRequest: () => RequestFull | undefined;
-    /**
-     * Get the currently selected response.
-     * @returns The currently selected response.
-     */
-    getSelectedResponse: () => ResponseFull | undefined;
-    /**
      * Rename a session.
      * @param id The ID of the session to rename.
      * @param name The new name of the session.
@@ -99,22 +79,10 @@ export type ReplaySDK = {
     deleteSessions: (sessionIds: ID[]) => Promise<ID[]>;
     /**
      * Create a session.
-     * @param source The source of the session to create.
-     * @param collectionId The ID of the collection to add the session to.
-     * @example
-     * ```ts
-     * sdk.replay.createSession({
-     *   type: "Raw",
-     *   raw: "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n",
-     *   connectionInfo: {
-     *     host: "example.com",
-     *     port: 443,
-     *     isTLS: true,
-     *   },
-     * });
-     * ```
+     * @param sessionId The ID of the request to add.
+     * @param collectionId The ID of the collection to add the request.
      */
-    createSession: (source: RequestSource, collectionId?: ID, sessionKind?: ReplaySessionKind) => Promise<ReplaySession>;
+    createSession: (source: RequestSource, collectionId?: ID) => Promise<void>;
     /**
      * Get the list of all replay collections.
      * @returns The list of all replay collections.
@@ -181,11 +149,6 @@ export type ReplaySDK = {
      * @param options The view mode options.
      */
     addResponseViewMode: (options: ResponseViewModeOptions<ResponseViewModeProps>) => void;
-    /**
-     * Add a custom WebSocket message view mode.
-     * @param options The view mode options.
-     */
-    addWebsocketMessageViewMode: (options: MessageViewModeOptions<MessageViewModeProps>) => void;
     /**
      * Send a request to the Replay backend.
      * @param request The request to send.
