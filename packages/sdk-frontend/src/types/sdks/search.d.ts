@@ -1,6 +1,6 @@
 import type { Extension } from "@codemirror/state";
-import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import type { RequestFull, RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
+import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { SearchSlot, SearchSlotContent } from "../types/search";
 import type { HTTPQL, ID } from "../types/utils";
 /**
@@ -23,6 +23,16 @@ export type SearchSDK = {
      * @returns The current scope ID.
      */
     getScopeId: () => ID | undefined;
+    /**
+     * Get the currently selected request.
+     * @returns The currently selected request.
+     */
+    getSelectedRequest: () => RequestFull | undefined;
+    /**
+     * Get the currently selected response.
+     * @returns The currently selected response.
+     */
+    getSelectedResponse: () => ResponseFull | undefined;
     /**
      * Set the current scope.
      * @param id The ID of the scope to set.

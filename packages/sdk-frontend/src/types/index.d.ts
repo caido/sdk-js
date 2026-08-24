@@ -1,10 +1,13 @@
+import type { DefineComponent } from "vue";
+import type { HTTPQLEditorProps } from "./types/httpqlEditor";
 export { FooterSlot, type FooterSlotContent } from "./types/footer";
 export type { DialogOptions, DialogComponent } from "./types/window";
+export type { Editor } from "./types/editor";
 export type { _AnalyticsSDK } from "./private/analytics";
 export type { MessageViewModeOptions, StreamWsMessageMeta, MessageViewModePropsInternal, MessageViewModeProps, } from "./types/websocket";
 export type { CommandContext, CommandContextRequest, CommandContextRequestRow, CommandContextResponse, CommandContextBase, } from "./types/commands";
 export type { MenuItem } from "./types/menu";
-export { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type ReplayTab, type ReplaySession, type ReplayEntry, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, } from "./types/replay";
+export { type AddCollectionIndicatorOptions, type AddSessionIndicatorOptions, type ReplayTab, type ReplaySession, type ReplayEntry, type ReplaySelectedExchange, type ReplayWebSocketMessage, type ReplayCollection, type SendRequestOptions, ReplaySlot, type ReplaySlotContent, type RequestSource, type CurrentReplaySessionChangeEvent, ReplaySessionKind, type ReplayPageContext, } from "./types/replay";
 export type { AutomateSession, AutomateEntry } from "./types/automate";
 export type { SitemapEntry, SitemapRootEntry, ChildState, } from "./types/sitemap";
 export { SearchSlot, type SearchSlotContent } from "./types/search";
@@ -23,7 +26,7 @@ export { SettingsSlot, type SettingsSlotContent, type SettingsPluginSlotContent,
 export type { EnvironmentVariable } from "./types/environment";
 export type { Workflow, WorkflowKind, OnCreatedWorkflowCallback, OnUpdatedWorkflowCallback, OnDeletedWorkflowCallback, } from "./types/workflows";
 export type { ListenerHandle, AddIndicatorOptions, Indicator, ComponentProps, ComponentPropsWithSdk, } from "./types/utils";
-export type { AIProvider, AILanguageModelSettings, AIReasoningSettings, AIUpstreamProvider, AIUpstreamProviderId, AIUpstreamProviderStatus, } from "./types/ai";
+export type { AIProvider, AILanguageModelSettings, AIReasoningSettings, AIUpstreamProvider, AIUpstreamProviderApi, AIUpstreamProviderId, } from "./types/ai";
 export type { SelectedProjectChangeEvent } from "./types/projects";
 export type { CommandPaletteViewProps, CommandPaletteViewPropsInternal, } from "./types/commandPalette";
 export type { CommandPaletteView } from "./sdks/commandPalette";
@@ -43,9 +46,12 @@ export type { FindingsPageContext } from "./types/findings";
 export type { HTTPHistoryPageContext } from "./types/httpHistory";
 export type { InterceptPageContext } from "./types/intercept";
 export type { ProjectsPageContext } from "./types/projects";
-export type { ReplayPageContext } from "./types/replay";
 export type { ScopePageContext } from "./types/scopes";
 export type { SearchPageContext } from "./types/search";
 export type { SitemapPageContext } from "./types/sitemap";
 export type { MatchReplacePageContext } from "./types/matchReplace";
 export type { WorkflowsPageContext } from "./types/workflows";
+export type { HTTPQLEditorProps };
+export declare const HTTPQLEditor: DefineComponent<HTTPQLEditorProps & {
+    modelValue?: string;
+}>;
