@@ -20628,6 +20628,110 @@ export type CreatedPluginEventSubscription = {
         eventName: string;
     };
 };
+export type PluginPackageDataFullFragment = {
+    key: string;
+    value?: unknown | undefined | null;
+    flags: {
+        exportable: boolean;
+    };
+    package: {
+        id: string;
+    };
+};
+export type PluginPackageDataQueryVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
+}>;
+export type PluginPackageDataQuery = {
+    pluginPackageData?: {
+        key: string;
+        value?: unknown | undefined | null;
+        flags: {
+            exportable: boolean;
+        };
+        package: {
+            id: string;
+        };
+    } | undefined | null;
+};
+export type DefinePluginPackageDataMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: DefinePluginPackageDataInput;
+}>;
+export type DefinePluginPackageDataMutation = {
+    definePluginPackageData: {
+        success: boolean;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type SetPluginPackageDataMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
+    data: Scalars["JSON"]["input"];
+}>;
+export type SetPluginPackageDataMutation = {
+    setPluginPackageData: {
+        success: boolean;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type DeletePluginPackageDataMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    key: Scalars["String"]["input"];
+}>;
+export type DeletePluginPackageDataMutation = {
+    deletePluginPackageData: {
+        success: boolean;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type UpdatedPluginPackageDataSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedPluginPackageDataSubscription = {
+    updatedPluginPackageData: {
+        packageData: {
+            key: string;
+            value?: unknown | undefined | null;
+            flags: {
+                exportable: boolean;
+            };
+            package: {
+                id: string;
+            };
+        };
+    };
+};
+export type DeletedPluginPackageDataSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedPluginPackageDataSubscription = {
+    deletedPluginPackageData: {
+        packageId: string;
+        key: string;
+    };
+};
 export type ProjectFullFragment = {
     __typename: "Project";
     id: string;
@@ -123882,6 +123986,7 @@ export declare const WorkflowMetaFragmentDoc = "\n    fragment workflowMeta on W
 export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
 export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n  quality\n  readmeUrl\n  changelogUrl\n}\n    ";
+export declare const PluginPackageDataFullFragmentDoc = "\n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
 export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
 export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
@@ -124144,6 +124249,12 @@ export declare const CreatedPluginPackageDocument = "\n    subscription createdP
 export declare const DeletedPluginPackageDocument = "\n    subscription deletedPluginPackage {\n  deletedPluginPackage {\n    deletedPackageId\n  }\n}\n    ";
 export declare const UpdatedPluginDocument = "\n    subscription updatedPlugin {\n  updatedPlugin {\n    plugin {\n      ... on PluginFrontend {\n        ...pluginFrontendFull\n      }\n      ... on PluginBackend {\n        ...pluginBackendFull\n      }\n      ... on PluginWorkflow {\n        ...pluginWorkflowFull\n      }\n    }\n  }\n}\n    \n    fragment pluginFrontendFull on PluginFrontend {\n  ...pluginMeta\n  entrypoint\n  style\n  data\n  backend {\n    ...pluginBackendMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    \n\n    fragment pluginBackendMeta on PluginBackend {\n  __typename\n  id\n}\n    \n\n    fragment pluginBackendFull on PluginBackend {\n  ...pluginMeta\n  runtime\n  state {\n    error\n    running\n  }\n}\n    \n\n    fragment pluginWorkflowFull on PluginWorkflow {\n  ...pluginMeta\n  name\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    ";
 export declare const CreatedPluginEventDocument = "\n    subscription createdPluginEvent {\n  createdPluginEvent {\n    pluginId\n    eventArgs\n    eventName\n  }\n}\n    ";
+export declare const PluginPackageDataDocument = "\n    query pluginPackageData($id: ID!, $key: String!) {\n  pluginPackageData(id: $id, key: $key) {\n    ...pluginPackageDataFull\n  }\n}\n    \n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
+export declare const DefinePluginPackageDataDocument = "\n    mutation definePluginPackageData($id: ID!, $input: DefinePluginPackageDataInput!) {\n  definePluginPackageData(id: $id, input: $input) {\n    success\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const SetPluginPackageDataDocument = "\n    mutation setPluginPackageData($id: ID!, $key: String!, $data: JSON!) {\n  setPluginPackageData(id: $id, key: $key, data: $data) {\n    success\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const DeletePluginPackageDataDocument = "\n    mutation deletePluginPackageData($id: ID!, $key: String!) {\n  deletePluginPackageData(id: $id, key: $key) {\n    success\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdatedPluginPackageDataDocument = "\n    subscription updatedPluginPackageData {\n  updatedPluginPackageData {\n    packageData {\n      ...pluginPackageDataFull\n    }\n  }\n}\n    \n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
+export declare const DeletedPluginPackageDataDocument = "\n    subscription deletedPluginPackageData {\n  deletedPluginPackageData {\n    packageId\n    key\n  }\n}\n    ";
 export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
@@ -124503,6 +124614,12 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedPluginPackage(variables?: DeletedPluginPackageSubscriptionVariables, options?: C): AsyncIterable<DeletedPluginPackageSubscription>;
     updatedPlugin(variables?: UpdatedPluginSubscriptionVariables, options?: C): AsyncIterable<UpdatedPluginSubscription>;
     createdPluginEvent(variables?: CreatedPluginEventSubscriptionVariables, options?: C): AsyncIterable<CreatedPluginEventSubscription>;
+    pluginPackageData(variables: PluginPackageDataQueryVariables, options?: C): Promise<PluginPackageDataQuery>;
+    definePluginPackageData(variables: DefinePluginPackageDataMutationVariables, options?: C): Promise<DefinePluginPackageDataMutation>;
+    setPluginPackageData(variables: SetPluginPackageDataMutationVariables, options?: C): Promise<SetPluginPackageDataMutation>;
+    deletePluginPackageData(variables: DeletePluginPackageDataMutationVariables, options?: C): Promise<DeletePluginPackageDataMutation>;
+    updatedPluginPackageData(variables?: UpdatedPluginPackageDataSubscriptionVariables, options?: C): AsyncIterable<UpdatedPluginPackageDataSubscription>;
+    deletedPluginPackageData(variables?: DeletedPluginPackageDataSubscriptionVariables, options?: C): AsyncIterable<DeletedPluginPackageDataSubscription>;
     createdProject(variables?: CreatedProjectSubscriptionVariables, options?: C): AsyncIterable<CreatedProjectSubscription>;
     updatedProject(variables?: UpdatedProjectSubscriptionVariables, options?: C): AsyncIterable<UpdatedProjectSubscription>;
     deletedProject(variables?: DeletedProjectSubscriptionVariables, options?: C): AsyncIterable<DeletedProjectSubscription>;

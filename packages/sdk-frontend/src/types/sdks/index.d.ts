@@ -14,6 +14,7 @@ import type { FindingsSDK } from "./findings";
 import type { FooterSDK } from "./footer";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { InterceptSDK } from "./intercept";
+import type { KVSDK } from "./kv";
 import type { LogSDK } from "./log";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
@@ -102,6 +103,10 @@ export type API<T extends BackendEndpoints | BackendSpec = Record<string, never>
      * Utilities to interact with frontend-plugin storage.
      */
     storage: StorageSDK;
+    /**
+     * Utilities to interact with plugin package data (key-value store).
+     */
+    kv: KVSDK;
     /**
      * Utilities to interact with the plugin's static assets.
      */
