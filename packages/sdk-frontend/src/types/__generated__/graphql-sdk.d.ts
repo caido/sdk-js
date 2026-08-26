@@ -2703,13 +2703,19 @@ export type PersistProjectPayload = {
     project?: Maybe<Project>;
 };
 export type PersistProjectPayloadError = OtherUserError | PermissionDeniedUserError | UnknownIdUserError;
-export type PipelineStrategy = PipelineStrategyLastByteSynchronization | PipelineStrategySequential;
+export type PipelineStrategy = PipelineStrategyLastByteSynchronization | PipelineStrategySequential | PipelineStrategySinglePacketAttack;
 export type PipelineStrategyInput = {
     lastByteSynchronization: PipelineStrategyLastByteSynchronizationInput;
     sequential?: never;
+    singlePacketAttack?: never;
 } | {
     lastByteSynchronization?: never;
     sequential: PipelineStrategySequentialInput;
+    singlePacketAttack?: never;
+} | {
+    lastByteSynchronization?: never;
+    sequential?: never;
+    singlePacketAttack: PipelineStrategySinglePacketAttackInput;
 };
 export type PipelineStrategyLastByteSynchronization = {
     failureBehavior: FailureBehavior;
@@ -2722,6 +2728,14 @@ export type PipelineStrategySequential = {
 };
 export type PipelineStrategySequentialInput = {
     abortOnFailure: Scalars["Boolean"]["input"];
+};
+export type PipelineStrategySinglePacketAttack = {
+    convertToHttp2: Scalars["Boolean"]["output"];
+    failureBehavior: FailureBehavior;
+};
+export type PipelineStrategySinglePacketAttackInput = {
+    convertToHttp2: Scalars["Boolean"]["input"];
+    failureBehavior: FailureBehavior;
 };
 export type Plugin = {
     enabled: Scalars["Boolean"]["output"];
@@ -11691,6 +11705,10 @@ export type InstanceSettingsFullFragment = {
         local: boolean;
         cloud: boolean;
     };
+    network: {
+        __typename: "NetworkState";
+        stack: SettingsNetworkStack;
+    };
 };
 export type SetInstanceSettingsMutationVariables = Exact<{
     input: SetInstanceSettingsInput;
@@ -11708,6 +11726,10 @@ export type SetInstanceSettingsMutation = {
                 enabled: boolean;
                 local: boolean;
                 cloud: boolean;
+            };
+            network: {
+                __typename: "NetworkState";
+                stack: SettingsNetworkStack;
             };
         };
     };
@@ -11728,6 +11750,10 @@ export type InstanceSettingsQuery = {
             local: boolean;
             cloud: boolean;
         };
+        network: {
+            __typename: "NetworkState";
+            stack: SettingsNetworkStack;
+        };
     };
 };
 export type UpdatedInstanceSettingsSubscriptionVariables = Exact<{
@@ -11746,6 +11772,10 @@ export type UpdatedInstanceSettingsSubscription = {
                 enabled: boolean;
                 local: boolean;
                 cloud: boolean;
+            };
+            network: {
+                __typename: "NetworkState";
+                stack: SettingsNetworkStack;
             };
         };
     };
@@ -21088,7 +21118,12 @@ type PipelineStrategyFull_PipelineStrategySequential_Fragment = {
     __typename: "PipelineStrategySequential";
     abortOnFailure: boolean;
 };
-export type PipelineStrategyFullFragment = PipelineStrategyFull_PipelineStrategyLastByteSynchronization_Fragment | PipelineStrategyFull_PipelineStrategySequential_Fragment;
+type PipelineStrategyFull_PipelineStrategySinglePacketAttack_Fragment = {
+    __typename: "PipelineStrategySinglePacketAttack";
+    convertToHttp2: boolean;
+    failureBehavior: FailureBehavior;
+};
+export type PipelineStrategyFullFragment = PipelineStrategyFull_PipelineStrategyLastByteSynchronization_Fragment | PipelineStrategyFull_PipelineStrategySequential_Fragment | PipelineStrategyFull_PipelineStrategySinglePacketAttack_Fragment;
 export type ReplayEntryHttpMetaFragment = {
     __typename: "ReplayEntryHttp";
     id: string;
@@ -21561,6 +21596,10 @@ export type ReplayEntryHttpOnePipelineMetaFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | undefined | null;
@@ -21571,6 +21610,10 @@ export type ReplayEntryHttpOnePipelineMetaFragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     };
     activeHttpEntry?: {
@@ -22203,6 +22246,10 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | undefined | null;
@@ -22213,6 +22260,10 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     };
 };
@@ -22375,6 +22426,10 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -22385,6 +22440,10 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -22969,6 +23028,10 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -22979,6 +23042,10 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -23413,6 +23480,10 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     } | undefined | null;
 };
@@ -23575,6 +23646,10 @@ export type ReplaySessionMetaHttpFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -23585,6 +23660,10 @@ export type ReplaySessionMetaHttpFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -24169,6 +24248,10 @@ export type ReplaySessionMetaHttpFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -24179,6 +24262,10 @@ export type ReplaySessionMetaHttpFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -24770,6 +24857,10 @@ export type ReplaySessionMetaWsFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -24780,6 +24871,10 @@ export type ReplaySessionMetaWsFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -25364,6 +25459,10 @@ export type ReplaySessionMetaWsFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -25374,6 +25473,10 @@ export type ReplaySessionMetaWsFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -25811,6 +25914,10 @@ export type ReplayEntryHttpOnePipelineDraftMetaFragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     };
 };
@@ -26380,6 +26487,10 @@ type ReplayEntryMeta_ReplayEntryHttpOnePipeline_Fragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | undefined | null;
@@ -26390,6 +26501,10 @@ type ReplayEntryMeta_ReplayEntryHttpOnePipeline_Fragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     };
     activeHttpEntry?: {
@@ -27349,6 +27464,10 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | undefined | null;
@@ -27359,6 +27478,10 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     };
 };
@@ -27732,6 +27855,10 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -27742,6 +27869,10 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -28326,6 +28457,10 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -28336,6 +28471,10 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -28927,6 +29066,10 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -28937,6 +29080,10 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -29521,6 +29668,10 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -29531,6 +29682,10 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -29965,6 +30120,10 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
         } | {
             __typename: "PipelineStrategySequential";
             abortOnFailure: boolean;
+        } | {
+            __typename: "PipelineStrategySinglePacketAttack";
+            convertToHttp2: boolean;
+            failureBehavior: FailureBehavior;
         };
     } | undefined | null;
 };
@@ -30127,6 +30286,10 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -30137,6 +30300,10 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
         activeHttpEntry?: {
@@ -30721,6 +30888,10 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -30731,6 +30902,10 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -31324,6 +31499,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -31334,6 +31513,10 @@ export type ReplaySessionCollectionMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -31918,6 +32101,10 @@ export type ReplaySessionCollectionMetaFragment = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -31928,6 +32115,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -32518,6 +32709,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -32528,6 +32723,10 @@ export type ReplaySessionCollectionMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -33112,6 +33311,10 @@ export type ReplaySessionCollectionMetaFragment = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -33122,6 +33325,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -33556,6 +33763,10 @@ export type ReplaySessionCollectionMetaFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         } | undefined | null;
     } | {
@@ -33717,6 +33928,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -33727,6 +33942,10 @@ export type ReplaySessionCollectionMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -34311,6 +34530,10 @@ export type ReplaySessionCollectionMetaFragment = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -34321,6 +34544,10 @@ export type ReplaySessionCollectionMetaFragment = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -35285,6 +35512,10 @@ export type ReplayTaskMetaFragment = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -35295,6 +35526,10 @@ export type ReplayTaskMetaFragment = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | {
@@ -36297,6 +36532,10 @@ export type ReplayEntryQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | undefined | null;
@@ -36307,6 +36546,10 @@ export type ReplayEntryQuery = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         };
     } | {
@@ -36683,6 +36926,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -36693,6 +36940,10 @@ export type ActiveReplayEntryBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -37277,6 +37528,10 @@ export type ActiveReplayEntryBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -37287,6 +37542,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -37877,6 +38136,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -37887,6 +38150,10 @@ export type ActiveReplayEntryBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -38471,6 +38738,10 @@ export type ActiveReplayEntryBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -38481,6 +38752,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -38915,6 +39190,10 @@ export type ActiveReplayEntryBySessionQuery = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         } | undefined | null;
     } | {
@@ -39076,6 +39355,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -39086,6 +39369,10 @@ export type ActiveReplayEntryBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -39670,6 +39957,10 @@ export type ActiveReplayEntryBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -39680,6 +39971,10 @@ export type ActiveReplayEntryBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -40275,6 +40570,10 @@ export type ReplayEntriesBySessionQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -40285,6 +40584,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -40878,6 +41181,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -40888,6 +41195,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -41469,6 +41780,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -41479,6 +41794,10 @@ export type ReplayEntriesBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -42074,6 +42393,10 @@ export type ReplayEntriesBySessionQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -42084,6 +42407,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -42677,6 +43004,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -42687,6 +43018,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -43268,6 +43603,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -43278,6 +43617,10 @@ export type ReplayEntriesBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -43714,6 +44057,10 @@ export type ReplayEntriesBySessionQuery = {
             } | {
                 __typename: "PipelineStrategySequential";
                 abortOnFailure: boolean;
+            } | {
+                __typename: "PipelineStrategySinglePacketAttack";
+                convertToHttp2: boolean;
+                failureBehavior: FailureBehavior;
             };
         } | undefined | null;
     } | {
@@ -43878,6 +44225,10 @@ export type ReplayEntriesBySessionQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -43888,6 +44239,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -44481,6 +44836,10 @@ export type ReplayEntriesBySessionQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -44491,6 +44850,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -45072,6 +45435,10 @@ export type ReplayEntriesBySessionQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -45082,6 +45449,10 @@ export type ReplayEntriesBySessionQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -45672,6 +46043,10 @@ export type ReplaySessionEntriesQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -45682,6 +46057,10 @@ export type ReplaySessionEntriesQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -46265,6 +46644,10 @@ export type ReplaySessionEntriesQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -46275,6 +46658,10 @@ export type ReplaySessionEntriesQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -46870,6 +47257,10 @@ export type ReplaySessionEntriesQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -46880,6 +47271,10 @@ export type ReplaySessionEntriesQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -47463,6 +47858,10 @@ export type ReplaySessionEntriesQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -47473,6 +47872,10 @@ export type ReplaySessionEntriesQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -48068,6 +48471,10 @@ export type ReplaySessionEntriesQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -48078,6 +48485,10 @@ export type ReplaySessionEntriesQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -48661,6 +49072,10 @@ export type ReplaySessionEntriesQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -48671,6 +49086,10 @@ export type ReplaySessionEntriesQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -49283,6 +49702,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -49293,6 +49716,10 @@ export type ReplaySessionCollectionsQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -49877,6 +50304,10 @@ export type ReplaySessionCollectionsQuery = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -49887,6 +50318,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -50477,6 +50912,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -50487,6 +50926,10 @@ export type ReplaySessionCollectionsQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -51071,6 +51514,10 @@ export type ReplaySessionCollectionsQuery = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -51081,6 +51528,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -51515,6 +51966,10 @@ export type ReplaySessionCollectionsQuery = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -51676,6 +52131,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -51686,6 +52145,10 @@ export type ReplaySessionCollectionsQuery = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -52270,6 +52733,10 @@ export type ReplaySessionCollectionsQuery = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -52280,6 +52747,10 @@ export type ReplaySessionCollectionsQuery = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -53248,6 +53719,10 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -53258,6 +53733,10 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | {
@@ -53946,6 +54425,10 @@ export type ClearReplayEntryDraftMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -53956,6 +54439,10 @@ export type ClearReplayEntryDraftMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -54571,6 +55058,10 @@ export type UpdateReplayEntryDraftMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -54581,6 +55072,10 @@ export type UpdateReplayEntryDraftMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
             activeHttpEntry?: {
@@ -55165,6 +55660,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -55175,6 +55674,10 @@ export type UpdateReplaySessionSettingsMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -55759,6 +56262,10 @@ export type UpdateReplaySessionSettingsMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -55769,6 +56276,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -56359,6 +56870,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -56369,6 +56884,10 @@ export type UpdateReplaySessionSettingsMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -56953,6 +57472,10 @@ export type UpdateReplaySessionSettingsMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -56963,6 +57486,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -57397,6 +57924,10 @@ export type UpdateReplaySessionSettingsMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -57558,6 +58089,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -57568,6 +58103,10 @@ export type UpdateReplaySessionSettingsMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -58152,6 +58691,10 @@ export type UpdateReplaySessionSettingsMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -58162,6 +58705,10 @@ export type UpdateReplaySessionSettingsMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -58762,6 +59309,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -58772,6 +59323,10 @@ export type RenameReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -59356,6 +59911,10 @@ export type RenameReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -59366,6 +59925,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -59956,6 +60519,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -59966,6 +60533,10 @@ export type RenameReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -60550,6 +61121,10 @@ export type RenameReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -60560,6 +61135,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -60994,6 +61573,10 @@ export type RenameReplaySessionCollectionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 } | undefined | null;
             } | {
@@ -61155,6 +61738,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -61165,6 +61752,10 @@ export type RenameReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -61749,6 +62340,10 @@ export type RenameReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -61759,6 +62354,10 @@ export type RenameReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -62359,6 +62958,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -62369,6 +62972,10 @@ export type CreateReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -62953,6 +63560,10 @@ export type CreateReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -62963,6 +63574,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -63553,6 +64168,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -63563,6 +64182,10 @@ export type CreateReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -64147,6 +64770,10 @@ export type CreateReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -64157,6 +64784,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -64591,6 +65222,10 @@ export type CreateReplaySessionCollectionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 } | undefined | null;
             } | {
@@ -64752,6 +65387,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -64762,6 +65401,10 @@ export type CreateReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -65346,6 +65989,10 @@ export type CreateReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -65356,6 +66003,10 @@ export type CreateReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -65960,6 +66611,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -65970,6 +66625,10 @@ export type RenameReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -66554,6 +67213,10 @@ export type RenameReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -66564,6 +67227,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -67154,6 +67821,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -67164,6 +67835,10 @@ export type RenameReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -67748,6 +68423,10 @@ export type RenameReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -67758,6 +68437,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -68192,6 +68875,10 @@ export type RenameReplaySessionMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -68353,6 +69040,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -68363,6 +69054,10 @@ export type RenameReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -68947,6 +69642,10 @@ export type RenameReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -68957,6 +69656,10 @@ export type RenameReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -69552,6 +70255,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -69562,6 +70269,10 @@ export type SetActiveReplaySessionEntryMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -70146,6 +70857,10 @@ export type SetActiveReplaySessionEntryMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -70156,6 +70871,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -70746,6 +71465,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -70756,6 +71479,10 @@ export type SetActiveReplaySessionEntryMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -71340,6 +72067,10 @@ export type SetActiveReplaySessionEntryMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -71350,6 +72081,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -71784,6 +72519,10 @@ export type SetActiveReplaySessionEntryMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -71945,6 +72684,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -71955,6 +72698,10 @@ export type SetActiveReplaySessionEntryMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -72539,6 +73286,10 @@ export type SetActiveReplaySessionEntryMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -72549,6 +73300,10 @@ export type SetActiveReplaySessionEntryMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -73161,6 +73916,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -73171,6 +73930,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -73755,6 +74518,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -73765,6 +74532,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -74355,6 +75126,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -74365,6 +75140,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -74949,6 +75728,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -74959,6 +75742,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -75393,6 +76180,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -75554,6 +76345,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -75564,6 +76359,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -76148,6 +76947,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -76158,6 +76961,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -76741,6 +77548,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -76751,6 +77562,10 @@ export type CreateReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -77332,6 +78147,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -77342,6 +78161,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -77942,6 +78765,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -77952,6 +78779,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -78536,6 +79367,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -78546,6 +79381,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -79136,6 +79975,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -79146,6 +79989,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -79730,6 +80577,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -79740,6 +80591,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -80174,6 +81029,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -80335,6 +81194,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -80345,6 +81208,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -80929,6 +81796,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -80939,6 +81810,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -81522,6 +82397,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -81532,6 +82411,10 @@ export type CreateReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -82113,6 +82996,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -82123,6 +83010,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -82557,6 +83448,10 @@ export type CreateReplaySessionMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -82728,6 +83623,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -82738,6 +83637,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -83322,6 +84225,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -83332,6 +84239,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -83922,6 +84833,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -83932,6 +84847,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -84516,6 +85435,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -84526,6 +85449,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -84960,6 +85887,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -85121,6 +86052,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -85131,6 +86066,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -85715,6 +86654,10 @@ export type CreateReplaySessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -85725,6 +86668,10 @@ export type CreateReplaySessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -86308,6 +87255,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -86318,6 +87269,10 @@ export type CreateReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -86899,6 +87854,10 @@ export type CreateReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -86909,6 +87868,10 @@ export type CreateReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -87525,6 +88488,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -87535,6 +88502,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -88119,6 +89090,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -88129,6 +89104,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -88719,6 +89698,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -88729,6 +89712,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -89313,6 +90300,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -89323,6 +90314,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -89757,6 +90752,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -89918,6 +90917,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -89928,6 +90931,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -90512,6 +91519,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -90522,6 +91533,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -91105,6 +92120,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -91115,6 +92134,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -91696,6 +92719,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -91706,6 +92733,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -92140,6 +93171,10 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | undefined | null;
@@ -92322,6 +93357,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -92332,6 +93371,10 @@ export type MoveReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -92916,6 +93959,10 @@ export type MoveReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -92926,6 +93973,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -93516,6 +94567,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -93526,6 +94581,10 @@ export type MoveReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -94110,6 +95169,10 @@ export type MoveReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -94120,6 +95183,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -94554,6 +95621,10 @@ export type MoveReplaySessionMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -94715,6 +95786,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -94725,6 +95800,10 @@ export type MoveReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -95309,6 +96388,10 @@ export type MoveReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -95319,6 +96402,10 @@ export type MoveReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -96289,6 +97376,10 @@ export type StartReplayTaskMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -96299,6 +97390,10 @@ export type StartReplayTaskMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | {
@@ -96699,6 +97794,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -96709,6 +97808,10 @@ export type RankReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -97293,6 +98396,10 @@ export type RankReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -97303,6 +98410,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -97893,6 +99004,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -97903,6 +99018,10 @@ export type RankReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -98487,6 +99606,10 @@ export type RankReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -98497,6 +99620,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -98931,6 +100058,10 @@ export type RankReplaySessionMutation = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             } | undefined | null;
         } | {
@@ -99092,6 +100223,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -99102,6 +100237,10 @@ export type RankReplaySessionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
                 activeHttpEntry?: {
@@ -99686,6 +100825,10 @@ export type RankReplaySessionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -99696,6 +100839,10 @@ export type RankReplaySessionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -100308,6 +101455,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -100318,6 +101469,10 @@ export type RankReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -100902,6 +102057,10 @@ export type RankReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -100912,6 +102071,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -101502,6 +102665,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -101512,6 +102679,10 @@ export type RankReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -102096,6 +103267,10 @@ export type RankReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -102106,6 +103281,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -102540,6 +103719,10 @@ export type RankReplaySessionCollectionMutation = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 } | undefined | null;
             } | {
@@ -102701,6 +103884,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -102711,6 +103898,10 @@ export type RankReplaySessionCollectionMutation = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -103295,6 +104486,10 @@ export type RankReplaySessionCollectionMutation = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -103305,6 +104500,10 @@ export type RankReplaySessionCollectionMutation = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -103913,6 +105112,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -103923,6 +105126,10 @@ export type CreatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -104507,6 +105714,10 @@ export type CreatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -104517,6 +105728,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -105107,6 +106322,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -105117,6 +106336,10 @@ export type CreatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -105701,6 +106924,10 @@ export type CreatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -105711,6 +106938,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -106145,6 +107376,10 @@ export type CreatedReplaySessionSubscription = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 } | undefined | null;
             } | {
@@ -106306,6 +107541,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -106316,6 +107555,10 @@ export type CreatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -106900,6 +108143,10 @@ export type CreatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -106910,6 +108157,10 @@ export type CreatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -107507,6 +108758,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -107517,6 +108772,10 @@ export type UpdatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -108101,6 +109360,10 @@ export type UpdatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -108111,6 +109374,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -108701,6 +109968,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -108711,6 +109982,10 @@ export type UpdatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -109295,6 +110570,10 @@ export type UpdatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -109305,6 +110584,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -109739,6 +111022,10 @@ export type UpdatedReplaySessionSubscription = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 } | undefined | null;
             } | {
@@ -109900,6 +111187,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                     } | undefined | null;
@@ -109910,6 +111201,10 @@ export type UpdatedReplaySessionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                     activeHttpEntry?: {
@@ -110494,6 +111789,10 @@ export type UpdatedReplaySessionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -110504,6 +111803,10 @@ export type UpdatedReplaySessionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -111113,6 +112416,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -111123,6 +112430,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -111707,6 +113018,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -111717,6 +113032,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -112307,6 +113626,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -112317,6 +113640,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -112901,6 +114228,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -112911,6 +114242,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -113345,6 +114680,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -113506,6 +114845,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -113516,6 +114859,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -114100,6 +115447,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -114110,6 +115461,10 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -114712,6 +116067,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -114722,6 +116081,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -115306,6 +116669,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -115316,6 +116683,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -115906,6 +117277,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -115916,6 +117291,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -116500,6 +117879,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -116510,6 +117893,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -116944,6 +118331,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     } | undefined | null;
                 } | {
@@ -117105,6 +118496,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                         } | undefined | null;
@@ -117115,6 +118510,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                             } | {
                                 __typename: "PipelineStrategySequential";
                                 abortOnFailure: boolean;
+                            } | {
+                                __typename: "PipelineStrategySinglePacketAttack";
+                                convertToHttp2: boolean;
+                                failureBehavior: FailureBehavior;
                             };
                         };
                         activeHttpEntry?: {
@@ -117699,6 +119098,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     } | {
                                         __typename: "PipelineStrategySequential";
                                         abortOnFailure: boolean;
+                                    } | {
+                                        __typename: "PipelineStrategySinglePacketAttack";
+                                        convertToHttp2: boolean;
+                                        failureBehavior: FailureBehavior;
                                     };
                                 };
                             } | undefined | null;
@@ -117709,6 +119112,10 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 } | {
                                     __typename: "PipelineStrategySequential";
                                     abortOnFailure: boolean;
+                                } | {
+                                    __typename: "PipelineStrategySinglePacketAttack";
+                                    convertToHttp2: boolean;
+                                    failureBehavior: FailureBehavior;
                                 };
                             };
                             activeHttpEntry?: {
@@ -120667,6 +122074,10 @@ export type GetTasksQuery = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | undefined | null;
@@ -120677,6 +122088,10 @@ export type GetTasksQuery = {
                 } | {
                     __typename: "PipelineStrategySequential";
                     abortOnFailure: boolean;
+                } | {
+                    __typename: "PipelineStrategySinglePacketAttack";
+                    convertToHttp2: boolean;
+                    failureBehavior: FailureBehavior;
                 };
             };
         } | {
@@ -121483,6 +122898,10 @@ export type StartedTaskSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -121493,6 +122912,10 @@ export type StartedTaskSubscription = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | {
@@ -122284,6 +123707,10 @@ export type FinishedTaskSubscription = {
                         } | {
                             __typename: "PipelineStrategySequential";
                             abortOnFailure: boolean;
+                        } | {
+                            __typename: "PipelineStrategySinglePacketAttack";
+                            convertToHttp2: boolean;
+                            failureBehavior: FailureBehavior;
                         };
                     };
                 } | undefined | null;
@@ -122294,6 +123721,10 @@ export type FinishedTaskSubscription = {
                     } | {
                         __typename: "PipelineStrategySequential";
                         abortOnFailure: boolean;
+                    } | {
+                        __typename: "PipelineStrategySinglePacketAttack";
+                        convertToHttp2: boolean;
+                        failureBehavior: FailureBehavior;
                     };
                 };
             } | {
@@ -123924,7 +125355,7 @@ export declare const InterceptEntryFullFragmentDoc = "\n    fragment interceptEn
 export declare const InterceptEntryEdgeMetaFragmentDoc = "\n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesTaskFullFragmentDoc = "\n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const HostedFileFullFragmentDoc = "\n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
+export declare const InstanceSettingsFullFragmentDoc = "\n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n  network {\n    __typename\n    stack\n  }\n}\n    ";
 export declare const InterceptRequestMessageFullFragmentDoc = "\n    fragment interceptRequestMessageFull on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptResponseMessageMetaFragmentDoc = "\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
@@ -124003,7 +125434,7 @@ export declare const ReplayEntryWsMetaFragmentDoc = "\n    fragment replayEntryW
 export declare const ReplayEntryHttpFullFragmentDoc = "\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    ";
 export declare const ReplayEntryWebsocketMetaFragmentDoc = "\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    ";
 export declare const ReplayEntryWebsocketFullFragmentDoc = "\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    ";
-export declare const PipelineStrategyFullFragmentDoc = "\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    ";
+export declare const PipelineStrategyFullFragmentDoc = "\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
 export declare const ReplayEntryHttpOnePipelineDraftMetaFragmentDoc = "\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const ReplayEntryHttpOnePipelineMetaFragmentDoc = "\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    ";
 export declare const ReplayEntryHttpOnePipelineFullFragmentDoc = "\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    ";
@@ -124202,9 +125633,9 @@ export declare const HostedFilesDocument = "\n    query hostedFiles {\n  hostedF
 export declare const OnUploadedHostedFileDocument = "\n    subscription onUploadedHostedFile {\n  uploadedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
 export declare const OnDeletedHostedFileDocument = "\n    subscription onDeletedHostedFile {\n  deletedHostedFile {\n    deletedHostedFileId\n  }\n}\n    ";
 export declare const OnUpdatedHostedFileDocument = "\n    subscription onUpdatedHostedFile {\n  updatedHostedFile {\n    hostedFile {\n      ...hostedFileFull\n    }\n  }\n}\n    \n    fragment hostedFileFull on HostedFile {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  updatedAt\n  createdAt\n}\n    ";
-export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
-export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
-export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n}\n    ";
+export declare const SetInstanceSettingsDocument = "\n    mutation setInstanceSettings($input: SetInstanceSettingsInput!) {\n  setInstanceSettings(input: $input) {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n  network {\n    __typename\n    stack\n  }\n}\n    ";
+export declare const InstanceSettingsDocument = "\n    query instanceSettings {\n  instanceSettings {\n    ...instanceSettingsFull\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n  network {\n    __typename\n    stack\n  }\n}\n    ";
+export declare const UpdatedInstanceSettingsDocument = "\n    subscription updatedInstanceSettings {\n  updatedInstanceSettings {\n    settings {\n      ...instanceSettingsFull\n    }\n  }\n}\n    \n    fragment instanceSettingsFull on InstanceSettings {\n  __typename\n  onboarding {\n    __typename\n    analytic\n  }\n  analytic {\n    __typename\n    enabled\n    local\n    cloud\n  }\n  network {\n    __typename\n    stack\n  }\n}\n    ";
 export declare const ForwardInterceptMessageDocument = "\n    mutation forwardInterceptMessage($id: ID!, $input: ForwardInterceptMessageInput) {\n  forwardInterceptMessage(id: $id, input: $input) {\n    forwardedId\n  }\n}\n    ";
 export declare const DropInterceptMesageDocument = "\n    mutation dropInterceptMesage($id: ID!) {\n  dropInterceptMessage(id: $id) {\n    droppedId\n  }\n}\n    ";
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
@@ -124270,36 +125701,36 @@ export declare const SetProjectConfigStreamDocument = "\n    mutation setProject
 export declare const ReplayWebsocketMessagesAfterDocument = "\n    query replayWebsocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayWebsocketMessagesBeforeDocument = "\n    query replayWebsocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayWebsocketMessagesByOffsetDocument = "\n    query replayWebsocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdateReplayEntryHttpOnePipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpOnePipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpOnePipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdateReplayEntryHttpOnePipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpOnePipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpOnePipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const SetActiveReplayPipelineEntryHttpEntryDocument = "\n    mutation setActiveReplayPipelineEntryHttpEntry($id: ID!, $httpEntryId: ID!) {\n  setActiveReplayPipelineEntryHttpEntry(id: $id, httpEntryId: $httpEntryId) {\n    entry {\n      activeHttpEntry {\n        ...replayEntryHttpFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const SendReplayTaskMessageDocument = "\n    mutation sendReplayTaskMessage($task: ID!, $input: SendReplayTaskMessageInput!) {\n  sendReplayTaskMessage(task: $task, input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const SendReplayTaskMessageDraftDocument = "\n    mutation sendReplayTaskMessageDraft($task: ID!) {\n  sendReplayTaskMessageDraft(task: $task) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const StopReplayWsTasksDocument = "\n    mutation stopReplayWsTasks($taskIds: [ID!]!) {\n  stopReplayWsTasks(taskIds: $taskIds) {\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!, $kind: ReplaySessionKind!) {\n  clearReplayEntryDraft(id: $id, kind: $kind) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    ";
-export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    ";
-export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!, $kind: ReplaySessionKind!) {\n  clearReplayEntryDraft(id: $id, kind: $kind) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpOnePipeline {\n        ...replaySessionHttpOnePipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const CreateReplayPipelineHttpOneSessionDocument = "\n    mutation createReplayPipelineHttpOneSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpOneSession(input: $input) {\n    session {\n      ...replaySessionHttpOnePipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpOnePipeline {\n        ...replaySessionHttpOnePipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const CreateReplayPipelineHttpOneSessionDocument = "\n    mutation createReplayPipelineHttpOneSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpOneSession(input: $input) {\n    session {\n      ...replaySessionHttpOnePipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const UpdatedReplayEntryWsDocument = "\n    subscription updatedReplayEntryWs {\n  updatedReplayEntryWs {\n    entry {\n      ...replayEntryWebsocketMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
 export declare const CreatedReplayStreamWsMessageDocument = "\n    subscription createdReplayStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeFull\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
@@ -124355,10 +125786,10 @@ export declare const CreatedWsStreamDocument = "\n    subscription createdWsStre
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!, $filter: StreamQLInput) {\n  updatedStreamWsMessage(filter: $filter) {\n    __typename\n    ... on UpdatedStreamWsMessage {\n      snapshot\n      messageEdge(order: $order) {\n        ...streamWsMessageEdgeMeta\n      }\n    }\n    ... on HiddenStreamWsMessage {\n      hiddenId\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const DeletedStreamWsMessagesDocument = "\n    subscription deletedStreamWsMessages {\n  deletedStreamWsMessages {\n    deletedIds\n  }\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
 export declare const UpstreamsDocument = "\n    query upstreams {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n  upstreamPlugins {\n    ...upstreamPluginFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
