@@ -138,8 +138,10 @@ export type AiProvider = {
     alias: Scalars["Alias"]["output"];
     api: AiProviderApi;
     apiKey: Scalars["Sensitive"]["output"];
+    authenticationStatus: AiProviderAuthenticationStatus;
     createdAt: Scalars["DateTime"]["output"];
     id: Scalars["ID"]["output"];
+    kind: AiProviderKind;
     updatedAt: Scalars["DateTime"]["output"];
     url?: Maybe<Scalars["Url"]["output"]>;
 };
@@ -151,6 +153,51 @@ export declare const AiProviderApi: {
     readonly Openrouter: "OPENROUTER";
 };
 export type AiProviderApi = (typeof AiProviderApi)[keyof typeof AiProviderApi];
+export declare const AiProviderAuthenticationStatus: {
+    readonly Invalid: "INVALID";
+    readonly Unverified: "UNVERIFIED";
+    readonly Valid: "VALID";
+};
+export type AiProviderAuthenticationStatus = (typeof AiProviderAuthenticationStatus)[keyof typeof AiProviderAuthenticationStatus];
+export type AiProviderConfigurationInput = {
+    anthropic: AnthropicProviderConfigurationInput;
+    custom?: never;
+    gemini?: never;
+    openAI?: never;
+    openRouter?: never;
+} | {
+    anthropic?: never;
+    custom: CustomAiProviderConfigurationInput;
+    gemini?: never;
+    openAI?: never;
+    openRouter?: never;
+} | {
+    anthropic?: never;
+    custom?: never;
+    gemini: GeminiProviderConfigurationInput;
+    openAI?: never;
+    openRouter?: never;
+} | {
+    anthropic?: never;
+    custom?: never;
+    gemini?: never;
+    openAI: OpenAiProviderConfigurationInput;
+    openRouter?: never;
+} | {
+    anthropic?: never;
+    custom?: never;
+    gemini?: never;
+    openAI?: never;
+    openRouter: OpenRouterProviderConfigurationInput;
+};
+export declare const AiProviderKind: {
+    readonly Anthropic: "ANTHROPIC";
+    readonly Custom: "CUSTOM";
+    readonly Gemini: "GEMINI";
+    readonly Openai: "OPENAI";
+    readonly Openrouter: "OPENROUTER";
+};
+export type AiProviderKind = (typeof AiProviderKind)[keyof typeof AiProviderKind];
 export type AiUserError = UserError & {
     code: Scalars["String"]["output"];
     message: Scalars["String"]["output"];
@@ -170,6 +217,9 @@ export type AnalyticStatus = {
     cloud: Scalars["Boolean"]["output"];
     enabled: Scalars["Boolean"]["output"];
     local: Scalars["Boolean"]["output"];
+};
+export type AnthropicProviderConfigurationInput = {
+    url?: InputMaybe<Scalars["Url"]["input"]>;
 };
 export declare const AssistantErrorReason: {
     readonly ContextExceeded: "CONTEXT_EXCEEDED";
@@ -743,12 +793,11 @@ export type Count = {
     snapshot: Scalars["Snapshot"]["output"];
     value: Scalars["Int"]["output"];
 };
-export type CreateAiProviderError = AliasTakenUserError | OtherUserError;
+export type CreateAiProviderError = AiUserError | AliasTakenUserError | OtherUserError;
 export type CreateAiProviderInput = {
     alias: Scalars["Alias"]["input"];
-    api: AiProviderApi;
     apiKey: Scalars["Sensitive"]["input"];
-    url?: InputMaybe<Scalars["Url"]["input"]>;
+    configuration: AiProviderConfigurationInput;
 };
 export type CreateAiProviderPayload = {
     error?: Maybe<CreateAiProviderError>;
@@ -1108,6 +1157,18 @@ export type CurrentProject = {
     project: Project;
     /** Defines if the selected project is read-only */
     readOnly: Scalars["Boolean"]["output"];
+};
+export declare const CustomAiProviderApi: {
+    readonly Anthropic: "ANTHROPIC";
+    readonly Gemini: "GEMINI";
+    readonly OpenaiCompletion: "OPENAI_COMPLETION";
+    readonly OpenaiResponse: "OPENAI_RESPONSE";
+    readonly Openrouter: "OPENROUTER";
+};
+export type CustomAiProviderApi = (typeof CustomAiProviderApi)[keyof typeof CustomAiProviderApi];
+export type CustomAiProviderConfigurationInput = {
+    api: CustomAiProviderApi;
+    url: Scalars["Url"]["input"];
 };
 export type DnsIpResolver = {
     ip: Scalars["String"]["output"];
@@ -1638,6 +1699,9 @@ export type ForwardInterceptResponseMessageInput = {
 };
 export type ForwardInterceptStreamWsMessageInput = {
     updateRaw: Scalars["Blob"]["input"];
+};
+export type GeminiProviderConfigurationInput = {
+    url?: InputMaybe<Scalars["Url"]["input"]>;
 };
 export type GlobalConfig = {
     address: Scalars["String"]["output"];
@@ -2644,6 +2708,18 @@ export type NewerVersionUserError = UserError & {
 };
 export type OnboardingState = {
     analytic: Scalars["Boolean"]["output"];
+};
+export declare const OpenAiProviderApi: {
+    readonly Completion: "COMPLETION";
+    readonly Response: "RESPONSE";
+};
+export type OpenAiProviderApi = (typeof OpenAiProviderApi)[keyof typeof OpenAiProviderApi];
+export type OpenAiProviderConfigurationInput = {
+    api: OpenAiProviderApi;
+    url?: InputMaybe<Scalars["Url"]["input"]>;
+};
+export type OpenRouterProviderConfigurationInput = {
+    url?: InputMaybe<Scalars["Url"]["input"]>;
 };
 export declare const Ordering: {
     readonly Asc: "ASC";
@@ -4224,6 +4300,7 @@ export type SubscriptionRoot = {
     startedRestoreBackupTask: StartedRestoreBackupTaskPayload;
     startedTask: StartedTaskPayload;
     updatedAIProvider: UpdatedAiProviderPayload;
+    updatedAIProviderAuthenticationStatus: UpdatedAiProviderAuthenticationStatusPayload;
     updatedAssistantMessageTask: UpdatedAssistantMessageTaskPayload;
     updatedAssistantSession: UpdatedAssistantSessionPayload;
     updatedAutomateEntry: UpdatedAutomateEntryPayload;
@@ -4949,9 +5026,8 @@ export declare const TaskStatus: {
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
 export type TestAiProviderError = AiUserError | OtherUserError;
 export type TestAiProviderInput = {
-    api: AiProviderApi;
     apiKey: Scalars["Sensitive"]["input"];
-    url?: InputMaybe<Scalars["Url"]["input"]>;
+    configuration: AiProviderConfigurationInput;
 };
 export type TestAiProviderPayload = {
     error?: Maybe<TestAiProviderError>;
@@ -5070,12 +5146,11 @@ export type UnknownIdUserError = UserError & {
 export type UnsupportedPlatformUserError = UserError & {
     code: Scalars["String"]["output"];
 };
-export type UpdateAiProviderError = AliasTakenUserError | OtherUserError | UnknownIdUserError;
+export type UpdateAiProviderError = AiUserError | AliasTakenUserError | OtherUserError | UnknownIdUserError;
 export type UpdateAiProviderInput = {
     alias: Scalars["Alias"]["input"];
-    api: AiProviderApi;
     apiKey: Scalars["Sensitive"]["input"];
-    url?: InputMaybe<Scalars["Url"]["input"]>;
+    configuration: AiProviderConfigurationInput;
 };
 export type UpdateAiProviderPayload = {
     error?: Maybe<UpdateAiProviderError>;
@@ -5260,6 +5335,10 @@ export type UpdateWorkflowInput = {
 export type UpdateWorkflowPayload = {
     error?: Maybe<UpdateWorkflowError>;
     workflow?: Maybe<Workflow>;
+};
+export type UpdatedAiProviderAuthenticationStatusPayload = {
+    providerId: Scalars["ID"]["output"];
+    status: AiProviderAuthenticationStatus;
 };
 export type UpdatedAiProviderPayload = {
     provider: AiProvider;
@@ -5581,7 +5660,9 @@ export type AiProviderFullFragment = {
     __typename: "AIProvider";
     id: string;
     alias: string;
+    kind: AiProviderKind;
     api: AiProviderApi;
+    authenticationStatus: AiProviderAuthenticationStatus;
     apiKey: string;
     url?: string | undefined | null;
 };
@@ -5605,7 +5686,9 @@ export type AiProvidersQuery = {
         __typename: "AIProvider";
         id: string;
         alias: string;
+        kind: AiProviderKind;
         api: AiProviderApi;
+        authenticationStatus: AiProviderAuthenticationStatus;
         apiKey: string;
         url?: string | undefined | null;
     }>;
@@ -5619,11 +5702,18 @@ export type CreateAiProviderMutation = {
             __typename: "AIProvider";
             id: string;
             alias: string;
+            kind: AiProviderKind;
             api: AiProviderApi;
+            authenticationStatus: AiProviderAuthenticationStatus;
             apiKey: string;
             url?: string | undefined | null;
         } | undefined | null;
         error?: {
+            __typename: "AIUserError";
+            message: string;
+            reason: AiErrorReason;
+            code: string;
+        } | {
             __typename: "AliasTakenUserError";
             alias: string;
             code: string;
@@ -5643,11 +5733,18 @@ export type UpdateAiProviderMutation = {
             __typename: "AIProvider";
             id: string;
             alias: string;
+            kind: AiProviderKind;
             api: AiProviderApi;
+            authenticationStatus: AiProviderAuthenticationStatus;
             apiKey: string;
             url?: string | undefined | null;
         } | undefined | null;
         error?: {
+            __typename: "AIUserError";
+            message: string;
+            reason: AiErrorReason;
+            code: string;
+        } | {
             __typename: "AliasTakenUserError";
             alias: string;
             code: string;
@@ -5695,7 +5792,9 @@ export type CreatedAiProviderSubscription = {
             __typename: "AIProvider";
             id: string;
             alias: string;
+            kind: AiProviderKind;
             api: AiProviderApi;
+            authenticationStatus: AiProviderAuthenticationStatus;
             apiKey: string;
             url?: string | undefined | null;
         };
@@ -5710,10 +5809,21 @@ export type UpdatedAiProviderSubscription = {
             __typename: "AIProvider";
             id: string;
             alias: string;
+            kind: AiProviderKind;
             api: AiProviderApi;
+            authenticationStatus: AiProviderAuthenticationStatus;
             apiKey: string;
             url?: string | undefined | null;
         };
+    };
+};
+export type UpdatedAiProviderAuthenticationStatusSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedAiProviderAuthenticationStatusSubscription = {
+    updatedAIProviderAuthenticationStatus: {
+        providerId: string;
+        status: AiProviderAuthenticationStatus;
     };
 };
 export type DeletedAiProviderSubscriptionVariables = Exact<{
@@ -125244,7 +125354,7 @@ export type TestWorkflowPassiveMutation = {
         } | undefined | null;
     };
 };
-export declare const AiProviderFullFragmentDoc = "\n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
+export declare const AiProviderFullFragmentDoc = "\n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    ";
 export declare const UserErrorFullFragmentDoc = "\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
 export declare const AiUserErrorFullFragmentDoc = "\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    ";
 export declare const OtherUserErrorFullFragmentDoc = "\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -125474,13 +125584,14 @@ export declare const WorkflowFullFragmentDoc = "\n    fragment workflowFull on W
 export declare const WorkflowEdgeFullFragmentDoc = "\n    fragment workflowEdgeFull on WorkflowEdge {\n  cursor\n  node {\n    ...workflowFull\n  }\n}\n    ";
 export declare const WorkflowNodeDefinitionFullFragmentDoc = "\n    fragment workflowNodeDefinitionFull on WorkflowNodeDefinition {\n  __typename\n  raw\n}\n    ";
 export declare const WorkflowTaskMetaFragmentDoc = "\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    ";
-export declare const AiProvidersDocument = "\n    query aiProviders {\n  aiProviders {\n    ...aiProviderFull\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
-export declare const CreateAiProviderDocument = "\n    mutation createAIProvider($input: CreateAIProviderInput!) {\n  createAIProvider(input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const UpdateAiProviderDocument = "\n    mutation updateAIProvider($id: ID!, $input: UpdateAIProviderInput!) {\n  updateAIProvider(id: $id, input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const AiProvidersDocument = "\n    query aiProviders {\n  aiProviders {\n    ...aiProviderFull\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    ";
+export declare const CreateAiProviderDocument = "\n    mutation createAIProvider($input: CreateAIProviderInput!) {\n  createAIProvider(input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on AIUserError {\n        ...aiUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const UpdateAiProviderDocument = "\n    mutation updateAIProvider($id: ID!, $input: UpdateAIProviderInput!) {\n  updateAIProvider(id: $id, input: $input) {\n    provider {\n      ...aiProviderFull\n    }\n    error {\n      ... on AliasTakenUserError {\n        ...aliasTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on AIUserError {\n        ...aiUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    \n\n    fragment aliasTakenUserErrorFull on AliasTakenUserError {\n  ...userErrorFull\n  alias\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteAiProviderDocument = "\n    mutation deleteAIProvider($id: ID!) {\n  deleteAIProvider(id: $id) {\n    deletedId\n  }\n}\n    ";
 export declare const TestAiProviderDocument = "\n    mutation testAIProvider($input: TestAIProviderInput!) {\n  testAIProvider(input: $input) {\n    ...testAIProviderPayloadFull\n  }\n}\n    \n    fragment testAIProviderPayloadFull on TestAIProviderPayload {\n  error {\n    ... on AIUserError {\n      ...aiUserErrorFull\n    }\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n  }\n  success\n}\n    \n\n    fragment aiUserErrorFull on AIUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedAiProviderDocument = "\n    subscription createdAIProvider {\n  createdAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
-export declare const UpdatedAiProviderDocument = "\n    subscription updatedAIProvider {\n  updatedAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  api\n  apiKey\n  url\n}\n    ";
+export declare const CreatedAiProviderDocument = "\n    subscription createdAIProvider {\n  createdAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    ";
+export declare const UpdatedAiProviderDocument = "\n    subscription updatedAIProvider {\n  updatedAIProvider {\n    provider {\n      ...aiProviderFull\n    }\n  }\n}\n    \n    fragment aiProviderFull on AIProvider {\n  __typename\n  id\n  alias\n  kind\n  api\n  authenticationStatus\n  apiKey\n  url\n}\n    ";
+export declare const UpdatedAiProviderAuthenticationStatusDocument = "\n    subscription updatedAIProviderAuthenticationStatus {\n  updatedAIProviderAuthenticationStatus {\n    providerId\n    status\n  }\n}\n    ";
 export declare const DeletedAiProviderDocument = "\n    subscription deletedAIProvider {\n  deletedAIProvider {\n    deletedProviderId\n  }\n}\n    ";
 export declare const TrackDocument = "\n    mutation track($input: TrackInput!) {\n  track(input: $input) {\n    success\n  }\n}\n    ";
 export declare const AssistantSessionsDocument = "\n    query assistantSessions {\n  assistantSessions {\n    ...assistantSessionMeta\n  }\n}\n    \n    fragment assistantSessionMeta on AssistantSession {\n  __typename\n  id\n  modelId\n  name\n  updatedAt\n  createdAt\n}\n    ";
@@ -125846,6 +125957,7 @@ export declare function getSdk<C>(requester: Requester<C>): {
     testAIProvider(variables: TestAiProviderMutationVariables, options?: C): Promise<TestAiProviderMutation>;
     createdAIProvider(variables?: CreatedAiProviderSubscriptionVariables, options?: C): AsyncIterable<CreatedAiProviderSubscription>;
     updatedAIProvider(variables?: UpdatedAiProviderSubscriptionVariables, options?: C): AsyncIterable<UpdatedAiProviderSubscription>;
+    updatedAIProviderAuthenticationStatus(variables?: UpdatedAiProviderAuthenticationStatusSubscriptionVariables, options?: C): AsyncIterable<UpdatedAiProviderAuthenticationStatusSubscription>;
     deletedAIProvider(variables?: DeletedAiProviderSubscriptionVariables, options?: C): AsyncIterable<DeletedAiProviderSubscription>;
     track(variables: TrackMutationVariables, options?: C): Promise<TrackMutation>;
     assistantSessions(variables?: AssistantSessionsQueryVariables, options?: C): Promise<AssistantSessionsQuery>;
