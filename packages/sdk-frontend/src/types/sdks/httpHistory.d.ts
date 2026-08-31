@@ -68,6 +68,7 @@ export type HTTPHistorySDK = {
      * Add a component to a slot.
      * @param slot The slot to add the component to.
      * @param content The content to add to the slot.
+     * @returns A handle object with a `remove` method to remove the content from the slot.
      * @example
      * ```ts
      * sdk.httpHistory.addToSlot(HTTPHistorySlot.ToolbarPrimary, {

@@ -2,6 +2,7 @@ import type { Extension } from "@codemirror/state";
 import type { RequestFull, RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
 import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { SearchSlot, SearchSlotContent } from "../types/search";
+import type { SlotHandle } from "../types/slots";
 import type { HTTPQL, ID } from "../types/utils";
 /**
  * Utilities to interact with the Search page.
@@ -62,6 +63,7 @@ export type SearchSDK = {
      * Add content to a slot in the Search UI.
      * @param slot The slot to add content to.
      * @param content The content to add.
+     * @returns A handle object with a `remove` method to remove the content from the slot.
      */
-    addToSlot: <T extends SearchSlot>(slot: T, content: SearchSlotContent[T]) => void;
+    addToSlot: <T extends SearchSlot>(slot: T, content: SearchSlotContent[T]) => SlotHandle;
 };

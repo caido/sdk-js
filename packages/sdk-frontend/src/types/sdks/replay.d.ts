@@ -142,27 +142,29 @@ export type ReplaySDK = {
      * Add a component to a slot.
      * @param slot The slot to add the component to.
      * @param content The content to add to the slot.
+     * @returns A handle object with a `remove` method to remove the content from the slot.
      * @example
      * ```ts
-     * addToSlot(ReplaySlot.SessionToolbarPrimary, {
-     *   kind: "Command",
+     * const command = sdk.replay.addToSlot(ReplaySlot.SessionToolbarPrimary, {
+     *   type: "Command",
      *   commandId: "my-command",
      *   icon: "my-icon",
      * });
      *
-     * addToSlot(ReplaySlot.SessionToolbarSecondary, {
-     *   kind: "Custom",
-     *   component: MyComponent,
+     * const custom = sdk.replay.addToSlot(ReplaySlot.SessionToolbarSecondary, {
+     *   type: "Custom",
+     *   definition: MyComponent,
      * });
      *
-     * addToSlot(ReplaySlot.Topbar, {
-     *   kind: "Button",
-     *   label: "My Button",
-     *   icon: "my-icon",
-     *   onClick: () => {
-     *     console.log("Button clicked");
-     *   },
+     * const button = sdk.replay.addToSlot(ReplaySlot.Topbar, {
+     *   type: "Button",
+     *   label: "Hello",
+     *   icon: "fas fa-user",
+     *   onClick: () => {},
      * });
+     *
+     * // Later, remove the content
+     * button.remove();
      * ```
      */
     addToSlot: DefineAddToSlotFn<ReplaySlotContent>;
