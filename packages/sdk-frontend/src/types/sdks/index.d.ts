@@ -14,7 +14,6 @@ import type { FindingsSDK } from "./findings";
 import type { FooterSDK } from "./footer";
 import type { HTTPHistorySDK } from "./httpHistory";
 import type { InterceptSDK } from "./intercept";
-import type { KVSDK } from "./kv";
 import type { LogSDK } from "./log";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
@@ -40,23 +39,6 @@ import type { WorkflowSDK } from "./workflows";
 export type API<T extends BackendEndpoints | BackendSpec = Record<string, never>, E extends BackendEvents = Record<string, never>> = {
     /**
      * Utilities to interact with the GraphQL API.
-     *
-     * Queries and mutations return a promise; subscriptions return an
-     * `AsyncIterable`. On success they resolve with the response data or yield
-     * it. On failure (network error or any GraphQL errors returned by the
-     * server) the promise rejects, or the iterator throws into the `for await`
-     * loop, with the underlying error. Failures can be handled with `try`/
-     * `catch` or `.catch()`.
-     *
-     * @example
-     * ```ts
-     * try {
-     *   const result = await sdk.graphql.automateEntry({ id: "1" });
-     *   // use result
-     * } catch (err) {
-     *   // err.message, err.graphQLErrors, err.networkError
-     * }
-     * ```
      */
     graphql: GraphqlSDK;
     /**
@@ -103,10 +85,6 @@ export type API<T extends BackendEndpoints | BackendSpec = Record<string, never>
      * Utilities to interact with frontend-plugin storage.
      */
     storage: StorageSDK;
-    /**
-     * Utilities to interact with plugin package data (key-value store).
-     */
-    kv: KVSDK;
     /**
      * Utilities to interact with the plugin's static assets.
      */
