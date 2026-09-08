@@ -12,6 +12,16 @@ export type WindowSDK = {
      */
     getActiveEditor: () => Editor | undefined;
     /**
+     * Get the active request editor.
+     * @returns The active request editor.
+     */
+    getActiveRequestEditor: () => Editor | undefined;
+    /**
+     * Get the active response editor.
+     * @returns The active response editor.
+     */
+    getActiveResponseEditor: () => Editor | undefined;
+    /**
      * Show a toast message.
      * @param message The message to show.
      * @param options Options for the toast message.

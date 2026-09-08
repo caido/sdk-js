@@ -1,13 +1,23 @@
 import type { Extension } from "@codemirror/state";
 import type { AutomateEntry, AutomateSession } from "../types/automate";
-import type { RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
-import type { ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
+import type { RequestFull, RequestReadableViewModeProps, RequestViewModeOptions } from "../types/request";
+import type { ResponseFull, ResponseViewModeOptions, ResponseViewModeProps } from "../types/response";
 import type { AddIndicatorOptions, ID, Indicator } from "../types/utils";
 /**
  * Utilities to interact with the Automate page.
  * @category Automate
  */
 export type AutomateSDK = {
+    /**
+     * Get the currently selected request.
+     * @returns The currently selected request.
+     */
+    getSelectedRequest: () => RequestFull | undefined;
+    /**
+     * Get the currently selected response.
+     * @returns The currently selected response.
+     */
+    getSelectedResponse: () => ResponseFull | undefined;
     /**
      * Add an extension to the request editor.
      * @param extension The extension to add.

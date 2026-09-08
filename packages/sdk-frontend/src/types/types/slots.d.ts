@@ -51,10 +51,20 @@ export type CommandSlotContent = DefineSlotContent<"Command", {
  */
 export type SlotContent<TProps extends SlotContentPropsGroup = SlotContentProps> = ButtonSlotContent | CustomSlotContent<TProps> | CommandSlotContent;
 /**
+ * A handle for slot content added through the SDK.
+ * @category Slots
+ */
+export type SlotHandle = {
+    /**
+     * Remove the content from the slot.
+     */
+    remove: () => void;
+};
+/**
  * A function type for adding content to slots.
  * @category Slots
  */
 export type DefineAddToSlotFn<TMap extends Record<string, DefineSlotContent<string, Record<string, unknown>>>> = {
-    <K extends keyof TMap>(slot: K, spec: TMap[K]): void;
+    <K extends keyof TMap>(slot: K, spec: TMap[K]): SlotHandle;
 };
 export {};
