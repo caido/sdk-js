@@ -30,6 +30,12 @@ This is the monorepo for all the JS SDK and related tooling of Caido. It contain
 - `quickjs-types`: Typing for the QuickJS Engine
 - `server-auth`: Client to authenticate with a Caido Instance
 
+## Release automation
+
+SDK releases are not published from branch pushes. The three product-coupled packages are versioned together on `release/vX.Y.Z` branches and published from immutable `vX.Y.Z[-rc.N]` tags. Independently versioned packages are released through the two-input `release-independent.yml` dispatcher, which creates the selected package's `<package>-vX.Y.Z` tag and GitHub Release before publishing only that package. Pre-cutover product lines have a separate explicit legacy `main` source mode; development beta publication is disabled.
+
+See [`.github/release-contract.md`](.github/release-contract.md) for the two release lanes, registry routing, authentication, retry behavior, and npm tag selection.
+
 ## 💚 Community
 
 Come join our [Discord](https://links.caido.io/www-discord) community and connect with other Caido users! We'd love to have you as part of the conversation and help with any questions you may have.

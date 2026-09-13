@@ -10,21 +10,26 @@ env:
   CAIDO_GITHUB_TOKEN: ${{ github.token }}
   CAIDO_DOC_RW_TOKEN: ${{ secrets.CI__DOC__RW }}
 
+permissions:
+  contents: read
+
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout sdk-js
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: caido/sdk-js
           ref: ${{ env.CAIDO_REF }}
           path: ./sdk-js
           token: ${{ env.CAIDO_GITHUB_TOKEN }}
+          persist-credentials: false
 
       - name: Checkout doc-developer
-        uses: actions/checkout@v4
+        # zizmor: ignore[artipacked] the PR action requires authenticated Git operations in this checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: caido/doc-developer
           ref: main
@@ -32,14 +37,14 @@ jobs:
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
 
       - name: Install Mise
-        uses: caido/action-mise-action@v3.2.0
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
         with:
           working_directory: ./sdk-js
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
 
       - name: Install Mise
-        uses: caido/action-mise-action@v3.2.0
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
         with:
           working_directory: ./doc-developer
           version: ${{ vars.CI__MISE_VERSION }}
@@ -54,7 +59,7 @@ jobs:
         run: pnpm generate:sdk
 
       - name: Pull Request
-        uses: caido/action-pull-request@v6.0.1
+        uses: caido/action-pull-request@bac6da8071ada152cce76cfbd24b54b7190ad799 # v6.0.1
         with:
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
           path: ./doc-developer

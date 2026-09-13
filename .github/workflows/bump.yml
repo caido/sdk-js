@@ -1,0 +1,81 @@
+name: Bump coupled SDK versions
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: Existing branch to update
+        required: true
+        type: string
+      version:
+        description: Package version supplied by caido-private
+        required: true
+        type: string
+    secrets:
+      GITHUB_CHECKOUT_TOKEN:
+        description: Token allowed to update the selected SDK branch
+        required: true
+    outputs:
+      sha:
+        description: Resulting checked-out commit
+        value: ${{ jobs.bump.outputs.sha }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-bump-${{ inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.result.outputs.sha }}
+    steps:
+      - name: Checkout selected branch
+        # zizmor: ignore[artipacked] credentials are required for the guarded branch push
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: caido/sdk-js
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.GITHUB_CHECKOUT_TOKEN }}
+
+      - name: Install Mise
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
+        with:
+          version: ${{ vars.CI__MISE_VERSION }}
+          experimental: true # Necessary for custom backend plugins
+
+      - name: Set coupled package versions
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          for (const packageName of ['sdk-backend', 'sdk-frontend', 'sdk-workflow']) {
+            const path = `packages/${packageName}/package.json`;
+            const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
+            manifest.version = process.env.RELEASE_VERSION;
+            fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
+          }
+          NODE
+
+      - name: Commit and push
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          if git diff --quiet -- packages/sdk-backend/package.json packages/sdk-frontend/package.json packages/sdk-workflow/package.json; then
+            echo "Coupled manifests already equal $RELEASE_VERSION"
+          else
+            git config user.name "caido-release-bot"
+            git config user.email "dev@caido.io"
+            git add packages/sdk-backend/package.json packages/sdk-frontend/package.json packages/sdk-workflow/package.json
+            git commit -m "Bump SDK packages to v$RELEASE_VERSION"
+            git push
+          fi
+
+      - name: Record result
+        id: result
+        run: printf 'sha=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
