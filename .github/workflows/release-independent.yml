@@ -12,12 +12,6 @@ on:
           - sdk-shared
           - server-auth
           - sdk-client
-      latest:
-        description: Use latest instead of beta
-        required: true
-        default: false
-        type: boolean
-
 concurrency:
   group: sdk-independent-release-${{ inputs.package }}
   cancel-in-progress: false
@@ -140,7 +134,6 @@ jobs:
     with:
       package: ${{ inputs.package }}
       ref: ${{ needs.create.outputs.ref }}
-      latest: ${{ inputs.latest }}
     secrets:
       NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}

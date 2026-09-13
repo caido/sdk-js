@@ -5,7 +5,7 @@ This repository has two release lanes. Neither is triggered by a branch push.
 | Lane | Source | Packages | Channel |
 | --- | --- | --- | --- |
 | Coupled RC/stable | Immutable `vX.Y.Z-rc.N` or `vX.Y.Z` tag | `@caido/sdk-backend`, `@caido/sdk-frontend`, `@caido/sdk-workflow` | internal `beta` or public `latest` |
-| Independent stable | Immutable `<package>-vX.Y.Z` GitHub Release tag | Exactly one of `quickjs-types`, `sdk-shared`, `server-auth`, `sdk-client` | `beta` or `latest` |
+| Independent stable | Immutable `<package>-vX.Y.Z` GitHub Release tag | Exactly one of `quickjs-types`, `sdk-shared`, `server-auth`, `sdk-client` | npm default (`latest`) |
 
 `caido-private` owns coupled release-branch creation, conflict checks, branch/version agreement, and creation of the immutable coupled tag. The SDK publisher does not duplicate those checks. `bump.yml` is only a utility used by that orchestration; it is not a release lane.
 
@@ -17,16 +17,13 @@ Stable releases publish `@caido/sdk-backend`, `@caido/sdk-frontend`, and `@caido
 
 ## Independent releases
 
-`release-independent.yml` has exactly two operator inputs:
-
-- `package`: `quickjs-types`, `sdk-shared`, `server-auth`, or `sdk-client`;
-- `latest`: use `latest` when true or `beta` when false.
+`release-independent.yml` has one operator input: `package`, which must be `quickjs-types`, `sdk-shared`, `server-auth`, or `sdk-client`.
 
 It first runs a read-only preflight against one exact `main` commit. The preflight requires the derived `<package>-vX.Y.Z` Git tag and GitHub Release to be absent, requires the exact package version to be absent from public npm, and—for `quickjs-types` or `sdk-shared`—requires it to be absent from GitHub Packages. Any existing object or unexpected registry/API error stops the workflow before mutation.
 
 After preflight succeeds, a separate write-enabled job checks out the validated commit, creates the tag and GitHub Release, and calls `publish.yml`. The reusable publisher verifies the immutable tag, builds only the selected package graph, and publishes exactly that package. Creation assumes preflight established a clean state; concurrency prevents another dispatcher run for the same package from interleaving.
 
-All independent packages publish to public npm. `quickjs-types` and `sdk-shared` also publish to GitHub Packages. When `latest` is false, the version is published with the `beta` dist-tag.
+All independent packages publish to public npm. `quickjs-types` and `sdk-shared` also publish to GitHub Packages. Independent publication does not pass `--tag`; npm's default `latest` tag is used.
 
 ## Retry and channel behavior
 
@@ -34,7 +31,7 @@ Package versions and release tags are immutable. Never repair a retry by changin
 
 Before upload, each registry is queried for the exact manifest version. Existing versions are skipped, allowing a coupled or multi-registry release to resume after partial success. Publication uses the version currently present in each checked-out package manifest; no separate version is supplied to the publish command.
 
-Publication uses only two dist-tags: RC coupled releases and independent releases with `latest: false` use `beta`; all other releases use `latest`. Workflow concurrency serializes releases.
+Coupled RC releases explicitly use `beta`; coupled stable releases explicitly use `latest`; independent releases omit `--tag` and therefore use npm's default `latest`. Workflow concurrency serializes releases.
 
 ## Authentication
 

@@ -11,10 +11,6 @@ on:
         description: Immutable <package>-vX.Y.Z tag
         required: true
         type: string
-      latest:
-        description: Use latest instead of beta
-        required: true
-        type: boolean
     secrets:
       GITHUB_PACKAGES_TOKEN:
         required: false
@@ -81,19 +77,17 @@ jobs:
           publish() {
             local registry="$1" npmrc="${2:-}"
             local directory="packages/$PACKAGE"
-            local name version tag
+            local name version
             name="$(node -p "require('./$directory/package.json').name")"
             version="$(node -p "require('./$directory/package.json').version")"
-            tag=beta
-            if [[ "${{ inputs.latest }}" == "true" ]]; then tag=latest; fi
             if npm view "$name@$version" version --registry "$registry" >/dev/null 2>&1; then
               echo "$name@$version already exists at $registry; skipping"
               return
             fi
             if [[ -n "$npmrc" ]]; then
-              NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$npmrc" npm publish "$directory" --access public --tag "$tag" --registry "$registry"
+              NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$npmrc" npm publish "$directory" --access public --registry "$registry"
             else
-              npm publish "$directory" --access public --tag "$tag" --registry "$registry"
+              npm publish "$directory" --access public --registry "$registry"
             fi
           }
 
