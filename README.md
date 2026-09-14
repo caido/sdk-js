@@ -32,9 +32,7 @@ This is the monorepo for all the JS SDK and related tooling of Caido. It contain
 
 ## Release automation
 
-SDK releases are not published from branch pushes. The three product-coupled packages are versioned together on `release/vX.Y.Z` branches and published from immutable `vX.Y.Z[-rc.N]` tags. Independently versioned packages are released through the two-input `release-independent.yml` dispatcher, which creates the selected package's `<package>-vX.Y.Z` tag and GitHub Release before publishing only that package. Pre-cutover product lines have a separate explicit legacy `main` source mode; development beta publication is disabled.
-
-See [`.github/release-contract.md`](.github/release-contract.md) for the two release lanes, registry routing, authentication, retry behavior, and npm tag selection.
+SDK releases are not published from branch pushes. The three product-coupled packages (sdk-backend, sdk-frontend, sdk-workflow) are versioned together on `release/vX.Y.Z` branches and published from immutable `vX.Y.Z[-rc.N]` tags. Independently versioned packages are released through the `release-independent.yml` workflow. The workflow creates the selected package's `<package>-vX.Y.Z` tag and GitHub Release before publishing only that package.
 
 ## 💚 Community
 
