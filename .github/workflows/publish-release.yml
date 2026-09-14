@@ -38,6 +38,28 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
+      - name: Verify and checkout release branch
+        env:
+          RELEASE_REF: ${{ inputs.ref }}
+        run: |
+          if [[ ! "$RELEASE_REF" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-rc\.[0-9]+)?$ ]]; then
+            echo "Unsupported coupled SDK release ref: $RELEASE_REF" >&2
+            exit 1
+          fi
+
+          release_branch="release/v${BASH_REMATCH[1]}"
+          tag_sha="$(git rev-parse "refs/tags/$RELEASE_REF^{commit}")"
+          git fetch --no-tags origin \
+            "refs/heads/$release_branch:refs/remotes/origin/$release_branch"
+          branch_sha="$(git rev-parse "refs/remotes/origin/$release_branch^{commit}")"
+          if [[ "$branch_sha" != "$tag_sha" ]]; then
+            echo "Release branch $release_branch is at $branch_sha, expected tagged commit $tag_sha" >&2
+            exit 1
+          fi
+
+          git switch --create "$release_branch" --track "origin/$release_branch"
+          printf 'RELEASE_BRANCH=%s\n' "$release_branch" >> "$GITHUB_ENV"
+
       - name: Select publication lane
         env:
           RELEASE_REF: ${{ inputs.ref }}
@@ -75,7 +97,7 @@ jobs:
               echo "$name@$version already exists on public npm; skipping"
               return
             fi
-            local args=(--filter "$package" publish --access public --tag "$NPM_DIST_TAG")
+            local args=(--filter "$package" publish --access public --tag "$NPM_DIST_TAG" --publish-branch "$RELEASE_BRANCH")
             if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
             pnpm "${args[@]}"
           }
@@ -97,7 +119,7 @@ jobs:
               mv .npmrc.pub .npmrc
             }
             trap restore_npmrc RETURN
-            local args=(--filter "$package" -r publish --tag "$NPM_DIST_TAG" --no-git-checks)
+            local args=(--filter "$package" -r publish --tag "$NPM_DIST_TAG" --publish-branch "$RELEASE_BRANCH")
             if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
             NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" pnpm "${args[@]}"
             trap - RETURN
