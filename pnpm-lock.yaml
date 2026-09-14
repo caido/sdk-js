@@ -11,12 +11,15 @@ importers:
       '@caido/eslint-config':
         specifier: 0.8.0
         version: 0.8.0(@typescript-eslint/parser@8.26.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.6.2))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1)(typescript@5.6.2)
+      '@types/node':
+        specifier: 24.13.3
+        version: 24.13.3
       eslint:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
       knip:
         specifier: 5.82.1
-        version: 5.82.1(@types/node@25.0.10)(typescript@5.6.2)
+        version: 5.82.1(@types/node@24.13.3)(typescript@5.6.2)
       tsdown:
         specifier: 0.20.1
         version: 0.20.1(oxc-resolver@11.17.0)(typescript@5.6.2)
@@ -1631,6 +1634,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/node@24.13.3':
+    resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
   '@types/node@25.0.10':
     resolution: {integrity: sha512-zWW5KPngR/yvakJgGOmZ5vTBemDoSqF3AcV/LrO5u5wTWyEAVVh+IT39G4gtyAkh3CtTZs8aX/yRM82OfzHJRg==}
@@ -3874,6 +3880,9 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
+
   undici@7.22.0:
     resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
     engines: {node: '>=20.18.1'}
@@ -5697,6 +5706,10 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
+  '@types/node@24.13.3':
+    dependencies:
+      undici-types: 7.18.2
+
   '@types/node@25.0.10':
     dependencies:
       undici-types: 7.16.0
@@ -7302,10 +7315,10 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  knip@5.82.1(@types/node@25.0.10)(typescript@5.6.2):
+  knip@5.82.1(@types/node@24.13.3)(typescript@5.6.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
-      '@types/node': 25.0.10
+      '@types/node': 24.13.3
       fast-glob: 3.3.3
       formatly: 0.3.0
       jiti: 2.6.1
@@ -8279,6 +8292,8 @@ snapshots:
       quansync: 1.0.0
 
   undici-types@7.16.0: {}
+
+  undici-types@7.18.2: {}
 
   undici@7.22.0: {}
 

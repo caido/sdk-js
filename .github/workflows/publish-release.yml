@@ -86,7 +86,7 @@ jobs:
             local name version
             name="$(node -p "require('./$directory/package.json').name")"
             version="$(node -p "require('./$directory/package.json').version")"
-            if [[ "${{ inputs.dry-run }}" != "true" ]] && NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" npm view "$name@$version" version --registry https://npm.pkg.github.com >/dev/null 2>&1; then
+            if [[ "${{ inputs.dry-run }}" != "true" ]] && NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$GITHUB_WORKSPACE/.npmrc.github" npm view "$name@$version" version --registry https://npm.pkg.github.com >/dev/null 2>&1; then
               echo "$name@$version already exists on GitHub Packages; skipping"
               return
             fi

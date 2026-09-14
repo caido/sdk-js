@@ -51,16 +51,7 @@ jobs:
       - name: Set coupled package versions
         env:
           RELEASE_VERSION: ${{ inputs.version }}
-        run: |
-          node - <<'NODE'
-          const fs = require('node:fs');
-          for (const packageName of ['sdk-backend', 'sdk-frontend', 'sdk-workflow']) {
-            const path = `packages/${packageName}/package.json`;
-            const manifest = JSON.parse(fs.readFileSync(path, 'utf8'));
-            manifest.version = process.env.RELEASE_VERSION;
-            fs.writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
-          }
-          NODE
+        run: node scripts/bump.ts
 
       - name: Commit and push
         env:

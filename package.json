@@ -1,6 +1,7 @@
 {
   "name": "@caido/sdk-js",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "eslint ./packages/**/src --fix",
     "typecheck": "pnpm -r typecheck",
@@ -13,6 +14,7 @@
   },
   "devDependencies": {
     "@caido/eslint-config": "0.8.0",
+    "@types/node": "24.13.3",
     "eslint": "9.39.2",
     "knip": "5.82.1",
     "tsdown": "0.20.1",
