@@ -1,17 +1,19 @@
 name: Publish coupled SDK release
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       ref:
         description: Immutable vX.Y.Z or vX.Y.Z-rc.N tag
         required: true
         type: string
       dry-run:
-        description: Build and validate packages without publishing
+        description: Build packages without publishing
         required: true
-        default: true
         type: boolean
+    secrets:
+      GITHUB_PACKAGES_TOKEN:
+        required: true
 
 permissions:
   contents: read
@@ -30,25 +32,22 @@ jobs:
       - name: Checkout immutable release tag
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
+          repository: caido/sdk-js
           ref: ${{ inputs.ref }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
 
-      - name: Verify immutable checkout
+      - name: Select publication lane
         env:
           RELEASE_REF: ${{ inputs.ref }}
         run: |
-          case "$RELEASE_REF" in
-            v*-rc.*) internal=true ;;
-            v*) internal=false ;;
-            *) echo "Invalid release ref: $RELEASE_REF" >&2; exit 1 ;;
-          esac
-          tag_sha="$(git rev-list -n 1 "refs/tags/$RELEASE_REF")"
-          test -n "$tag_sha"
-          test "$(git rev-parse HEAD)" = "$tag_sha"
-          test -z "$(git branch --show-current)"
-          printf 'INTERNAL_RELEASE=%s\n' "$internal" >> "$GITHUB_ENV"
+          if [[ "$RELEASE_REF" == *-rc.* ]]; then
+            tag=beta
+          else
+            tag=latest
+          fi
+          printf 'NPM_DIST_TAG=%s\n' "$tag" >> "$GITHUB_ENV"
 
       - name: Install Mise
         uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
@@ -64,9 +63,9 @@ jobs:
 
       - name: Publish coupled packages
         env:
-          GITHUB_PACKAGES_TOKEN: ${{ github.token }}
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-        run: | # zizmor: ignore[use-trusted-publishing] RC publication targets GitHub Packages
+        run: | # zizmor: ignore[use-trusted-publishing] GitHub Packages mirror requires token authentication
           publish_public() {
             local package="$1" directory="packages/$1"
             local name version
@@ -76,7 +75,7 @@ jobs:
               echo "$name@$version already exists on public npm; skipping"
               return
             fi
-            local args=(--filter "$package" publish --access public --tag latest)
+            local args=(--filter "$package" publish --access public --tag "$NPM_DIST_TAG")
             if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
             pnpm "${args[@]}"
           }
@@ -98,20 +97,14 @@ jobs:
               mv .npmrc.pub .npmrc
             }
             trap restore_npmrc RETURN
-            local args=(--filter "$package" -r publish --tag beta --no-git-checks)
+            local args=(--filter "$package" -r publish --tag "$NPM_DIST_TAG" --no-git-checks)
             if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
             NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" pnpm "${args[@]}"
             trap - RETURN
             restore_npmrc
           }
 
-          if [[ "$INTERNAL_RELEASE" == "true" ]]; then
-            publish_internal sdk-backend
-            publish_internal sdk-frontend
-            publish_internal sdk-workflow
-          else
-            publish_public sdk-backend
-            publish_public sdk-frontend
-            publish_public sdk-workflow
-            publish_internal sdk-workflow
-          fi
+          publish_public sdk-backend
+          publish_public sdk-frontend
+          publish_public sdk-workflow
+          publish_internal sdk-workflow
