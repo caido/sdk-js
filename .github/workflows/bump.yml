@@ -51,7 +51,19 @@ jobs:
       - name: Set coupled package versions
         env:
           RELEASE_VERSION: ${{ inputs.version }}
-        run: node scripts/bump.ts
+        run: |
+          if [[ -z "$RELEASE_VERSION" ]]; then
+            echo "RELEASE_VERSION must be set" >&2
+            exit 1
+          fi
+
+          for package in sdk-backend sdk-frontend sdk-workflow; do
+            npm version "$RELEASE_VERSION" \
+              --prefix "packages/$package" \
+              --allow-same-version \
+              --no-git-tag-version \
+              --ignore-scripts
+          done
 
       - name: Commit and push
         env:
