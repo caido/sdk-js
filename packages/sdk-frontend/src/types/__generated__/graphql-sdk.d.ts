@@ -3794,6 +3794,7 @@ export type RequestSourceInput = {
 export type Response = {
     alteration: Alteration;
     createdAt: Scalars["Timestamp"]["output"];
+    downloadUri: Scalars["Uri"]["output"];
     edited: Scalars["Boolean"]["output"];
     edits: Array<Response>;
     id: Scalars["ID"]["output"];
@@ -6518,6 +6519,7 @@ export type AutomateEntryRequestMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -6572,6 +6574,7 @@ export type AutomateEntryRequestEdgeMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -7075,6 +7078,7 @@ export type AutomateEntryRequestsQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -7222,6 +7226,7 @@ export type AutomateEntryRequestsByOffsetQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -8149,6 +8154,7 @@ export type CreatedAutomateEntryRequestSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -10461,6 +10467,7 @@ export type FindingMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -10506,6 +10513,7 @@ export type FindingEdgeMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -10551,6 +10559,7 @@ export type FindingFullFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -10599,6 +10608,7 @@ export type GetFindingQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -10654,6 +10664,7 @@ export type GetFindingsBeforeQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -10718,6 +10729,7 @@ export type GetFindingsAfterQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -10782,6 +10794,7 @@ export type GetFindingsByOffsetQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -10861,6 +10874,7 @@ export type CreatedFindingSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -10925,6 +10939,7 @@ export type UpdatedFindingsSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -10979,6 +10994,7 @@ export type CreateFindingMutation = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -11046,6 +11062,7 @@ export type UpdateFindingMutation = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -11127,6 +11144,7 @@ export type InterceptEntryFullFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -11161,6 +11179,7 @@ export type InterceptEntryFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -11201,6 +11220,7 @@ export type InterceptEntryMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -11243,6 +11263,7 @@ export type InterceptEntryEdgeMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -11303,6 +11324,7 @@ export type InterceptEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -11365,6 +11387,7 @@ export type InterceptEntriesByOffsetQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -11419,6 +11442,7 @@ export type InterceptEntryQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -11453,6 +11477,7 @@ export type InterceptEntryQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -11577,6 +11602,7 @@ export type CreatedInterceptEntrySubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -11630,6 +11656,7 @@ export type UpdatedInterceptEntrySubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -11923,6 +11950,7 @@ export type InterceptRequestMessageMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -11979,6 +12007,7 @@ export type InterceptRequestMessageFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -11998,6 +12027,7 @@ export type InterceptRequestMessageFullFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -12016,6 +12046,7 @@ export type InterceptResponseMessageMetaFragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     };
     request: {
         __typename: "Request";
@@ -12047,6 +12078,7 @@ export type InterceptResponseMessageMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -12108,6 +12140,7 @@ type InterceptMessageMeta_InterceptRequestMessage_Fragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -12126,6 +12159,7 @@ type InterceptMessageMeta_InterceptResponseMessage_Fragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     };
     request: {
         __typename: "Request";
@@ -12157,6 +12191,7 @@ type InterceptMessageMeta_InterceptResponseMessage_Fragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -12346,6 +12381,7 @@ export type InterceptRequestMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12363,6 +12399,7 @@ export type InterceptRequestMessagesQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             };
             request: {
                 __typename: "Request";
@@ -12394,6 +12431,7 @@ export type InterceptRequestMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12461,6 +12499,7 @@ export type InterceptResponseMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12478,6 +12517,7 @@ export type InterceptResponseMessagesQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             };
             request: {
                 __typename: "Request";
@@ -12509,6 +12549,7 @@ export type InterceptResponseMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12576,6 +12617,7 @@ export type InterceptStreamWsMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12593,6 +12635,7 @@ export type InterceptStreamWsMessagesQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             };
             request: {
                 __typename: "Request";
@@ -12624,6 +12667,7 @@ export type InterceptStreamWsMessagesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -12740,6 +12784,7 @@ export type CreatedInterceptMessageSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -12757,6 +12802,7 @@ export type CreatedInterceptMessageSubscription = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 };
                 request: {
                     __typename: "Request";
@@ -12788,6 +12834,7 @@ export type CreatedInterceptMessageSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -21362,6 +21409,7 @@ export type ReplayEntryHttpMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -21438,6 +21486,7 @@ export type ReplayEntryHttpFullFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -21472,6 +21521,7 @@ export type ReplayEntryHttpFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -21678,6 +21728,7 @@ export type ReplayEntryWsMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -21854,6 +21905,7 @@ export type ReplayEntryHttpOnePipelineMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -21988,6 +22040,7 @@ export type ReplayEntryHttpOnePipelineMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -22070,6 +22123,7 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -22104,6 +22158,7 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -22240,6 +22295,7 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -22274,6 +22330,7 @@ export type ReplayEntryHttpOnePipelineFullFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -22510,6 +22567,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -22684,6 +22742,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -22818,6 +22877,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -22957,6 +23017,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -23112,6 +23173,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -23286,6 +23348,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -23420,6 +23483,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -23559,6 +23623,7 @@ export type ReplaySessionHttpOnePipelineMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -23730,6 +23795,7 @@ export type ReplaySessionMetaHttpFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -23904,6 +23970,7 @@ export type ReplaySessionMetaHttpFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -24038,6 +24105,7 @@ export type ReplaySessionMetaHttpFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -24177,6 +24245,7 @@ export type ReplaySessionMetaHttpFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -24332,6 +24401,7 @@ export type ReplaySessionMetaHttpFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -24506,6 +24576,7 @@ export type ReplaySessionMetaHttpFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -24640,6 +24711,7 @@ export type ReplaySessionMetaHttpFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -24779,6 +24851,7 @@ export type ReplaySessionMetaHttpFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -24941,6 +25014,7 @@ export type ReplaySessionMetaWsFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -25115,6 +25189,7 @@ export type ReplaySessionMetaWsFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -25249,6 +25324,7 @@ export type ReplaySessionMetaWsFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -25388,6 +25464,7 @@ export type ReplaySessionMetaWsFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -25543,6 +25620,7 @@ export type ReplaySessionMetaWsFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -25717,6 +25795,7 @@ export type ReplaySessionMetaWsFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -25851,6 +25930,7 @@ export type ReplaySessionMetaWsFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -25990,6 +26070,7 @@ export type ReplaySessionMetaWsFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -26209,6 +26290,7 @@ export type ReplayEntryWebsocketMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -26325,6 +26407,7 @@ export type ReplayEntryWebsocketFullFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -26359,6 +26442,7 @@ export type ReplayEntryWebsocketFullFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -26570,6 +26654,7 @@ type ReplayEntryMeta_ReplayEntryHttp_Fragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -26745,6 +26830,7 @@ type ReplayEntryMeta_ReplayEntryHttpOnePipeline_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -26879,6 +26965,7 @@ type ReplayEntryMeta_ReplayEntryHttpOnePipeline_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27019,6 +27106,7 @@ type ReplayEntryMeta_ReplayEntryWs_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27113,6 +27201,7 @@ type ReplayEntryFull_ReplayEntryHttp_Fragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -27147,6 +27236,7 @@ type ReplayEntryFull_ReplayEntryHttp_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27288,6 +27378,7 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27322,6 +27413,7 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -27458,6 +27550,7 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27492,6 +27585,7 @@ type ReplayEntryFull_ReplayEntryHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -27688,6 +27782,7 @@ type ReplayEntryFull_ReplayEntryWs_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -27722,6 +27817,7 @@ type ReplayEntryFull_ReplayEntryWs_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -27939,6 +28035,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -28113,6 +28210,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -28247,6 +28345,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -28386,6 +28485,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -28541,6 +28641,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -28715,6 +28816,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -28849,6 +28951,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -28988,6 +29091,7 @@ type ReplaySessionMeta_ReplaySessionHttp_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -29150,6 +29254,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -29324,6 +29429,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -29458,6 +29564,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -29597,6 +29704,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -29752,6 +29860,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -29926,6 +30035,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -30060,6 +30170,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -30199,6 +30310,7 @@ type ReplaySessionMeta_ReplaySessionHttpOnePipeline_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -30370,6 +30482,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -30544,6 +30657,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -30678,6 +30792,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -30817,6 +30932,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -30972,6 +31088,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -31146,6 +31263,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -31280,6 +31398,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -31419,6 +31538,7 @@ type ReplaySessionMeta_ReplaySessionWs_Fragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -31583,6 +31703,7 @@ export type ReplaySessionCollectionMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -31757,6 +31878,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -31891,6 +32013,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -32030,6 +32153,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -32185,6 +32309,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -32359,6 +32484,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -32493,6 +32619,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -32632,6 +32759,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -32793,6 +32921,7 @@ export type ReplaySessionCollectionMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -32967,6 +33096,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -33101,6 +33231,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -33240,6 +33371,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -33395,6 +33527,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -33569,6 +33702,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -33703,6 +33837,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -33842,6 +33977,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -34012,6 +34148,7 @@ export type ReplaySessionCollectionMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -34186,6 +34323,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -34320,6 +34458,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -34459,6 +34598,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -34614,6 +34754,7 @@ export type ReplaySessionCollectionMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -34788,6 +34929,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -34922,6 +35064,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -35061,6 +35204,7 @@ export type ReplaySessionCollectionMetaFragment = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -35162,6 +35306,7 @@ export type ReplayTaskMetaFragment = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -35196,6 +35341,7 @@ export type ReplayTaskMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -35336,6 +35482,7 @@ export type ReplayTaskMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -35370,6 +35517,7 @@ export type ReplayTaskMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -35506,6 +35654,7 @@ export type ReplayTaskMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -35540,6 +35689,7 @@ export type ReplayTaskMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -35735,6 +35885,7 @@ export type ReplayTaskMetaFragment = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -35769,6 +35920,7 @@ export type ReplayTaskMetaFragment = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -36182,6 +36334,7 @@ export type ReplayEntryQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -36216,6 +36369,7 @@ export type ReplayEntryQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -36356,6 +36510,7 @@ export type ReplayEntryQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -36390,6 +36545,7 @@ export type ReplayEntryQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -36526,6 +36682,7 @@ export type ReplayEntryQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -36560,6 +36717,7 @@ export type ReplayEntryQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -36755,6 +36913,7 @@ export type ReplayEntryQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -36789,6 +36948,7 @@ export type ReplayEntryQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -37010,6 +37170,7 @@ export type ActiveReplayEntryBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -37184,6 +37345,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -37318,6 +37480,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -37457,6 +37620,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -37612,6 +37776,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -37786,6 +37951,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -37920,6 +38086,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -38059,6 +38226,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -38220,6 +38388,7 @@ export type ActiveReplayEntryBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -38394,6 +38563,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -38528,6 +38698,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -38667,6 +38838,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -38822,6 +38994,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -38996,6 +39169,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -39130,6 +39304,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -39269,6 +39444,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -39439,6 +39615,7 @@ export type ActiveReplayEntryBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -39613,6 +39790,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -39747,6 +39925,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -39886,6 +40065,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -40041,6 +40221,7 @@ export type ActiveReplayEntryBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -40215,6 +40396,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -40349,6 +40531,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -40488,6 +40671,7 @@ export type ActiveReplayEntryBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -40654,6 +40838,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -40828,6 +41013,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -40962,6 +41148,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -41101,6 +41288,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -41265,6 +41453,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -41439,6 +41628,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -41573,6 +41763,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -41712,6 +41903,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -41864,6 +42056,7 @@ export type ReplayEntriesBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -42038,6 +42231,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -42172,6 +42366,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -42311,6 +42506,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -42477,6 +42673,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -42651,6 +42848,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -42785,6 +42983,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -42924,6 +43123,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -43088,6 +43288,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -43262,6 +43463,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -43396,6 +43598,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -43535,6 +43738,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -43687,6 +43891,7 @@ export type ReplayEntriesBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -43861,6 +44066,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -43995,6 +44201,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -44134,6 +44341,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -44309,6 +44517,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -44483,6 +44692,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -44617,6 +44827,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -44756,6 +44967,7 @@ export type ReplayEntriesBySessionQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -44920,6 +45132,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -45094,6 +45307,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -45228,6 +45442,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -45367,6 +45582,7 @@ export type ReplayEntriesBySessionQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -45519,6 +45735,7 @@ export type ReplayEntriesBySessionQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -45693,6 +45910,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -45827,6 +46045,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -45966,6 +46185,7 @@ export type ReplayEntriesBySessionQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -46127,6 +46347,7 @@ export type ReplaySessionEntriesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -46301,6 +46522,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -46435,6 +46657,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -46574,6 +46797,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -46728,6 +46952,7 @@ export type ReplaySessionEntriesQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -46902,6 +47127,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -47036,6 +47262,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -47175,6 +47402,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -47341,6 +47569,7 @@ export type ReplaySessionEntriesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -47515,6 +47744,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -47649,6 +47879,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -47788,6 +48019,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -47942,6 +48174,7 @@ export type ReplaySessionEntriesQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -48116,6 +48349,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -48250,6 +48484,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -48389,6 +48624,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -48555,6 +48791,7 @@ export type ReplaySessionEntriesQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -48729,6 +48966,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -48863,6 +49101,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -49002,6 +49241,7 @@ export type ReplaySessionEntriesQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -49156,6 +49396,7 @@ export type ReplaySessionEntriesQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -49330,6 +49571,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -49464,6 +49706,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -49603,6 +49846,7 @@ export type ReplaySessionEntriesQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -49786,6 +50030,7 @@ export type ReplaySessionCollectionsQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -49960,6 +50205,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -50094,6 +50340,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -50233,6 +50480,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -50388,6 +50636,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -50562,6 +50811,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -50696,6 +50946,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -50835,6 +51086,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -50996,6 +51248,7 @@ export type ReplaySessionCollectionsQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -51170,6 +51423,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -51304,6 +51558,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -51443,6 +51698,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -51598,6 +51854,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -51772,6 +52029,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -51906,6 +52164,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -52045,6 +52304,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -52215,6 +52475,7 @@ export type ReplaySessionCollectionsQuery = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -52389,6 +52650,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -52523,6 +52785,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -52662,6 +52925,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -52817,6 +53081,7 @@ export type ReplaySessionCollectionsQuery = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -52991,6 +53256,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -53125,6 +53391,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -53264,6 +53531,7 @@ export type ReplaySessionCollectionsQuery = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -53369,6 +53637,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -53403,6 +53672,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -53543,6 +53813,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -53577,6 +53848,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -53713,6 +53985,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -53747,6 +54020,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -53942,6 +54216,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -53976,6 +54251,7 @@ export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -54138,6 +54414,7 @@ export type SetActiveReplayPipelineEntryHttpEntryMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -54172,6 +54449,7 @@ export type SetActiveReplayPipelineEntryHttpEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -54415,6 +54693,7 @@ export type ClearReplayEntryDraftMutation = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -54449,6 +54728,7 @@ export type ClearReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -54683,6 +54963,7 @@ export type ClearReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -54817,6 +55098,7 @@ export type ClearReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -54963,6 +55245,7 @@ export type ClearReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55048,6 +55331,7 @@ export type UpdateReplayEntryDraftMutation = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -55082,6 +55366,7 @@ export type UpdateReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55316,6 +55601,7 @@ export type UpdateReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55450,6 +55736,7 @@ export type UpdateReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55596,6 +55883,7 @@ export type UpdateReplayEntryDraftMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55744,6 +56032,7 @@ export type UpdateReplaySessionSettingsMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -55918,6 +56207,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -56052,6 +56342,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -56191,6 +56482,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -56346,6 +56638,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -56520,6 +56813,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -56654,6 +56948,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -56793,6 +57088,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -56954,6 +57250,7 @@ export type UpdateReplaySessionSettingsMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -57128,6 +57425,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -57262,6 +57560,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -57401,6 +57700,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -57556,6 +57856,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -57730,6 +58031,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -57864,6 +58166,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -58003,6 +58306,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -58173,6 +58477,7 @@ export type UpdateReplaySessionSettingsMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -58347,6 +58652,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -58481,6 +58787,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -58620,6 +58927,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -58775,6 +59083,7 @@ export type UpdateReplaySessionSettingsMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -58949,6 +59258,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59083,6 +59393,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59222,6 +59533,7 @@ export type UpdateReplaySessionSettingsMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59393,6 +59705,7 @@ export type RenameReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -59567,6 +59880,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59701,6 +60015,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59840,6 +60155,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -59995,6 +60311,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -60169,6 +60486,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -60303,6 +60621,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -60442,6 +60761,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -60603,6 +60923,7 @@ export type RenameReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -60777,6 +61098,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -60911,6 +61233,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -61050,6 +61373,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -61205,6 +61529,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -61379,6 +61704,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -61513,6 +61839,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -61652,6 +61979,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -61822,6 +62150,7 @@ export type RenameReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -61996,6 +62325,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -62130,6 +62460,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -62269,6 +62600,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -62424,6 +62756,7 @@ export type RenameReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -62598,6 +62931,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -62732,6 +63066,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -62871,6 +63206,7 @@ export type RenameReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -63042,6 +63378,7 @@ export type CreateReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -63216,6 +63553,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -63350,6 +63688,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -63489,6 +63828,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -63644,6 +63984,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -63818,6 +64159,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -63952,6 +64294,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -64091,6 +64434,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -64252,6 +64596,7 @@ export type CreateReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -64426,6 +64771,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -64560,6 +64906,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -64699,6 +65046,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -64854,6 +65202,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -65028,6 +65377,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -65162,6 +65512,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -65301,6 +65652,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -65471,6 +65823,7 @@ export type CreateReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -65645,6 +65998,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -65779,6 +66133,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -65918,6 +66273,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -66073,6 +66429,7 @@ export type CreateReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -66247,6 +66604,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -66381,6 +66739,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -66520,6 +66879,7 @@ export type CreateReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -66695,6 +67055,7 @@ export type RenameReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -66869,6 +67230,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -67003,6 +67365,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -67142,6 +67505,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -67297,6 +67661,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -67471,6 +67836,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -67605,6 +67971,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -67744,6 +68111,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -67905,6 +68273,7 @@ export type RenameReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -68079,6 +68448,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -68213,6 +68583,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -68352,6 +68723,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -68507,6 +68879,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -68681,6 +69054,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -68815,6 +69189,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -68954,6 +69329,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -69124,6 +69500,7 @@ export type RenameReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -69298,6 +69675,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -69432,6 +69810,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -69571,6 +69950,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -69726,6 +70106,7 @@ export type RenameReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -69900,6 +70281,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -70034,6 +70416,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -70173,6 +70556,7 @@ export type RenameReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -70339,6 +70723,7 @@ export type SetActiveReplaySessionEntryMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -70513,6 +70898,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -70647,6 +71033,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -70786,6 +71173,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -70941,6 +71329,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -71115,6 +71504,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -71249,6 +71639,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -71388,6 +71779,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -71549,6 +71941,7 @@ export type SetActiveReplaySessionEntryMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -71723,6 +72116,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -71857,6 +72251,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -71996,6 +72391,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -72151,6 +72547,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -72325,6 +72722,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -72459,6 +72857,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -72598,6 +72997,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -72768,6 +73168,7 @@ export type SetActiveReplaySessionEntryMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -72942,6 +73343,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -73076,6 +73478,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -73215,6 +73618,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -73370,6 +73774,7 @@ export type SetActiveReplaySessionEntryMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -73544,6 +73949,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -73678,6 +74084,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -73817,6 +74224,7 @@ export type SetActiveReplaySessionEntryMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -74000,6 +74408,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -74174,6 +74583,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -74308,6 +74718,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -74447,6 +74858,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -74602,6 +75014,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -74776,6 +75189,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -74910,6 +75324,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -75049,6 +75464,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -75210,6 +75626,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -75384,6 +75801,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -75518,6 +75936,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -75657,6 +76076,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -75812,6 +76232,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -75986,6 +76407,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -76120,6 +76542,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -76259,6 +76682,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -76429,6 +76853,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -76603,6 +77028,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -76737,6 +77163,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -76876,6 +77303,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -77031,6 +77459,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -77205,6 +77634,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -77339,6 +77769,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -77478,6 +77909,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -77632,6 +78064,7 @@ export type CreateReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -77806,6 +78239,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -77940,6 +78374,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -78079,6 +78514,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -78231,6 +78667,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -78405,6 +78842,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -78539,6 +78977,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -78678,6 +79117,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -78849,6 +79289,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -79023,6 +79464,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -79157,6 +79599,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -79296,6 +79739,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -79451,6 +79895,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -79625,6 +80070,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -79759,6 +80205,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -79898,6 +80345,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -80059,6 +80507,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -80233,6 +80682,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -80367,6 +80817,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -80506,6 +80957,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -80661,6 +81113,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -80835,6 +81288,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -80969,6 +81423,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -81108,6 +81563,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -81278,6 +81734,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -81452,6 +81909,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -81586,6 +82044,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -81725,6 +82184,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -81880,6 +82340,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -82054,6 +82515,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -82188,6 +82650,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -82327,6 +82790,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -82481,6 +82945,7 @@ export type CreateReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -82655,6 +83120,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -82789,6 +83255,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -82928,6 +83395,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -83080,6 +83548,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -83254,6 +83723,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -83388,6 +83858,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -83527,6 +83998,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -83707,6 +84179,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -83881,6 +84354,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -84015,6 +84489,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -84154,6 +84629,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -84309,6 +84785,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -84483,6 +84960,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -84617,6 +85095,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -84756,6 +85235,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -84917,6 +85397,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -85091,6 +85572,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -85225,6 +85707,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -85364,6 +85847,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -85519,6 +86003,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -85693,6 +86178,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -85827,6 +86313,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -85966,6 +86453,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -86136,6 +86624,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -86310,6 +86799,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -86444,6 +86934,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -86583,6 +87074,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -86738,6 +87230,7 @@ export type CreateReplaySessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -86912,6 +87405,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -87046,6 +87540,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -87185,6 +87680,7 @@ export type CreateReplaySessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -87339,6 +87835,7 @@ export type CreateReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -87513,6 +88010,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -87647,6 +88145,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -87786,6 +88285,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -87938,6 +88438,7 @@ export type CreateReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -88112,6 +88613,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -88246,6 +88748,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -88385,6 +88888,7 @@ export type CreateReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -88572,6 +89076,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -88746,6 +89251,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -88880,6 +89386,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -89019,6 +89526,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -89174,6 +89682,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -89348,6 +89857,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -89482,6 +89992,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -89621,6 +90132,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -89782,6 +90294,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -89956,6 +90469,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -90090,6 +90604,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -90229,6 +90744,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -90384,6 +90900,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -90558,6 +91075,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -90692,6 +91210,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -90831,6 +91350,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -91001,6 +91521,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -91175,6 +91696,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -91309,6 +91831,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -91448,6 +91971,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -91603,6 +92127,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -91777,6 +92302,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -91911,6 +92437,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -92050,6 +92577,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -92204,6 +92732,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -92378,6 +92907,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -92512,6 +93042,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -92651,6 +93182,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -92803,6 +93335,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -92977,6 +93510,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -93111,6 +93645,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -93250,6 +93785,7 @@ export type CreateReplayPipelineHttpOneSessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -93441,6 +93977,7 @@ export type MoveReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -93615,6 +94152,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -93749,6 +94287,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -93888,6 +94427,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -94043,6 +94583,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -94217,6 +94758,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -94351,6 +94893,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -94490,6 +95033,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -94651,6 +95195,7 @@ export type MoveReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -94825,6 +95370,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -94959,6 +95505,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -95098,6 +95645,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -95253,6 +95801,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -95427,6 +95976,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -95561,6 +96111,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -95700,6 +96251,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -95870,6 +96422,7 @@ export type MoveReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -96044,6 +96597,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -96178,6 +96732,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -96317,6 +96872,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -96472,6 +97028,7 @@ export type MoveReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -96646,6 +97203,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -96780,6 +97338,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -96919,6 +97478,7 @@ export type MoveReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -97026,6 +97586,7 @@ export type StartReplayTaskMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -97060,6 +97621,7 @@ export type StartReplayTaskMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -97200,6 +97762,7 @@ export type StartReplayTaskMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -97234,6 +97797,7 @@ export type StartReplayTaskMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -97370,6 +97934,7 @@ export type StartReplayTaskMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -97404,6 +97969,7 @@ export type StartReplayTaskMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -97599,6 +98165,7 @@ export type StartReplayTaskMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -97633,6 +98200,7 @@ export type StartReplayTaskMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -97878,6 +98446,7 @@ export type RankReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -98052,6 +98621,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -98186,6 +98756,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -98325,6 +98896,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -98480,6 +99052,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -98654,6 +99227,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -98788,6 +99362,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -98927,6 +99502,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -99088,6 +99664,7 @@ export type RankReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -99262,6 +99839,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -99396,6 +99974,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -99535,6 +100114,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -99690,6 +100270,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -99864,6 +100445,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -99998,6 +100580,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -100137,6 +100720,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -100307,6 +100891,7 @@ export type RankReplaySessionMutation = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -100481,6 +101066,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -100615,6 +101201,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -100754,6 +101341,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -100909,6 +101497,7 @@ export type RankReplaySessionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -101083,6 +101672,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -101217,6 +101807,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -101356,6 +101947,7 @@ export type RankReplaySessionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -101539,6 +102131,7 @@ export type RankReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -101713,6 +102306,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -101847,6 +102441,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -101986,6 +102581,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -102141,6 +102737,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -102315,6 +102912,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -102449,6 +103047,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -102588,6 +103187,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -102749,6 +103349,7 @@ export type RankReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -102923,6 +103524,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -103057,6 +103659,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -103196,6 +103799,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -103351,6 +103955,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -103525,6 +104130,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -103659,6 +104265,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -103798,6 +104405,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -103968,6 +104576,7 @@ export type RankReplaySessionCollectionMutation = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -104142,6 +104751,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -104276,6 +104886,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -104415,6 +105026,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -104570,6 +105182,7 @@ export type RankReplaySessionCollectionMutation = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -104744,6 +105357,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -104878,6 +105492,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -105017,6 +105632,7 @@ export type RankReplaySessionCollectionMutation = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -105196,6 +105812,7 @@ export type CreatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -105370,6 +105987,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -105504,6 +106122,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -105643,6 +106262,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -105798,6 +106418,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -105972,6 +106593,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -106106,6 +106728,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -106245,6 +106868,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -106406,6 +107030,7 @@ export type CreatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -106580,6 +107205,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -106714,6 +107340,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -106853,6 +107480,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -107008,6 +107636,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -107182,6 +107811,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -107316,6 +107946,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -107455,6 +108086,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -107625,6 +108257,7 @@ export type CreatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -107799,6 +108432,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -107933,6 +108567,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -108072,6 +108707,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -108227,6 +108863,7 @@ export type CreatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -108401,6 +109038,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -108535,6 +109173,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -108674,6 +109313,7 @@ export type CreatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -108842,6 +109482,7 @@ export type UpdatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -109016,6 +109657,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -109150,6 +109792,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -109289,6 +109932,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -109444,6 +110088,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -109618,6 +110263,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -109752,6 +110398,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -109891,6 +110538,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -110052,6 +110700,7 @@ export type UpdatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -110226,6 +110875,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -110360,6 +111010,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -110499,6 +111150,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -110654,6 +111306,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -110828,6 +111481,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -110962,6 +111616,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -111101,6 +111756,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -111271,6 +111927,7 @@ export type UpdatedReplaySessionSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -111445,6 +112102,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -111579,6 +112237,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -111718,6 +112377,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -111873,6 +112533,7 @@ export type UpdatedReplaySessionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -112047,6 +112708,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -112181,6 +112843,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -112320,6 +112983,7 @@ export type UpdatedReplaySessionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -112500,6 +113164,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -112674,6 +113339,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -112808,6 +113474,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -112947,6 +113614,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -113102,6 +113770,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -113276,6 +113945,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -113410,6 +114080,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -113549,6 +114220,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -113710,6 +114382,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -113884,6 +114557,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -114018,6 +114692,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -114157,6 +114832,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -114312,6 +114988,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -114486,6 +115163,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -114620,6 +115298,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -114759,6 +115438,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -114929,6 +115609,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -115103,6 +115784,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -115237,6 +115919,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -115376,6 +116059,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -115531,6 +116215,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -115705,6 +116390,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -115839,6 +116525,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -115978,6 +116665,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -116151,6 +116839,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -116325,6 +117014,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -116459,6 +117149,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -116598,6 +117289,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -116753,6 +117445,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -116927,6 +117620,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -117061,6 +117755,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -117200,6 +117895,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -117361,6 +118057,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -117535,6 +118232,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -117669,6 +118367,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -117808,6 +118507,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -117963,6 +118663,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -118137,6 +118838,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -118271,6 +118973,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -118410,6 +119113,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -118580,6 +119284,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -118754,6 +119459,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -118888,6 +119594,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -119027,6 +119734,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -119182,6 +119890,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                     createdAt: Date;
                                     alteration: Alteration;
                                     edited: boolean;
+                                    downloadUri: string;
                                 } | undefined | null;
                                 stream?: {
                                     id: string;
@@ -119356,6 +120065,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -119490,6 +120200,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -119629,6 +120340,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                                         createdAt: Date;
                                         alteration: Alteration;
                                         edited: boolean;
+                                        downloadUri: string;
                                     } | undefined | null;
                                     stream?: {
                                         id: string;
@@ -119805,6 +120517,7 @@ export type UpdatedReplayEntryWsSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -119909,6 +120622,7 @@ export type RequestFullFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -119928,6 +120642,7 @@ export type RequestFullFragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     } | undefined | null;
     stream?: {
         id: string;
@@ -119980,6 +120695,7 @@ export type RequestFullFieldsFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -119999,6 +120715,7 @@ export type RequestFullFieldsFragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     } | undefined | null;
     stream?: {
         id: string;
@@ -120034,6 +120751,7 @@ export type RequestMetaFragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     } | undefined | null;
     stream?: {
         id: string;
@@ -120072,6 +120790,7 @@ export type RequestEdgeMetaFragment = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -120128,6 +120847,7 @@ export type RequestsQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -120208,6 +120928,7 @@ export type RequestQuery = {
                 createdAt: Date;
                 alteration: Alteration;
                 edited: boolean;
+                downloadUri: string;
             } | undefined | null;
             stream?: {
                 id: string;
@@ -120227,6 +120948,7 @@ export type RequestQuery = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         } | undefined | null;
         stream?: {
             id: string;
@@ -120287,6 +121009,7 @@ export type RequestsByOffsetQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -120409,6 +121132,7 @@ export type CreatedRequestSubscription = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -120458,6 +121182,7 @@ export type UpdatedRequestSubscription = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -120488,6 +121213,7 @@ export type ResponseMetaFragment = {
     createdAt: Date;
     alteration: Alteration;
     edited: boolean;
+    downloadUri: string;
 };
 export type ResponseFullFragment = {
     __typename: "Response";
@@ -120499,6 +121225,7 @@ export type ResponseFullFragment = {
     createdAt: Date;
     alteration: Alteration;
     edited: boolean;
+    downloadUri: string;
     edits: Array<{
         __typename: "Response";
         id: string;
@@ -120508,6 +121235,7 @@ export type ResponseFullFragment = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
     }>;
 };
 export type ResponseQueryVariables = Exact<{
@@ -120524,6 +121252,7 @@ export type ResponseQuery = {
         createdAt: Date;
         alteration: Alteration;
         edited: boolean;
+        downloadUri: string;
         edits: Array<{
             __typename: "Response";
             id: string;
@@ -120533,6 +121262,7 @@ export type ResponseQuery = {
             createdAt: Date;
             alteration: Alteration;
             edited: boolean;
+            downloadUri: string;
         }>;
     } | undefined | null;
 };
@@ -120909,6 +121639,7 @@ export type SitemapEntryRequestsQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -121005,6 +121736,7 @@ export type CreatedSitemapEntrySubscription = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -121072,6 +121804,7 @@ export type UpdatedSitemapEntrySubscription = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -121724,6 +122457,7 @@ export type GetTasksQuery = {
                     createdAt: Date;
                     alteration: Alteration;
                     edited: boolean;
+                    downloadUri: string;
                 } | undefined | null;
                 stream?: {
                     id: string;
@@ -121758,6 +122492,7 @@ export type GetTasksQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -121898,6 +122633,7 @@ export type GetTasksQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -121932,6 +122668,7 @@ export type GetTasksQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122068,6 +122805,7 @@ export type GetTasksQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -122102,6 +122840,7 @@ export type GetTasksQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122297,6 +123036,7 @@ export type GetTasksQuery = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -122331,6 +123071,7 @@ export type GetTasksQuery = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122548,6 +123289,7 @@ export type StartedTaskSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -122582,6 +123324,7 @@ export type StartedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122722,6 +123465,7 @@ export type StartedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122756,6 +123500,7 @@ export type StartedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -122892,6 +123637,7 @@ export type StartedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -122926,6 +123672,7 @@ export type StartedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -123121,6 +123868,7 @@ export type StartedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -123155,6 +123903,7 @@ export type StartedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -123357,6 +124106,7 @@ export type FinishedTaskSubscription = {
                         createdAt: Date;
                         alteration: Alteration;
                         edited: boolean;
+                        downloadUri: string;
                     } | undefined | null;
                     stream?: {
                         id: string;
@@ -123391,6 +124141,7 @@ export type FinishedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -123531,6 +124282,7 @@ export type FinishedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -123565,6 +124317,7 @@ export type FinishedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -123701,6 +124454,7 @@ export type FinishedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -123735,6 +124489,7 @@ export type FinishedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -123930,6 +124685,7 @@ export type FinishedTaskSubscription = {
                             createdAt: Date;
                             alteration: Alteration;
                             edited: boolean;
+                            downloadUri: string;
                         } | undefined | null;
                         stream?: {
                             id: string;
@@ -123964,6 +124720,7 @@ export type FinishedTaskSubscription = {
                                 createdAt: Date;
                                 alteration: Alteration;
                                 edited: boolean;
+                                downloadUri: string;
                             } | undefined | null;
                             stream?: {
                                 id: string;
@@ -125391,7 +126148,7 @@ export declare const AutomateExtractorsFullFragmentDoc = "\n    fragment automat
 export declare const AutomateSettingsFullFragmentDoc = "\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    ";
 export declare const AutomateEntryFullFragmentDoc = "\n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    ";
 export declare const RequestMetadataFullFragmentDoc = "\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
-export declare const ResponseMetaFragmentDoc = "\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ResponseMetaFragmentDoc = "\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const RequestMetaFragmentDoc = "\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    ";
 export declare const AutomateEntryRequestPayloadFullFragmentDoc = "\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    ";
 export declare const AutomateEntryRequestExtractFullFragmentDoc = "\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
@@ -125613,8 +126370,8 @@ export declare const LogoutDocument = "\n    mutation logout {\n  logout {\n    
 export declare const LoginAsGuestDocument = "\n    mutation loginAsGuest {\n  loginAsGuest {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedAuthenticationTokenDocument = "\n    subscription createdAuthenticationToken($requestId: ID!) {\n  createdAuthenticationToken(requestId: $requestId) {\n    token {\n      ...authenticationTokenFull\n    }\n    error {\n      ... on AuthenticationUserError {\n        ...authenticationUserErrorFull\n      }\n      ... on InternalUserError {\n        ...internalUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment authenticationTokenFull on AuthenticationToken {\n  __typename\n  accessToken\n  expiresAt\n  refreshToken\n  scopes\n}\n    \n\n    fragment authenticationUserErrorFull on AuthenticationUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const AutomateEntryDocument = "\n    query automateEntry($id: ID!) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    ";
-export declare const AutomateEntryRequestsDocument = "\n    query automateEntryRequests($id: ID!, $after: String, $first: Int, $before: String, $last: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(\n      after: $after\n      before: $before\n      first: $first\n      last: $last\n      order: $order\n      filter: $filter\n    ) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
-export declare const AutomateEntryRequestsByOffsetDocument = "\n    query automateEntryRequestsByOffset($id: ID!, $limit: Int, $offset: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requestsByOffset(limit: $limit, offset: $offset, order: $order, filter: $filter) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
+export declare const AutomateEntryRequestsDocument = "\n    query automateEntryRequests($id: ID!, $after: String, $first: Int, $before: String, $last: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(\n      after: $after\n      before: $before\n      first: $first\n      last: $last\n      order: $order\n      filter: $filter\n    ) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
+export declare const AutomateEntryRequestsByOffsetDocument = "\n    query automateEntryRequestsByOffset($id: ID!, $limit: Int, $offset: Int, $order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requestsByOffset(limit: $limit, offset: $offset, order: $order, filter: $filter) {\n      snapshot\n      edges {\n        ...automateEntryRequestEdgeMeta\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    \n\n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
 export declare const AutomateEntryRequestsCountDocument = "\n    query automateEntryRequestsCount($id: ID!, $filter: HTTPQLInput) {\n  automateEntry(id: $id) {\n    ...automateEntryFull\n    requests(first: 0, filter: $filter) {\n      count {\n        ...countFull\n      }\n    }\n  }\n}\n    \n    fragment automateEntryFull on AutomateEntry {\n  ...automateEntryMeta\n  settings {\n    ...automateSettingsFull\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const AutomateSessionsStateDocument = "\n    query automateSessionsState {\n  automateSessions {\n    edges {\n      ...automateSessionEdgeMeta\n    }\n  }\n  automateTasks {\n    edges {\n      ...automateTaskEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment automateSessionEdgeMeta on AutomateSessionEdge {\n  node {\n    ...automateSessionMeta\n  }\n}\n    \n\n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const AutomateSessionDocument = "\n    query automateSession($id: ID!) {\n  automateSession(id: $id) {\n    ...automateSessionFull\n  }\n}\n    \n    fragment automateSessionFull on AutomateSession {\n  ...automateSessionMeta\n  connection {\n    ...connectionInfoFull\n  }\n  settings {\n    ...automateSettingsFull\n  }\n  raw\n}\n    \n\n    fragment automateSessionMeta on AutomateSession {\n  __typename\n  id\n  name\n  createdAt\n  entries {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment automateSettingsFull on AutomateSettings {\n  __typename\n  closeConnection\n  updateContentLength\n  strategy\n  concurrency {\n    ...concurrencySettingFull\n  }\n  retryOnFailure {\n    ...retryOnFailureSettingFull\n  }\n  payloads {\n    ...automatePayloadFull\n  }\n  placeholders {\n    ...automatePlaceholderFull\n  }\n  redirect {\n    ...automateRedirectFull\n  }\n  extractors {\n    ...automateExtractorsFull\n  }\n}\n    \n\n    fragment concurrencySettingFull on AutomateConcurrencySetting {\n  __typename\n  delay\n  workers\n}\n    \n\n    fragment retryOnFailureSettingFull on AutomateRetryOnFailureSetting {\n  __typename\n  backoff\n  maximumRetries\n}\n    \n\n    fragment automatePayloadFull on AutomatePayload {\n  __typename\n  options {\n    ... on AutomateSimpleListPayload {\n      ...simpleListPayloadOptionsFull\n    }\n    ... on AutomateHostedFilePayload {\n      ...hostedFilePayloadOptionsFull\n    }\n    ... on AutomateNullPayload {\n      ...nullPayloadOptionsFull\n    }\n    ... on AutomateNumberPayload {\n      ...numberPayloadOptionsFull\n    }\n  }\n  preprocessors {\n    ...automatePreprocessorFull\n  }\n}\n    \n\n    fragment simpleListPayloadOptionsFull on AutomateSimpleListPayload {\n  __typename\n  list\n}\n    \n\n    fragment hostedFilePayloadOptionsFull on AutomateHostedFilePayload {\n  __typename\n  id\n  delimiter\n}\n    \n\n    fragment nullPayloadOptionsFull on AutomateNullPayload {\n  __typename\n  quantity\n}\n    \n\n    fragment numberPayloadOptionsFull on AutomateNumberPayload {\n  __typename\n  range {\n    ...rangeFull\n  }\n  increments\n  minLength\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment automatePreprocessorFull on AutomatePreprocessor {\n  __typename\n  options {\n    ... on AutomatePrefixPreprocessor {\n      ...automatePrefixPreprocessorFull\n    }\n    ... on AutomateSuffixPreprocessor {\n      ...automateSuffixPreprocessorFull\n    }\n    ... on AutomateWorkflowPreprocessor {\n      ...automateWorkflowPreprocessorFull\n    }\n    ... on AutomateUrlEncodePreprocessor {\n      ...automateUrlEncodePreprocessorFull\n    }\n  }\n}\n    \n\n    fragment automatePrefixPreprocessorFull on AutomatePrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateSuffixPreprocessorFull on AutomateSuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment automateWorkflowPreprocessorFull on AutomateWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment automateUrlEncodePreprocessorFull on AutomateUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment automatePlaceholderFull on AutomatePlaceholder {\n  __typename\n  start\n  end\n}\n    \n\n    fragment automateRedirectFull on AutomateRedirectSetting {\n  __typename\n  max\n  strategy\n}\n    \n\n    fragment automateExtractorsFull on AutomateExtractorRegex {\n  __typename\n  body\n  regex\n  workflowId\n}\n    ";
@@ -125630,7 +126387,7 @@ export declare const PauseAutomateTaskDocument = "\n    mutation pauseAutomateTa
 export declare const ResumeAutomateTaskDocument = "\n    mutation resumeAutomateTask($id: ID!) {\n  resumeAutomateTask(id: $id) {\n    automateTask {\n      ...automateTaskMeta\n    }\n    userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const StartAutomateTaskDocument = "\n    mutation startAutomateTask($automateSessionId: ID!) {\n  startAutomateTask(automateSessionId: $automateSessionId) {\n    automateTask {\n      ...automateTaskMeta\n    }\n  }\n}\n    \n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const ExportAutomateEntriesDocument = "\n    mutation exportAutomateEntries($input: ExportAutomateEntriesInput!) {\n  exportAutomateEntries(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
-export declare const CreatedAutomateEntryRequestDocument = "\n    subscription createdAutomateEntryRequest($order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  createdAutomateEntryRequest(filter: $filter) {\n    automateEntryRequestEdge(order: $order) {\n      ...automateEntryRequestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
+export declare const CreatedAutomateEntryRequestDocument = "\n    subscription createdAutomateEntryRequest($order: AutomateEntryRequestOrderInput, $filter: HTTPQLInput) {\n  createdAutomateEntryRequest(filter: $filter) {\n    automateEntryRequestEdge(order: $order) {\n      ...automateEntryRequestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateEntryRequestEdgeMeta on AutomateEntryRequestEdge {\n  __typename\n  node {\n    ...automateEntryRequestMeta\n  }\n  cursor\n}\n    \n\n    fragment automateEntryRequestMeta on AutomateEntryRequest {\n  __typename\n  sequenceId\n  automateEntryId\n  error\n  request {\n    ...requestMeta\n  }\n  payloads {\n    ...automateEntryRequestPayloadFull\n  }\n  extracts {\n    ...automateEntryRequestExtractFull\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment automateEntryRequestPayloadFull on AutomateEntryRequestPayload {\n  __typename\n  position\n  raw\n}\n    \n\n    fragment automateEntryRequestExtractFull on AutomateEntryExtract {\n  __typename\n  name\n  raw\n}\n    ";
 export declare const CreatedAutomateTaskDocument = "\n    subscription createdAutomateTask {\n  createdAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
 export declare const DeletedAutomateTaskDocument = "\n    subscription deletedAutomateTask {\n  deletedAutomateTask {\n    deletedAutomateTaskId\n    snapshot\n    status\n  }\n}\n    ";
 export declare const UpdatedAutomateTaskDocument = "\n    subscription updatedAutomateTask {\n  updatedAutomateTask {\n    automateTaskEdge {\n      ...automateTaskEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment automateTaskEdgeMeta on AutomateTaskEdge {\n  node {\n    ...automateTaskMeta\n  }\n}\n    \n\n    fragment automateTaskMeta on AutomateTask {\n  id\n  paused\n  entry {\n    ...automateEntryMeta\n  }\n}\n    \n\n    fragment automateEntryMeta on AutomateEntry {\n  __typename\n  id\n  name\n  createdAt\n  session {\n    id\n  }\n}\n    ";
@@ -125709,30 +126466,30 @@ export declare const FilterPresetDocument = "\n    query filterPreset($id: ID!) 
 export declare const CreatedFilterPresetDocument = "\n    subscription createdFilterPreset {\n  createdFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const UpdatedFilterPresetDocument = "\n    subscription updatedFilterPreset {\n  updatedFilterPreset {\n    filterEdge {\n      ...filterPresetEdgeFull\n    }\n  }\n}\n    \n    fragment filterPresetEdgeFull on FilterPresetEdge {\n  cursor\n  node {\n    ...filterPresetFull\n  }\n}\n    \n\n    fragment filterPresetFull on FilterPreset {\n  __typename\n  id\n  alias\n  name\n  global\n  clause {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeletedFilterPresetDocument = "\n    subscription deletedFilterPreset {\n  deletedFilterPreset {\n    deletedFilterId\n  }\n}\n    ";
-export declare const GetFindingDocument = "\n    query getFinding($id: ID!) {\n  finding(id: $id) {\n    ...findingFull\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const GetFindingsBeforeDocument = "\n    query getFindingsBefore($before: String!, $last: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(before: $before, last: $last, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const GetFindingsAfterDocument = "\n    query getFindingsAfter($after: String!, $first: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(after: $after, first: $first, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const GetFindingsByOffsetDocument = "\n    query getFindingsByOffset($offset: Int!, $limit: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findingsByOffset(offset: $offset, limit: $limit, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingDocument = "\n    query getFinding($id: ID!) {\n  finding(id: $id) {\n    ...findingFull\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const GetFindingsBeforeDocument = "\n    query getFindingsBefore($before: String!, $last: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(before: $before, last: $last, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingsAfterDocument = "\n    query getFindingsAfter($after: String!, $first: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findings(after: $after, first: $first, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const GetFindingsByOffsetDocument = "\n    query getFindingsByOffset($offset: Int!, $limit: Int!, $filter: FilterClauseFindingInput!, $order: FindingOrderInput!) {\n  findingsByOffset(offset: $offset, limit: $limit, filter: $filter, order: $order) {\n    edges {\n      ...findingEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const GetFindingsCountDocument = "\n    query getFindingsCount($filter: FilterClauseFindingInput!) {\n  findings(first: 0, filter: $filter) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const FindingReportersDocument = "\n    query findingReporters {\n  findingReporters\n}\n    ";
-export declare const CreatedFindingDocument = "\n    subscription createdFinding($order: FindingOrderInput) {\n  createdFinding {\n    findingEdge(order: $order) {\n      ...findingEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedFindingDocument = "\n    subscription createdFinding($order: FindingOrderInput) {\n  createdFinding {\n    findingEdge(order: $order) {\n      ...findingEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const DeletedFindingsDocument = "\n    subscription deletedFindings {\n  deletedFindings {\n    deletedFindingIds\n    snapshot\n  }\n}\n    ";
-export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdatedFindingsDocument = "\n    subscription updatedFindings($order: FindingOrderInput) {\n  updatedFindings {\n    findings {\n      findingEdge(order: $order) {\n        ...findingEdgeMeta\n      }\n      snapshot\n    }\n  }\n}\n    \n    fragment findingEdgeMeta on FindingEdge {\n  cursor\n  node {\n    ...findingMeta\n  }\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const CreateFindingDocument = "\n    mutation createFinding($requestId: ID!, $input: CreateFindingInput!) {\n  createFinding(requestId: $requestId, input: $input) {\n    finding {\n      ...findingFull\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingFull on Finding {\n  ...findingMeta\n  description\n}\n    \n\n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const DeleteFindingsDocument = "\n    mutation deleteFindings($input: DeleteFindingsInput) {\n  deleteFindings(input: $input) {\n    deletedIds\n  }\n}\n    ";
-export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdateFindingDocument = "\n    mutation updateFinding($id: ID!, $input: UpdateFindingInput!) {\n  updateFinding(id: $id, input: $input) {\n    finding {\n      ...findingMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment findingMeta on Finding {\n  id\n  title\n  reporter\n  host\n  path\n  createdAt\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const ExportFindingsDocument = "\n    mutation exportFindings($input: ExportFindingsInput!) {\n  exportFindings(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const ImportFindingDocument = "\n    mutation importFinding($input: ImportFindingsInput!) {\n  importData(input: {findings: $input}) {\n    id\n    errors\n    summary {\n      ... on FindingsSummary {\n        findingsImported\n      }\n    }\n  }\n}\n    ";
-export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const InterceptEntriesDocument = "\n    query interceptEntries($after: String, $first: Int, $before: String, $last: Int, $order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  interceptEntries(\n    after: $after\n    first: $first\n    before: $before\n    last: $last\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const InterceptEntriesByOffsetDocument = "\n    query interceptEntriesByOffset($limit: Int, $offset: Int, $order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  interceptEntriesByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    filter: $filter\n    scopeId: $scopeId\n  ) {\n    edges {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const InterceptEntryDocument = "\n    query interceptEntry($id: ID!) {\n  interceptEntry(id: $id) {\n    ...interceptEntryFull\n  }\n}\n    \n    fragment interceptEntryFull on InterceptEntry {\n  ...interceptEntryMeta\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const InterceptEntryCountDocument = "\n    query interceptEntryCount($filter: HTTPQLInput, $scopeId: ID) {\n  interceptEntries(first: 0, filter: $filter, scopeId: $scopeId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const RequestOffsetDocument = "\n    query RequestOffset($filter: HTTPQLInput, $id: ID!, $order: RequestResponseOrderInput, $scopeId: ID) {\n  requestOffset(filter: $filter, id: $id, order: $order, scopeId: $scopeId) {\n    offset\n  }\n}\n    ";
 export declare const InterceptEntryOffsetDocument = "\n    query InterceptEntryOffset($filter: HTTPQLInput, $id: ID!, $order: InterceptEntryOrderInput, $scopeId: ID) {\n  interceptEntryOffset(filter: $filter, id: $id, order: $order, scopeId: $scopeId) {\n    offset\n  }\n}\n    ";
 export declare const DeleteInterceptEntriesDocument = "\n    mutation deleteInterceptEntries($filter: HTTPQLInput, $scopeId: ID) {\n  deleteInterceptEntries(filter: $filter, scopeId: $scopeId) {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n    error: userError {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteInterceptEntryDocument = "\n    mutation deleteInterceptEntry($id: ID!) {\n  deleteInterceptEntry(id: $id) {\n    deletedId\n    error: userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedInterceptEntryDocument = "\n    subscription createdInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  createdInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedInterceptEntryDocument = "\n    subscription updatedInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  updatedInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedInterceptEntryDocument = "\n    subscription createdInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  createdInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const UpdatedInterceptEntryDocument = "\n    subscription updatedInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  updatedInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const DeletedInterceptEntryDocument = "\n    subscription deletedInterceptEntry {\n  deletedInterceptEntry {\n    deletedEntryId\n    snapshot\n  }\n}\n    ";
 export declare const StartedDeleteInterceptEntriesTaskDocument = "\n    subscription startedDeleteInterceptEntriesTask {\n  startedDeleteInterceptEntriesTask {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const UpdatedDeleteInterceptEntriesTaskDocument = "\n    subscription updatedDeleteInterceptEntriesTask {\n  updatedDeleteInterceptEntriesTask {\n    snapshot\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
@@ -125752,13 +126509,13 @@ export declare const DropInterceptMesageDocument = "\n    mutation dropIntercept
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const PauseInterceptDocument = "\n    mutation pauseIntercept {\n  pauseIntercept {\n    status\n  }\n}\n    ";
 export declare const ResumeInterceptDocument = "\n    mutation resumeIntercept {\n  resumeIntercept {\n    status\n  }\n}\n    ";
-export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const InterceptStreamWsMessagesDocument = "\n    query interceptStreamWsMessages($first: Int!) {\n  interceptMessages(first: $first, kind: STREAM_WS) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptStreamWsMessagesDocument = "\n    query interceptStreamWsMessages($first: Int!) {\n  interceptMessages(first: $first, kind: STREAM_WS) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
 export declare const UpdatedInterceptStatusDocument = "\n    subscription updatedInterceptStatus {\n  updatedInterceptStatus {\n    status\n  }\n}\n    ";
-export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedInterceptOptionsDocument = "\n    subscription updatedInterceptOptions {\n  updatedInterceptOptions {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const DeletedInterceptMessageDocument = "\n    subscription deletedInterceptMessage {\n  deletedInterceptMessage {\n    deletedMessageId\n  }\n}\n    ";
 export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    ...tamperRuleCollectionFull\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
@@ -125812,51 +126569,51 @@ export declare const SetProjectConfigStreamDocument = "\n    mutation setProject
 export declare const ReplayWebsocketMessagesAfterDocument = "\n    query replayWebsocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayWebsocketMessagesBeforeDocument = "\n    query replayWebsocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayWebsocketMessagesByOffsetDocument = "\n    query replayWebsocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdateReplayEntryHttpOnePipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpOnePipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpOnePipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const SetActiveReplayPipelineEntryHttpEntryDocument = "\n    mutation setActiveReplayPipelineEntryHttpEntry($id: ID!, $httpEntryId: ID!) {\n  setActiveReplayPipelineEntryHttpEntry(id: $id, httpEntryId: $httpEntryId) {\n    entry {\n      activeHttpEntry {\n        ...replayEntryHttpFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdateReplayEntryHttpOnePipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpOnePipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpOnePipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const SetActiveReplayPipelineEntryHttpEntryDocument = "\n    mutation setActiveReplayPipelineEntryHttpEntry($id: ID!, $httpEntryId: ID!) {\n  setActiveReplayPipelineEntryHttpEntry(id: $id, httpEntryId: $httpEntryId) {\n    entry {\n      activeHttpEntry {\n        ...replayEntryHttpFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
 export declare const SendReplayTaskMessageDocument = "\n    mutation sendReplayTaskMessage($task: ID!, $input: SendReplayTaskMessageInput!) {\n  sendReplayTaskMessage(task: $task, input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const SendReplayTaskMessageDraftDocument = "\n    mutation sendReplayTaskMessageDraft($task: ID!) {\n  sendReplayTaskMessageDraft(task: $task) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const StopReplayWsTasksDocument = "\n    mutation stopReplayWsTasks($taskIds: [ID!]!) {\n  stopReplayWsTasks(taskIds: $taskIds) {\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!, $kind: ReplaySessionKind!) {\n  clearReplayEntryDraft(id: $id, kind: $kind) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
-export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
-export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!, $kind: ReplaySessionKind!) {\n  clearReplayEntryDraft(id: $id, kind: $kind) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpOnePipeline {\n        ...replayEntryHttpOnePipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpOnePipeline {\n        ...replaySessionHttpOnePipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const CreateReplayPipelineHttpOneSessionDocument = "\n    mutation createReplayPipelineHttpOneSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpOneSession(input: $input) {\n    session {\n      ...replaySessionHttpOnePipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpOnePipeline {\n        ...replaySessionHttpOnePipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const CreateReplayPipelineHttpOneSessionDocument = "\n    mutation createReplayPipelineHttpOneSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpOneSession(input: $input) {\n    session {\n      ...replaySessionHttpOnePipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpOnePipeline {\n    ...replaySessionHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpOnePipeline {\n      ...replaySessionHttpOnePipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpOnePipeline {\n    ...replayEntryHttpOnePipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
-export declare const UpdatedReplayEntryWsDocument = "\n    subscription updatedReplayEntryWs {\n  updatedReplayEntryWs {\n    entry {\n      ...replayEntryWebsocketMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const UpdatedReplayEntryWsDocument = "\n    subscription updatedReplayEntryWs {\n  updatedReplayEntryWs {\n    entry {\n      ...replayEntryWebsocketMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const CreatedReplayStreamWsMessageDocument = "\n    subscription createdReplayStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeFull\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQLInput) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const RequestDocument = "\n    query request($id: ID!) {\n  request(id: $id) {\n    ...requestFull\n  }\n}\n    \n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const RequestDocument = "\n    query request($id: ID!) {\n  request(id: $id) {\n    ...requestFull\n  }\n}\n    \n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const RequestBrowserUrlDocument = "\n    query requestBrowserUrl($id: ID!) {\n  request(id: $id) {\n    browser {\n      replay\n      showResponse\n    }\n  }\n}\n    ";
-export declare const RequestsByOffsetDocument = "\n    query requestsByOffset($limit: Int, $offset: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requestsByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const RequestsByOffsetDocument = "\n    query requestsByOffset($limit: Int, $offset: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requestsByOffset(\n    limit: $limit\n    offset: $offset\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    snapshot\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const UpdateRequestMetadataDocument = "\n    mutation updateRequestMetadata($id: ID!, $input: UpdateRequestMetadataInput!) {\n  updateRequestMetadata(id: $id, input: $input) {\n    snapshot\n    metadata {\n      ...requestMetadataFull\n    }\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
 export declare const StartExportRequestsTaskDocument = "\n    mutation startExportRequestsTask($input: StartExportRequestsTaskInput!) {\n  startExportRequestsTask(input: $input) {\n    task {\n      ...dataExportTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const RenderRequestDocument = "\n    mutation renderRequest($id: ID!, $input: RenderRequestInput!) {\n  renderRequest(id: $id, input: $input) {\n    render\n    error {\n      ... on RenderFailedUserError {\n        ...renderFailedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment renderFailedUserErrorFull on RenderFailedUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedRequestDocument = "\n    subscription createdRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  createdRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
-export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const CreatedRequestDocument = "\n    subscription createdRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  createdRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const UpdatedRequestMetadataDocument = "\n    subscription updatedRequestMetadata {\n  updatedRequestMetadata {\n    metadata {\n      ...requestMetadataFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
-export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const GetUpdateStateDocument = "\n    query getUpdateState {\n  runtime {\n    availableUpdate {\n      ...releaseFull\n    }\n  }\n}\n    \n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const GetInstanceStateDocument = "\n    query getInstanceState {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";
@@ -125875,12 +126632,12 @@ export declare const UpdatedScopeDocument = "\n    subscription updatedScope {\n
 export declare const DeletedScopeDocument = "\n    subscription deletedScope {\n  deletedScope {\n    deletedScopeId\n  }\n}\n    ";
 export declare const SitemapRootEntriesDocument = "\n    query sitemapRootEntries($scopeId: ID) {\n  sitemapRootEntries(scopeId: $scopeId) {\n    edges {\n      ...sitemapEntryEdgeMeta\n    }\n  }\n}\n    \n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryChildrenDocument = "\n    query sitemapEntryChildren($id: ID!) {\n  sitemapDescendantEntries(parentId: $id, depth: DIRECT) {\n    edges {\n      cursor\n      node {\n        ...sitemapEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
-export declare const SitemapEntryRequestsDocument = "\n    query sitemapEntryRequests($id: ID!, $after: String, $before: String, $first: Int, $last: Int) {\n  sitemapEntry(id: $id) {\n    ...sitemapEntryMeta\n    requests(after: $after, before: $before, first: $first, last: $last) {\n      edges {\n        cursor\n        node {\n          ...requestMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    ";
+export declare const SitemapEntryRequestsDocument = "\n    query sitemapEntryRequests($id: ID!, $after: String, $before: String, $first: Int, $last: Int) {\n  sitemapEntry(id: $id) {\n    ...sitemapEntryMeta\n    requests(after: $after, before: $before, first: $first, last: $last) {\n      edges {\n        cursor\n        node {\n          ...requestMeta\n        }\n      }\n    }\n  }\n}\n    \n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const DeleteSitemapEntriesDocument = "\n    mutation deleteSitemapEntries($ids: [ID!]!) {\n  deleteSitemapEntries(ids: $ids) {\n    deletedIds\n    errors {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const ClearSitemapEntriesDocument = "\n    mutation clearSitemapEntries {\n  clearSitemapEntries {\n    deletedIds\n  }\n}\n    ";
 export declare const ExportSitemapEntriesDocument = "\n    mutation exportSitemapEntries($input: ExportSitemapEntriesInput!) {\n  exportSitemapEntries(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
-export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
-export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
+export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
+export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const DeletedSitemapEntryDocument = "\n    subscription deletedSitemapEntry {\n  deletedSitemapEntry {\n    deletedIds\n    snapshot\n  }\n}\n    ";
 export declare const WebsocketStreamsBeforeDocument = "\n    query websocketStreamsBefore($before: String, $last: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    before: $before\n    last: $last\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamsAfterDocument = "\n    query websocketStreamsAfter($after: String, $first: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    after: $after\n    first: $first\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
@@ -125897,10 +126654,10 @@ export declare const CreatedWsStreamDocument = "\n    subscription createdWsStre
 export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!, $filter: StreamQLInput) {\n  updatedStreamWsMessage(filter: $filter) {\n    __typename\n    ... on UpdatedStreamWsMessage {\n      snapshot\n      messageEdge(order: $order) {\n        ...streamWsMessageEdgeMeta\n      }\n    }\n    ... on HiddenStreamWsMessage {\n      hiddenId\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const DeletedStreamWsMessagesDocument = "\n    subscription deletedStreamWsMessages {\n  deletedStreamWsMessages {\n    deletedIds\n  }\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpOnePipeline {\n      ...replayEntryHttpOnePipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {\n  ...replayEntryHttpOnePipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineMeta on ReplayEntryHttpOnePipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpOnePipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpOnePipelineDraftMeta on ReplayEntryHttpOnePipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
 export declare const UpstreamsDocument = "\n    query upstreams {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n  upstreamPlugins {\n    ...upstreamPluginFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
