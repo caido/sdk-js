@@ -2,6 +2,7 @@ declare module "caido:plugin" {
   import type {
     Connection,
     EnvironmentSDK,
+    Finding,
     FindingsSDK,
     GraphQLSDK,
     HostedFileSDK,
@@ -265,6 +266,22 @@ declare module "caido:plugin" {
         sdk: SDK<API, Events>,
         request: RequestSpecRaw,
       ) => MaybePromise<UpstreamResult>,
+    ): void;
+
+    /**
+     * Callback called when a finding is created.
+     *
+     * This callback is called asynchronously and cannot modify the finding.
+     *
+     * @example
+     * ```ts
+     * sdk.events.onFindingCreated((sdk, finding) => {
+     *    // Do something with the finding
+     * });
+     * ```
+     */
+    onFindingCreated(
+      callback: (sdk: SDK<API, Events>, finding: Finding) => MaybePromise<void>,
     ): void;
   };
 
