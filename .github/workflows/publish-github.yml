@@ -1,0 +1,119 @@
+name: Publish independent SDK package to GitHub Packages
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        description: Independent package to publish
+        required: true
+        type: string
+      ref:
+        description: Immutable <package>-vX.Y.Z tag
+        required: true
+        type: string
+      dry-run:
+        description: Build package without publishing
+        type: boolean
+        default: false
+    secrets:
+      GITHUB_PACKAGES_TOKEN:
+        required: false
+
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Independent package to publish
+        required: true
+        type: choice
+        options:
+          - quickjs-types
+          - sdk-shared
+          - server-auth
+          - sdk-client
+      ref:
+        description: Immutable <package>-vX.Y.Z tag
+        required: true
+        type: string
+      dry-run:
+        description: Build package without publishing
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: sdk-github-registry-channels
+  queue: max
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout immutable package tag
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Verify package and tag
+        env:
+          PACKAGE: ${{ inputs.package }}
+          RELEASE_REF: ${{ inputs.ref }}
+        run: |
+          case "$PACKAGE" in
+            quickjs-types|sdk-shared|server-auth|sdk-client) ;;
+            *) echo "Unsupported independent package: $PACKAGE" >&2; exit 1 ;;
+          esac
+          version="$(node -p "require('./packages/$PACKAGE/package.json').version")"
+          test "$RELEASE_REF" = "$PACKAGE-v$version"
+          tag_sha="$(git rev-list -n 1 "refs/tags/$RELEASE_REF")"
+          test -n "$tag_sha"
+          test "$(git rev-parse HEAD)" = "$tag_sha"
+          test -z "$(git branch --show-current)"
+
+      - name: Install Mise
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
+        with:
+          version: ${{ vars.CI__MISE_VERSION }}
+          experimental: true # Necessary for custom backend plugins
+
+      - name: Install lockfile-pinned dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build selected package graph
+        env:
+          PACKAGE: ${{ inputs.package }}
+        run: pnpm -r --if-present --filter "@caido/$PACKAGE..." build
+
+      - name: Publish selected package to GitHub Packages
+        env:
+          PACKAGE: ${{ inputs.package }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          NPM_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN || github.token }}
+          NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc.github
+        run: | # zizmor: ignore[use-trusted-publishing] GitHub Packages requires token authentication
+          name="$(node -p "require('./packages/$PACKAGE/package.json').name")"
+          version="$(node -p "require('./packages/$PACKAGE/package.json').version")"
+          if [[ "$DRY_RUN" != "true" ]]; then
+            set +e
+            output="$(npm view "$name@$version" version --registry https://npm.pkg.github.com 2>&1)"
+            status=$?
+            set -e
+            if [[ $status -eq 0 ]]; then
+              echo "$name@$version already exists on GitHub Packages; skipping"
+              exit 0
+            elif ! grep -Eq '\bE404\b|\b404 Not Found\b' <<<"$output"; then
+              echo "$output" >&2
+              exit "$status"
+            fi
+          fi
+          args=("./packages/$PACKAGE" --access public --registry https://npm.pkg.github.com)
+          if [[ "$DRY_RUN" == "true" ]]; then args+=(--dry-run); fi
+          npm publish "${args[@]}"

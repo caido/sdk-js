@@ -14,13 +14,13 @@ on:
           - sdk-client
 concurrency:
   group: sdk-independent-release-${{ inputs.package }}
+  queue: max
   cancel-in-progress: false
 
 jobs:
   validate:
     permissions:
       contents: read
-      packages: read
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -45,7 +45,6 @@ jobs:
         id: preflight
         env:
           GH_TOKEN: ${{ github.token }}
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
           PACKAGE: ${{ inputs.package }}
         run: |
           version="$(node -p "require('./packages/$PACKAGE/package.json').version")"
@@ -69,31 +68,17 @@ jobs:
             exit "$status"
           fi
 
-          check_registry() {
-            local registry="$1" npmrc="${2:-}"
-            set +e
-            if [[ -n "$npmrc" ]]; then
-              output="$(NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$npmrc" npm view "$name@$version" version --registry "$registry" 2>&1)"
-            else
-              output="$(npm view "$name@$version" version --registry "$registry" 2>&1)"
-            fi
-            status=$?
-            set -e
-            if [[ $status -eq 0 ]]; then
-              echo "$name@$version already exists at $registry" >&2
-              exit 1
-            elif ! grep -Eq '\bE404\b|\b404 Not Found\b' <<<"$output"; then
-              echo "$output" >&2
-              exit "$status"
-            fi
-          }
-
-          check_registry https://registry.npmjs.org
-          case "$PACKAGE" in
-            quickjs-types|sdk-shared)
-              check_registry https://npm.pkg.github.com "$GITHUB_WORKSPACE/.npmrc.github"
-              ;;
-          esac
+          set +e
+          output="$(npm view "$name@$version" version --registry https://registry.npmjs.org 2>&1)"
+          status=$?
+          set -e
+          if [[ $status -eq 0 ]]; then
+            echo "$name@$version already exists on public npm" >&2
+            exit 1
+          elif ! grep -Eq '\bE404\b|\b404 Not Found\b' <<<"$output"; then
+            echo "$output" >&2
+            exit "$status"
+          fi
 
           printf 'ref=%s\n' "$ref" >> "$GITHUB_OUTPUT"
           printf 'sha=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -129,11 +114,22 @@ jobs:
     needs: create
     permissions:
       contents: read
-      packages: write
     uses: ./.github/workflows/publish.yml
     with:
       package: ${{ inputs.package }}
       ref: ${{ needs.create.outputs.ref }}
     secrets:
       NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+  publish-github: # zizmor: ignore[self-repository] $/ is not yet accepted by actionlint v1.7.12
+    name: Publish to GitHub Packages
+    needs: create
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish-github.yml
+    with:
+      package: ${{ inputs.package }}
+      ref: ${{ needs.create.outputs.ref }}
+    secrets:
       GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}

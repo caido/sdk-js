@@ -1,4 +1,4 @@
-name: Publish coupled SDK release to npm
+name: Publish coupled SDK release to GitHub Packages
 
 on:
   release:
@@ -18,10 +18,10 @@ on:
 
 permissions:
   contents: read
-  id-token: write
+  packages: write
 
 concurrency:
-  group: sdk-registry-channels
+  group: sdk-github-registry-channels
   queue: max
   cancel-in-progress: false
 
@@ -84,10 +84,19 @@ jobs:
       - name: Build coupled packages
         run: pnpm -r --if-present --filter @caido/sdk-backend --filter @caido/sdk-frontend --filter @caido/sdk-workflow build
 
-      - name: Publish coupled packages
+      - name: Publish coupled packages to GitHub Packages
         env:
-          NPM_CONFIG_PROVENANCE: true
-        run: |
+          NPM_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN || github.token }}
+          NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc.github
+        run: | # zizmor: ignore[use-trusted-publishing] GitHub Packages requires token authentication
           for package in sdk-backend sdk-frontend sdk-workflow; do
-            scripts/publish-package.sh "$package" https://registry.npmjs.org
+            version="$(node -p "require('./packages/$package/package.json').version")"
+            if [[ "$version" != "${RELEASE_REF#v}" ]]; then
+              echo "$package version $version does not match $RELEASE_REF" >&2
+              exit 1
+            fi
+          done
+
+          for package in sdk-backend sdk-frontend sdk-workflow; do
+            scripts/publish-package.sh "$package" https://npm.pkg.github.com
           done

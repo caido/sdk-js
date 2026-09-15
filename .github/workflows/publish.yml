@@ -12,17 +12,15 @@ on:
         required: true
         type: string
     secrets:
-      GITHUB_PACKAGES_TOKEN:
-        required: false
       NPM_PUBLISH_TOKEN:
         required: true
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: sdk-registry-channels
+  queue: max
   cancel-in-progress: false
 
 jobs:
@@ -68,26 +66,9 @@ jobs:
           PACKAGE: ${{ inputs.package }}
         run: pnpm -r --if-present --filter "@caido/$PACKAGE..." build
 
-      - name: Publish selected package
+      - name: Publish selected package to npm
         env:
           PACKAGE: ${{ inputs.package }}
           NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
-        run: | # zizmor: ignore[use-trusted-publishing] GitHub Packages requires its own token
-          publish() {
-            local registry="$1" npmrc="${2:-}"
-            local directory="packages/$PACKAGE"
-
-            if [[ -n "$npmrc" ]]; then
-              NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$npmrc" npm publish "$directory" --access public --registry "$registry"
-            else
-              npm publish "$directory" --access public --registry "$registry"
-            fi
-          }
-
-          publish https://registry.npmjs.org
-          case "$PACKAGE" in
-            quickjs-types|sdk-shared)
-              publish https://npm.pkg.github.com "$GITHUB_WORKSPACE/.npmrc.github"
-              ;;
-          esac
+        run: | # zizmor: ignore[use-trusted-publishing] Independent npm packages use NPM_PUBLISH_TOKEN
+          npm publish "./packages/$PACKAGE" --access public --registry https://registry.npmjs.org
