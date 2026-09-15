@@ -1,7 +1,10 @@
 name: Publish coupled SDK release
 
 on:
-  workflow_call:
+  release:
+    types: [published]
+
+  workflow_dispatch:
     inputs:
       ref:
         description: Immutable vX.Y.Z or vX.Y.Z-rc.N tag
@@ -11,9 +14,7 @@ on:
         description: Build packages without publishing
         required: true
         type: boolean
-    secrets:
-      GITHUB_PACKAGES_TOKEN:
-        required: true
+        default: true
 
 permissions:
   contents: read
@@ -26,21 +27,23 @@ concurrency:
 
 jobs:
   publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || false }}
+      RELEASE_REF: ${{ github.event.release.tag_name || inputs.ref }}
     steps:
       - name: Checkout immutable release tag
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: caido/sdk-js
-          ref: ${{ inputs.ref }}
+          ref: ${{ env.RELEASE_REF }}
           fetch-depth: 0
           fetch-tags: true
           persist-credentials: false
 
       - name: Verify and checkout release branch
-        env:
-          RELEASE_REF: ${{ inputs.ref }}
         run: |
           if [[ ! "$RELEASE_REF" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-rc\.[0-9]+)?$ ]]; then
             echo "Unsupported coupled SDK release ref: $RELEASE_REF" >&2
@@ -61,8 +64,6 @@ jobs:
           printf 'RELEASE_BRANCH=%s\n' "$release_branch" >> "$GITHUB_ENV"
 
       - name: Select publication lane
-        env:
-          RELEASE_REF: ${{ inputs.ref }}
         run: |
           if [[ "$RELEASE_REF" == *-rc.* ]]; then
             tag=beta
@@ -93,12 +94,12 @@ jobs:
             local name version
             name="$(node -p "require('./$directory/package.json').name")"
             version="$(node -p "require('./$directory/package.json').version")"
-            if [[ "${{ inputs.dry-run }}" != "true" ]] && npm view "$name@$version" version --registry https://registry.npmjs.org >/dev/null 2>&1; then
+            if [[ "$DRY_RUN" != "true" ]] && npm view "$name@$version" version --registry https://registry.npmjs.org >/dev/null 2>&1; then
               echo "$name@$version already exists on public npm; skipping"
               return
             fi
             local args=(--filter "$package" publish --access public --tag "$NPM_DIST_TAG" --publish-branch "$RELEASE_BRANCH")
-            if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
+            if [[ "$DRY_RUN" == "true" ]]; then args+=(--dry-run); fi
             pnpm "${args[@]}"
           }
 
@@ -107,7 +108,7 @@ jobs:
             local name version
             name="$(node -p "require('./$directory/package.json').name")"
             version="$(node -p "require('./$directory/package.json').version")"
-            if [[ "${{ inputs.dry-run }}" != "true" ]] && NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$GITHUB_WORKSPACE/.npmrc.github" npm view "$name@$version" version --registry https://npm.pkg.github.com >/dev/null 2>&1; then
+            if [[ "$DRY_RUN" != "true" ]] && NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" NODE_AUTH_TOKEN="$GITHUB_PACKAGES_TOKEN" NPM_CONFIG_USERCONFIG="$GITHUB_WORKSPACE/.npmrc.github" npm view "$name@$version" version --registry https://npm.pkg.github.com >/dev/null 2>&1; then
               echo "$name@$version already exists on GitHub Packages; skipping"
               return
             fi
@@ -120,7 +121,7 @@ jobs:
             }
             trap restore_npmrc RETURN
             local args=(--filter "$package" -r publish --tag "$NPM_DIST_TAG" --publish-branch "$RELEASE_BRANCH")
-            if [[ "${{ inputs.dry-run }}" == "true" ]]; then args+=(--dry-run); fi
+            if [[ "$DRY_RUN" == "true" ]]; then args+=(--dry-run); fi
             NPM_TOKEN="$GITHUB_PACKAGES_TOKEN" pnpm "${args[@]}"
             trap - RETURN
             restore_npmrc
