@@ -1,0 +1,93 @@
+name: Publish coupled SDK release to npm
+
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Immutable vX.Y.Z or vX.Y.Z-rc.N tag
+        required: true
+        type: string
+      dry-run:
+        description: Build packages without publishing
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: sdk-registry-channels
+  queue: max
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || false }}
+      RELEASE_REF: ${{ github.event.release.tag_name || inputs.ref }}
+    steps:
+      - name: Checkout immutable release tag
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: caido/sdk-js
+          ref: ${{ env.RELEASE_REF }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Verify and checkout release branch
+        run: |
+          if [[ ! "$RELEASE_REF" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-rc\.[0-9]+)?$ ]]; then
+            echo "Unsupported coupled SDK release ref: $RELEASE_REF" >&2
+            exit 1
+          fi
+
+          release_branch="release/v${BASH_REMATCH[1]}"
+          tag_sha="$(git rev-parse "refs/tags/$RELEASE_REF^{commit}")"
+          git fetch --no-tags origin \
+            "refs/heads/$release_branch:refs/remotes/origin/$release_branch"
+          branch_sha="$(git rev-parse "refs/remotes/origin/$release_branch^{commit}")"
+          if [[ "$branch_sha" != "$tag_sha" ]]; then
+            echo "Release branch $release_branch is at $branch_sha, expected tagged commit $tag_sha" >&2
+            exit 1
+          fi
+
+          git switch --create "$release_branch" --track "origin/$release_branch"
+          printf 'RELEASE_BRANCH=%s\n' "$release_branch" >> "$GITHUB_ENV"
+
+      - name: Select publication lane
+        run: |
+          if [[ "$RELEASE_REF" == *-rc.* ]]; then
+            tag=beta
+          else
+            tag=latest
+          fi
+          printf 'NPM_DIST_TAG=%s\n' "$tag" >> "$GITHUB_ENV"
+
+      - name: Install Mise
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
+        with:
+          version: ${{ vars.CI__MISE_VERSION }}
+          experimental: true # Necessary for custom backend plugins
+
+      - name: Install lockfile-pinned dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build coupled packages
+        run: pnpm -r --if-present --filter @caido/sdk-backend --filter @caido/sdk-frontend --filter @caido/sdk-workflow build
+
+      - name: Publish coupled packages
+        env:
+          NPM_CONFIG_PROVENANCE: true
+        run: |
+          for package in sdk-backend sdk-frontend sdk-workflow; do
+            scripts/publish-package.sh "$package" https://registry.npmjs.org
+          done

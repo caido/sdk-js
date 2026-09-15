@@ -1,5 +1,4 @@
 import { defaultConfig } from "@caido/eslint-config";
-import { globalIgnores } from "eslint/config";
 
 export default [
   ...defaultConfig({

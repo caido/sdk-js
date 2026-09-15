@@ -1,82 +1,74 @@
-name: Publish
+name: Publish one independent SDK package
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_call:
+    inputs:
+      package:
+        description: Independent package to publish
+        required: true
+        type: string
+      ref:
+        description: Immutable <package>-vX.Y.Z tag
+        required: true
+        type: string
+    secrets:
+      NPM_PUBLISH_TOKEN:
+        required: true
 
 permissions:
-  id-token: write # Required for OIDC
   contents: read
-  packages: write
+
+concurrency:
+  group: sdk-registry-channels
+  queue: max
+  cancel-in-progress: false
 
 jobs:
-  publish-js:
+  publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-
+    timeout-minutes: 15
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
+      - name: Checkout immutable package tag
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Verify package and tag
+        env:
+          PACKAGE: ${{ inputs.package }}
+          RELEASE_REF: ${{ inputs.ref }}
+        run: |
+          case "$PACKAGE" in
+            quickjs-types|sdk-shared|server-auth|sdk-client) ;;
+            *) echo "Unsupported independent package: $PACKAGE" >&2; exit 1 ;;
+          esac
+          version="$(node -p "require('./packages/$PACKAGE/package.json').version")"
+          test "$RELEASE_REF" = "$PACKAGE-v$version"
+          tag_sha="$(git rev-list -n 1 "refs/tags/$RELEASE_REF")"
+          test -n "$tag_sha"
+          test "$(git rev-parse HEAD)" = "$tag_sha"
+          test -z "$(git branch --show-current)"
 
       - name: Install Mise
-        uses: caido/action-mise-action@v3.2.0
+        uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
         with:
-          working_directory: .
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install lockfile-pinned dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm -r build
+      - name: Build selected package graph
+        env:
+          PACKAGE: ${{ inputs.package }}
+        run: pnpm -r --if-present --filter "@caido/$PACKAGE..." build
 
-      - name: Publish quickjs-types
-        uses: ./.github/actions/publish-one
-        with:
-          package: quickjs-types
-          internal: true
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish server-auth
-        uses: ./.github/actions/publish-one
-        with:
-          package: server-auth
-          internal: false
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish sdk-backend
-        uses: ./.github/actions/publish-one
-        with:
-          package: sdk-backend
-          internal: false
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish sdk-frontend
-        uses: ./.github/actions/publish-one
-        with:
-          package: sdk-frontend
-          internal: false
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish sdk-shared
-        uses: ./.github/actions/publish-one
-        with:
-          package: sdk-shared
-          internal: true
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish sdk-workflow
-        uses: ./.github/actions/publish-one
-        with:
-          package: sdk-workflow
-          internal: true
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish sdk-client
-        uses: ./.github/actions/publish-one
-        with:
-          package: sdk-client
-          internal: false
-          secret-github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish selected package to npm
+        env:
+          PACKAGE: ${{ inputs.package }}
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: | # zizmor: ignore[use-trusted-publishing] Independent npm packages use NPM_PUBLISH_TOKEN
+          npm publish "./packages/$PACKAGE" --access public --registry https://registry.npmjs.org
