@@ -1,5 +1,10 @@
 import { CloudError } from "../errors.js";
-import type { AuthenticationRequest, DeviceInformation } from "../types.js";
+import {
+  type AuthenticationRequest,
+  type DeviceInformation,
+  type DeviceScope,
+  ScopeRequirement,
+} from "../types.js";
 
 import type { AuthApprover } from "./types.js";
 
@@ -84,10 +89,16 @@ export class PATApprover implements AuthApprover {
     const deviceInfo = await this.getDeviceInformation(request.userCode);
 
     // Step 2: Filter scopes if allowedScopes is provided
-    let scopesToApprove = deviceInfo.scopes.map((s) => s.name);
+    let scopesToApprove: DeviceScope[] = [];
     if (this.allowedScopes) {
-      scopesToApprove = scopesToApprove.filter((scope) =>
-        this.allowedScopes!.includes(scope),
+      scopesToApprove = deviceInfo.scopes.filter((scope) =>
+        this.allowedScopes!.includes(scope.name),
+      );
+    } else {
+      scopesToApprove = deviceInfo.scopes.filter(
+        (scope) =>
+          scope.requirement === ScopeRequirement.REQUIRED ||
+          scope.requirement === ScopeRequirement.OPTIONAL,
       );
     }
 
@@ -167,11 +178,11 @@ export class PATApprover implements AuthApprover {
 
   private async approveDevice(
     userCode: string,
-    scopes: string[],
+    scopes: DeviceScope[],
   ): Promise<void> {
     const params = new URLSearchParams();
     params.append("user_code", userCode);
-    params.append("scope", scopes.join(","));
+    params.append("scope", scopes.map((scope) => scope.name).join(","));
     const url = new URL(`${this.apiUrl}/oauth2/device/approve`);
     url.search = params.toString();
 

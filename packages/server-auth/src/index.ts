@@ -5,6 +5,7 @@ export type {
   AuthenticationToken,
   DeviceInformation,
   DeviceScope,
+  ScopeRequirement,
 } from "./types.js";
 export { AuthenticationError, CloudError, InstanceError } from "./errors.js";
 export {
