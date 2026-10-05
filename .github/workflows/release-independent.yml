@@ -13,11 +13,6 @@ on:
           - server-auth
           - sdk-client
 
-permissions:
-  contents: read
-  packages: write
-  id-token: write
-
 concurrency:
   group: sdk-independent-release-${{ inputs.package }}
   queue: max
@@ -120,6 +115,7 @@ jobs:
     needs: create
     permissions:
       contents: read
+      id-token: write
     uses: ./.github/workflows/publish.yml
     with:
       package: ${{ inputs.package }}
