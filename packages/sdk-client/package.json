@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-client",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Client SDK for interacting with a Caido instance",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "repository": "https://github.com/caido/sdk-js/",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@caido/sdk-shared": "^0.2.2",
-    "@caido/server-auth": "^0.2.0",
+    "@caido/server-auth": "^0.2.3",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@urql/core": "^6.0.0",
     "@urql/exchange-auth": "^3.0.0",
