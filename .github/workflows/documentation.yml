@@ -3,15 +3,22 @@ name: Documentation
 on:
   push:
     branches:
-      - 'main'
+      - 'release/v*'
 
 env:
   CAIDO_REF: ${{ github.ref }}
   CAIDO_GITHUB_TOKEN: ${{ github.token }}
   CAIDO_DOC_RW_TOKEN: ${{ secrets.CI__DOC__RW }}
+  PR_BRANCH: bot-sdk-update
+  VERSION_FILE: src/plugins/reference/caido-version.txt
 
 permissions:
   contents: read
+
+concurrency:
+  group: documentation
+  queue: max
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -36,7 +43,35 @@ jobs:
           path: ./doc-developer
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
 
+      - name: Check documented version
+        id: version
+        working-directory: ./doc-developer
+        run: |
+          version="$(jq -r .version ../sdk-js/packages/sdk-backend/package.json)"
+          if [[ "$version" == *-* ]]; then
+            echo "Skipping prerelease $version"
+            exit 0
+          fi
+
+          # The PR branch gets force-pushed, so it must not hold newer docs either
+          refs=(HEAD)
+          if git ls-remote --exit-code --heads origin "$PR_BRANCH" > /dev/null; then
+            git fetch --depth=1 origin "$PR_BRANCH"
+            refs+=(FETCH_HEAD)
+          fi
+
+          for ref in "${refs[@]}"; do
+            documented="$(git show "$ref:$VERSION_FILE" 2> /dev/null || true)"
+            if [[ -n "$documented" ]] && ! printf '%s\n' "$documented" "$version" | sort -VC; then
+              echo "Documentation on $ref is for $documented, newer than $version"
+              exit 0
+            fi
+          done
+
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+
       - name: Install Mise
+        if: steps.version.outputs.version
         uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
         with:
           working_directory: ./sdk-js
@@ -44,6 +79,7 @@ jobs:
           experimental: true # Necessary for custom backend plugins
 
       - name: Install Mise
+        if: steps.version.outputs.version
         uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
         with:
           working_directory: ./doc-developer
@@ -51,23 +87,30 @@ jobs:
           experimental: true # Necessary for custom backend plugins
 
       - name: Install dependencies
+        if: steps.version.outputs.version
         working-directory: ./sdk-js
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run script
+        if: steps.version.outputs.version
         working-directory: ./doc-developer
-        run: pnpm generate:sdk
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          pnpm generate:sdk
+          printf '%s\n' "$VERSION" > "$VERSION_FILE"
 
       - name: Pull Request
+        if: steps.version.outputs.version
         uses: caido/action-pull-request@bac6da8071ada152cce76cfbd24b54b7190ad799 # v6.0.1
         with:
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
           path: ./doc-developer
-          commit-message: Update SDK Documentation
+          commit-message: Update SDK Documentation for Caido v${{ steps.version.outputs.version }}
           committer: Caido Bot <dev@caido.io>
           author: Caido Bot <dev@caido.io>
-          branch: bot-sdk-update
+          branch: ${{ env.PR_BRANCH }}
           delete-branch: true
           base: main
-          title: Update SDK Documentation
+          title: Update SDK Documentation for Caido v${{ steps.version.outputs.version }}
           body: ''
