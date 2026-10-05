@@ -118,8 +118,6 @@ jobs:
     with:
       package: ${{ inputs.package }}
       ref: ${{ needs.create.outputs.ref }}
-    secrets:
-      NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
   publish-github: # zizmor: ignore[self-repository] $/ is not yet accepted by actionlint v1.7.12
     name: Publish to GitHub Packages
