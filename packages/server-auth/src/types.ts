@@ -33,9 +33,18 @@ export interface AuthenticationToken {
 export interface DeviceScope {
   /** The scope identifier */
   name: string;
-  /** Human-readable description of the scope */
-  description?: string;
+  /** The requirement for the scope */
+  requirement: ScopeRequirement;
 }
+
+export const ScopeRequirement = {
+  REQUIRED: "required",
+  FORBIDDEN: "forbidden",
+  OPTIONAL: "optional",
+} as const;
+
+export type ScopeRequirement =
+  (typeof ScopeRequirement)[keyof typeof ScopeRequirement];
 
 /**
  * Device information response from the API.
