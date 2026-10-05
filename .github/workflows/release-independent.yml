@@ -17,6 +17,11 @@ concurrency:
   queue: max
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 jobs:
   validate:
     permissions:
