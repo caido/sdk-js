@@ -83,6 +83,7 @@ jobs:
         with:
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Install lockfile-pinned dependencies
         run: pnpm install --frozen-lockfile
