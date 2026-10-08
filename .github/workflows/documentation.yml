@@ -42,6 +42,7 @@ jobs:
           working_directory: ./sdk-js
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Install Mise
         uses: caido/action-mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
@@ -49,6 +50,7 @@ jobs:
           working_directory: ./doc-developer
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Install dependencies
         working-directory: ./sdk-js

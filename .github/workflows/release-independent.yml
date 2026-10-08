@@ -40,6 +40,7 @@ jobs:
         with:
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Validate release does not exist
         id: preflight
