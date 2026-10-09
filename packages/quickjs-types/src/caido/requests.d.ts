@@ -519,6 +519,104 @@ declare module "caido:utils" {
   };
 
   /**
+   * A mutable Response that has not yet been saved.
+   * @category Requests
+   */
+  export class ResponseSpec {
+    /**
+     * Build a new {@link ResponseSpec}.
+     * By default the response is an empty 200 OK.
+     *
+     * @example
+     * ```js
+     * const spec = new ResponseSpec();
+     * ```
+     */
+    constructor();
+    /**
+     * Parses raw bytes into a {@link ResponseSpec}.
+     *
+     * @throws {Error} If the bytes are not a valid HTTP response.
+     * @example
+     * ```js
+     * const rawInput = 'HTTP/1.1 200 OK\r\nContent-Length: 10\r\n\r\nHello world.';
+     * const spec = ResponseSpec.parse(rawInput);
+     * ```
+     */
+    static parse(bytes: Bytes): ResponseSpec;
+    /**
+     * Get the status code of the response.
+     */
+    getCode(): number;
+    /**
+     * Set the status code of the response.
+     *
+     * This doesn't update the reason.
+     *
+     * The status code must be between 0 and 65535.
+     */
+    setCode(code: number): void;
+    /**
+     * Get the reason of the response.
+     */
+    getReason(): string;
+    /**
+     * Set the reason of the response.
+     */
+    setReason(reason: string): void;
+    /**
+     * The headers of the response.
+     *
+     * Header names are case-insensitive.
+     * Each header might have multiple values.
+     *
+     * @example
+     * ```json
+     * {
+     *   "Host": ["caido.io"],
+     *   "Connection": ["keep-alive"],
+     *   "Content-Length": ["95"]
+     * }
+     * ```
+     */
+    getHeaders(): Record<string, Array<string>>;
+    /**
+     * Get a header value.
+     *
+     * Header name is case-insensitive.
+     * The header might have multiple values.
+     */
+    getHeader(name: string | GetHeaderOptions): Array<string> | undefined;
+    /**
+     * Set a header value.
+     *
+     * This will overwrite any existing values.
+     */
+    setHeader(name: string, value: string): void;
+    /**
+     * Removes a header.
+     */
+    removeHeader(name: string): void;
+    /**
+     * The body of the response.
+     */
+    getBody(): Body | undefined;
+    /**
+     * Set the body of the response.
+     *
+     * The body can either be a {@link Body} or any type that can be converted to {@link Bytes}.
+     *
+     * @example
+     * ```js
+     * const body = new Body("Hello world.");
+     * const options = { updateContentLength: true };
+     * response.setBody(body, options);
+     * ```
+     */
+    setBody(body: Body | Bytes, options?: SetBodyOptions): void;
+  }
+
+  /**
    * An immutable saved Request and Response pair.
    * @category Requests
    */
