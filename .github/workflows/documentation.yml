@@ -2,8 +2,8 @@ name: Documentation
 
 on:
   push:
-    branches:
-      - 'release/v*'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 env:
   CAIDO_REF: ${{ github.ref }}
@@ -47,11 +47,7 @@ jobs:
         id: version
         working-directory: ./doc-developer
         run: |
-          version="$(jq -r .version ../sdk-js/packages/sdk-backend/package.json)"
-          if [[ "$version" == *-* ]]; then
-            echo "Skipping prerelease $version"
-            exit 0
-          fi
+          version="${GITHUB_REF_NAME#v}"
 
           # The PR branch gets force-pushed, so it must not hold newer docs either
           refs=(HEAD)
