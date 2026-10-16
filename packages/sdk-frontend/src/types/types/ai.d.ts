@@ -45,24 +45,6 @@ export type AIStructuredOutputSettings = {
     strict?: boolean;
 };
 /**
- * Settings for native context compaction.
- *
- * The summary is returned as a reasoning part with
- * `providerMetadata.caido.compaction`.
- * @category AI
- */
-export type AICompactionSettings = {
-    /** Input-token threshold that triggers compaction. Defaults to the provider threshold. */
-    triggerInputTokens?: number;
-    /**
-     * End the turn after compacting. Ignored by OpenAI.
-     * @default false
-     */
-    pauseAfterCompaction?: boolean;
-    /** Custom summarization instructions. Ignored by OpenAI. */
-    instructions?: string;
-};
-/**
  * Settings for AI language model.
  * @category AI
  */
@@ -70,7 +52,6 @@ export type AILanguageModelSettings = {
     reasoning?: AIReasoningSettings;
     parallelToolCalls?: boolean;
     structuredOutput?: AIStructuredOutputSettings;
-    compaction?: AICompactionSettings;
 };
 /**
  * AI model identifier in the form `"<alias>/<model-id>"`.
@@ -112,20 +93,12 @@ export type AICreateProviderOptions = {
  * - `responseFormat: { type: "json" }` without a schema
  * - the reserved `caido` namespace in call-level `providerOptions`
  *
- * `providerOptions` on user text parts, tool result parts, and assistant
- * content are sent to the backend unchanged, apart from the reserved `caido`
- * namespace. Keys use the backend names, so an Anthropic cache breakpoint is
- * `{ anthropic: { cache_control: { type: "ephemeral" } } }`.
- *
  * `providerOptions` on system, user, and tool messages, on tool definitions,
- * and on tool result outputs are dropped with a warning because the backend
- * has no slot for them. Provider tool results returned by the provider are
- * dropped from the response (and surfaced as `raw` stream parts when
+ * and on tool results are dropped with a warning because the backend has no
+ * slot for them. Assistant content keeps its upstream namespaces. Compaction
+ * results and provider tool results returned by the provider are dropped
+ * from the response (and surfaced as `raw` stream parts when
  * `includeRawChunks` is set).
- *
- * A paused turn (for example after {@link AICompactionSettings.pauseAfterCompaction})
- * finishes with the `other` finish reason and
- * `providerMetadata.caido.finishReason` set to `"paused"`.
  *
  * `abortSignal` cancels the request or the running stream; the resulting
  * `AbortError` is rethrown unchanged and never reported as a failure.
@@ -319,7 +292,7 @@ export declare const getAIError: (error: unknown) => AIError | undefined;
  * A capability an upstream model is known to support.
  * @category AI
  */
-export type AIUpstreamModelCapability = "TOOL_CALLING" | "REASONING" | "STRUCTURED_OUTPUT" | "TEMPERATURE" | "COMPACTION";
+export type AIUpstreamModelCapability = "TOOL_CALLING" | "REASONING" | "STRUCTURED_OUTPUT" | "TEMPERATURE";
 /**
  * Tri-state capability knowledge for an upstream model.
  *
@@ -371,7 +344,6 @@ export type AIUpstreamModel = {
         reasoning: AIUpstreamModelCapabilitySupport;
         structuredOutput: AIUpstreamModelCapabilitySupport;
         temperature: AIUpstreamModelCapabilitySupport;
-        compaction: AIUpstreamModelCapabilitySupport;
     };
     /** The accepted reasoning efforts. Empty when the model declares no constraint. */
     reasoningEfforts: AIUpstreamModelReasoningEffort[];
