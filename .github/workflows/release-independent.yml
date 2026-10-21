@@ -18,6 +18,9 @@ concurrency:
   queue: max
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     permissions:
@@ -94,11 +97,11 @@ jobs:
       ref: ${{ steps.release.outputs.ref }}
     steps:
       - name: Checkout validated commit
-        # zizmor: ignore[artipacked] this job creates the immutable tag and release
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           ref: ${{ needs.validate.outputs.sha }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Create tag and GitHub Release
         id: release
@@ -107,7 +110,7 @@ jobs:
           RELEASE_REF: ${{ needs.validate.outputs.ref }}
         run: |
           git tag "$RELEASE_REF"
-          git push origin "refs/tags/$RELEASE_REF"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/$RELEASE_REF"
           gh release create "$RELEASE_REF" --repo "$GITHUB_REPOSITORY" --title "$RELEASE_REF" --verify-tag
           printf 'ref=%s\n' "$RELEASE_REF" >> "$GITHUB_OUTPUT"
 
