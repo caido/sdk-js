@@ -6,6 +6,9 @@ node = "24.11.1"
 pnpm = "11.28.0"
 "toolshed:get-skills" = "latest"
 
+[settings]
+minimum_release_age = "7d"
+
 [tasks.typecheck]
 description = "Run typecheck"
 run = "pnpm typecheck"
