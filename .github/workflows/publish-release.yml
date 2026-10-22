@@ -18,7 +18,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: sdk-registry-channels
@@ -27,6 +26,9 @@ concurrency:
 
 jobs:
   publish:
+    permissions:
+      contents: read
+      id-token: write
     if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'v')
     runs-on: ubuntu-latest
     timeout-minutes: 15

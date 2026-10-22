@@ -42,7 +42,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: sdk-github-registry-channels
@@ -51,6 +50,9 @@ concurrency:
 
 jobs:
   publish:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

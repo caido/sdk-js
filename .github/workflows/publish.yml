@@ -14,7 +14,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: sdk-registry-channels
@@ -23,6 +22,9 @@ concurrency:
 
 jobs:
   publish:
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
