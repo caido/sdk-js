@@ -1,12 +1,9 @@
 allowBuilds:
   esbuild: true
-minimumReleaseAge: 7200
+minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
-  - '@caido/quickjs-types'
-  - '@caido/server-auth'
-  - '@caido/schema-proxy'
-  - '@caido/sdk-shared'
-  - '@caido-community/quickssrf'
+  - '@caido/*'
+  - '@caido-community/*'
 packages:
   - 'packages/*'
   - 'packages/server-auth/examples/*'
