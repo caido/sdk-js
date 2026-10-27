@@ -15,7 +15,9 @@ fragment InstanceAIProviderOpenRouterFull on AIProviderOpenRouter {
   apiKey
 }
 
-fragment InstanceSettingsFull on InstanceSettings {
+# Kept apart from InstanceSettingsFull: Caido 0.59.0 moved AI providers out of
+# instance settings, so selecting them there is only valid on earlier versions.
+fragment InstanceAIProvidersFull on InstanceSettings {
   aiProviders {
     anthropic {
       ...InstanceAIProviderAnthropicFull
@@ -30,6 +32,9 @@ fragment InstanceSettingsFull on InstanceSettings {
       ...InstanceAIProviderOpenRouterFull
     }
   }
+}
+
+fragment InstanceSettingsFull on InstanceSettings {
   analytic {
     enabled
     cloud
@@ -43,6 +48,12 @@ fragment InstanceSettingsFull on InstanceSettings {
 query InstanceSettings {
   instanceSettings {
     ...InstanceSettingsFull
+  }
+}
+
+query InstanceAIProviders {
+  instanceSettings {
+    ...InstanceAIProvidersFull
   }
 }
 

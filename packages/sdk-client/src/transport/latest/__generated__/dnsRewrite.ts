@@ -8,8 +8,8 @@ export type DnsRewriteFullFragment = {
   enabled: boolean;
   rank: string;
   resolution:
-    | { __typename: "DnsIpResolver"; ip: string }
-    | { __typename: "DnsUpstreamResolver"; id: string };
+    | { __typename: "DNSIpResolver"; ip: string }
+    | { __typename: "DNSUpstreamResolver"; id: string };
 };
 
 export type CreateDnsRewriteMutationVariables = Types.Exact<{
@@ -31,8 +31,8 @@ export type CreateDnsRewriteMutation = {
           enabled: boolean;
           rank: string;
           resolution:
-            | { __typename: "DnsIpResolver"; ip: string }
-            | { __typename: "DnsUpstreamResolver"; id: string };
+            | { __typename: "DNSIpResolver"; ip: string }
+            | { __typename: "DNSUpstreamResolver"; id: string };
         }
       | undefined
       | null;
@@ -47,7 +47,7 @@ export const DnsRewriteFullFragmentDoc = {
       name: { kind: "Name", value: "DnsRewriteFull" },
       typeCondition: {
         kind: "NamedType",
-        name: { kind: "Name", value: "DnsRewrite" },
+        name: { kind: "Name", value: "DNSRewrite" },
       },
       selectionSet: {
         kind: "SelectionSet",
@@ -68,15 +68,12 @@ export const DnsRewriteFullFragmentDoc = {
                   kind: "InlineFragment",
                   typeCondition: {
                     kind: "NamedType",
-                    name: { kind: "Name", value: "DnsIpResolver" },
+                    name: { kind: "Name", value: "DNSIpResolver" },
                   },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "ip" },
-                      },
+                      { kind: "Field", name: { kind: "Name", value: "ip" } },
                     ],
                   },
                 },
@@ -84,15 +81,12 @@ export const DnsRewriteFullFragmentDoc = {
                   kind: "InlineFragment",
                   typeCondition: {
                     kind: "NamedType",
-                    name: { kind: "Name", value: "DnsUpstreamResolver" },
+                    name: { kind: "Name", value: "DNSUpstreamResolver" },
                   },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "id" },
-                      },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
                     ],
                   },
                 },
@@ -114,12 +108,15 @@ export const CreateDnsRewriteDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "input" },
+          },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "CreateDnsRewriteInput" },
+              name: { kind: "Name", value: "CreateDNSRewriteInput" },
             },
           },
         },
@@ -176,10 +173,7 @@ export const CreateDnsRewriteDocument = {
                         kind: "InlineFragment",
                         typeCondition: {
                           kind: "NamedType",
-                          name: {
-                            kind: "Name",
-                            value: "UnknownIdUserError",
-                          },
+                          name: { kind: "Name", value: "UnknownIdUserError" },
                         },
                         selectionSet: {
                           kind: "SelectionSet",
@@ -218,6 +212,21 @@ export const CreateDnsRewriteDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserErrorFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "UserError" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "code" } },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "OtherUserErrorFull" },
       typeCondition: {
         kind: "NamedType",
@@ -226,8 +235,10 @@ export const CreateDnsRewriteDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
-          { kind: "Field", name: { kind: "Name", value: "__typename" } },
-          { kind: "Field", name: { kind: "Name", value: "code" } },
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
         ],
       },
     },
@@ -241,8 +252,10 @@ export const CreateDnsRewriteDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
-          { kind: "Field", name: { kind: "Name", value: "__typename" } },
-          { kind: "Field", name: { kind: "Name", value: "code" } },
+          {
+            kind: "FragmentSpread",
+            name: { kind: "Name", value: "UserErrorFull" },
+          },
           { kind: "Field", name: { kind: "Name", value: "id" } },
         ],
       },
@@ -252,7 +265,7 @@ export const CreateDnsRewriteDocument = {
       name: { kind: "Name", value: "DnsRewriteFull" },
       typeCondition: {
         kind: "NamedType",
-        name: { kind: "Name", value: "DnsRewrite" },
+        name: { kind: "Name", value: "DNSRewrite" },
       },
       selectionSet: {
         kind: "SelectionSet",
@@ -273,15 +286,12 @@ export const CreateDnsRewriteDocument = {
                   kind: "InlineFragment",
                   typeCondition: {
                     kind: "NamedType",
-                    name: { kind: "Name", value: "DnsIpResolver" },
+                    name: { kind: "Name", value: "DNSIpResolver" },
                   },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "ip" },
-                      },
+                      { kind: "Field", name: { kind: "Name", value: "ip" } },
                     ],
                   },
                 },
@@ -289,15 +299,12 @@ export const CreateDnsRewriteDocument = {
                   kind: "InlineFragment",
                   typeCondition: {
                     kind: "NamedType",
-                    name: { kind: "Name", value: "DnsUpstreamResolver" },
+                    name: { kind: "Name", value: "DNSUpstreamResolver" },
                   },
                   selectionSet: {
                     kind: "SelectionSet",
                     selections: [
-                      {
-                        kind: "Field",
-                        name: { kind: "Name", value: "id" },
-                      },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
                     ],
                   },
                 },

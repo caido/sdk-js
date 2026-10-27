@@ -1,4 +1,7 @@
-import type { InstanceSettingsFullFragment } from "@/graphql/index.js";
+import type {
+  InstanceAiProvidersFullFragment,
+  InstanceSettingsFullFragment,
+} from "@/graphql/index.js";
 import type {
   AISettings,
   AnalyticsSettings,
@@ -9,15 +12,16 @@ import { isPresent } from "@/utils/optional.js";
 
 export const mapToInstanceSettings = (
   data: InstanceSettingsFullFragment,
+  ai?: InstanceAiProvidersFullFragment,
 ): InstanceSettings => {
   return {
-    ai: mapToAISettings(data),
+    ai: isPresent(ai) ? mapToAISettings(ai) : {},
     analytics: mapToAnalyticsSettings(data),
     onboarding: mapToOnboardingSettings(data),
   };
 };
 
-const mapToAISettings = (data: InstanceSettingsFullFragment): AISettings => {
+const mapToAISettings = (data: InstanceAiProvidersFullFragment): AISettings => {
   const anthropic = data.aiProviders.anthropic;
   const google = data.aiProviders.google;
   const openai = data.aiProviders.openai;

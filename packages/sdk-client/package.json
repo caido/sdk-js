@@ -1,6 +1,6 @@
 {
   "name": "@caido/sdk-client",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Client SDK for interacting with a Caido instance",
   "author": "Caido Labs Inc. <dev@caido.io>",
   "repository": "https://github.com/caido/sdk-js/",
@@ -28,7 +28,7 @@
     "build": "tsdown",
     "typecheck": "tsc --noEmit",
     "generate": "pnpm generate:graphql && pnpm generate:rest",
-    "generate:graphql": "graphql-codegen --config codegen.v0.56.yml && graphql-codegen --config codegen.yml",
+    "generate:graphql": "graphql-codegen --config codegen.v0.56.yml && graphql-codegen --config codegen.v0.57.yml && graphql-codegen --config codegen.yml",
     "generate:rest": "openapi-ts",
     "test": "vitest run",
     "test:unit": "vitest run --project unit"
@@ -46,8 +46,9 @@
     "zod": "^4.3.0"
   },
   "devDependencies": {
-    "@caido/schema-proxy": "0.57.0",
+    "@caido/schema-proxy": "0.58.3",
     "@caido/schema-proxy-v0.56": "npm:@caido/schema-proxy@0.56.0",
+    "@caido/schema-proxy-v0.57": "npm:@caido/schema-proxy@0.57.0",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/near-operation-file-preset": "3.0.0",
     "@graphql-codegen/typed-document-node": "5.0.11",

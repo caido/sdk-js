@@ -12,7 +12,7 @@ export type InstanceAiProviderOpenAiFullFragment = {
 
 export type InstanceAiProviderOpenRouterFullFragment = { apiKey: string };
 
-export type InstanceSettingsFullFragment = {
+export type InstanceAiProvidersFullFragment = {
   aiProviders: {
     anthropic?: { apiKey: string } | undefined | null;
     google?: { apiKey: string } | undefined | null;
@@ -22,6 +22,9 @@ export type InstanceSettingsFullFragment = {
       | null;
     openrouter?: { apiKey: string } | undefined | null;
   };
+};
+
+export type InstanceSettingsFullFragment = {
   analytic: { enabled: boolean; cloud: boolean; local: boolean };
   onboarding: { analytic: boolean };
 };
@@ -32,6 +35,17 @@ export type InstanceSettingsQueryVariables = Types.Exact<{
 
 export type InstanceSettingsQuery = {
   instanceSettings: {
+    analytic: { enabled: boolean; cloud: boolean; local: boolean };
+    onboarding: { analytic: boolean };
+  };
+};
+
+export type InstanceAiProvidersQueryVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type InstanceAiProvidersQuery = {
+  instanceSettings: {
     aiProviders: {
       anthropic?: { apiKey: string } | undefined | null;
       google?: { apiKey: string } | undefined | null;
@@ -41,8 +55,6 @@ export type InstanceSettingsQuery = {
         | null;
       openrouter?: { apiKey: string } | undefined | null;
     };
-    analytic: { enabled: boolean; cloud: boolean; local: boolean };
-    onboarding: { analytic: boolean };
   };
 };
 
@@ -53,15 +65,6 @@ export type SetInstanceSettingsMutationVariables = Types.Exact<{
 export type SetInstanceSettingsMutation = {
   setInstanceSettings: {
     settings: {
-      aiProviders: {
-        anthropic?: { apiKey: string } | undefined | null;
-        google?: { apiKey: string } | undefined | null;
-        openai?:
-          | { apiKey: string; url?: string | undefined | null }
-          | undefined
-          | null;
-        openrouter?: { apiKey: string } | undefined | null;
-      };
       analytic: { enabled: boolean; cloud: boolean; local: boolean };
       onboarding: { analytic: boolean };
     };
@@ -145,12 +148,12 @@ export const InstanceAiProviderOpenRouterFullFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<InstanceAiProviderOpenRouterFullFragment, unknown>;
-export const InstanceSettingsFullFragmentDoc = {
+export const InstanceAiProvidersFullFragmentDoc = {
   kind: "Document",
   definitions: [
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceSettingsFull" },
+      name: { kind: "Name", value: "InstanceAIProvidersFull" },
       typeCondition: {
         kind: "NamedType",
         name: { kind: "Name", value: "InstanceSettings" },
@@ -231,28 +234,6 @@ export const InstanceSettingsFullFragmentDoc = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "analytic" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "enabled" } },
-                { kind: "Field", name: { kind: "Name", value: "cloud" } },
-                { kind: "Field", name: { kind: "Name", value: "local" } },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "onboarding" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "analytic" } },
-              ],
-            },
-          },
         ],
       },
     },
@@ -310,6 +291,46 @@ export const InstanceSettingsFullFragmentDoc = {
         kind: "SelectionSet",
         selections: [
           { kind: "Field", name: { kind: "Name", value: "apiKey" } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<InstanceAiProvidersFullFragment, unknown>;
+export const InstanceSettingsFullFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "InstanceSettingsFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "InstanceSettings" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "analytic" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "enabled" } },
+                { kind: "Field", name: { kind: "Name", value: "cloud" } },
+                { kind: "Field", name: { kind: "Name", value: "local" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "onboarding" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "analytic" } },
+              ],
+            },
+          },
         ],
       },
     },
@@ -343,6 +364,72 @@ export const InstanceSettingsDocument = {
     },
     {
       kind: "FragmentDefinition",
+      name: { kind: "Name", value: "InstanceSettingsFull" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "InstanceSettings" },
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "analytic" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "enabled" } },
+                { kind: "Field", name: { kind: "Name", value: "cloud" } },
+                { kind: "Field", name: { kind: "Name", value: "local" } },
+              ],
+            },
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "onboarding" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "analytic" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  InstanceSettingsQuery,
+  InstanceSettingsQueryVariables
+>;
+export const InstanceAiProvidersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "InstanceAIProviders" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "instanceSettings" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "FragmentSpread",
+                  name: { kind: "Name", value: "InstanceAIProvidersFull" },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: "FragmentDefinition",
       name: { kind: "Name", value: "InstanceAIProviderAnthropicFull" },
       typeCondition: {
         kind: "NamedType",
@@ -400,7 +487,7 @@ export const InstanceSettingsDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceSettingsFull" },
+      name: { kind: "Name", value: "InstanceAIProvidersFull" },
       typeCondition: {
         kind: "NamedType",
         name: { kind: "Name", value: "InstanceSettings" },
@@ -481,35 +568,13 @@ export const InstanceSettingsDocument = {
               ],
             },
           },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "analytic" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "enabled" } },
-                { kind: "Field", name: { kind: "Name", value: "cloud" } },
-                { kind: "Field", name: { kind: "Name", value: "local" } },
-              ],
-            },
-          },
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "onboarding" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                { kind: "Field", name: { kind: "Name", value: "analytic" } },
-              ],
-            },
-          },
         ],
       },
     },
   ],
 } as unknown as DocumentNode<
-  InstanceSettingsQuery,
-  InstanceSettingsQueryVariables
+  InstanceAiProvidersQuery,
+  InstanceAiProvidersQueryVariables
 >;
 export const SetInstanceSettingsDocument = {
   kind: "Document",
@@ -574,63 +639,6 @@ export const SetInstanceSettingsDocument = {
     },
     {
       kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceAIProviderAnthropicFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "AIProviderAnthropic" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "apiKey" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceAIProviderGoogleFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "AIProviderGoogle" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "apiKey" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceAIProviderOpenAIFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "AIProviderOpenAI" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "apiKey" } },
-          { kind: "Field", name: { kind: "Name", value: "url" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
-      name: { kind: "Name", value: "InstanceAIProviderOpenRouterFull" },
-      typeCondition: {
-        kind: "NamedType",
-        name: { kind: "Name", value: "AIProviderOpenRouter" },
-      },
-      selectionSet: {
-        kind: "SelectionSet",
-        selections: [
-          { kind: "Field", name: { kind: "Name", value: "apiKey" } },
-        ],
-      },
-    },
-    {
-      kind: "FragmentDefinition",
       name: { kind: "Name", value: "InstanceSettingsFull" },
       typeCondition: {
         kind: "NamedType",
@@ -639,79 +647,6 @@ export const SetInstanceSettingsDocument = {
       selectionSet: {
         kind: "SelectionSet",
         selections: [
-          {
-            kind: "Field",
-            name: { kind: "Name", value: "aiProviders" },
-            selectionSet: {
-              kind: "SelectionSet",
-              selections: [
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "anthropic" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "InstanceAIProviderAnthropicFull",
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "google" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "InstanceAIProviderGoogleFull",
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "openai" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "InstanceAIProviderOpenAIFull",
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: "Field",
-                  name: { kind: "Name", value: "openrouter" },
-                  selectionSet: {
-                    kind: "SelectionSet",
-                    selections: [
-                      {
-                        kind: "FragmentSpread",
-                        name: {
-                          kind: "Name",
-                          value: "InstanceAIProviderOpenRouterFull",
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
           {
             kind: "Field",
             name: { kind: "Name", value: "analytic" },

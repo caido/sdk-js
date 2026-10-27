@@ -78,11 +78,14 @@ importers:
         version: 4.3.6
     devDependencies:
       '@caido/schema-proxy':
-        specifier: 0.57.0
-        version: 0.57.0
+        specifier: 0.58.3
+        version: 0.58.3
       '@caido/schema-proxy-v0.56':
         specifier: npm:@caido/schema-proxy@0.56.0
         version: '@caido/schema-proxy@0.56.0'
+      '@caido/schema-proxy-v0.57':
+        specifier: npm:@caido/schema-proxy@0.57.0
+        version: '@caido/schema-proxy@0.57.0'
       '@graphql-codegen/cli':
         specifier: 5.0.3
         version: 5.0.3(@types/node@25.0.10)(graphql@16.12.0)(supports-color@7.2.0)(typescript@5.6.2)
@@ -597,6 +600,9 @@ packages:
 
   '@caido/schema-proxy@0.57.0':
     resolution: {integrity: sha512-EEq6OIfk46ZZoao2U76NkFf0qYusJHv39P8InU9W4fGMA2NihDs9wuBn6o3FH2QlN7gXCp+l8wAII4ao675xVg==}
+
+  '@caido/schema-proxy@0.58.3':
+    resolution: {integrity: sha512-7IAbijdxwpRT7DHDrbrF65iHtghpL7zQknivO/dsQE5Z/jah3sVOr/MvlBZns2tGujNaser4tJV6Sszx96Ysag==}
 
   '@caido/sdk-shared@0.2.0':
     resolution: {integrity: sha512-pgzwCZSu9R7ggOQvnmspxcZ79plCrzWZ3jcv1t4ahqdov8D5Kl0GWNQsO7oj/Bve4vH/spOR3XZefCRCDhcjbw==}
@@ -4585,6 +4591,8 @@ snapshots:
   '@caido/schema-proxy@0.56.0': {}
 
   '@caido/schema-proxy@0.57.0': {}
+
+  '@caido/schema-proxy@0.58.3': {}
 
   '@caido/sdk-shared@0.2.0': {}
 

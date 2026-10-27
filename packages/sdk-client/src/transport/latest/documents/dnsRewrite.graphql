@@ -1,4 +1,4 @@
-fragment DnsRewriteFull on DnsRewrite {
+fragment DnsRewriteFull on DNSRewrite {
   id
   allowlist
   denylist
@@ -6,16 +6,16 @@ fragment DnsRewriteFull on DnsRewrite {
   rank
   resolution {
     __typename
-    ... on DnsIpResolver {
+    ... on DNSIpResolver {
       ip
     }
-    ... on DnsUpstreamResolver {
+    ... on DNSUpstreamResolver {
       id
     }
   }
 }
 
-mutation CreateDnsRewrite($input: CreateDnsRewriteInput!) {
+mutation CreateDnsRewrite($input: CreateDNSRewriteInput!) {
   createDnsRewrite(input: $input) {
     error {
       __typename

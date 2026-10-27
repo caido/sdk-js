@@ -1,6 +1,7 @@
 import { encodeBlob } from "@/convert/blob.js";
 import { mapToPageInfo } from "@/convert/connection.js";
 import { mapToRequestResponseOpt } from "@/convert/request.js";
+import { OtherUserError } from "@/errors/index.js";
 import {
   CreateRequestDocument,
   type GraphQLClient,
@@ -9,7 +10,13 @@ import {
   RequestResponseOrderBy,
   type RequestResponseOrderInput,
   RequestsDocument,
+  type Source,
 } from "@/graphql/index.js";
+import {
+  type Alteration as V057Alteration,
+  CreateRequestDocument as V057CreateRequestDocument,
+  type Source as V057Source,
+} from "@/transport/v0.57/index.js";
 import type {
   ConnectionQueryResult,
   CreateRequestOptions,
@@ -20,9 +27,11 @@ import type {
   RequestResponseOpt,
   ResponseOrderField,
 } from "@/types/index.js";
+import { TransportVersion } from "@/types/index.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { ListBuilder, type ListBuilderVars } from "@/utils/list.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
+import type { Version } from "@/version.js";
 
 const REQUEST_ORDER_BY: Record<RequestOrderField, RequestResponseOrderBy> = {
   created_at: RequestResponseOrderBy.CreatedAt,
@@ -132,7 +141,10 @@ export class RequestsListBuilder extends ListBuilder<
  * SDK for HTTP requests and responses.
  */
 export class RequestSDK {
-  constructor(private readonly graphql: GraphQLClient) {}
+  constructor(
+    private readonly graphql: GraphQLClient,
+    private readonly version: Version,
+  ) {}
 
   /**
    * List requests.
@@ -172,6 +184,18 @@ export class RequestSDK {
    * @returns The created request and optional response.
    */
   async create(options: CreateRequestOptions): Promise<RequestResponseOpt> {
+    const id = (await this.version.gte(TransportVersion.V0_58))
+      ? await this.createLatest(options)
+      : await this.createV057(options);
+
+    const created = await this.get(id);
+    if (isAbsent(created)) {
+      throw new OtherUserError("INTERNAL", "createRequest returned no request");
+    }
+    return created;
+  }
+
+  private async createLatest(options: CreateRequestOptions): Promise<ID> {
     const result = await this.graphql.mutation(CreateRequestDocument, {
       input: {
         host: options.host,
@@ -180,23 +204,37 @@ export class RequestSDK {
         port: options.port,
         query: options.query,
         raw: encodeBlob(options.raw),
-        alteration: options.alteration as any,
-        source: options.source as any,
+        source: options.source as Source,
         isTls: false,
-        parentId: options.parentId,
         sni: options.sni,
       },
-      includeRequestRaw: true,
-      includeResponseRaw: true,
     });
-    const payload = result.createRequest;
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
+    return result.createRequest.id as ID;
+  }
+
+  private async createV057(options: CreateRequestOptions): Promise<ID> {
+    if (!(await this.version.gte(TransportVersion.V0_57))) {
+      throw new OtherUserError(
+        "UNSUPPORTED",
+        "request.create() requires Caido 0.57.0 or later",
+      );
     }
-    const request = payload.request;
-    if (isAbsent(request)) {
-      throw new Error("createRequest returned no request");
-    }
-    return mapToRequestResponseOpt(request);
+
+    const result = await this.graphql.mutation(V057CreateRequestDocument, {
+      input: {
+        host: options.host,
+        method: options.method,
+        path: options.path,
+        port: options.port,
+        query: options.query,
+        raw: encodeBlob(options.raw),
+        source: options.source as V057Source,
+        alteration: options.alteration as V057Alteration,
+        parentId: options.parentId,
+        isTls: false,
+        sni: options.sni,
+      },
+    });
+    return result.createRequest.id as ID;
   }
 }
