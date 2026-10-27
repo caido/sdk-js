@@ -73,6 +73,7 @@ jobs:
           working_directory: ./sdk-js
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Install Mise
         if: steps.version.outputs.version
@@ -81,6 +82,7 @@ jobs:
           working_directory: ./doc-developer
           version: ${{ vars.CI__MISE_VERSION }}
           experimental: true # Necessary for custom backend plugins
+          cache: false
 
       - name: Install dependencies
         if: steps.version.outputs.version
