@@ -217,6 +217,7 @@ query ReplaySessionEntries(
   $includeResponseRaw: Boolean!
 ) {
   replaySession(id: $id) {
+    __typename
     ... on ReplaySessionHttp {
       entries(after: $after, before: $before, first: $first, last: $last) {
         edges {

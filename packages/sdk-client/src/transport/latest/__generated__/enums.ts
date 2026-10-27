@@ -145,6 +145,13 @@ export const EnvironmentVariableKind = {
 
 export type EnvironmentVariableKind =
   (typeof EnvironmentVariableKind)[keyof typeof EnvironmentVariableKind];
+export const FailureBehavior = {
+  AbortOnPartial: "ABORT_ON_PARTIAL",
+  FireOnPartial: "FIRE_ON_PARTIAL",
+} as const;
+
+export type FailureBehavior =
+  (typeof FailureBehavior)[keyof typeof FailureBehavior];
 export const FindingOrderBy = {
   CreatedAt: "CREATED_AT",
   Host: "HOST",
@@ -225,6 +232,14 @@ export const PluginErrorReason = {
 
 export type PluginErrorReason =
   (typeof PluginErrorReason)[keyof typeof PluginErrorReason];
+export const PluginPackageOrigin = {
+  File: "FILE",
+  Store: "STORE",
+  Url: "URL",
+} as const;
+
+export type PluginPackageOrigin =
+  (typeof PluginPackageOrigin)[keyof typeof PluginPackageOrigin];
 export const PluginRuntime = {
   Javascript: "JAVASCRIPT",
 } as const;
@@ -281,6 +296,14 @@ export const RenderFailedErrorReason = {
 
 export type RenderFailedErrorReason =
   (typeof RenderFailedErrorReason)[keyof typeof RenderFailedErrorReason];
+export const ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind = {
+  Add: "ADD",
+  Rank: "RANK",
+  Remove: "REMOVE",
+} as const;
+
+export type ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind =
+  (typeof ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind)[keyof typeof ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind];
 export const ReplayEntryOrderBy = {
   Id: "ID",
 } as const;
@@ -289,6 +312,7 @@ export type ReplayEntryOrderBy =
   (typeof ReplayEntryOrderBy)[keyof typeof ReplayEntryOrderBy];
 export const ReplaySessionKind = {
   Http: "HTTP",
+  HttpOnePipeline: "HTTP_ONE_PIPELINE",
   Ws: "WS",
 } as const;
 
@@ -355,6 +379,14 @@ export const StoreErrorReason = {
 
 export type StoreErrorReason =
   (typeof StoreErrorReason)[keyof typeof StoreErrorReason];
+export const StorePluginPackageQuality = {
+  Bronze: "BRONZE",
+  Gold: "GOLD",
+  Silver: "SILVER",
+} as const;
+
+export type StorePluginPackageQuality =
+  (typeof StorePluginPackageQuality)[keyof typeof StorePluginPackageQuality];
 export const StreamDirection = {
   Both: "BOTH",
   Client: "CLIENT",

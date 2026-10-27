@@ -1,20 +1,12 @@
 import type * as Types from "./types.js";
 
 import type { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
-export type DnsUpstreamFullFragment = {
-  id: string;
-  ip: string;
-  name: string;
-};
+export type DnsUpstreamFullFragment = { id: string; ip: string; name: string };
 
 export type DnsUpstreamsQueryVariables = Types.Exact<{ [key: string]: never }>;
 
 export type DnsUpstreamsQuery = {
-  dnsUpstreams: Array<{
-    id: string;
-    ip: string;
-    name: string;
-  }>;
+  dnsUpstreams: Array<{ id: string; ip: string; name: string }>;
 };
 
 export type CreateDnsUpstreamMutationVariables = Types.Exact<{
@@ -22,9 +14,7 @@ export type CreateDnsUpstreamMutationVariables = Types.Exact<{
 }>;
 
 export type CreateDnsUpstreamMutation = {
-  createDnsUpstream: {
-    upstream: DnsUpstreamFullFragment;
-  };
+  createDnsUpstream: { upstream: { id: string; ip: string; name: string } };
 };
 
 export const DnsUpstreamFullFragmentDoc = {
@@ -102,7 +92,10 @@ export const CreateDnsUpstreamDocument = {
       variableDefinitions: [
         {
           kind: "VariableDefinition",
-          variable: { kind: "Variable", name: { kind: "Name", value: "input" } },
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "input" },
+          },
           type: {
             kind: "NonNullType",
             type: {

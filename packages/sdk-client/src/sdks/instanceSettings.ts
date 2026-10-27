@@ -109,8 +109,20 @@ export class InstanceSettingsSDK {
   private async setRaw(
     input: GraphQLSetInstanceSettingsInput,
   ): Promise<InstanceSettings> {
-    await this.graphql.mutation(SetInstanceSettingsDocument, { input });
-    return this.get();
+    // Resolve the version first: a failed health probe after the write would
+    // otherwise report a failure for a change that was actually applied.
+    const withAIProviders = await this.supportsAIProviders();
+
+    const result = await this.graphql.mutation(SetInstanceSettingsDocument, {
+      input,
+    });
+    const settings = result.setInstanceSettings.settings;
+    if (!withAIProviders) {
+      return mapToInstanceSettings(settings);
+    }
+
+    const ai = await this.graphql.query(InstanceAiProvidersDocument);
+    return mapToInstanceSettings(settings, ai.instanceSettings);
   }
 
   /** AI providers live in instance settings only before Caido 0.59.0. */

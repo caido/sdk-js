@@ -15,6 +15,7 @@ import { CloudErrorReason } from "./enums.js";
 import { DataExportFormat } from "./enums.js";
 import { DataExportStatus } from "./enums.js";
 import { EnvironmentVariableKind } from "./enums.js";
+import { FailureBehavior } from "./enums.js";
 import { FindingOrderBy } from "./enums.js";
 import { HostedFileStatus } from "./enums.js";
 import { InterceptEntryOrderBy } from "./enums.js";
@@ -24,6 +25,7 @@ import { LogLevel } from "./enums.js";
 import { Ordering } from "./enums.js";
 import { PermissionDeniedErrorReason } from "./enums.js";
 import { PluginErrorReason } from "./enums.js";
+import { PluginPackageOrigin } from "./enums.js";
 import { PluginRuntime } from "./enums.js";
 import { ProjectErrorReason } from "./enums.js";
 import { ProjectSelectOnStart } from "./enums.js";
@@ -31,6 +33,7 @@ import { ProjectStatus } from "./enums.js";
 import { RankErrorReason } from "./enums.js";
 import { RedirectStrategy } from "./enums.js";
 import { RenderFailedErrorReason } from "./enums.js";
+import { ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind } from "./enums.js";
 import { ReplayEntryOrderBy } from "./enums.js";
 import { ReplaySessionKind } from "./enums.js";
 import { RequestResponseOrderBy } from "./enums.js";
@@ -39,6 +42,7 @@ import { SitemapDescendantsDepth } from "./enums.js";
 import { SitemapEntryKind } from "./enums.js";
 import { Source } from "./enums.js";
 import { StoreErrorReason } from "./enums.js";
+import { StorePluginPackageQuality } from "./enums.js";
 import { StreamDirection } from "./enums.js";
 import { StreamMessageDirection } from "./enums.js";
 import { StreamOrderBy } from "./enums.js";
@@ -912,6 +916,22 @@ export type CreateProjectPayloadError =
   | OtherUserError
   | PermissionDeniedUserError;
 
+export type CreateReplayPipelineHttpOneSessionError =
+  | CloudUserError
+  | OtherUserError
+  | PermissionDeniedUserError;
+
+export type CreateReplayPipelineHttpOneSessionPayload = {
+  error?: Maybe<CreateReplayPipelineHttpOneSessionError>;
+  session?: Maybe<ReplaySessionHttpOnePipeline>;
+};
+
+export type CreateReplayPipelineSessionInput = {
+  collectionId?: InputMaybe<Scalars["ID"]["input"]>;
+  requestSources: Array<RequestSourceInput>;
+  settings: ReplaySessionHttpOnePipelineSettingsInput;
+};
+
 export type CreateReplaySessionCollectionInput = {
   name: Scalars["String"]["input"];
 };
@@ -937,14 +957,10 @@ export type CreateReplaySessionPayload = {
   session?: Maybe<ReplaySession>;
 };
 
-export type CreateRequestError = OtherUserError | UnknownIdUserError;
-
 export type CreateRequestInput = {
-  alteration: Alteration;
   host: Scalars["String"]["input"];
   isTls: Scalars["Boolean"]["input"];
   method: Scalars["String"]["input"];
-  parentId?: InputMaybe<Scalars["ID"]["input"]>;
   path: Scalars["String"]["input"];
   port: Scalars["Int"]["input"];
   query: Scalars["String"]["input"];
@@ -955,16 +971,13 @@ export type CreateRequestInput = {
 };
 
 export type CreateRequestPayload = {
-  error?: Maybe<CreateRequestError>;
-  request?: Maybe<Request>;
+  id: Scalars["ID"]["output"];
+  responseId?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type CreateResponseInput = {
-  alteration: Alteration;
-  parentId?: InputMaybe<Scalars["ID"]["input"]>;
   raw: Scalars["Blob"]["input"];
   roundtripTime: Scalars["Int"]["input"];
-  source: Source;
   statusCode: Scalars["Int"]["input"];
 };
 
@@ -1715,6 +1728,8 @@ export type ExportTamperPayload = {
   export?: Maybe<DataExportOnDemand>;
 };
 
+export { FailureBehavior };
+
 export type FilterClauseFindingInput = {
   reporter?: InputMaybe<Scalars["String"]["input"]>;
 };
@@ -1976,6 +1991,22 @@ export type InstallPluginPackagePayload = {
   package?: Maybe<PluginPackage>;
 };
 
+export type InstallPluginPackagesError =
+  | CloudUserError
+  | OtherUserError
+  | PluginUserError
+  | StoreUserError;
+
+export type InstallPluginPackagesInput = {
+  force?: InputMaybe<Scalars["Boolean"]["input"]>;
+  sources: Array<PluginPackageSource>;
+};
+
+export type InstallPluginPackagesPayload = {
+  errors: Array<InstallPluginPackagesError>;
+  packages: Array<PluginPackage>;
+};
+
 export type InstanceSettings = {
   aiProviders: AiProviders;
   analytic: AnalyticStatus;
@@ -2193,6 +2224,7 @@ export type MutationRoot = {
   createFilterPreset: CreateFilterPresetPayload;
   createFinding: CreateFindingPayload;
   createProject: CreateProjectPayload;
+  createReplayPipelineHttpOneSession: CreateReplayPipelineHttpOneSessionPayload;
   createReplaySession: CreateReplaySessionPayload;
   createReplaySessionCollection: CreateReplaySessionCollectionPayload;
   createRequest: CreateRequestPayload;
@@ -2241,6 +2273,7 @@ export type MutationRoot = {
   importData: DataImportResult;
   installBrowser: InstallBrowserPayload;
   installPluginPackage: InstallPluginPackagePayload;
+  installPluginPackages: InstallPluginPackagesPayload;
   localizeWorkflow: LocalizeWorkflowPayload;
   loginAsGuest: GuestAuthenticationPayload;
   logout: LogoutPayload;
@@ -2282,12 +2315,14 @@ export type MutationRoot = {
   sendAssistantMessage: SendAssistantMessagePayload;
   sendReplayTaskMessage: SendReplayTaskMessagePayload;
   sendReplayTaskMessageDraft: SendReplayTaskMessagePayload;
+  setActiveReplayPipelineEntryHttpEntry: SetActiveReplayPipelineEntryHttpEntryPayload;
   /** @deprecated Remove usage, no replacement */
   setActiveReplaySessionEntry: SetActiveReplaySessionEntryPayload;
   setGlobalConfigPort: SetConfigPortPayload;
   setGlobalConfigProject: SetConfigProjectPayload;
   setInstanceSettings: SetInstanceSettingsPayload;
   setInterceptOptions: SetInterceptOptionsPayload;
+  setPassthroughOptions: SetPassthroughOptionsPayload;
   setPluginData: SetPluginDataPayload;
   setProjectConfigStream: SetProjectConfigStreamPayload;
   startAuthenticationFlow: StartAuthenticationFlowPayload;
@@ -2313,6 +2348,7 @@ export type MutationRoot = {
   toggleWorkflow: ToggleWorkflowPayload;
   track: TrackPayload;
   uninstallPluginPackage: UninstallPluginPackagePayload;
+  uninstallPluginPackages: UninstallPluginPackagesPayload;
   updateAutomateSession: UpdateAutomateSessionPayload;
   updateBrowser: UpdateBrowserPayload;
   updateDnsRewrite: UpdateDnsRewritePayload;
@@ -2321,6 +2357,7 @@ export type MutationRoot = {
   updateFilterPreset: UpdateFilterPresetPayload;
   updateFinding: UpdateFindingPayload;
   updateReplayEntryDraft: UpdateReplayEntryDraftPayload;
+  updateReplayEntryHttpOnePipelineDraftHttpEntries: UpdateReplayEntryDraftPayload;
   updateReplaySessionSettings: UpdateReplaySessionSettingsPayload;
   updateRequestMetadata: UpdateRequestMetadataPayload;
   updateScope: UpdateScopePayload;
@@ -2389,6 +2426,10 @@ export type MutationRootCreateFindingArgs = {
 
 export type MutationRootCreateProjectArgs = {
   input: CreateProjectInput;
+};
+
+export type MutationRootCreateReplayPipelineHttpOneSessionArgs = {
+  input: CreateReplayPipelineSessionInput;
 };
 
 export type MutationRootCreateReplaySessionArgs = {
@@ -2577,6 +2618,10 @@ export type MutationRootInstallPluginPackageArgs = {
   input: InstallPluginPackageInput;
 };
 
+export type MutationRootInstallPluginPackagesArgs = {
+  input: InstallPluginPackagesInput;
+};
+
 export type MutationRootLocalizeWorkflowArgs = {
   id: Scalars["ID"]["input"];
 };
@@ -2748,6 +2793,11 @@ export type MutationRootSendReplayTaskMessageDraftArgs = {
   task: Scalars["ID"]["input"];
 };
 
+export type MutationRootSetActiveReplayPipelineEntryHttpEntryArgs = {
+  httpEntryId: Scalars["ID"]["input"];
+  id: Scalars["ID"]["input"];
+};
+
 export type MutationRootSetActiveReplaySessionEntryArgs = {
   entryId: Scalars["ID"]["input"];
   id: Scalars["ID"]["input"];
@@ -2767,6 +2817,10 @@ export type MutationRootSetInstanceSettingsArgs = {
 
 export type MutationRootSetInterceptOptionsArgs = {
   input: InterceptOptionsInput;
+};
+
+export type MutationRootSetPassthroughOptionsArgs = {
+  input: PassthroughOptionsInput;
 };
 
 export type MutationRootSetPluginDataArgs = {
@@ -2873,6 +2927,10 @@ export type MutationRootUninstallPluginPackageArgs = {
   id: Scalars["ID"]["input"];
 };
 
+export type MutationRootUninstallPluginPackagesArgs = {
+  ids: Array<Scalars["ID"]["input"]>;
+};
+
 export type MutationRootUpdateAutomateSessionArgs = {
   id: Scalars["ID"]["input"];
   input: UpdateAutomateSessionInput;
@@ -2906,6 +2964,11 @@ export type MutationRootUpdateFindingArgs = {
 export type MutationRootUpdateReplayEntryDraftArgs = {
   id: Scalars["ID"]["input"];
   input: UpdateReplayEntryDraftInput;
+};
+
+export type MutationRootUpdateReplayEntryHttpOnePipelineDraftHttpEntriesArgs = {
+  id: Scalars["ID"]["input"];
+  input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput;
 };
 
 export type MutationRootUpdateReplaySessionSettingsArgs = {
@@ -2992,6 +3055,26 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars["String"]["output"]>;
 };
 
+export type PassthroughOptions = {
+  passthroughOptions?: Maybe<PassthroughOptionsObject>;
+};
+
+export type PassthroughOptionsInput = {
+  outofscope: Scalars["Boolean"]["input"];
+  targets: PassthroughTargets;
+};
+
+export type PassthroughOptionsObject = {
+  allowlist?: Maybe<Array<Scalars["String"]["output"]>>;
+  denylist?: Maybe<Array<Scalars["String"]["output"]>>;
+  outOfScope: Scalars["Boolean"]["output"];
+};
+
+export type PassthroughTargets = {
+  allowlist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  denylist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
 export type PauseAutomateTaskError = OtherUserError | UnknownIdUserError;
 
 export type PauseAutomateTaskPayload = {
@@ -3019,6 +3102,54 @@ export type PersistProjectPayloadError =
   | OtherUserError
   | PermissionDeniedUserError
   | UnknownIdUserError;
+
+export type PipelineStrategy =
+  | PipelineStrategyLastByteSynchronization
+  | PipelineStrategySequential
+  | PipelineStrategySinglePacketAttack;
+
+export type PipelineStrategyInput =
+  | {
+      lastByteSynchronization: PipelineStrategyLastByteSynchronizationInput;
+      sequential?: never;
+      singlePacketAttack?: never;
+    }
+  | {
+      lastByteSynchronization?: never;
+      sequential: PipelineStrategySequentialInput;
+      singlePacketAttack?: never;
+    }
+  | {
+      lastByteSynchronization?: never;
+      sequential?: never;
+      singlePacketAttack: PipelineStrategySinglePacketAttackInput;
+    };
+
+export type PipelineStrategyLastByteSynchronization = {
+  failureBehavior: FailureBehavior;
+};
+
+export type PipelineStrategyLastByteSynchronizationInput = {
+  failureBehavior: FailureBehavior;
+};
+
+export type PipelineStrategySequential = {
+  abortOnFailure: Scalars["Boolean"]["output"];
+};
+
+export type PipelineStrategySequentialInput = {
+  abortOnFailure: Scalars["Boolean"]["input"];
+};
+
+export type PipelineStrategySinglePacketAttack = {
+  convertToHttp2: Scalars["Boolean"]["output"];
+  failureBehavior: FailureBehavior;
+};
+
+export type PipelineStrategySinglePacketAttackInput = {
+  convertToHttp2: Scalars["Boolean"]["input"];
+  failureBehavior: FailureBehavior;
+};
 
 export type Plugin = {
   enabled: Scalars["Boolean"]["output"];
@@ -3071,9 +3202,12 @@ export type PluginPackage = {
   links?: Maybe<PluginLinks>;
   manifestId: Scalars["ID"]["output"];
   name?: Maybe<Scalars["String"]["output"]>;
+  origin: PluginPackageOrigin;
   plugins: Array<Plugin>;
   version: Scalars["String"]["output"];
 };
+
+export { PluginPackageOrigin };
 
 export type PluginPackageSource =
   | { file: Scalars["Upload"]["input"]; manifestId?: never; url?: never }
@@ -3182,6 +3316,7 @@ export type QueryRoot = {
   interceptMessages: InterceptMessageConnection;
   interceptOptions: InterceptOptions;
   interceptStatus: InterceptStatus;
+  passthroughOptions: PassthroughOptions;
   pluginPackages: Array<PluginPackage>;
   projects: Array<Project>;
   replayEntry?: Maybe<ReplayEntry>;
@@ -3692,6 +3827,32 @@ export type ReplayEntryHttpDraft = {
   settings: ReplayEntryHttpSettings;
 };
 
+export type ReplayEntryHttpOnePipeline = ReplayEntry & {
+  activeHttpEntry?: Maybe<ReplayEntryHttp>;
+  createdAt: Scalars["Timestamp"]["output"];
+  draft?: Maybe<ReplayEntryHttpOnePipelineDraft>;
+  error?: Maybe<Scalars["String"]["output"]>;
+  httpEntries: Array<ReplayEntryHttp>;
+  id: Scalars["ID"]["output"];
+  rank: Scalars["Rank"]["output"];
+  session: ReplaySession;
+  settings: ReplayEntryHttpOnePipelineSettings;
+};
+
+export type ReplayEntryHttpOnePipelineDraft = {
+  settings: ReplayEntryHttpOnePipelineSettings;
+};
+
+export { ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind };
+
+export type ReplayEntryHttpOnePipelineSettings = {
+  strategy: PipelineStrategy;
+};
+
+export type ReplayEntryHttpOnePipelineSettingsInput = {
+  strategy: PipelineStrategyInput;
+};
+
 export type ReplayEntryHttpSettings = {
   placeholders: Array<ReplayPlaceholder>;
 };
@@ -3878,6 +4039,32 @@ export type ReplaySessionHttpEntriesArgs = {
   order?: InputMaybe<ReplayEntryOrderInput>;
 };
 
+export type ReplaySessionHttpOnePipeline = ReplaySession & {
+  activeEntry?: Maybe<ReplayEntry>;
+  collection: ReplaySessionCollection;
+  entries: ReplayEntryConnection;
+  id: Scalars["ID"]["output"];
+  name: Scalars["String"]["output"];
+  rank: Scalars["Rank"]["output"];
+  settings?: Maybe<ReplaySessionHttpOnePipelineSettings>;
+};
+
+export type ReplaySessionHttpOnePipelineEntriesArgs = {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  before?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  order?: InputMaybe<ReplayEntryOrderInput>;
+};
+
+export type ReplaySessionHttpOnePipelineSettings = {
+  strategy: PipelineStrategy;
+};
+
+export type ReplaySessionHttpOnePipelineSettingsInput = {
+  strategy: PipelineStrategyInput;
+};
+
 export type ReplaySessionHttpSettings = {
   connectionClose: Scalars["Boolean"]["output"];
   updateContentLength: Scalars["Boolean"]["output"];
@@ -3890,9 +4077,12 @@ export type ReplaySessionHttpSettingsInput = {
 
 export { ReplaySessionKind };
 
-export type ReplaySessionSettingsInput = {
-  http: ReplaySessionHttpSettingsInput;
-};
+export type ReplaySessionSettingsInput =
+  | { http: ReplaySessionHttpSettingsInput; httpOnePipeline?: never }
+  | {
+      http?: never;
+      httpOnePipeline: ReplaySessionHttpOnePipelineSettingsInput;
+    };
 
 export type ReplaySessionWs = ReplaySession & {
   activeEntry?: Maybe<ReplayEntry>;
@@ -4170,6 +4360,10 @@ export type SendReplayTaskMessagePayload = {
   message?: Maybe<StreamMessage>;
 };
 
+export type SetActiveReplayPipelineEntryHttpEntryPayload = {
+  entry?: Maybe<ReplayEntryHttpOnePipeline>;
+};
+
 export type SetActiveReplaySessionEntryPayload = {
   session?: Maybe<ReplaySession>;
 };
@@ -4219,6 +4413,10 @@ export type SetInstanceSettingsPayload = {
 
 export type SetInterceptOptionsPayload = {
   options: InterceptOptions;
+};
+
+export type SetPassthroughOptionsPayload = {
+  options: PassthroughOptions;
 };
 
 export type SetPluginDataError =
@@ -4407,12 +4605,15 @@ export { StoreErrorReason };
 
 export type StorePluginPackage = {
   author?: Maybe<StorePluginPackageAuthor>;
+  changelogUrl?: Maybe<Scalars["Url"]["output"]>;
   description?: Maybe<Scalars["String"]["output"]>;
   downloads: Scalars["Int"]["output"];
   license: Scalars["String"]["output"];
   manifestId: Scalars["ID"]["output"];
   name?: Maybe<Scalars["String"]["output"]>;
   official: Scalars["Boolean"]["output"];
+  quality: StorePluginPackageQuality;
+  readmeUrl?: Maybe<Scalars["Url"]["output"]>;
   repository: Scalars["Url"]["output"];
   version: Scalars["Version"]["output"];
 };
@@ -4422,6 +4623,8 @@ export type StorePluginPackageAuthor = {
   name?: Maybe<Scalars["String"]["output"]>;
   url?: Maybe<Scalars["String"]["output"]>;
 };
+
+export { StorePluginPackageQuality };
 
 export type StoreUserError = UserError & {
   code: Scalars["String"]["output"];
@@ -4627,6 +4830,7 @@ export type SubscriptionRoot = {
   updatedInterceptEntry: UpdatedInterceptEntryPayload;
   updatedInterceptOptions: UpdatedInterceptOptionsPayload;
   updatedInterceptStatus: UpdatedInterceptStatusPayload;
+  updatedPassthroughOptions: UpdatedPassthroughOptionsPayload;
   updatedPlugin: UpdatedPluginPayload;
   updatedPluginPackage: UpdatedPluginPackagePayload;
   updatedProject: UpdatedProjectPayload;
@@ -5639,6 +5843,13 @@ export type UninstallPluginPackagePayload = {
   error?: Maybe<UninstallPluginPackageError>;
 };
 
+export type UninstallPluginPackagesError = OtherUserError | UnknownIdUserError;
+
+export type UninstallPluginPackagesPayload = {
+  deletedIds: Array<Scalars["ID"]["output"]>;
+  errors: Array<UninstallPluginPackagesError>;
+};
+
 export type UnknownIdUserError = UserError & {
   code: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
@@ -5746,8 +5957,21 @@ export type UpdateFindingPayload = {
 };
 
 export type UpdateReplayEntryDraftInput =
-  | { http: UpdateReplayEntryHttpDraftInput; ws?: never }
-  | { http?: never; ws: UpdateReplayEntryWsDraftInput };
+  | {
+      http: UpdateReplayEntryHttpDraftInput;
+      httpOnePipeline?: never;
+      ws?: never;
+    }
+  | {
+      http?: never;
+      httpOnePipeline: UpdateReplayEntryHttpOnePipelineDraftInput;
+      ws?: never;
+    }
+  | {
+      http?: never;
+      httpOnePipeline?: never;
+      ws: UpdateReplayEntryWsDraftInput;
+    };
 
 export type UpdateReplayEntryDraftPayload = {
   entry?: Maybe<ReplayEntry>;
@@ -5758,6 +5982,21 @@ export type UpdateReplayEntryHttpDraftInput = {
   editorState: Scalars["Blob"]["input"];
   raw: Scalars["Blob"]["input"];
   settings: ReplayEntryHttpSettingsInput;
+};
+
+export type UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput = {
+  operations: Array<UpdateReplayEntryHttpOnePipelineDraftHttpEntryOperationInput>;
+};
+
+export type UpdateReplayEntryHttpOnePipelineDraftHttpEntryOperationInput = {
+  httpEntryId?: InputMaybe<Scalars["ID"]["input"]>;
+  operation: ReplayEntryHttpOnePipelineDraftHttpEntryOperationKind;
+  rank?: InputMaybe<RankInput>;
+  requestSource?: InputMaybe<RequestSourceInput>;
+};
+
+export type UpdateReplayEntryHttpOnePipelineDraftInput = {
+  settings: ReplayEntryHttpOnePipelineSettingsInput;
 };
 
 export type UpdateReplayEntryWsDraftInput = {
@@ -5975,6 +6214,10 @@ export type UpdatedInterceptOptionsPayload = {
 
 export type UpdatedInterceptStatusPayload = {
   status: InterceptStatus;
+};
+
+export type UpdatedPassthroughOptionsPayload = {
+  options: PassthroughOptions;
 };
 
 export type UpdatedPluginPackagePayload = {

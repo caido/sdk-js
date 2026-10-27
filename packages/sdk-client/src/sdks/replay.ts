@@ -1,14 +1,15 @@
 import { ReplayCollectionSDK } from "./replayCollection.js";
-import { ReplayEntrySDK } from "./replayEntry.js";
+import { ReplayEntrySDK, ReplayEntryWs } from "./replayEntry.js";
 import { ReplaySessionSDK } from "./replaySession.js";
+import { ReplayWsTask, type ReplayWsUpdate } from "./replayWs.js";
 import { ReplayTask, TaskSDK } from "./task.js";
 
 import { encodeBlob } from "@/convert/blob.js";
 import { NotFoundUserError, OtherUserError } from "@/errors/index.js";
 import type { GraphQLClient } from "@/graphql/index.js";
 import {
-  ReplaySessionDocument as LatestReplaySessionDocument,
   StartReplayTaskDocument as LatestStartReplayTaskDocument,
+  UpdatedReplayEntryWsDocument,
   UpdateReplayEntryDraftDocument,
   UpdateReplaySessionSettingsDocument,
 } from "@/graphql/index.js";
@@ -20,7 +21,10 @@ import {
   type ReplaySendResult,
   TransportVersion,
 } from "@/types/index.js";
-import { bufferAsyncIterable } from "@/utils/asyncIterable.js";
+import {
+  bufferAsyncIterable,
+  filterAsyncIterable,
+} from "@/utils/asyncIterable.js";
 import { handleGraphQLError } from "@/utils/errors.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 import type { Version } from "@/version.js";
@@ -28,6 +32,7 @@ import type { Version } from "@/version.js";
 /**
  * Top-level Replay SDK: sessions, collections, and send().
  * send(sessionId, options) starts a replay task and resolves when the task finishes.
+ * startWs(sessionId) opens a WebSocket stream, which stays open until stopped.
  */
 export class ReplaySDK {
   readonly sessions: ReplaySessionSDK;
@@ -54,40 +59,95 @@ export class ReplaySDK {
     options: ReplaySendOptions,
   ): Promise<ReplaySendResult> {
     if (await this.version.gte(TransportVersion.V0_57)) {
-      return this.sendLatest(sessionId, options);
+      return this.sendViaDraft(sessionId, options);
     }
     return this.sendV056(sessionId, options);
   }
 
-  private async sendLatest(
+  /**
+   * Open the WebSocket stream for a replay session.
+   *
+   * Unlike `send`, this resolves as soon as the task starts, because a
+   * WebSocket task stays open until `stop` is called on it.
+   *
+   * @param sessionId - The ID of the WebSocket replay session.
+   * @returns The running task, which carries sendMessage, sendDraft and stop.
+   */
+  async startWs(sessionId: ID): Promise<ReplayWsTask> {
+    if (!(await this.version.gte(TransportVersion.V0_57))) {
+      throw new OtherUserError(
+        "UNSUPPORTED",
+        "WebSocket replay requires Caido 0.57.0 or later",
+      );
+    }
+
+    const result = await this.graphql.mutation(LatestStartReplayTaskDocument, {
+      sessionId: sessionId as string,
+    });
+
+    const payload = result.startReplayTask;
+    if (isPresent(payload.error)) {
+      handleGraphQLError(payload.error);
+    }
+    if (isAbsent(payload.task)) {
+      throw new OtherUserError("INTERNAL", "startReplayTask returned no task");
+    }
+    return new ReplayWsTask(this.graphql, payload.task);
+  }
+
+  /**
+   * Watch WebSocket replay entries as the instance updates them.
+   *
+   * @param filter - Optional predicate to narrow the updates that are yielded.
+   */
+  watchWs(
+    filter?: (update: ReplayWsUpdate) => boolean,
+  ): AsyncIterable<ReplayWsUpdate> {
+    const updates = this.wsUpdates();
+
+    if (filter === undefined) {
+      return updates;
+    }
+    return filterAsyncIterable(filter, updates);
+  }
+
+  private async *wsUpdates(): AsyncGenerator<ReplayWsUpdate> {
+    const events = this.graphql.subscribe(UpdatedReplayEntryWsDocument, {
+      includeReplayRaw: true,
+      includeRequestRaw: true,
+      includeResponseRaw: true,
+    });
+
+    for await (const event of events) {
+      const entry = event.updatedReplayEntryWs.entry;
+      if (isAbsent(entry)) {
+        continue;
+      }
+      yield {
+        entry: new ReplayEntryWs(this.graphql, entry),
+        snapshot: event.updatedReplayEntryWs.snapshot,
+      };
+    }
+  }
+
+  private async sendViaDraft(
     sessionId: ID,
     options: ReplaySendOptions,
   ): Promise<ReplaySendResult> {
     const settings = options.settings ?? {};
 
     // Find the Entry on which we should update the draft.
-    // This API is kinda garbage, but we will improve it in v0.58.0
-    const sessionResult = await this.graphql.query(
-      LatestReplaySessionDocument,
-      {
-        id: sessionId as string,
-      },
-    );
-    const session = sessionResult.replaySession;
+    const session = await this.sessions.get(sessionId);
     if (isAbsent(session)) {
       throw new NotFoundUserError();
     }
-    if (session.__typename !== "ReplaySessionHttp") {
-      throw new OtherUserError("INTERNAL", "SDK only supports HTTP sessions");
+    if (session.kind !== "HTTP") {
+      throw new OtherUserError(
+        "INTERNAL",
+        "replay.send() only supports HTTP sessions",
+      );
     }
-    let targetEntryId = session.activeEntry?.id;
-    if (isAbsent(targetEntryId)) {
-      const entries = session.entries;
-      if (entries.edges.length === 0) {
-        throw new OtherUserError("INTERNAL", "Replay session has no entries");
-      }
-      targetEntryId = entries.edges[entries.edges.length - 1]?.node.id;
-    }
+    const targetEntryId = session.activeEntryId ?? session.lastEntryId;
     if (isAbsent(targetEntryId)) {
       throw new OtherUserError(
         "INTERNAL",
@@ -217,6 +277,12 @@ export class ReplaySDK {
       const entry = await this.entries.get(task.replayEntryId);
       if (isAbsent(entry)) {
         throw new OtherUserError("INTERNAL", "Replay entry not found");
+      }
+      if (entry.kind !== "HTTP") {
+        throw new OtherUserError(
+          "INTERNAL",
+          "replay.send() only supports HTTP sessions",
+        );
       }
 
       return {

@@ -20,6 +20,11 @@ export { WorkflowSDK } from "@/sdks/workflow.js";
 export {
   ReplaySessionSDK,
   ReplaySession,
+  ReplaySessionHttp,
+  ReplaySessionWs,
+  ReplaySessionHttpOnePipeline,
+  ReplaySessionUnknown,
+  type AnyReplaySession,
   ReplaySessionsListBuilder,
   ReplaySessionEntriesListBuilder,
 } from "@/sdks/replaySession.js";
@@ -28,6 +33,15 @@ export {
   ReplaySessionCollection,
   ReplayCollectionsListBuilder,
 } from "@/sdks/replayCollection.js";
-export { ReplayEntrySDK, ReplayEntry } from "@/sdks/replayEntry.js";
+export {
+  ReplayEntrySDK,
+  ReplayEntry,
+  ReplayEntryHttp,
+  ReplayEntryWs,
+  ReplayEntryHttpOnePipeline,
+  ReplayEntryUnknown,
+  type AnyReplayEntry,
+} from "@/sdks/replayEntry.js";
+export { ReplayWsTask, type ReplayWsUpdate } from "@/sdks/replayWs.js";
 export { DNSUpstreamSDK } from "@/sdks/dnsUpstream.js";
 export { DNSRewriteSDK } from "@/sdks/dnsRewrite.js";

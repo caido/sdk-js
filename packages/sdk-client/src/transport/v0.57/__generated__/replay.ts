@@ -603,6 +603,7 @@ export type ReplaySessionEntriesQueryVariables = Types.Exact<{
 export type ReplaySessionEntriesQuery = {
   replaySession?:
     | {
+        __typename: "ReplaySessionHttp";
         entries: {
           edges: Array<{
             cursor: string;
@@ -776,6 +777,7 @@ export type ReplaySessionEntriesQuery = {
         };
       }
     | {
+        __typename: "ReplaySessionWs";
         entries: {
           edges: Array<{
             cursor: string;
@@ -5016,6 +5018,7 @@ export const ReplaySessionEntriesDocument = {
             selectionSet: {
               kind: "SelectionSet",
               selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
                 {
                   kind: "InlineFragment",
                   typeCondition: {

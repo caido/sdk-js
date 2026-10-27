@@ -20,6 +20,40 @@ fragment ReplayEntryHttpFull on ReplayEntryHttp {
   }
 }
 
+fragment StreamFull on Stream {
+  __typename
+  id
+  host
+  port
+  path
+  isTls
+  protocol
+  direction
+  source
+  createdAt
+}
+
+fragment StreamWsMessageFull on StreamWsMessage {
+  __typename
+  id
+  head {
+    id
+    alteration
+    createdAt
+    direction
+    format
+    length
+    raw
+  }
+  edits {
+    id
+    alteration
+  }
+  stream {
+    id
+  }
+}
+
 fragment ReplayEntryWsFull on ReplayEntryWs {
   __typename
   createdAt
@@ -31,14 +65,68 @@ fragment ReplayEntryWsFull on ReplayEntryWs {
   session {
     id
   }
+  messages {
+    ...StreamWsMessageFull
+  }
+  stream {
+    ...StreamFull
+  }
+}
+
+fragment PipelineStrategyFull on PipelineStrategy {
+  __typename
+  ... on PipelineStrategySequential {
+    abortOnFailure
+  }
+
+  ... on PipelineStrategyLastByteSynchronization {
+    failureBehavior
+  }
+
+  ... on PipelineStrategySinglePacketAttack {
+    convertToHttp2
+    failureBehavior
+  }
+}
+
+fragment ReplayEntryHttpOnePipelineFull on ReplayEntryHttpOnePipeline {
+  __typename
+  createdAt
+  error
+  id
+  rank
+  session {
+    id
+  }
+  settings {
+    strategy {
+      ...PipelineStrategyFull
+    }
+  }
+  activeHttpEntry {
+    ...ReplayEntryHttpFull
+  }
+  httpEntries {
+    ...ReplayEntryHttpFull
+  }
 }
 
 fragment ReplayEntryFull on ReplayEntry {
+  __typename
+  id
+  createdAt
+  error
+  session {
+    id
+  }
   ... on ReplayEntryHttp {
     ...ReplayEntryHttpFull
   }
   ... on ReplayEntryWs {
     ...ReplayEntryWsFull
+  }
+  ... on ReplayEntryHttpOnePipeline {
+    ...ReplayEntryHttpOnePipelineFull
   }
 }
 
@@ -112,6 +200,7 @@ fragment ReplaySessionHttpMeta on ReplaySessionHttp {
   __typename
   id
   name
+  rank
   collection {
     id
   }
@@ -135,6 +224,7 @@ fragment ReplaySessionWsMeta on ReplaySessionWs {
   __typename
   id
   name
+  rank
   collection {
     id
   }
@@ -150,12 +240,44 @@ fragment ReplaySessionWsMeta on ReplaySessionWs {
   }
 }
 
+fragment ReplaySessionHttpOnePipelineMeta on ReplaySessionHttpOnePipeline {
+  __typename
+  id
+  name
+  rank
+  collection {
+    id
+  }
+  activeEntry {
+    id
+  }
+  entries(last: 1) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+  settings {
+    strategy {
+      ...PipelineStrategyFull
+    }
+  }
+}
+
 fragment ReplaySessionMeta on ReplaySession {
+  __typename
+  id
+  name
+  rank
   ... on ReplaySessionHttp {
     ...ReplaySessionHttpMeta
   }
   ... on ReplaySessionWs {
     ...ReplaySessionWsMeta
+  }
+  ... on ReplaySessionHttpOnePipeline {
+    ...ReplaySessionHttpOnePipelineMeta
   }
 }
 
@@ -204,6 +326,7 @@ query ReplaySessionEntries(
   $includeResponseRaw: Boolean!
 ) {
   replaySession(id: $id) {
+    __typename
     ... on ReplaySessionHttp {
       entries(after: $after, before: $before, first: $first, last: $last) {
         edges {
@@ -221,6 +344,22 @@ query ReplaySessionEntries(
       }
     }
     ... on ReplaySessionWs {
+      entries(after: $after, before: $before, first: $first, last: $last) {
+        edges {
+          cursor
+          node {
+            ...ReplayEntryFull
+          }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+    ... on ReplaySessionHttpOnePipeline {
       entries(after: $after, before: $before, first: $first, last: $last) {
         edges {
           cursor
@@ -292,6 +431,28 @@ mutation CreateReplaySession($input: CreateReplaySessionInput!) {
   }
 }
 
+mutation CreateReplayPipelineHttpOneSession(
+  $input: CreateReplayPipelineSessionInput!
+) {
+  createReplayPipelineHttpOneSession(input: $input) {
+    error {
+      __typename
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    session {
+      ...ReplaySessionHttpOnePipelineMeta
+    }
+  }
+}
+
 mutation CreateReplaySessionCollection(
   $input: CreateReplaySessionCollectionInput!
 ) {
@@ -346,11 +507,30 @@ mutation SetActiveReplaySessionEntry($id: ID!, $entryId: ID!) {
   }
 }
 
+mutation SetActiveReplayPipelineEntryHttpEntry($id: ID!, $httpEntryId: ID!) {
+  setActiveReplayPipelineEntryHttpEntry(id: $id, httpEntryId: $httpEntryId) {
+    entry {
+      id
+    }
+  }
+}
+
 mutation UpdateReplayEntryDraft(
   $id: ID!
   $input: UpdateReplayEntryDraftInput!
 ) {
   updateReplayEntryDraft(id: $id, input: $input) {
+    entry {
+      id
+    }
+  }
+}
+
+mutation UpdateReplayEntryHttpOnePipelineDraftHttpEntries(
+  $id: ID!
+  $input: UpdateReplayEntryHttpOnePipelineDraftHttpEntriesInput!
+) {
+  updateReplayEntryHttpOnePipelineDraftHttpEntries(id: $id, input: $input) {
     entry {
       id
     }
@@ -391,5 +571,85 @@ mutation StartReplayTask($sessionId: ID!) {
     task {
       ...ReplayTaskMeta
     }
+  }
+}
+
+mutation SendReplayTaskMessage(
+  $task: ID!
+  $input: SendReplayTaskMessageInput!
+) {
+  sendReplayTaskMessage(task: $task, input: $input) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    message {
+      ... on StreamWsMessage {
+        ...StreamWsMessageFull
+      }
+    }
+  }
+}
+
+mutation SendReplayTaskMessageDraft($task: ID!) {
+  sendReplayTaskMessageDraft(task: $task) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on PermissionDeniedUserError {
+        ...PermissionDeniedUserErrorFull
+      }
+      ... on CloudUserError {
+        ...CloudUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+    message {
+      ... on StreamWsMessage {
+        ...StreamWsMessageFull
+      }
+    }
+  }
+}
+
+mutation StopReplayWsTasks($taskIds: [ID!]!) {
+  stopReplayWsTasks(taskIds: $taskIds) {
+    error {
+      __typename
+      ... on UnknownIdUserError {
+        ...UnknownIdUserErrorFull
+      }
+      ... on OtherUserError {
+        ...OtherUserErrorFull
+      }
+    }
+  }
+}
+
+subscription UpdatedReplayEntryWs(
+  $includeReplayRaw: Boolean!
+  $includeRequestRaw: Boolean!
+  $includeResponseRaw: Boolean!
+) {
+  updatedReplayEntryWs {
+    entry {
+      ...ReplayEntryWsFull
+    }
+    snapshot
   }
 }
