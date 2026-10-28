@@ -59,4 +59,4 @@ jobs:
           cache: false
 
       - name: Run zizmor
-        run: mise exec -- zizmor --offline --format=github .
+        run: mise exec -- zizmor --offline --strict-collection --format=github .
