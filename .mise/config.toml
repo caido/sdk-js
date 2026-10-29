@@ -4,6 +4,7 @@ toolshed = "https://github.com/caido/mise-toolshed"
 [tools]
 node = "24.11.1"
 pnpm = "11.28.0"
+zizmor = "1.31.1"
 "toolshed:get-skills" = "latest"
 
 [settings]
