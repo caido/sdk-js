@@ -149,9 +149,9 @@ export class Client {
     this.dnsUpstream = new DNSUpstreamSDK(this.graphql);
     this.dnsRewrite = new DNSRewriteSDK(this.graphql);
     this.hostedFile = new HostedFileSDK(this.graphql);
-    this.instance = new InstanceSDK(this.graphql);
+    this.instance = new InstanceSDK(this.graphql, this.version);
     this.finding = new FindingSDK(this.graphql);
-    this.request = new RequestSDK(this.graphql);
+    this.request = new RequestSDK(this.graphql, this.version);
     this.workflow = new WorkflowSDK(this.graphql);
     this.task = new TaskSDK(this.graphql);
     this.replay = new ReplaySDK(this.graphql, this.version);

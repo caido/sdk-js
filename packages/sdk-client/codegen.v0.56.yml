@@ -2,7 +2,6 @@ schema: ./node_modules/@caido/schema-proxy-v0.56/schema.graphql
 documents:
   - ./src/transport/v0.56/documents/*.graphql
   - ./src/transport/latest/documents/connectionInfo.graphql
-  - ./src/transport/latest/documents/request.graphql
   - ./src/transport/latest/documents/range.graphql
   - ./src/transport/latest/documents/errors.graphql
   - ./src/transport/latest/documents/task.graphql

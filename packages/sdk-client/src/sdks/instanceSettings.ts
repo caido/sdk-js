@@ -1,4 +1,5 @@
 import { mapToInstanceSettings } from "@/convert/instanceSettings.js";
+import { OtherUserError } from "@/errors/index.js";
 import type {
   AiProviderAnthropicInput,
   AiProviderGoogleInput,
@@ -9,6 +10,7 @@ import type {
   SettingsAiProviderInput,
 } from "@/graphql/index.js";
 import {
+  InstanceAiProvidersDocument,
   InstanceSettingsDocument,
   SetInstanceSettingsDocument,
 } from "@/graphql/index.js";
@@ -23,19 +25,29 @@ import type {
   SetOpenAIAISettingInput,
   SetOpenRouterAISettingInput,
 } from "@/types/index.js";
+import { TransportVersion } from "@/types/index.js";
+import type { Version } from "@/version.js";
 
 /**
  * SDK for instance settings.
  */
 export class InstanceSettingsSDK {
-  constructor(private readonly graphql: GraphQLClient) {}
+  constructor(
+    private readonly graphql: GraphQLClient,
+    private readonly version: Version,
+  ) {}
 
   /**
    * Get current instance settings.
    */
   async get(): Promise<InstanceSettings> {
     const result = await this.graphql.query(InstanceSettingsDocument);
-    return mapToInstanceSettings(result.instanceSettings);
+    if (!(await this.supportsAIProviders())) {
+      return mapToInstanceSettings(result.instanceSettings);
+    }
+
+    const ai = await this.graphql.query(InstanceAiProvidersDocument);
+    return mapToInstanceSettings(result.instanceSettings, ai.instanceSettings);
   }
 
   /**
@@ -43,6 +55,12 @@ export class InstanceSettingsSDK {
    */
   async set(input: SetInstanceSettingsInput): Promise<InstanceSettings> {
     if ("ai" in input && input.ai !== undefined) {
+      if (!(await this.supportsAIProviders())) {
+        throw new OtherUserError(
+          "UNSUPPORTED",
+          "AI providers moved out of instance settings in Caido 0.59.0",
+        );
+      }
       return this.setRaw({
         aiProvider: normalizeAIInput(input.ai),
       });
@@ -91,11 +109,25 @@ export class InstanceSettingsSDK {
   private async setRaw(
     input: GraphQLSetInstanceSettingsInput,
   ): Promise<InstanceSettings> {
+    // Resolve the version first: a failed health probe after the write would
+    // otherwise report a failure for a change that was actually applied.
+    const withAIProviders = await this.supportsAIProviders();
+
     const result = await this.graphql.mutation(SetInstanceSettingsDocument, {
       input,
     });
+    const settings = result.setInstanceSettings.settings;
+    if (!withAIProviders) {
+      return mapToInstanceSettings(settings);
+    }
 
-    return mapToInstanceSettings(result.setInstanceSettings.settings);
+    const ai = await this.graphql.query(InstanceAiProvidersDocument);
+    return mapToInstanceSettings(settings, ai.instanceSettings);
+  }
+
+  /** AI providers live in instance settings only before Caido 0.59.0. */
+  private async supportsAIProviders(): Promise<boolean> {
+    return !(await this.version.gte(TransportVersion.V0_59));
   }
 }
 

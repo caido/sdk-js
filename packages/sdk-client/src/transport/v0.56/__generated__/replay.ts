@@ -127,6 +127,7 @@ export type ReplayPreprocessorFullFragment = {
 export type ReplaySessionMetaFragment = {
   id: string;
   name: string;
+  rank: string;
   collection: { id: string };
   activeEntry?: { id: string } | undefined | null;
 };
@@ -223,6 +224,7 @@ export type ReplaySessionsQuery = {
       node: {
         id: string;
         name: string;
+        rank: string;
         collection: { id: string };
         activeEntry?: { id: string } | undefined | null;
       };
@@ -347,6 +349,7 @@ export type ReplaySessionQuery = {
     | {
         id: string;
         name: string;
+        rank: string;
         collection: { id: string };
         activeEntry?: { id: string } | undefined | null;
       }
@@ -383,6 +386,7 @@ export type CreateReplaySessionMutation = {
       | {
           id: string;
           name: string;
+          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -428,6 +432,7 @@ export type MoveReplaySessionMutation = {
       | {
           id: string;
           name: string;
+          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -447,6 +452,7 @@ export type RenameReplaySessionMutation = {
       | {
           id: string;
           name: string;
+          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -477,6 +483,7 @@ export type SetActiveReplaySessionEntryMutation = {
       | {
           id: string;
           name: string;
+          rank: string;
           collection: { id: string };
           activeEntry?: { id: string } | undefined | null;
         }
@@ -1604,6 +1611,7 @@ export const ReplaySessionMetaFragmentDoc = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -2375,6 +2383,7 @@ export const ReplaySessionsDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3156,6 +3165,7 @@ export const ReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3415,6 +3425,7 @@ export const CreateReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3721,6 +3732,7 @@ export const MoveReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -3835,6 +3847,7 @@ export const RenameReplaySessionDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },
@@ -4046,6 +4059,7 @@ export const SetActiveReplaySessionEntryDocument = {
         selections: [
           { kind: "Field", name: { kind: "Name", value: "id" } },
           { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "rank" } },
           {
             kind: "Field",
             name: { kind: "Name", value: "collection" },

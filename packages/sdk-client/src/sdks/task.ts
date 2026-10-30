@@ -69,7 +69,7 @@ export class Task {
   readonly id: ID;
   readonly createdAt: Date;
 
-  private readonly graphql: GraphQLClient;
+  protected readonly graphql: GraphQLClient;
 
   constructor(graphql: GraphQLClient, data: TaskMetaFragment) {
     this.graphql = graphql;

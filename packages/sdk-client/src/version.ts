@@ -43,7 +43,11 @@ export class Version {
       return this.version;
     }
     if (this.resolution === undefined) {
-      this.resolution = this.fetchFromHealth();
+      // Drop a failed resolution so a later call can retry once /health recovers.
+      this.resolution = this.fetchFromHealth().catch((error: unknown) => {
+        this.resolution = undefined;
+        throw error;
+      });
     }
     const resolved = await this.resolution;
     this.version = resolved;
