@@ -25,11 +25,19 @@ export type WindowSDK = {
      * Show a toast message.
      * @param message The message to show.
      * @param options Options for the toast message.
-     * @param options.variant The variant of the toast message.
-     * @param options.duration The duration of the toast message in milliseconds.
      */
     showToast: (message: string, options?: {
+        /**
+         * The variant of the toast message.
+         */
         variant?: "success" | "error" | "warning" | "info";
+        /**
+         * How long the toast stays on screen, in milliseconds.
+         *
+         * When omitted, `success` and `info` are dismissed on their own after a
+         * duration derived from the length of the message, and `error` and
+         * `warning` stay until they are dismissed.
+         */
         duration?: number;
     }) => void;
     /**

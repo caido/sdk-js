@@ -78,7 +78,7 @@ export type SitemapSDK = {
      * @example
      *
      * const indicator = sdk.sitemap.addEntryIndicator(entryId, {
-     *   icon: "fas fa-exclamation-triangle",
+     *   icon: "fas fa-triangle-exclamation",
      *   description: "Security warning",
      * });
      *

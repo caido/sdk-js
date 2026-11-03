@@ -20,7 +20,7 @@ export type UISDK = {
      * const deleteButton = sdk.ui.button({
      *   variant: "primary",
      *   label: "Delete",
-     *   trailingIcon: "fas fa-trash-can",
+     *   trailingIcon: "fas fa-trash",
      *   size: "small",
      * });
      * ```

@@ -383,6 +383,16 @@ export type AnalyticStatus = {
 export type AnthropicProviderConfigurationInput = {
     url?: InputMaybe<Scalars["Url"]["input"]>;
 };
+export type ApplyPortableSettingsImportInput = {
+    /** Required (and only used) when `mode` is `ACCEPT_KEYS`. */
+    acceptedKeys?: InputMaybe<Array<PortableSettingRefInput>>;
+    /** Revision returned by `previewPortableSettings`; both hashes must match. */
+    expectedRevision: PortableSettingsRevisionInput;
+    file: Scalars["Upload"]["input"];
+    mode: PortableSettingsImportMode;
+    /** Subsets to import; omitted or empty means all of them. */
+    subsets?: Array<PortableSettingsSubset>;
+};
 export declare const AssistantErrorReason: {
     readonly ContextExceeded: "CONTEXT_EXCEEDED";
     readonly InvalidModel: "INVALID_MODEL";
@@ -906,6 +916,7 @@ export declare const CertificateErrorReason: {
     readonly InvalidP12: "INVALID_P12";
     readonly InvalidPassword: "INVALID_PASSWORD";
     readonly InvalidPrivateKey: "INVALID_PRIVATE_KEY";
+    readonly UnableToRead: "UNABLE_TO_READ";
 };
 export type CertificateErrorReason = (typeof CertificateErrorReason)[keyof typeof CertificateErrorReason];
 export type CertificateInput = {
@@ -925,6 +936,22 @@ export type ClearReplayEntryDraftPayload = {
 export type ClearSitemapEntriesPayload = {
     deletedIds: Array<Scalars["ID"]["output"]>;
 };
+export type ClientCertificate = {
+    allowlist?: Maybe<Array<Scalars["String"]["output"]>>;
+    denylist?: Maybe<Array<Scalars["String"]["output"]>>;
+    enabled: Scalars["Boolean"]["output"];
+    id: Scalars["ID"]["output"];
+    metadata: ImportCertificateMetadata;
+    rank: Scalars["String"]["output"];
+};
+export type ClientCertificateError = CertificateUserError | InvalidGlobTermsUserError | OtherUserError;
+export type ClientCertificateInputKind = {
+    p12: ClientCertificateInputP12;
+};
+export type ClientCertificateInputP12 = {
+    file: Scalars["Upload"]["input"];
+    password: Scalars["Sensitive"]["input"];
+};
 export declare const CloudErrorReason: {
     readonly Unavailable: "UNAVAILABLE";
     readonly Unexpected: "UNEXPECTED";
@@ -937,8 +964,14 @@ export type CloudUser = {
     assistantUsage: AssistantUsage;
     id: Scalars["ID"]["output"];
     plugins: Array<PluginFrontend>;
+    portableSettings: PortableSettings;
+    previewPortableSettings: PortableSettingsPreview;
     profile: UserProfile;
     settings?: Maybe<UserSettings>;
+};
+export type CloudUserPreviewPortableSettingsArgs = {
+    data: Scalars["JSON"]["input"];
+    subsets?: Array<PortableSettingsSubset>;
 };
 export type CloudUserError = UserError & {
     code: Scalars["String"]["output"];
@@ -1437,7 +1470,7 @@ export type DataImportResult = {
     id: Scalars["ID"]["output"];
     summary?: Maybe<DataImportSummary>;
 };
-export type DataImportSummary = FindingsSummary | PluginPackageDataSummary | TamperSummary;
+export type DataImportSummary = FindingsSummary | PluginPackageDataSummary | PortableSettingsSummary | TamperSummary;
 export type DefinePluginPackageDataError = OtherUserError | UnknownIdUserError;
 export type DefinePluginPackageDataInput = {
     flags: PluginPackageDataFlagsInput;
@@ -1475,6 +1508,9 @@ export type DeleteBackupPayload = {
 };
 export type DeleteBrowserPayload = {
     deletedId?: Maybe<Scalars["ID"]["output"]>;
+};
+export type DeleteClientCertificatePayload = {
+    id: Scalars["ID"]["output"];
 };
 export type DeleteDnsRewritePayload = {
     deletedId: Scalars["ID"]["output"];
@@ -1599,6 +1635,9 @@ export type DeletedBackupPayload = {
 export type DeletedBrowserPayload = {
     deletedBrowserId: Scalars["ID"]["output"];
 };
+export type DeletedClientCertificatePayload = {
+    id: Scalars["ID"]["output"];
+};
 export type DeletedDnsRewritePayload = {
     deletedId: Scalars["ID"]["output"];
 };
@@ -1686,6 +1725,11 @@ export type DropInterceptMessagePayload = {
 export type DuplicateAutomateSessionPayload = {
     session?: Maybe<AutomateSession>;
 };
+export type DuplicatePortableSettings = {
+    rejected: Array<Scalars["JSON"]["output"]>;
+    selected: Scalars["JSON"]["output"];
+    setting: PortableSettingRef;
+};
 export type Environment = {
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
@@ -1743,6 +1787,10 @@ export type ExportPluginPackageDataPayload = {
     error?: Maybe<ExportPluginPackageDataError>;
     export?: Maybe<DataExportOnDemand>;
 };
+export type ExportPortableSettingsInput = {
+    /** Subsets to export; omitted or empty means all of them. */
+    subsets?: Array<PortableSettingsSubset>;
+};
 export type ExportSitemapEntriesError = OtherUserError | PermissionDeniedUserError;
 export type ExportSitemapEntriesFilter = {
     ids: Array<Scalars["ID"]["input"]>;
@@ -1784,6 +1832,14 @@ export type FilterPresetEdge = {
     cursor: Scalars["String"]["output"];
     /** The item at the end of the edge */
     node: FilterPreset;
+};
+export type FilteredInterceptEntry = {
+    filteredEntryId: Scalars["ID"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type FilteredRequest = {
+    filteredRequestId: Scalars["ID"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
 };
 export type Finding = {
     createdAt: Scalars["Timestamp"]["output"];
@@ -1912,7 +1968,13 @@ export type GuestAuthenticationPayload = {
 export type GuestUser = {
     id: Scalars["ID"]["output"];
     plugins: Array<PluginFrontend>;
+    portableSettings: PortableSettings;
+    previewPortableSettings: PortableSettingsPreview;
     settings?: Maybe<UserSettings>;
+};
+export type GuestUserPreviewPortableSettingsArgs = {
+    data: Scalars["JSON"]["input"];
+    subsets?: Array<PortableSettingsSubset>;
 };
 export type Httpql = {
     code: Scalars["String"]["output"];
@@ -1948,11 +2010,42 @@ export declare const HostedFileStatus: {
 };
 export type HostedFileStatus = (typeof HostedFileStatus)[keyof typeof HostedFileStatus];
 export type ImportCertificateError = CertificateUserError | OtherUserError;
+export type ImportCertificateFingerprint = {
+    algorithm: Scalars["String"]["output"];
+    digest: Scalars["String"]["output"];
+};
 export type ImportCertificateInput = {
     certificate: CertificateInput;
 };
+export type ImportCertificateMetadata = {
+    fingerprint: ImportCertificateFingerprint;
+    issuer: ImportCertificateSubject;
+    subject: ImportCertificateSubject;
+    validity: ImportCertificateValidity;
+};
 export type ImportCertificatePayload = {
     error?: Maybe<ImportCertificateError>;
+};
+export type ImportCertificateSubject = {
+    commonName: Scalars["String"]["output"];
+    country: Scalars["String"]["output"];
+    organization: Scalars["String"]["output"];
+    organizationalUnit: Scalars["String"]["output"];
+};
+export type ImportCertificateValidity = {
+    notAfter: Scalars["String"]["output"];
+    notBefore: Scalars["String"]["output"];
+};
+export type ImportClientCertificateInput = {
+    allowlist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+    denylist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+    enabled: Scalars["Boolean"]["input"];
+    global: Scalars["Boolean"]["input"];
+    kind: ClientCertificateInputKind;
+};
+export type ImportClientCertificatePayload = {
+    certificate?: Maybe<ClientCertificate>;
+    error?: Maybe<ClientCertificateError>;
 };
 export type ImportDataInput = {
     findings: ImportFindingsInput;
@@ -1975,6 +2068,9 @@ export type ImportPluginPackageDataInput = {
 };
 export type ImportTamperRuleInput = {
     file: Scalars["Upload"]["input"];
+};
+export type ImportedClientCertificatePayload = {
+    certificate: ClientCertificate;
 };
 export type InstallBrowserError = CloudUserError | OtherUserError | UnsupportedPlatformUserError;
 export type InstallBrowserPayload = {
@@ -2185,6 +2281,7 @@ export type MoveTamperRulePayload = {
     rule?: Maybe<TamperRule>;
 };
 export type MutationRoot = {
+    applyPortableSettingsImport: DataImportResult;
     cancelAutomateTask: CancelAutomateTaskPayload;
     cancelBackupTask: CancelBackupTaskPayload;
     cancelRestoreBackupTask: CancelRestoreBackupTaskPayload;
@@ -2222,6 +2319,7 @@ export type MutationRoot = {
     deleteAutomateSession: DeleteAutomateSessionPayload;
     deleteBackup: DeleteBackupPayload;
     deleteBrowser: DeleteBrowserPayload;
+    deleteClientCertificate: DeleteClientCertificatePayload;
     deleteDataExport: DeleteDataExportPayload;
     deleteDnsRewrite: DeleteDnsRewritePayload;
     deleteDnsUpstream: DeleteDnsUpstreamPayload;
@@ -2248,12 +2346,14 @@ export type MutationRoot = {
     exportAutomateEntries: ExportAutomateEntriesPayload;
     exportFindings: ExportFindingsPayload;
     exportPluginPackageData: ExportPluginPackageDataPayload;
+    exportPortableSettings: DataExportOnDemand;
     exportSitemapEntries: ExportSitemapEntriesPayload;
     exportTamper: ExportTamperPayload;
     forwardInterceptMessage: ForwardInterceptMessagePayload;
     globalizeWorkflow: GlobalizeWorkflowPayload;
     hideFindings: HideFindingsPayload;
     importCertificate: ImportCertificatePayload;
+    importClientCertificate: ImportClientCertificatePayload;
     importData: DataImportResult;
     installBrowser: InstallBrowserPayload;
     installPluginPackage: InstallPluginPackagePayload;
@@ -2266,6 +2366,7 @@ export type MutationRoot = {
     pauseAutomateTask: PauseAutomateTaskPayload;
     pauseIntercept: PauseInterceptPayload;
     persistProject: PersistProjectPayload;
+    rankClientCertificate: RankClientCertificatePayload;
     rankDnsRewrite: RankDnsRewritePayload;
     rankReplaySession: RankReplaySessionPayload;
     rankReplaySessionCollection: RankReplaySessionCollectionPayload;
@@ -2339,11 +2440,13 @@ export type MutationRoot = {
     updateAIProvider: UpdateAiProviderPayload;
     updateAutomateSession: UpdateAutomateSessionPayload;
     updateBrowser: UpdateBrowserPayload;
+    updateClientCertificate: UpdateClientCertificatePayload;
     updateDnsRewrite: UpdateDnsRewritePayload;
     updateDnsUpstream: UpdateDnsUpstreamPayload;
     updateEnvironment: UpdateEnvironmentPayload;
     updateFilterPreset: UpdateFilterPresetPayload;
     updateFinding: UpdateFindingPayload;
+    updatePortableSettings: UpdatePortableSettingsPayload;
     updateReplayEntryDraft: UpdateReplayEntryDraftPayload;
     updateReplayEntryHttpPipelineDraftHttpEntries: UpdateReplayEntryDraftPayload;
     updateReplaySessionSettings: UpdateReplaySessionSettingsPayload;
@@ -2356,6 +2459,9 @@ export type MutationRoot = {
     updateViewerSettings: UpdateViewerSettingsPayload;
     updateWorkflow: UpdateWorkflowPayload;
     uploadHostedFile: UploadHostedFilePayload;
+};
+export type MutationRootApplyPortableSettingsImportArgs = {
+    input: ApplyPortableSettingsImportInput;
 };
 export type MutationRootCancelAutomateTaskArgs = {
     id: Scalars["ID"]["input"];
@@ -2465,6 +2571,9 @@ export type MutationRootDeleteAutomateSessionArgs = {
 export type MutationRootDeleteBackupArgs = {
     id: Scalars["ID"]["input"];
 };
+export type MutationRootDeleteClientCertificateArgs = {
+    id: Scalars["ID"]["input"];
+};
 export type MutationRootDeleteDataExportArgs = {
     id: Scalars["ID"]["input"];
 };
@@ -2545,6 +2654,9 @@ export type MutationRootExportFindingsArgs = {
 export type MutationRootExportPluginPackageDataArgs = {
     input: ExportPluginPackageDataInput;
 };
+export type MutationRootExportPortableSettingsArgs = {
+    input: ExportPortableSettingsInput;
+};
 export type MutationRootExportSitemapEntriesArgs = {
     input: ExportSitemapEntriesInput;
 };
@@ -2563,6 +2675,9 @@ export type MutationRootHideFindingsArgs = {
 };
 export type MutationRootImportCertificateArgs = {
     input: ImportCertificateInput;
+};
+export type MutationRootImportClientCertificateArgs = {
+    input: ImportClientCertificateInput;
 };
 export type MutationRootImportDataArgs = {
     input: ImportDataInput;
@@ -2589,6 +2704,10 @@ export type MutationRootPauseAutomateTaskArgs = {
 };
 export type MutationRootPersistProjectArgs = {
     id: Scalars["ID"]["input"];
+};
+export type MutationRootRankClientCertificateArgs = {
+    id: Scalars["ID"]["input"];
+    input: RankInput;
 };
 export type MutationRootRankDnsRewriteArgs = {
     id: Scalars["ID"]["input"];
@@ -2834,6 +2953,10 @@ export type MutationRootUpdateAutomateSessionArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateAutomateSessionInput;
 };
+export type MutationRootUpdateClientCertificateArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateClientCertificateInput;
+};
 export type MutationRootUpdateDnsRewriteArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateDnsRewriteInput;
@@ -2853,6 +2976,9 @@ export type MutationRootUpdateFilterPresetArgs = {
 export type MutationRootUpdateFindingArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateFindingInput;
+};
+export type MutationRootUpdatePortableSettingsArgs = {
+    input: UpdatePortableSettingsInput;
 };
 export type MutationRootUpdateReplayEntryDraftArgs = {
     id: Scalars["ID"]["input"];
@@ -3120,6 +3246,61 @@ export type PluginWorkflow = Plugin & {
     package: PluginPackage;
     workflow?: Maybe<Workflow>;
 };
+export type PortableSettingRef = {
+    identifier: Scalars["String"]["output"];
+    subset: PortableSettingsSubset;
+};
+export type PortableSettingRefInput = {
+    identifier: Scalars["String"]["input"];
+    subset: PortableSettingsSubset;
+};
+export type PortableSettings = {
+    data: Scalars["JSON"]["output"];
+};
+export type PortableSettingsChangedPayload = {
+    settings: PortableSettings;
+};
+export declare const PortableSettingsImportMode: {
+    readonly AcceptKeys: "ACCEPT_KEYS";
+    readonly OverwriteAll: "OVERWRITE_ALL";
+    readonly SkipCollisions: "SKIP_COLLISIONS";
+};
+export type PortableSettingsImportMode = (typeof PortableSettingsImportMode)[keyof typeof PortableSettingsImportMode];
+export type PortableSettingsIssue = DuplicatePortableSettings | UnknownPortableSettings;
+export type PortableSettingsPreview = {
+    collisions: Array<PortableSettingsPreviewCollision>;
+    deletes: Array<PortableSettingsPreviewEntry>;
+    issues: Array<PortableSettingsIssue>;
+    new: Array<PortableSettingsPreviewEntry>;
+    revision: PortableSettingsRevision;
+};
+export type PortableSettingsPreviewCollision = {
+    after: Scalars["JSON"]["output"];
+    before: Scalars["JSON"]["output"];
+    setting: PortableSettingRef;
+};
+export type PortableSettingsPreviewEntry = {
+    setting: PortableSettingRef;
+    value: Scalars["JSON"]["output"];
+};
+export type PortableSettingsRevision = {
+    acknowledgement: Scalars["String"]["output"];
+    storage: Scalars["String"]["output"];
+};
+export type PortableSettingsRevisionInput = {
+    acknowledgement: Scalars["String"]["input"];
+    storage: Scalars["String"]["input"];
+};
+export declare const PortableSettingsSubset: {
+    readonly Shortcuts: "SHORTCUTS";
+    readonly Sidebar: "SIDEBAR";
+};
+export type PortableSettingsSubset = (typeof PortableSettingsSubset)[keyof typeof PortableSettingsSubset];
+export type PortableSettingsSummary = {
+    imported: Scalars["Int"]["output"];
+    overwritten: Scalars["Int"]["output"];
+    skipped: Scalars["Int"]["output"];
+};
 export type Project = {
     backups: Array<Backup>;
     createdAt: Scalars["DateTime"]["output"];
@@ -3192,6 +3373,8 @@ export type QueryRoot = {
     backupTasks: Array<BackupTask>;
     backups: Array<Backup>;
     browser?: Maybe<Browser>;
+    clientCertificate: ClientCertificate;
+    clientCertificates: Array<ClientCertificate>;
     currentProject?: Maybe<CurrentProject>;
     dataExport?: Maybe<DataExport>;
     dataExports: Array<DataExport>;
@@ -3284,6 +3467,9 @@ export type QueryRootAutomateTasksArgs = {
     last?: InputMaybe<Scalars["Int"]["input"]>;
 };
 export type QueryRootBackupArgs = {
+    id: Scalars["ID"]["input"];
+};
+export type QueryRootClientCertificateArgs = {
     id: Scalars["ID"]["input"];
 };
 export type QueryRootDataExportArgs = {
@@ -3474,6 +3660,9 @@ export type Range = {
 export type RangeInput = {
     end: Scalars["Int"]["input"];
     start: Scalars["Int"]["input"];
+};
+export type RankClientCertificatePayload = {
+    certificate: ClientCertificate;
 };
 export type RankDnsRewritePayload = {
     rewrite: DnsRewrite;
@@ -3999,6 +4188,7 @@ export type RequestSourceInput = {
 };
 export type Response = {
     alteration: Alteration;
+    bodyFile?: Maybe<ResponseBodyFile>;
     createdAt: Scalars["Timestamp"]["output"];
     downloadUri: Scalars["Uri"]["output"];
     edited: Scalars["Boolean"]["output"];
@@ -4008,6 +4198,10 @@ export type Response = {
     raw: Scalars["Blob"]["output"];
     roundtripTime: Scalars["Int"]["output"];
     statusCode: Scalars["Int"]["output"];
+};
+export type ResponseBodyFile = {
+    downloadUri: Scalars["Uri"]["output"];
+    extension: Scalars["String"]["output"];
 };
 export type ResponseRawInput = {
     raw: Scalars["Blob"]["input"];
@@ -4494,6 +4688,7 @@ export type SubscriptionRoot = {
     deletedAutomateTask: DeletedAutomateTaskPayload;
     deletedBackup: DeletedBackupPayload;
     deletedBrowser: DeletedBrowserPayload;
+    deletedClientCertificate: DeletedClientCertificatePayload;
     deletedDataExport: DeletedDataExportPayload;
     deletedDnsRewrite: DeletedDnsRewritePayload;
     deletedDnsUpstream: DeletedDnsUpstreamPayload;
@@ -4522,6 +4717,7 @@ export type SubscriptionRoot = {
     finishedDeleteInterceptEntriesTask: FinishedDeleteInterceptEntriesTaskPayload;
     finishedRestoreBackupTask: FinishedRestoreBackupTaskPayload;
     finishedTask: FinishedTaskPayload;
+    importedClientCertificate: ImportedClientCertificatePayload;
     installedBrowser: UploadedBrowserPayload;
     selectedProject: SelectedProjectPayload;
     startedBackupTask: StartedBackupTaskPayload;
@@ -4538,6 +4734,7 @@ export type SubscriptionRoot = {
     updatedAutomateTask: UpdatedAutomateTaskPayload;
     updatedBackup: UpdatedBackupPayload;
     updatedBrowser: UpdatedBrowserPayload;
+    updatedClientCertificate: UpdatedClientCertificatePayload;
     updatedCloudStatus: UpdatedCloudStatusPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
@@ -4576,6 +4773,7 @@ export type SubscriptionRoot = {
     updatedViewerSettings: UpdatedViewerSettingsPayload;
     updatedWorkflow: UpdatedWorkflowPayload;
     uploadedHostedFile: UploadedHostedFilePayload;
+    viewerPortableSettingsChanged: PortableSettingsChangedPayload;
 };
 export type SubscriptionRootCreatedAuthenticationTokenArgs = {
     requestId: Scalars["ID"]["input"];
@@ -5381,6 +5579,9 @@ export type UnknownIdUserError = UserError & {
     code: Scalars["String"]["output"];
     id: Scalars["ID"]["output"];
 };
+export type UnknownPortableSettings = {
+    data: Scalars["JSON"]["output"];
+};
 export type UnsupportedPlatformUserError = UserError & {
     code: Scalars["String"]["output"];
 };
@@ -5422,6 +5623,15 @@ export type UpdateBrowserError = CloudUserError | OtherUserError | RenderFailedU
 export type UpdateBrowserPayload = {
     browser?: Maybe<Browser>;
     error?: Maybe<UpdateBrowserError>;
+};
+export type UpdateClientCertificateInput = {
+    allowlist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+    denylist?: InputMaybe<Array<Scalars["String"]["input"]>>;
+    enabled: Scalars["Boolean"]["input"];
+};
+export type UpdateClientCertificatePayload = {
+    certificate?: Maybe<ClientCertificate>;
+    error?: Maybe<ClientCertificateError>;
 };
 export type UpdateDnsRewriteError = OtherUserError | UnknownIdUserError;
 export type UpdateDnsRewriteInput = {
@@ -5470,6 +5680,16 @@ export type UpdateFindingInput = {
 export type UpdateFindingPayload = {
     error?: Maybe<UpdateFindingError>;
     finding?: Maybe<Finding>;
+};
+export type UpdatePortableSettingsInput = {
+    data: Scalars["JSON"]["input"];
+    /** Revision `previewPortableSettings` returned; both hashes must match. */
+    expectedRevision: PortableSettingsRevisionInput;
+    /** Subsets to write; omitted or empty means all of them. */
+    subsets?: Array<PortableSettingsSubset>;
+};
+export type UpdatePortableSettingsPayload = {
+    settings: PortableSettings;
 };
 export type UpdateReplayEntryDraftInput = {
     http: UpdateReplayEntryHttpDraftInput;
@@ -5623,6 +5843,9 @@ export type UpdatedBackupPayload = {
 export type UpdatedBrowserPayload = {
     browser: Browser;
 };
+export type UpdatedClientCertificatePayload = {
+    certificate: ClientCertificate;
+};
 export type UpdatedCloudStatusPayload = {
     cloudStatus: CloudStatus;
 };
@@ -5666,13 +5889,14 @@ export type UpdatedHostedFilePayload = {
 export type UpdatedInstanceSettingsPayload = {
     settings: InstanceSettings;
 };
-export type UpdatedInterceptEntryPayload = {
+export type UpdatedInterceptEntry = {
     interceptEntryEdge: InterceptEntryEdge;
     snapshot: Scalars["Snapshot"]["output"];
 };
-export type UpdatedInterceptEntryPayloadInterceptEntryEdgeArgs = {
+export type UpdatedInterceptEntryInterceptEntryEdgeArgs = {
     order?: InputMaybe<InterceptEntryOrderInput>;
 };
+export type UpdatedInterceptEntryPayload = FilteredInterceptEntry | UpdatedInterceptEntry;
 export type UpdatedInterceptOptionsPayload = {
     options: InterceptOptions;
 };
@@ -5710,17 +5934,18 @@ export type UpdatedReplaySessionPayload = {
     sessionEdge: ReplaySessionEdge;
     snapshot: Scalars["Snapshot"]["output"];
 };
+export type UpdatedRequest = {
+    requestEdge: RequestEdge;
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type UpdatedRequestRequestEdgeArgs = {
+    order?: InputMaybe<RequestResponseOrderInput>;
+};
 export type UpdatedRequestMetadataPayload = {
     metadata: RequestMetadata;
     snapshot: Scalars["Snapshot"]["output"];
 };
-export type UpdatedRequestPayload = {
-    requestEdge: RequestEdge;
-    snapshot: Scalars["Snapshot"]["output"];
-};
-export type UpdatedRequestPayloadRequestEdgeArgs = {
-    order?: InputMaybe<RequestResponseOrderInput>;
-};
+export type UpdatedRequestPayload = FilteredRequest | UpdatedRequest;
 export type UpdatedScopePayload = {
     scopeEdge: ScopeEdge;
     snapshot: Scalars["Snapshot"]["output"];
@@ -12283,6 +12508,11 @@ export type UpdatedInterceptEntrySubscriptionVariables = Exact<{
 }>;
 export type UpdatedInterceptEntrySubscription = {
     updatedInterceptEntry: {
+        __typename: "FilteredInterceptEntry";
+        filteredEntryId: string;
+        snapshot: number;
+    } | {
+        __typename: "UpdatedInterceptEntry";
         snapshot: number;
         interceptEntryEdge: {
             __typename: "InterceptEntryEdge";
@@ -121851,6 +122081,11 @@ export type UpdatedRequestSubscriptionVariables = Exact<{
 }>;
 export type UpdatedRequestSubscription = {
     updatedRequest: {
+        __typename: "FilteredRequest";
+        filteredRequestId: string;
+        snapshot: number;
+    } | {
+        __typename: "UpdatedRequest";
         snapshot: number;
         requestEdge: {
             __typename: "RequestEdge";
@@ -121929,6 +122164,10 @@ export type ResponseFullFragment = {
     alteration: Alteration;
     edited: boolean;
     downloadUri: string;
+    bodyFile?: {
+        extension: string;
+        downloadUri: string;
+    } | undefined | null;
     edits: Array<{
         __typename: "Response";
         id: string;
@@ -121956,6 +122195,10 @@ export type ResponseQuery = {
         alteration: Alteration;
         edited: boolean;
         downloadUri: string;
+        bodyFile?: {
+            extension: string;
+            downloadUri: string;
+        } | undefined | null;
         edits: Array<{
             __typename: "Response";
             id: string;
@@ -127060,7 +127303,7 @@ export declare const StreamWsMessageEdgeFullFragmentDoc = "\n    fragment stream
 export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayStreamWsMessagesPageFullFragmentDoc = "\n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
-export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    ";
+export declare const ResponseFullFragmentDoc = "\n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  bodyFile {\n    extension\n    downloadUri\n  }\n  edits {\n    ...responseMeta\n  }\n}\n    ";
 export declare const RuntimeFullFragmentDoc = "\n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const ReleaseFullFragmentDoc = "\n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const CloudStatusFullFragmentDoc = "\n    fragment cloudStatusFull on CloudStatus {\n  __typename\n  sync\n}\n    ";
@@ -127238,7 +127481,7 @@ export declare const InterceptEntryOffsetDocument = "\n    query InterceptEntryO
 export declare const DeleteInterceptEntriesDocument = "\n    mutation deleteInterceptEntries($filter: HTTPQLInput, $scopeId: ID) {\n  deleteInterceptEntries(filter: $filter, scopeId: $scopeId) {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n    error: userError {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteInterceptEntryDocument = "\n    mutation deleteInterceptEntry($id: ID!) {\n  deleteInterceptEntry(id: $id) {\n    deletedId\n    error: userError {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedInterceptEntryDocument = "\n    subscription createdInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  createdInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
-export declare const UpdatedInterceptEntryDocument = "\n    subscription updatedInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  updatedInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    interceptEntryEdge(order: $order) {\n      ...interceptEntryEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const UpdatedInterceptEntryDocument = "\n    subscription updatedInterceptEntry($order: InterceptEntryOrderInput, $filter: HTTPQLInput, $scopeId: ID) {\n  updatedInterceptEntry(filter: $filter, scopeId: $scopeId) {\n    __typename\n    ... on UpdatedInterceptEntry {\n      interceptEntryEdge(order: $order) {\n        ...interceptEntryEdgeMeta\n      }\n      snapshot\n    }\n    ... on FilteredInterceptEntry {\n      filteredEntryId\n      snapshot\n    }\n  }\n}\n    \n    fragment interceptEntryEdgeMeta on InterceptEntryEdge {\n  __typename\n  cursor\n  node {\n    ...interceptEntryMeta\n  }\n}\n    \n\n    fragment interceptEntryMeta on InterceptEntry {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const DeletedInterceptEntryDocument = "\n    subscription deletedInterceptEntry {\n  deletedInterceptEntry {\n    deletedEntryId\n    snapshot\n  }\n}\n    ";
 export declare const StartedDeleteInterceptEntriesTaskDocument = "\n    subscription startedDeleteInterceptEntriesTask {\n  startedDeleteInterceptEntriesTask {\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
 export declare const UpdatedDeleteInterceptEntriesTaskDocument = "\n    subscription updatedDeleteInterceptEntriesTask {\n  updatedDeleteInterceptEntriesTask {\n    snapshot\n    task {\n      ...deleteInterceptEntriesTaskFull\n    }\n  }\n}\n    \n    fragment deleteInterceptEntriesTaskFull on DeleteInterceptEntriesTask {\n  __typename\n  id\n  deletedEntryIds\n}\n    ";
@@ -127363,9 +127606,9 @@ export declare const UpdateRequestMetadataDocument = "\n    mutation updateReque
 export declare const StartExportRequestsTaskDocument = "\n    mutation startExportRequestsTask($input: StartExportRequestsTaskInput!) {\n  startExportRequestsTask(input: $input) {\n    task {\n      ...dataExportTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const RenderRequestDocument = "\n    mutation renderRequest($id: ID!, $input: RenderRequestInput!) {\n  renderRequest(id: $id, input: $input) {\n    render\n    error {\n      ... on RenderFailedUserError {\n        ...renderFailedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment renderFailedUserErrorFull on RenderFailedUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedRequestDocument = "\n    subscription createdRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  createdRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
-export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    requestEdge(order: $order) {\n      ...requestEdgeMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const UpdatedRequestDocument = "\n    subscription updatedRequest($order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  updatedRequest(scopeId: $scopeId, filter: $filter) {\n    __typename\n    ... on UpdatedRequest {\n      requestEdge(order: $order) {\n        ...requestEdgeMeta\n      }\n      snapshot\n    }\n    ... on FilteredRequest {\n      filteredRequestId\n      snapshot\n    }\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const UpdatedRequestMetadataDocument = "\n    subscription updatedRequestMetadata {\n  updatedRequestMetadata {\n    metadata {\n      ...requestMetadataFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    ";
-export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
+export declare const ResponseDocument = "\n    query response($id: ID!) {\n  response(id: $id) {\n    ...responseFull\n  }\n}\n    \n    fragment responseFull on Response {\n  ...responseMeta\n  raw\n  bodyFile {\n    extension\n    downloadUri\n  }\n  edits {\n    ...responseMeta\n  }\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
 export declare const GetUpdateStateDocument = "\n    query getUpdateState {\n  runtime {\n    availableUpdate {\n      ...releaseFull\n    }\n  }\n}\n    \n    fragment releaseFull on Release {\n  __typename\n  links {\n    __typename\n    display\n    link\n    platform\n  }\n  releasedAt\n  version\n}\n    ";
 export declare const GetInstanceStateDocument = "\n    query getInstanceState {\n  runtime {\n    ...runtimeFull\n  }\n}\n    \n    fragment runtimeFull on Runtime {\n  __typename\n  version\n  platform\n}\n    ";
 export declare const GetLogsDocument = "\n    query getLogs {\n  runtime {\n    logs\n  }\n}\n    ";

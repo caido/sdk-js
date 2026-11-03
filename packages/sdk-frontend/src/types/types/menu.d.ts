@@ -16,9 +16,9 @@ type RequestRowMenuItem = {
      */
     commandId: CommandID;
     /**
-     * The icon to display to the left of the menu item.
+     * The {@link Icon} to display to the left of the menu item.
      */
-    leadingIcon?: string;
+    leadingIcon?: Icon;
 };
 /**
  * A context-menu item that appears when right-clicking a request pane.
@@ -31,9 +31,9 @@ type RequestMenuItem = {
      */
     commandId: CommandID;
     /**
-     * The icon to display to the left of the menu item.
+     * The {@link Icon} to display to the left of the menu item.
      */
-    leadingIcon?: string;
+    leadingIcon?: Icon;
 };
 /**
  * A context-menu item that appears when right-clicking a response pane.
@@ -46,9 +46,9 @@ type ResponseMenuItem = {
      */
     commandId: CommandID;
     /**
-     * The icon to display to the left of the menu item.
+     * The {@link Icon} to display to the left of the menu item.
      */
-    leadingIcon?: string;
+    leadingIcon?: Icon;
 };
 /**
  * A menu item that appears in the settings menu.

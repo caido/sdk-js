@@ -13,7 +13,7 @@ export type MenuSDK = {
      * sdk.menu.registerItem({
      *   type: "Request",
      *   commandId: "hello",
-     *   leadingIcon: "fas fa-hand",
+     *   leadingIcon: "fas fa-copy",
      * });
      * ```
      */

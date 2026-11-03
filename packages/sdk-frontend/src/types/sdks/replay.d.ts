@@ -286,7 +286,7 @@ export type ReplaySDK = {
      * @example
      *
      * const indicator = sdk.replay.addSessionIndicator(sessionId, {
-     *   icon: "fas fa-exclamation-triangle",
+     *   icon: "fas fa-triangle-exclamation",
      *   description: "Security warning",
      *   showTabIcon: true,
      * });

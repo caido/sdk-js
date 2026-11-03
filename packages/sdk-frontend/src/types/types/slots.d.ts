@@ -1,6 +1,6 @@
 import { type API } from "../sdks";
 import { type CommandID } from "./commands";
-import { type ComponentDefinition, type Prettify } from "./utils";
+import { type ComponentDefinition, type Icon, type Prettify } from "./utils";
 type DefineSlotContent<TType extends string, P extends Record<string, unknown>> = Prettify<{
     type: TType;
 } & P>;
@@ -27,7 +27,10 @@ export type SlotContentPropsGroup = SlotContentProps | SlotContentPropsInternal;
  */
 export type ButtonSlotContent = DefineSlotContent<"Button", {
     label: string;
-    icon?: string;
+    /**
+     * The {@link Icon} to display on the slot content.
+     */
+    icon?: Icon;
     onClick: () => void;
 }>;
 /**
@@ -43,7 +46,10 @@ export type CustomSlotContent<TProps extends SlotContentPropsGroup = SlotContent
  */
 export type CommandSlotContent = DefineSlotContent<"Command", {
     commandId: CommandID;
-    icon?: string;
+    /**
+     * The {@link Icon} to display on the slot content.
+     */
+    icon?: Icon;
 }>;
 /**
  * Union type of all possible slot content types.

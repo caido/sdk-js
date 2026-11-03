@@ -53,7 +53,7 @@ export type AutomateSDK = {
      * @example
      *
      * const indicator = sdk.automate.addEntryIndicator(entryId, {
-     *   icon: "fas fa-exclamation-triangle",
+     *   icon: "fas fa-triangle-exclamation",
      *   description: "Security warning",
      * });
      *

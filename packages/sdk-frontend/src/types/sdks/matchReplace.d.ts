@@ -148,7 +148,7 @@ export type MatchReplaceSDK = {
      * @example
      *
      * const indicator = sdk.matchReplace.addRuleIndicator(ruleId, {
-     *   icon: "fas fa-exclamation-triangle",
+     *   icon: "fas fa-triangle-exclamation",
      *   description: "Security warning",
      * });
      *
