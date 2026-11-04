@@ -65,7 +65,6 @@ export type OnboardingSettings = {
  * @category Instance
  */
 export type InstanceSettings = {
-  ai: AISettings;
   analytics: AnalyticsSettings;
   onboarding: OnboardingSettings;
 };
@@ -148,17 +147,10 @@ export type SetOnboardingSettingsInput = {
  */
 export type SetInstanceSettingsInput =
   | {
-      ai: SetAISettingsInput;
-      analytics?: never;
-      onboarding?: never;
-    }
-  | {
-      ai?: never;
       analytics: SetAnalyticsSettingsInput;
       onboarding?: never;
     }
   | {
-      ai?: never;
       analytics?: never;
       onboarding: SetOnboardingSettingsInput;
     };

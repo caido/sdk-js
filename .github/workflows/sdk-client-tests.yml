@@ -26,9 +26,8 @@ jobs:
       fail-fast: false
       matrix:
         caido-version:
-          - 0.56.0
-          - 0.57.0
           - 0.58.0
+          - 0.59.0
 
     services:
       caido:

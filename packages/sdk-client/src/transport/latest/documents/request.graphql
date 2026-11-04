@@ -80,23 +80,9 @@ query Requests(
   }
 }
 
-mutation CreateRequest(
-  $input: CreateRequestInput!
-  $includeRequestRaw: Boolean!
-  $includeResponseRaw: Boolean!
-) {
+mutation CreateRequest($input: CreateRequestInput!) {
   createRequest(input: $input) {
-    error {
-      __typename
-      ... on OtherUserError {
-        ...OtherUserErrorFull
-      }
-      ... on UnknownIdUserError {
-        ...UnknownIdUserErrorFull
-      }
-    }
-    request {
-      ...RequestFull
-    }
+    id
+    responseId
   }
 }
