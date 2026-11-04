@@ -115,6 +115,26 @@ export type RequestGetOptions = {
 };
 
 /**
+ * What produced a request.
+ * @category Request
+ */
+export const Source = {
+  Automate: "AUTOMATE",
+  Import: "IMPORT",
+  Intercept: "INTERCEPT",
+  Plugin: "PLUGIN",
+  Replay: "REPLAY",
+  Sample: "SAMPLE",
+  Workflow: "WORKFLOW",
+} as const;
+
+/**
+ * What produced a request.
+ * @category Request
+ */
+export type Source = (typeof Source)[keyof typeof Source];
+
+/**
  * Options for creating a request.
  * @category Request
  */
@@ -131,14 +151,8 @@ export type CreateRequestOptions = {
   query: string;
   /** The raw request bytes. */
   raw: Uint8Array;
-  /** The alteration applied to the request. */
-  alteration: string;
   /** The source of the request. */
-  source: string;
-  /** The ID of the parent request, if any. */
-  parentId?: ID;
-  /** The raw response bytes, if any. */
-  response?: Uint8Array;
+  source: Source;
   /** The SNI hostname, if any. */
   sni?: string;
 };

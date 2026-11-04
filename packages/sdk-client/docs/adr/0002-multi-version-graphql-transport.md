@@ -5,11 +5,11 @@ The SDK must talk to Caido instances running different releases. GraphQL schema 
 ## Rules for contributors and agents
 
 1. **Canonical transport lives in `transport/latest/`** — documents, `__generated__/`, and `convert/` for the current schema. This is the default path for every operation.
-2. **Overrides are additive** — when an operation **shape** differs on an older instance (removed/renamed fields, new required arguments, union/interface refactors), add `transport/v0.XX/documents/<op>.graphql` and a hand-written codegen config against the matching npm schema alias. Do **not** add per-SDK-class convert files under `transport/`.
+2. **Overrides are additive** — when an operation **shape** differs on an older instance (removed/renamed fields, new required arguments, union/interface refactors), add `transport/v0.XX/documents/<op>.graphql` and a hand-written codegen config against the matching npm schema alias. Drop a fork once the release it serves is out of support. Do **not** add per-SDK-class convert files under `transport/`.
 3. **`convert/` is for shared wire primitives only** — blob decoding, connection info, request/response shapes, pagination, etc. SDK entity classes (`ReplayEntry`, `ReplaySession`, …) map their own wire fragments inside the class constructor. No `Mapped*` intermediate types and no `transport/*/convert/<entity>.ts` files.
 4. **Additive input fields do not require overrides** — when a schema release only adds optional or new input fields (e.g. `global` on `CreateFilterPresetInput`), keep the canonical document and pass the new field from the SDK. Older instances ignore unknown input fields; do not fork the operation or branch on version for that field alone.
 5. **Branch with `await version.gte(TransportVersion.X_Y_Z)`** — each override is guarded by an explicit semver threshold from `TransportVersion` in `types/versioned.ts`. Canonical transport is the `if` branch at the introducing threshold; older transport is the `else` path. Use `if`/`else` blocks — not a derived schema string or secondary version comparison.
-6. **`TransportVersion` identifies bundled forks** — a const object of full semver strings (`"0.56.0"`, `"0.57.0"`, …). Never use prefixed aliases like `"v0.56"` or a separate `"latest"` label. Add a new key when a new override fork is introduced.
+6. **`TransportVersion` identifies bundled forks** — a const object of full semver strings (`"0.58.0"`, `"0.59.0"`, …). Never use prefixed aliases like `"v0.58"` or a separate `"latest"` label. Add a key when a fork is introduced, and remove it when the fork is dropped.
 7. **Wrap wire fragments in `Versioned`** — call sites pass `versioned(TransportVersion.X_Y_Z, fragment)` into SDK entity constructors. Define a `VersionedOf<{ [TransportVersion.X]: LatestFragment; [TransportVersion.Y]: V0Fragment }>` alias per entity. The constructor `switch`es on `fragment.version` and assigns public fields directly from `fragment.data`. Reuse generated fragment types for field types where possible (e.g. `V056ReplayEntryFullFragment["settings"]`).
 8. **`Version` is exported** — readonly handle with `Version.of(semver)` for seeded version (no fetch) and lazy resolution via shared `RestClient` otherwise. `await version.get()` and `await version.gte(...)` are async.
 9. **Shared wire clients** — `GraphQLClient` and `RestClient` are shared by the client and all SDKs. They are not forked per schema version.
@@ -27,7 +27,7 @@ src/
       documents/*.graphql
       __generated__/
       convert/              ← shared primitives only (blob, network, request, …)
-    v0.56/                  ← only when an operation diverges
+    v0.58/                  ← only when an operation diverges
       documents/replay.graphql
       __generated__/replay.ts
   types/
@@ -38,8 +38,9 @@ src/
 
 ## Build
 
-- Install older schemas via npm aliases: `"@caido/schema-proxy-v0.56": "npm:@caido/schema-proxy@0.56.0"`.
-- Hand-written `codegen.v0.56.yml` per override version; latest uses `codegen.yml`.
+- Install older schemas via npm aliases: `"@caido/schema-proxy-v0.58": "npm:@caido/schema-proxy@0.58.3"`.
+- Hand-written `codegen.v0.58.yml` per override version; latest uses `codegen.yml`.
+- Pin the alias to the **last patch** of the release line. Some `@caido/schema-proxy` patch versions were published from a release candidate and do not match the image of the same tag; verify against `proxy-backend`'s `schema.graphql` at that git tag before pinning.
 - Override documents codegen independently against their version's schema — not merged with canonical.
 
 ## Considered options

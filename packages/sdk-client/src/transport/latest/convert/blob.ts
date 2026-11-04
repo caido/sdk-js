@@ -14,8 +14,12 @@ export const decodeBlob = (raw: string | undefined): Uint8Array | undefined => {
 };
 
 export const encodeBlob = (bytes: string | Uint8Array): string => {
-  if (typeof bytes === "string") {
-    return btoa(bytes);
+  const raw =
+    typeof bytes === "string" ? new TextEncoder().encode(bytes) : bytes;
+
+  let binary = "";
+  for (const byte of raw) {
+    binary += String.fromCharCode(byte);
   }
-  return btoa(String.fromCharCode(...bytes));
+  return btoa(binary);
 };

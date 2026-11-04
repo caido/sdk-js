@@ -1,430 +1,509 @@
 export const AIErrorReason = {
-  InvalidAuthentication: "INVALID_AUTHENTICATION",
-  ProviderNotConfigured: "PROVIDER_NOT_CONFIGURED",
-  RequestMalformed: "REQUEST_MALFORMED",
+  InvalidAuthentication: 'INVALID_AUTHENTICATION',
+  KindTaken: 'KIND_TAKEN',
+  ProviderError: 'PROVIDER_ERROR',
+  RequestMalformed: 'REQUEST_MALFORMED',
+  SignInDenied: 'SIGN_IN_DENIED',
+  SignInExpired: 'SIGN_IN_EXPIRED'
 } as const;
 
-export type AIErrorReason = (typeof AIErrorReason)[keyof typeof AIErrorReason];
+export type AIErrorReason = typeof AIErrorReason[keyof typeof AIErrorReason];
+export const AIModelCapabilitySupport = {
+  Supported: 'SUPPORTED',
+  Unknown: 'UNKNOWN',
+  Unsupported: 'UNSUPPORTED'
+} as const;
+
+export type AIModelCapabilitySupport = typeof AIModelCapabilitySupport[keyof typeof AIModelCapabilitySupport];
+export const AIModelSource = {
+  /** Shipped with Caido, it cannot be edited. */
+  Catalog: 'CATALOG',
+  /** Added by the user. It replaces the catalog model of the same name. */
+  Custom: 'CUSTOM'
+} as const;
+
+export type AIModelSource = typeof AIModelSource[keyof typeof AIModelSource];
+export const AIProviderAPI = {
+  Anthropic: 'ANTHROPIC',
+  Bedrock: 'BEDROCK',
+  ChatgptResponse: 'CHATGPT_RESPONSE',
+  Gemini: 'GEMINI',
+  OpenaiCompletion: 'OPENAI_COMPLETION',
+  OpenaiResponse: 'OPENAI_RESPONSE',
+  Openrouter: 'OPENROUTER',
+  XaiCompletion: 'XAI_COMPLETION',
+  XaiResponse: 'XAI_RESPONSE'
+} as const;
+
+export type AIProviderAPI = typeof AIProviderAPI[keyof typeof AIProviderAPI];
+export const AIProviderAuthStatus = {
+  Invalid: 'INVALID',
+  Unverified: 'UNVERIFIED',
+  Valid: 'VALID'
+} as const;
+
+export type AIProviderAuthStatus = typeof AIProviderAuthStatus[keyof typeof AIProviderAuthStatus];
+export const AIProviderKind = {
+  Anthropic: 'ANTHROPIC',
+  Bedrock: 'BEDROCK',
+  Chatgpt: 'CHATGPT',
+  Custom: 'CUSTOM',
+  Gemini: 'GEMINI',
+  Openai: 'OPENAI',
+  Openrouter: 'OPENROUTER',
+  Xai: 'XAI'
+} as const;
+
+export type AIProviderKind = typeof AIProviderKind[keyof typeof AIProviderKind];
+export const AIProviderOAuthKind = {
+  Chatgpt: 'CHATGPT',
+  Xai: 'XAI'
+} as const;
+
+export type AIProviderOAuthKind = typeof AIProviderOAuthKind[keyof typeof AIProviderOAuthKind];
+export const AIReasoningEffort = {
+  High: 'HIGH',
+  Low: 'LOW',
+  Max: 'MAX',
+  Medium: 'MEDIUM',
+  Minimal: 'MINIMAL',
+  Xhigh: 'XHIGH'
+} as const;
+
+export type AIReasoningEffort = typeof AIReasoningEffort[keyof typeof AIReasoningEffort];
 export const Alteration = {
-  Manual: "MANUAL",
-  None: "NONE",
-  Tamper: "TAMPER",
+  Manual: 'MANUAL',
+  None: 'NONE',
+  Tamper: 'TAMPER'
 } as const;
 
-export type Alteration = (typeof Alteration)[keyof typeof Alteration];
+export type Alteration = typeof Alteration[keyof typeof Alteration];
 export const AssistantErrorReason = {
-  ContextExceeded: "CONTEXT_EXCEEDED",
-  InvalidModel: "INVALID_MODEL",
-  Offline: "OFFLINE",
-  QuotaExceeded: "QUOTA_EXCEEDED",
-  Unknown: "UNKNOWN",
+  ContextExceeded: 'CONTEXT_EXCEEDED',
+  InvalidModel: 'INVALID_MODEL',
+  Offline: 'OFFLINE',
+  QuotaExceeded: 'QUOTA_EXCEEDED',
+  Unknown: 'UNKNOWN'
 } as const;
 
-export type AssistantErrorReason =
-  (typeof AssistantErrorReason)[keyof typeof AssistantErrorReason];
+export type AssistantErrorReason = typeof AssistantErrorReason[keyof typeof AssistantErrorReason];
 export const AssistantMessageRole = {
-  Assistant: "ASSISTANT",
-  System: "SYSTEM",
-  User: "USER",
+  Assistant: 'ASSISTANT',
+  System: 'SYSTEM',
+  User: 'USER'
 } as const;
 
-export type AssistantMessageRole =
-  (typeof AssistantMessageRole)[keyof typeof AssistantMessageRole];
+export type AssistantMessageRole = typeof AssistantMessageRole[keyof typeof AssistantMessageRole];
 export const AuthenticationErrorReason = {
-  Denied: "DENIED",
-  Expired: "EXPIRED",
-  Invalid: "INVALID",
-  StaleDate: "STALE_DATE",
+  Denied: 'DENIED',
+  Expired: 'EXPIRED',
+  Invalid: 'INVALID',
+  StaleDate: 'STALE_DATE'
 } as const;
 
-export type AuthenticationErrorReason =
-  (typeof AuthenticationErrorReason)[keyof typeof AuthenticationErrorReason];
+export type AuthenticationErrorReason = typeof AuthenticationErrorReason[keyof typeof AuthenticationErrorReason];
 export const AuthenticationScope = {
-  Assistant: "ASSISTANT",
-  Offline: "OFFLINE",
-  ProfileRead: "PROFILE_READ",
+  Assistant: 'ASSISTANT',
+  Offline: 'OFFLINE',
+  ProfileRead: 'PROFILE_READ'
 } as const;
 
-export type AuthenticationScope =
-  (typeof AuthenticationScope)[keyof typeof AuthenticationScope];
+export type AuthenticationScope = typeof AuthenticationScope[keyof typeof AuthenticationScope];
 export const AuthorizationErrorReason = {
-  Forbidden: "FORBIDDEN",
-  InvalidToken: "INVALID_TOKEN",
-  MissingScope: "MISSING_SCOPE",
+  Forbidden: 'FORBIDDEN',
+  InvalidToken: 'INVALID_TOKEN',
+  MissingScope: 'MISSING_SCOPE'
 } as const;
 
-export type AuthorizationErrorReason =
-  (typeof AuthorizationErrorReason)[keyof typeof AuthorizationErrorReason];
+export type AuthorizationErrorReason = typeof AuthorizationErrorReason[keyof typeof AuthorizationErrorReason];
 export const AutomateEntryRequestOrderBy = {
-  Extract_0: "EXTRACT_0",
-  Extract_1: "EXTRACT_1",
-  Extract_2: "EXTRACT_2",
-  Extract_3: "EXTRACT_3",
-  Extract_4: "EXTRACT_4",
-  Id: "ID",
-  Payload_0: "PAYLOAD_0",
-  Payload_1: "PAYLOAD_1",
-  Payload_2: "PAYLOAD_2",
-  Payload_3: "PAYLOAD_3",
-  Payload_4: "PAYLOAD_4",
-  Position: "POSITION",
-  ReqCreatedAt: "REQ_CREATED_AT",
-  RespLength: "RESP_LENGTH",
-  RespRoundtripTime: "RESP_ROUNDTRIP_TIME",
-  RespStatusCode: "RESP_STATUS_CODE",
+  Extract_0: 'EXTRACT_0',
+  Extract_1: 'EXTRACT_1',
+  Extract_2: 'EXTRACT_2',
+  Extract_3: 'EXTRACT_3',
+  Extract_4: 'EXTRACT_4',
+  Id: 'ID',
+  Payload_0: 'PAYLOAD_0',
+  Payload_1: 'PAYLOAD_1',
+  Payload_2: 'PAYLOAD_2',
+  Payload_3: 'PAYLOAD_3',
+  Payload_4: 'PAYLOAD_4',
+  Position: 'POSITION',
+  ReqCreatedAt: 'REQ_CREATED_AT',
+  RespLength: 'RESP_LENGTH',
+  RespRoundtripTime: 'RESP_ROUNDTRIP_TIME',
+  RespStatusCode: 'RESP_STATUS_CODE'
 } as const;
 
-export type AutomateEntryRequestOrderBy =
-  (typeof AutomateEntryRequestOrderBy)[keyof typeof AutomateEntryRequestOrderBy];
+export type AutomateEntryRequestOrderBy = typeof AutomateEntryRequestOrderBy[keyof typeof AutomateEntryRequestOrderBy];
 export const AutomatePayloadStrategy = {
-  All: "ALL",
-  Matrix: "MATRIX",
-  Parallel: "PARALLEL",
-  Sequential: "SEQUENTIAL",
+  All: 'ALL',
+  Matrix: 'MATRIX',
+  Parallel: 'PARALLEL',
+  Sequential: 'SEQUENTIAL'
 } as const;
 
-export type AutomatePayloadStrategy =
-  (typeof AutomatePayloadStrategy)[keyof typeof AutomatePayloadStrategy];
+export type AutomatePayloadStrategy = typeof AutomatePayloadStrategy[keyof typeof AutomatePayloadStrategy];
 export const AutomateTaskErrorReason = {
-  Internal: "INTERNAL",
-  InvalidHostedFile: "INVALID_HOSTED_FILE",
+  Internal: 'INTERNAL',
+  InvalidHostedFile: 'INVALID_HOSTED_FILE'
 } as const;
 
-export type AutomateTaskErrorReason =
-  (typeof AutomateTaskErrorReason)[keyof typeof AutomateTaskErrorReason];
+export type AutomateTaskErrorReason = typeof AutomateTaskErrorReason[keyof typeof AutomateTaskErrorReason];
 export const BackupErrorReason = {
-  Invalid: "INVALID",
-  NotDone: "NOT_DONE",
+  Invalid: 'INVALID',
+  NotDone: 'NOT_DONE'
 } as const;
 
-export type BackupErrorReason =
-  (typeof BackupErrorReason)[keyof typeof BackupErrorReason];
+export type BackupErrorReason = typeof BackupErrorReason[keyof typeof BackupErrorReason];
 export const BackupStatus = {
-  Done: "DONE",
-  Error: "ERROR",
-  Processing: "PROCESSING",
+  Done: 'DONE',
+  Error: 'ERROR',
+  Processing: 'PROCESSING'
 } as const;
 
-export type BackupStatus = (typeof BackupStatus)[keyof typeof BackupStatus];
+export type BackupStatus = typeof BackupStatus[keyof typeof BackupStatus];
 export const CertificateErrorReason = {
-  InvalidCertificate: "INVALID_CERTIFICATE",
-  InvalidP12: "INVALID_P12",
-  InvalidPassword: "INVALID_PASSWORD",
-  InvalidPrivateKey: "INVALID_PRIVATE_KEY",
+  InvalidCertificate: 'INVALID_CERTIFICATE',
+  InvalidP12: 'INVALID_P12',
+  InvalidPassword: 'INVALID_PASSWORD',
+  InvalidPrivateKey: 'INVALID_PRIVATE_KEY'
 } as const;
 
-export type CertificateErrorReason =
-  (typeof CertificateErrorReason)[keyof typeof CertificateErrorReason];
+export type CertificateErrorReason = typeof CertificateErrorReason[keyof typeof CertificateErrorReason];
 export const CloudErrorReason = {
-  Unavailable: "UNAVAILABLE",
-  Unexpected: "UNEXPECTED",
+  Unavailable: 'UNAVAILABLE',
+  Unexpected: 'UNEXPECTED'
 } as const;
 
-export type CloudErrorReason =
-  (typeof CloudErrorReason)[keyof typeof CloudErrorReason];
+export type CloudErrorReason = typeof CloudErrorReason[keyof typeof CloudErrorReason];
+export const CustomAIProviderAPI = {
+  Anthropic: 'ANTHROPIC',
+  Gemini: 'GEMINI',
+  OpenaiCompletion: 'OPENAI_COMPLETION',
+  OpenaiResponse: 'OPENAI_RESPONSE',
+  Openrouter: 'OPENROUTER',
+  XaiCompletion: 'XAI_COMPLETION',
+  XaiResponse: 'XAI_RESPONSE'
+} as const;
+
+export type CustomAIProviderAPI = typeof CustomAIProviderAPI[keyof typeof CustomAIProviderAPI];
 export const DataExportFormat = {
-  Csv: "CSV",
-  Json: "JSON",
+  Csv: 'CSV',
+  Json: 'JSON'
 } as const;
 
-export type DataExportFormat =
-  (typeof DataExportFormat)[keyof typeof DataExportFormat];
+export type DataExportFormat = typeof DataExportFormat[keyof typeof DataExportFormat];
 export const DataExportStatus = {
-  Cancelled: "CANCELLED",
-  Done: "DONE",
-  Error: "ERROR",
-  Processing: "PROCESSING",
+  Cancelled: 'CANCELLED',
+  Done: 'DONE',
+  Error: 'ERROR',
+  Processing: 'PROCESSING'
 } as const;
 
-export type DataExportStatus =
-  (typeof DataExportStatus)[keyof typeof DataExportStatus];
+export type DataExportStatus = typeof DataExportStatus[keyof typeof DataExportStatus];
 export const EnvironmentVariableKind = {
-  Plain: "PLAIN",
-  Secret: "SECRET",
+  Plain: 'PLAIN',
+  Secret: 'SECRET'
 } as const;
 
-export type EnvironmentVariableKind =
-  (typeof EnvironmentVariableKind)[keyof typeof EnvironmentVariableKind];
+export type EnvironmentVariableKind = typeof EnvironmentVariableKind[keyof typeof EnvironmentVariableKind];
+export const FailureBehavior = {
+  AbortOnPartial: 'ABORT_ON_PARTIAL',
+  FireOnPartial: 'FIRE_ON_PARTIAL'
+} as const;
+
+export type FailureBehavior = typeof FailureBehavior[keyof typeof FailureBehavior];
 export const FindingOrderBy = {
-  CreatedAt: "CREATED_AT",
-  Host: "HOST",
-  Id: "ID",
-  Path: "PATH",
-  Reporter: "REPORTER",
-  Title: "TITLE",
+  CreatedAt: 'CREATED_AT',
+  Host: 'HOST',
+  Id: 'ID',
+  Path: 'PATH',
+  Reporter: 'REPORTER',
+  Title: 'TITLE'
 } as const;
 
-export type FindingOrderBy =
-  (typeof FindingOrderBy)[keyof typeof FindingOrderBy];
+export type FindingOrderBy = typeof FindingOrderBy[keyof typeof FindingOrderBy];
 export const HostedFileStatus = {
-  Error: "ERROR",
-  Ready: "READY",
+  Error: 'ERROR',
+  Ready: 'READY'
 } as const;
 
-export type HostedFileStatus =
-  (typeof HostedFileStatus)[keyof typeof HostedFileStatus];
+export type HostedFileStatus = typeof HostedFileStatus[keyof typeof HostedFileStatus];
 export const InterceptEntryOrderBy = {
-  Id: "ID",
-  ReqCreatedAt: "REQ_CREATED_AT",
-  ReqFileExtension: "REQ_FILE_EXTENSION",
-  ReqHost: "REQ_HOST",
-  ReqMethod: "REQ_METHOD",
-  ReqPath: "REQ_PATH",
-  ReqQuery: "REQ_QUERY",
-  RespLength: "RESP_LENGTH",
-  RespRoundtripTime: "RESP_ROUNDTRIP_TIME",
-  RespStatusCode: "RESP_STATUS_CODE",
+  Id: 'ID',
+  ReqCreatedAt: 'REQ_CREATED_AT',
+  ReqFileExtension: 'REQ_FILE_EXTENSION',
+  ReqHost: 'REQ_HOST',
+  ReqMethod: 'REQ_METHOD',
+  ReqPath: 'REQ_PATH',
+  ReqQuery: 'REQ_QUERY',
+  RespLength: 'RESP_LENGTH',
+  RespRoundtripTime: 'RESP_ROUNDTRIP_TIME',
+  RespStatusCode: 'RESP_STATUS_CODE'
 } as const;
 
-export type InterceptEntryOrderBy =
-  (typeof InterceptEntryOrderBy)[keyof typeof InterceptEntryOrderBy];
+export type InterceptEntryOrderBy = typeof InterceptEntryOrderBy[keyof typeof InterceptEntryOrderBy];
 export const InterceptKind = {
-  Request: "REQUEST",
-  Response: "RESPONSE",
-  StreamWs: "STREAM_WS",
+  Request: 'REQUEST',
+  Response: 'RESPONSE',
+  StreamWs: 'STREAM_WS'
 } as const;
 
-export type InterceptKind = (typeof InterceptKind)[keyof typeof InterceptKind];
+export type InterceptKind = typeof InterceptKind[keyof typeof InterceptKind];
 export const InterceptStatus = {
-  Paused: "PAUSED",
-  Running: "RUNNING",
+  Paused: 'PAUSED',
+  Running: 'RUNNING'
 } as const;
 
-export type InterceptStatus =
-  (typeof InterceptStatus)[keyof typeof InterceptStatus];
+export type InterceptStatus = typeof InterceptStatus[keyof typeof InterceptStatus];
 export const LogLevel = {
-  Debug: "DEBUG",
-  Error: "ERROR",
-  Info: "INFO",
-  Trace: "TRACE",
-  Warn: "WARN",
+  Debug: 'DEBUG',
+  Error: 'ERROR',
+  Info: 'INFO',
+  Trace: 'TRACE',
+  Warn: 'WARN'
 } as const;
 
-export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
+export type LogLevel = typeof LogLevel[keyof typeof LogLevel];
+export const OpenAIProviderAPI = {
+  Completion: 'COMPLETION',
+  Response: 'RESPONSE'
+} as const;
+
+export type OpenAIProviderAPI = typeof OpenAIProviderAPI[keyof typeof OpenAIProviderAPI];
 export const Ordering = {
-  Asc: "ASC",
-  Desc: "DESC",
+  Asc: 'ASC',
+  Desc: 'DESC'
 } as const;
 
-export type Ordering = (typeof Ordering)[keyof typeof Ordering];
+export type Ordering = typeof Ordering[keyof typeof Ordering];
 export const PermissionDeniedErrorReason = {
-  Entitlement: "ENTITLEMENT",
-  GuestUser: "GUEST_USER",
-  ScriptUser: "SCRIPT_USER",
+  Entitlement: 'ENTITLEMENT',
+  GuestUser: 'GUEST_USER',
+  ScriptUser: 'SCRIPT_USER'
 } as const;
 
-export type PermissionDeniedErrorReason =
-  (typeof PermissionDeniedErrorReason)[keyof typeof PermissionDeniedErrorReason];
+export type PermissionDeniedErrorReason = typeof PermissionDeniedErrorReason[keyof typeof PermissionDeniedErrorReason];
 export const PluginErrorReason = {
-  AlreadyInstalled: "ALREADY_INSTALLED",
-  InvalidManifest: "INVALID_MANIFEST",
-  InvalidOperation: "INVALID_OPERATION",
-  InvalidPackage: "INVALID_PACKAGE",
-  MissingFile: "MISSING_FILE",
+  AlreadyInstalled: 'ALREADY_INSTALLED',
+  InvalidManifest: 'INVALID_MANIFEST',
+  InvalidOperation: 'INVALID_OPERATION',
+  InvalidPackage: 'INVALID_PACKAGE',
+  MissingFile: 'MISSING_FILE'
 } as const;
 
-export type PluginErrorReason =
-  (typeof PluginErrorReason)[keyof typeof PluginErrorReason];
+export type PluginErrorReason = typeof PluginErrorReason[keyof typeof PluginErrorReason];
+export const PluginPackageOrigin = {
+  File: 'FILE',
+  Store: 'STORE',
+  Url: 'URL'
+} as const;
+
+export type PluginPackageOrigin = typeof PluginPackageOrigin[keyof typeof PluginPackageOrigin];
 export const PluginRuntime = {
-  Javascript: "JAVASCRIPT",
+  Javascript: 'JAVASCRIPT'
 } as const;
 
-export type PluginRuntime = (typeof PluginRuntime)[keyof typeof PluginRuntime];
+export type PluginRuntime = typeof PluginRuntime[keyof typeof PluginRuntime];
 export const ProjectErrorReason = {
-  Deleting: "DELETING",
-  Exporting: "EXPORTING",
-  InvalidVersion: "INVALID_VERSION",
-  NotReady: "NOT_READY",
-  TooRecent: "TOO_RECENT",
+  Deleting: 'DELETING',
+  Exporting: 'EXPORTING',
+  InvalidVersion: 'INVALID_VERSION',
+  NotReady: 'NOT_READY',
+  TooRecent: 'TOO_RECENT'
 } as const;
 
-export type ProjectErrorReason =
-  (typeof ProjectErrorReason)[keyof typeof ProjectErrorReason];
+export type ProjectErrorReason = typeof ProjectErrorReason[keyof typeof ProjectErrorReason];
 export const ProjectSelectOnStart = {
-  LastUsed: "LAST_USED",
-  Nothing: "NOTHING",
-  Selected: "SELECTED",
+  LastUsed: 'LAST_USED',
+  Nothing: 'NOTHING',
+  Selected: 'SELECTED'
 } as const;
 
-export type ProjectSelectOnStart =
-  (typeof ProjectSelectOnStart)[keyof typeof ProjectSelectOnStart];
+export type ProjectSelectOnStart = typeof ProjectSelectOnStart[keyof typeof ProjectSelectOnStart];
 export const ProjectStatus = {
-  Error: "ERROR",
-  Ready: "READY",
-  Restoring: "RESTORING",
+  Error: 'ERROR',
+  Ready: 'READY',
+  Restoring: 'RESTORING'
 } as const;
 
-export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus];
+export type ProjectStatus = typeof ProjectStatus[keyof typeof ProjectStatus];
 export const RankErrorReason = {
-  ConcurrentUpdate: "CONCURRENT_UPDATE",
-  InvalidAfterBefore: "INVALID_AFTER_BEFORE",
-  NotEnabled: "NOT_ENABLED",
+  ConcurrentUpdate: 'CONCURRENT_UPDATE',
+  InvalidAfterBefore: 'INVALID_AFTER_BEFORE',
+  NotEnabled: 'NOT_ENABLED'
 } as const;
 
-export type RankErrorReason =
-  (typeof RankErrorReason)[keyof typeof RankErrorReason];
+export type RankErrorReason = typeof RankErrorReason[keyof typeof RankErrorReason];
 export const RedirectStrategy = {
-  Always: "ALWAYS",
-  InScope: "IN_SCOPE",
-  Never: "NEVER",
-  SameSite: "SAME_SITE",
+  Always: 'ALWAYS',
+  InScope: 'IN_SCOPE',
+  Never: 'NEVER',
+  SameSite: 'SAME_SITE'
 } as const;
 
-export type RedirectStrategy =
-  (typeof RedirectStrategy)[keyof typeof RedirectStrategy];
+export type RedirectStrategy = typeof RedirectStrategy[keyof typeof RedirectStrategy];
 export const RenderFailedErrorReason = {
-  Internal: "INTERNAL",
-  NoBrowser: "NO_BROWSER",
-  NoData: "NO_DATA",
-  Timeout: "TIMEOUT",
+  Internal: 'INTERNAL',
+  NoBrowser: 'NO_BROWSER',
+  NoData: 'NO_DATA',
+  Timeout: 'TIMEOUT'
 } as const;
 
-export type RenderFailedErrorReason =
-  (typeof RenderFailedErrorReason)[keyof typeof RenderFailedErrorReason];
+export type RenderFailedErrorReason = typeof RenderFailedErrorReason[keyof typeof RenderFailedErrorReason];
+export const ReplayEntryHttpPipelineDraftHttpEntryOperationKind = {
+  Add: 'ADD',
+  Rank: 'RANK',
+  Remove: 'REMOVE'
+} as const;
+
+export type ReplayEntryHttpPipelineDraftHttpEntryOperationKind = typeof ReplayEntryHttpPipelineDraftHttpEntryOperationKind[keyof typeof ReplayEntryHttpPipelineDraftHttpEntryOperationKind];
 export const ReplayEntryOrderBy = {
-  Id: "ID",
+  Id: 'ID'
 } as const;
 
-export type ReplayEntryOrderBy =
-  (typeof ReplayEntryOrderBy)[keyof typeof ReplayEntryOrderBy];
+export type ReplayEntryOrderBy = typeof ReplayEntryOrderBy[keyof typeof ReplayEntryOrderBy];
 export const ReplaySessionKind = {
-  Http: "HTTP",
-  Ws: "WS",
+  Http: 'HTTP',
+  HttpPipeline: 'HTTP_PIPELINE',
+  Ws: 'WS'
 } as const;
 
-export type ReplaySessionKind =
-  (typeof ReplaySessionKind)[keyof typeof ReplaySessionKind];
+export type ReplaySessionKind = typeof ReplaySessionKind[keyof typeof ReplaySessionKind];
 export const RequestResponseOrderBy = {
-  CreatedAt: "CREATED_AT",
-  FileExtension: "FILE_EXTENSION",
-  Host: "HOST",
-  Id: "ID",
-  Method: "METHOD",
-  Path: "PATH",
-  Query: "QUERY",
-  RespLength: "RESP_LENGTH",
-  RespRoundtripTime: "RESP_ROUNDTRIP_TIME",
-  RespStatusCode: "RESP_STATUS_CODE",
-  Source: "SOURCE",
+  CreatedAt: 'CREATED_AT',
+  FileExtension: 'FILE_EXTENSION',
+  Host: 'HOST',
+  Id: 'ID',
+  Method: 'METHOD',
+  Path: 'PATH',
+  Query: 'QUERY',
+  RespLength: 'RESP_LENGTH',
+  RespRoundtripTime: 'RESP_ROUNDTRIP_TIME',
+  RespStatusCode: 'RESP_STATUS_CODE',
+  Source: 'SOURCE'
 } as const;
 
-export type RequestResponseOrderBy =
-  (typeof RequestResponseOrderBy)[keyof typeof RequestResponseOrderBy];
+export type RequestResponseOrderBy = typeof RequestResponseOrderBy[keyof typeof RequestResponseOrderBy];
 export const SettingsNetworkStack = {
-  V1: "V1",
-  V2: "V2",
+  V1: 'V1',
+  V2: 'V2'
 } as const;
 
-export type SettingsNetworkStack =
-  (typeof SettingsNetworkStack)[keyof typeof SettingsNetworkStack];
+export type SettingsNetworkStack = typeof SettingsNetworkStack[keyof typeof SettingsNetworkStack];
 export const SitemapDescendantsDepth = {
-  All: "ALL",
-  Direct: "DIRECT",
+  All: 'ALL',
+  Direct: 'DIRECT'
 } as const;
 
-export type SitemapDescendantsDepth =
-  (typeof SitemapDescendantsDepth)[keyof typeof SitemapDescendantsDepth];
+export type SitemapDescendantsDepth = typeof SitemapDescendantsDepth[keyof typeof SitemapDescendantsDepth];
 export const SitemapEntryKind = {
-  Directory: "DIRECTORY",
-  Domain: "DOMAIN",
-  Request: "REQUEST",
-  RequestBody: "REQUEST_BODY",
-  RequestQuery: "REQUEST_QUERY",
+  Directory: 'DIRECTORY',
+  Domain: 'DOMAIN',
+  Request: 'REQUEST',
+  RequestBody: 'REQUEST_BODY',
+  RequestQuery: 'REQUEST_QUERY'
 } as const;
 
-export type SitemapEntryKind =
-  (typeof SitemapEntryKind)[keyof typeof SitemapEntryKind];
+export type SitemapEntryKind = typeof SitemapEntryKind[keyof typeof SitemapEntryKind];
 export const Source = {
-  Automate: "AUTOMATE",
-  Import: "IMPORT",
-  Intercept: "INTERCEPT",
-  Plugin: "PLUGIN",
-  Replay: "REPLAY",
-  Sample: "SAMPLE",
-  Workflow: "WORKFLOW",
+  Automate: 'AUTOMATE',
+  Import: 'IMPORT',
+  Intercept: 'INTERCEPT',
+  Plugin: 'PLUGIN',
+  Replay: 'REPLAY',
+  Sample: 'SAMPLE',
+  Workflow: 'WORKFLOW'
 } as const;
 
-export type Source = (typeof Source)[keyof typeof Source];
+export type Source = typeof Source[keyof typeof Source];
 export const StoreErrorReason = {
-  FileUnavailable: "FILE_UNAVAILABLE",
-  InvalidPublicKey: "INVALID_PUBLIC_KEY",
-  InvalidSignature: "INVALID_SIGNATURE",
-  PackageTooLarge: "PACKAGE_TOO_LARGE",
-  PackageUnknown: "PACKAGE_UNKNOWN",
+  FileUnavailable: 'FILE_UNAVAILABLE',
+  InvalidPublicKey: 'INVALID_PUBLIC_KEY',
+  InvalidSignature: 'INVALID_SIGNATURE',
+  PackageTooLarge: 'PACKAGE_TOO_LARGE',
+  PackageUnknown: 'PACKAGE_UNKNOWN'
 } as const;
 
-export type StoreErrorReason =
-  (typeof StoreErrorReason)[keyof typeof StoreErrorReason];
+export type StoreErrorReason = typeof StoreErrorReason[keyof typeof StoreErrorReason];
+export const StorePluginPackageQuality = {
+  Bronze: 'BRONZE',
+  Gold: 'GOLD',
+  Silver: 'SILVER'
+} as const;
+
+export type StorePluginPackageQuality = typeof StorePluginPackageQuality[keyof typeof StorePluginPackageQuality];
 export const StreamDirection = {
-  Both: "BOTH",
-  Client: "CLIENT",
-  Server: "SERVER",
+  Both: 'BOTH',
+  Client: 'CLIENT',
+  Server: 'SERVER'
 } as const;
 
-export type StreamDirection =
-  (typeof StreamDirection)[keyof typeof StreamDirection];
+export type StreamDirection = typeof StreamDirection[keyof typeof StreamDirection];
 export const StreamMessageDirection = {
-  Client: "CLIENT",
-  Server: "SERVER",
+  Client: 'CLIENT',
+  Server: 'SERVER'
 } as const;
 
-export type StreamMessageDirection =
-  (typeof StreamMessageDirection)[keyof typeof StreamMessageDirection];
+export type StreamMessageDirection = typeof StreamMessageDirection[keyof typeof StreamMessageDirection];
 export const StreamOrderBy = {
-  Id: "ID",
+  Id: 'ID'
 } as const;
 
-export type StreamOrderBy = (typeof StreamOrderBy)[keyof typeof StreamOrderBy];
+export type StreamOrderBy = typeof StreamOrderBy[keyof typeof StreamOrderBy];
 export const StreamProtocol = {
-  Sse: "SSE",
-  Ws: "WS",
+  Sse: 'SSE',
+  Ws: 'WS'
 } as const;
 
-export type StreamProtocol =
-  (typeof StreamProtocol)[keyof typeof StreamProtocol];
+export type StreamProtocol = typeof StreamProtocol[keyof typeof StreamProtocol];
 export const StreamWsMessageFormat = {
-  Binary: "BINARY",
-  Close: "CLOSE",
-  Ping: "PING",
-  Pong: "PONG",
-  Text: "TEXT",
+  Binary: 'BINARY',
+  Close: 'CLOSE',
+  Ping: 'PING',
+  Pong: 'PONG',
+  Text: 'TEXT'
 } as const;
 
-export type StreamWsMessageFormat =
-  (typeof StreamWsMessageFormat)[keyof typeof StreamWsMessageFormat];
+export type StreamWsMessageFormat = typeof StreamWsMessageFormat[keyof typeof StreamWsMessageFormat];
 export const StreamWsMessageOrderBy = {
-  Id: "ID",
+  Id: 'ID'
 } as const;
 
-export type StreamWsMessageOrderBy =
-  (typeof StreamWsMessageOrderBy)[keyof typeof StreamWsMessageOrderBy];
+export type StreamWsMessageOrderBy = typeof StreamWsMessageOrderBy[keyof typeof StreamWsMessageOrderBy];
 export const TaskStatus = {
-  Cancelled: "CANCELLED",
-  Done: "DONE",
-  Error: "ERROR",
+  Cancelled: 'CANCELLED',
+  Done: 'DONE',
+  Error: 'ERROR'
 } as const;
 
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
+export type TaskStatus = typeof TaskStatus[keyof typeof TaskStatus];
 export const WSErrorReason = {
-  CouldNotUpgradeConnection: "COULD_NOT_UPGRADE_CONNECTION",
-  ServerUnresponsive: "SERVER_UNRESPONSIVE",
+  CouldNotUpgradeConnection: 'COULD_NOT_UPGRADE_CONNECTION',
+  ServerUnresponsive: 'SERVER_UNRESPONSIVE'
 } as const;
 
-export type WSErrorReason = (typeof WSErrorReason)[keyof typeof WSErrorReason];
+export type WSErrorReason = typeof WSErrorReason[keyof typeof WSErrorReason];
 export const WorkflowErrorReason = {
-  ExecutionError: "EXECUTION_ERROR",
-  InvalidInput: "INVALID_INPUT",
-  InvalidProperty: "INVALID_PROPERTY",
-  InvalidTrigger: "INVALID_TRIGGER",
-  InvalidWorkflow: "INVALID_WORKFLOW",
+  ExecutionError: 'EXECUTION_ERROR',
+  InvalidInput: 'INVALID_INPUT',
+  InvalidProperty: 'INVALID_PROPERTY',
+  InvalidTrigger: 'INVALID_TRIGGER',
+  InvalidWorkflow: 'INVALID_WORKFLOW'
 } as const;
 
-export type WorkflowErrorReason =
-  (typeof WorkflowErrorReason)[keyof typeof WorkflowErrorReason];
+export type WorkflowErrorReason = typeof WorkflowErrorReason[keyof typeof WorkflowErrorReason];
 export const WorkflowKind = {
-  Active: "ACTIVE",
-  Convert: "CONVERT",
-  Passive: "PASSIVE",
+  Active: 'ACTIVE',
+  Convert: 'CONVERT',
+  Passive: 'PASSIVE'
 } as const;
 
-export type WorkflowKind = (typeof WorkflowKind)[keyof typeof WorkflowKind];
+export type WorkflowKind = typeof WorkflowKind[keyof typeof WorkflowKind];
+export const XaiProviderAPI = {
+  Completion: 'COMPLETION',
+  Response: 'RESPONSE'
+} as const;
+
+export type XaiProviderAPI = typeof XaiProviderAPI[keyof typeof XaiProviderAPI];

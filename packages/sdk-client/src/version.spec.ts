@@ -54,4 +54,19 @@ describe("Version", () => {
     ]);
     expect(rest.get).toHaveBeenCalledTimes(1);
   });
+
+  it("retries after a failed health request", async () => {
+    const rest = {
+      get: vi
+        .fn()
+        .mockRejectedValueOnce(new Error("boom"))
+        .mockResolvedValue({ name: "caido", version: "0.58.3", ready: true }),
+    } as unknown as RestClient;
+
+    const version = Version.lazy(rest);
+
+    await expect(version.get()).rejects.toThrow("boom");
+    await expect(version.get()).resolves.toBe("0.58.3");
+    expect(rest.get).toHaveBeenCalledTimes(2);
+  });
 });

@@ -3,7 +3,7 @@ import type { DNSResolver, DNSRewrite } from "@/types/index.js";
 
 export const mapToDnsRewrite = (node: DnsRewriteFullFragment): DNSRewrite => {
   const resolution: DNSResolver =
-    node.resolution.__typename === "DnsIpResolver"
+    node.resolution.__typename === "DNSIpResolver"
       ? { kind: "ip", ip: node.resolution.ip }
       : { kind: "upstream", upstreamId: node.resolution.id };
 
