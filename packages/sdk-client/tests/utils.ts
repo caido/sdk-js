@@ -1,7 +1,7 @@
 import type { ID } from "graphql-ws";
 import { ProxyAgent } from "undici";
 
-import type { ReplaySession } from "@/index.js";
+import type { ReplaySessionHttp } from "@/index.js";
 import type { Finding } from "@/types/index.js";
 
 export const bytes = (text: string): Uint8Array => {
@@ -30,10 +30,11 @@ export const createMockFinding = async (requestId: ID): Promise<Finding> => {
   });
 };
 
-export const createMockReplaySession = async (): Promise<ReplaySession> => {
+export const createMockReplaySession =
+  async (): Promise<ReplaySessionHttp> => {
   return await caido.replay.sessions.create({
     requestSource: {
-      raw: atob(""),
+      raw: "",
       connection: {
         host: "localhost",
         port: 8080,

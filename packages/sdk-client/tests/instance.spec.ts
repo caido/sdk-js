@@ -11,84 +11,63 @@ describe("Instance", () => {
 
   afterEach(async () => {
     await caido.instance.settings.setAnalytics({
-      enabled: original.analytics.enabled,
+      enabled: original.analytics.local,
     });
     await caido.instance.settings.setOnboarding({
       analytic: original.onboarding.analytic,
     });
-
-    if (original.ai.openrouter !== undefined) {
-      await caido.instance.settings.setAI({
-        openrouter: { apiKey: original.ai.openrouter.apiKey },
-      });
-      return;
-    }
-
-    if (original.ai.openai !== undefined) {
-      await caido.instance.settings.setAI({
-        openai: {
-          apiKey: original.ai.openai.apiKey,
-          url: original.ai.openai.url,
-        },
-      });
-      return;
-    }
-
-    if (original.ai.anthropic !== undefined) {
-      await caido.instance.settings.setAI({
-        anthropic: { apiKey: original.ai.anthropic.apiKey },
-      });
-      return;
-    }
-
-    if (original.ai.google !== undefined) {
-      await caido.instance.settings.setAI({
-        google: { apiKey: original.ai.google.apiKey },
-      });
-    }
   });
 
+  // `enabled` is `local && cloud`, so only `local` reflects this write.
   it("should read and update instance settings", async () => {
-    expect(original.analytics.enabled).toBeTypeOf("boolean");
+    expect(original.analytics.local).toBeTypeOf("boolean");
     expect(original.onboarding.analytic).toBeTypeOf("boolean");
 
-    const nextAnalytics = !original.analytics.enabled;
+    const nextAnalytics = !original.analytics.local;
     const nextOnboarding = !original.onboarding.analytic;
 
     const analyticsUpdated = await caido.instance.settings.setAnalytics({
       enabled: nextAnalytics,
     });
-    expect(analyticsUpdated.analytics.enabled).toBe(nextAnalytics);
+    expect(analyticsUpdated.analytics.local).toBe(nextAnalytics);
 
     const onboardingUpdated = await caido.instance.settings.setOnboarding({
       analytic: nextOnboarding,
     });
     expect(onboardingUpdated.onboarding.analytic).toBe(nextOnboarding);
   });
+});
 
-  it("should support shorthand and object forms for setAI", async () => {
-    const testApiKey = `sdk-test-key-${Date.now()}`;
-
-    if (original.ai.openrouter !== undefined) {
-      await caido.instance.settings.setAI({ openrouter: testApiKey });
+describe("Instance AI", () => {
+  it("should read AI providers", async () => {
+    if (await caido.version.gte("0.59.0")) {
+      await expect(caido.instance.ai.get()).rejects.toThrow("0.59.0");
       return;
     }
 
-    if (original.ai.openai !== undefined) {
-      await caido.instance.settings.setAI({ openai: testApiKey });
+    const providers = await caido.instance.ai.get();
+    expect(providers).toBeTypeOf("object");
+  });
+
+  // 0.58 can overwrite a provider but never clear one, so only a provider that
+  // is already set can be written to and put back.
+  it("should round-trip a configured provider", async () => {
+    if (await caido.version.gte("0.59.0")) {
+      await expect(
+        caido.instance.ai.set({ openai: "sdk-test-key" }),
+      ).rejects.toThrow("0.59.0");
       return;
     }
 
-    if (original.ai.anthropic !== undefined) {
-      await caido.instance.settings.setAI({ anthropic: testApiKey });
+    const original = await caido.instance.ai.get();
+    if (original.openai === undefined) {
       return;
     }
 
-    if (original.ai.google !== undefined) {
-      await caido.instance.settings.setAI({ google: testApiKey });
-      return;
-    }
+    const updated = await caido.instance.ai.set({ openai: "sdk-test-key" });
+    expect(updated.openai?.apiKey).toBe("sdk-test-key");
 
-    expect(true).toBe(true);
+    const restored = await caido.instance.ai.set({ openai: original.openai });
+    expect(restored.openai?.apiKey).toBe(original.openai.apiKey);
   });
 });
