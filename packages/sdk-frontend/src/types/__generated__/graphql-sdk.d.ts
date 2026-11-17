@@ -930,6 +930,11 @@ export type CertificateUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: CertificateErrorReason;
 };
+export type ClearOobInteractionsError = OtherUserError | PermissionDeniedUserError | ReadOnlyUserError;
+export type ClearOobInteractionsPayload = {
+    deletedIds?: Maybe<Array<Scalars["ID"]["output"]>>;
+    error?: Maybe<ClearOobInteractionsError>;
+};
 export type ClearReplayEntryDraftPayload = {
     entry?: Maybe<ReplayEntry>;
 };
@@ -977,6 +982,28 @@ export type CloudUserError = UserError & {
     code: Scalars["String"]["output"];
     reason: CloudErrorReason;
 };
+export declare const CompressStage: {
+    readonly Apply: "APPLY";
+    readonly Clean: "CLEAN";
+    readonly Train: "TRAIN";
+};
+export type CompressStage = (typeof CompressStage)[keyof typeof CompressStage];
+export type CompressTask = Task & {
+    createdAt: Scalars["DateTime"]["output"];
+    id: Scalars["ID"]["output"];
+    percent: Scalars["Int"]["output"];
+    projectId: Scalars["ID"]["output"];
+    samplesDone: Scalars["Int"]["output"];
+    samplesTarget: Scalars["Int"]["output"];
+    stage: CompressStage;
+};
+export declare const CompressionState: {
+    readonly Applying: "APPLYING";
+    readonly Compressed: "COMPRESSED";
+    readonly NotCompressed: "NOT_COMPRESSED";
+    readonly Training: "TRAINING";
+};
+export type CompressionState = (typeof CompressionState)[keyof typeof CompressionState];
 export type ConnectionInfo = {
     SNI?: Maybe<Scalars["String"]["output"]>;
     host: Scalars["String"]["output"];
@@ -1085,7 +1112,13 @@ export type CreateFindingPayload = {
     error?: Maybe<CreateFindingError>;
     finding?: Maybe<Finding>;
 };
+export type CreateOobSessionError = OobUserError | OtherUserError | PermissionDeniedUserError | ReadOnlyUserError;
+export type CreateOobSessionPayload = {
+    error?: Maybe<CreateOobSessionError>;
+    session?: Maybe<OobSession>;
+};
 export type CreateProjectInput = {
+    compressed?: Scalars["Boolean"]["input"];
     name: Scalars["String"]["input"];
     temporary: Scalars["Boolean"]["input"];
 };
@@ -1291,6 +1324,13 @@ export type CreatedInterceptMessagePayload = {
 };
 export type CreatedLogLinesPayload = {
     lines: Array<LogLine>;
+};
+export type CreatedOobInteractionPayload = {
+    interactionEdge: OobInteractionEdge;
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type CreatedOobSessionPayload = {
+    session: OobSession;
 };
 export type CreatedPluginEventPayload = {
     eventArgs: Array<Scalars["JsonRaw"]["output"]>;
@@ -1668,6 +1708,10 @@ export type DeletedInterceptEntryPayload = {
 };
 export type DeletedInterceptMessagePayload = {
     deletedMessageId: Scalars["ID"]["output"];
+    snapshot: Scalars["Snapshot"]["output"];
+};
+export type DeletedOobInteractionsPayload = {
+    deletedInteractionIds: Array<Scalars["ID"]["output"]>;
     snapshot: Scalars["Snapshot"]["output"];
 };
 export type DeletedPluginPackageDataPayload = {
@@ -2286,6 +2330,7 @@ export type MutationRoot = {
     cancelBackupTask: CancelBackupTaskPayload;
     cancelRestoreBackupTask: CancelRestoreBackupTaskPayload;
     cancelTask: CancelTaskPayload;
+    clearOOBInteractions: ClearOobInteractionsPayload;
     clearReplayEntryDraft: ClearReplayEntryDraftPayload;
     clearSitemapEntries: ClearSitemapEntriesPayload;
     createAIModel: CreateAiModelPayload;
@@ -2298,6 +2343,7 @@ export type MutationRoot = {
     createEnvironment: CreateEnvironmentPayload;
     createFilterPreset: CreateFilterPresetPayload;
     createFinding: CreateFindingPayload;
+    createOOBSession: CreateOobSessionPayload;
     createProject: CreateProjectPayload;
     createReplayPipelineHttpSession: CreateReplayPipelineHttpSessionPayload;
     createReplaySession: CreateReplaySessionPayload;
@@ -2416,6 +2462,7 @@ export type MutationRoot = {
     startAutomateTask: StartAutomateTaskPayload;
     startDeleteStreamWsMessageTask: StartDeleteStreamWsMessageTaskPayload;
     startExportRequestsTask: StartExportRequestsTaskPayload;
+    startProjectCompressTask: StartCompressTaskPayload;
     startReplayTask: StartReplayTaskPayload;
     stopReplayWsTasks: StopReplayWsTaskPayload;
     testAIProvider: TestAiProviderPayload;
@@ -2452,6 +2499,8 @@ export type MutationRoot = {
     updateReplaySessionSettings: UpdateReplaySessionSettingsPayload;
     updateRequestMetadata: UpdateRequestMetadataPayload;
     updateScope: UpdateScopePayload;
+    updateStream: UpdateStreamPayload;
+    updateStreamWsMessage: UpdateStreamWsMessagePayload;
     updateTamperRule: UpdateTamperRulePayload;
     updateUpstreamPlugin: UpdateUpstreamPluginPayload;
     updateUpstreamProxyHttp: UpdateUpstreamProxyHttpPayload;
@@ -2874,6 +2923,9 @@ export type MutationRootStartDeleteStreamWsMessageTaskArgs = {
 export type MutationRootStartExportRequestsTaskArgs = {
     input: StartExportRequestsTaskInput;
 };
+export type MutationRootStartProjectCompressTaskArgs = {
+    projectId: Scalars["ID"]["input"];
+};
 export type MutationRootStartReplayTaskArgs = {
     sessionId: Scalars["ID"]["input"];
 };
@@ -3000,6 +3052,14 @@ export type MutationRootUpdateScopeArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateScopeInput;
 };
+export type MutationRootUpdateStreamArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateStreamInput;
+};
+export type MutationRootUpdateStreamWsMessageArgs = {
+    id: Scalars["ID"]["input"];
+    input: UpdateStreamWsMessageInput;
+};
 export type MutationRootUpdateTamperRuleArgs = {
     id: Scalars["ID"]["input"];
     input: UpdateTamperRuleInput;
@@ -3037,9 +3097,66 @@ export type NewerVersionUserError = UserError & {
     code: Scalars["String"]["output"];
     version: Scalars["Int"]["output"];
 };
+export type OobInteraction = {
+    fullId: Scalars["String"]["output"];
+    id: Scalars["ID"]["output"];
+    metadata?: Maybe<OobInteractionMetadata>;
+    protocol: OobInteractionProtocol;
+    rawRequest: Scalars["String"]["output"];
+    rawResponse?: Maybe<Scalars["String"]["output"]>;
+    remoteAddress: Scalars["String"]["output"];
+    timestamp: Scalars["Timestamp"]["output"];
+};
+export type OobInteractionConnection = {
+    count: Count;
+    /** A list of edges. */
+    edges: Array<OobInteractionEdge>;
+    /** A list of nodes. */
+    nodes: Array<OobInteraction>;
+    /** Information to aid in pagination. */
+    pageInfo: PageInfo;
+    snapshot: Scalars["Snapshot"]["output"];
+};
+/** An edge in a connection. */
+export type OobInteractionEdge = {
+    /** A cursor for use in pagination */
+    cursor: Scalars["String"]["output"];
+    /** The item at the end of the edge */
+    node: OobInteraction;
+};
+export type OobInteractionMetadata = OobInteractionMetadataDns | OobInteractionMetadataSmtp;
+export type OobInteractionMetadataDns = {
+    queryType: Scalars["String"]["output"];
+};
+export type OobInteractionMetadataSmtp = {
+    from: Scalars["String"]["output"];
+};
+export type OobSession = {
+    createdAt: Scalars["Timestamp"]["output"];
+    hostname: Scalars["String"]["output"];
+};
+export type OobUserError = UserError & {
+    code: Scalars["String"]["output"];
+    reason: OobErrorReason;
+};
 export type OnboardingState = {
     analytic: Scalars["Boolean"]["output"];
 };
+export declare const OobErrorReason: {
+    readonly ServerUnavailable: "SERVER_UNAVAILABLE";
+};
+export type OobErrorReason = (typeof OobErrorReason)[keyof typeof OobErrorReason];
+export declare const OobInteractionProtocol: {
+    readonly Dns: "DNS";
+    readonly Ftp: "FTP";
+    readonly Http: "HTTP";
+    readonly Https: "HTTPS";
+    readonly Ldap: "LDAP";
+    readonly Responder: "RESPONDER";
+    readonly Smb: "SMB";
+    readonly Smtp: "SMTP";
+};
+export type OobInteractionProtocol = (typeof OobInteractionProtocol)[keyof typeof OobInteractionProtocol];
 export declare const OpenAiProviderApi: {
     readonly Completion: "COMPLETION";
     readonly Response: "RESPONSE";
@@ -3303,6 +3420,7 @@ export type PortableSettingsSummary = {
 };
 export type Project = {
     backups: Array<Backup>;
+    compressionState: CompressionState;
     createdAt: Scalars["DateTime"]["output"];
     id: Scalars["ID"]["output"];
     name: Scalars["String"]["output"];
@@ -3325,10 +3443,12 @@ export type ProjectConfigStreamInput = {
     stripExtension: Scalars["Boolean"]["input"];
 };
 export declare const ProjectErrorReason: {
+    readonly Compressing: "COMPRESSING";
     readonly Deleting: "DELETING";
     readonly Exporting: "EXPORTING";
     readonly InvalidVersion: "INVALID_VERSION";
     readonly NotReady: "NOT_READY";
+    readonly PoolBusy: "POOL_BUSY";
     readonly TooRecent: "TOO_RECENT";
 };
 export type ProjectErrorReason = (typeof ProjectErrorReason)[keyof typeof ProjectErrorReason];
@@ -3399,6 +3519,8 @@ export type QueryRoot = {
     interceptMessages: InterceptMessageConnection;
     interceptOptions: InterceptOptions;
     interceptStatus: InterceptStatus;
+    oobInteractions: OobInteractionConnection;
+    oobSession?: Maybe<OobSession>;
     passthroughOptions?: Maybe<PassthroughOptions>;
     pluginPackage?: Maybe<PluginPackage>;
     pluginPackageByManifest?: Maybe<PluginPackage>;
@@ -3528,6 +3650,12 @@ export type QueryRootInterceptMessagesArgs = {
     before?: InputMaybe<Scalars["String"]["input"]>;
     first?: InputMaybe<Scalars["Int"]["input"]>;
     kind: InterceptKind;
+    last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+export type QueryRootOobInteractionsArgs = {
+    after?: InputMaybe<Scalars["String"]["input"]>;
+    before?: InputMaybe<Scalars["String"]["input"]>;
+    first?: InputMaybe<Scalars["Int"]["input"]>;
     last?: InputMaybe<Scalars["Int"]["input"]>;
 };
 export type QueryRootPluginPackageArgs = {
@@ -4456,6 +4584,11 @@ export type StartAuthenticationFlowPayload = {
 export type StartAutomateTaskPayload = {
     automateTask?: Maybe<AutomateTask>;
 };
+export type StartCompressTaskError = OtherUserError | TaskInProgressUserError;
+export type StartCompressTaskPayload = {
+    error?: Maybe<StartCompressTaskError>;
+    task?: Maybe<CompressTask>;
+};
 export type StartDeleteStreamWsMessageTaskInput = {
     ids: Array<Scalars["ID"]["input"]>;
 };
@@ -4463,16 +4596,26 @@ export type StartDeleteStreamWsMessageTaskPayload = {
     task?: Maybe<DeleteStreamWsMessageTask>;
 };
 export type StartExportRequestsTaskInput = {
-    filter?: InputMaybe<HttpqlInput>;
     format: DataExportFormat;
     includeRaw: Scalars["Boolean"]["input"];
-    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+    selection: StartExportRequestsTaskSelection;
 };
 export type StartExportRequestsTaskPayload = {
     error?: Maybe<StartExportRequestsTaskPayloadError>;
     task?: Maybe<DataExportTask>;
 };
 export type StartExportRequestsTaskPayloadError = OtherUserError | PermissionDeniedUserError;
+export type StartExportRequestsTaskQueryInput = {
+    filter?: InputMaybe<HttpqlInput>;
+    scopeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+export type StartExportRequestsTaskSelection = {
+    ids: Array<Scalars["ID"]["input"]>;
+    query?: never;
+} | {
+    ids?: never;
+    query: StartExportRequestsTaskQueryInput;
+};
 export type StartReplayTaskError = CloudUserError | OtherUserError | PermissionDeniedUserError | TaskInProgressUserError | UnknownIdUserError;
 export type StartReplayTaskPayload = {
     error?: Maybe<StartReplayTaskError>;
@@ -4535,6 +4678,7 @@ export type StoreUserError = UserError & {
     reason: StoreErrorReason;
 };
 export type Stream = {
+    color?: Maybe<Scalars["String"]["output"]>;
     createdAt: Scalars["Timestamp"]["output"];
     direction: StreamDirection;
     host: Scalars["String"]["output"];
@@ -4594,6 +4738,7 @@ export type StreamQlInput = {
     code: Scalars["String"]["input"];
 };
 export type StreamWsMessage = {
+    color?: Maybe<Scalars["String"]["output"]>;
     edits: Array<StreamWsMessageEditRef>;
     head: StreamWsMessageEdit;
     id: Scalars["ID"]["output"];
@@ -4665,6 +4810,8 @@ export type SubscriptionRoot = {
     createdInterceptEntry: CreatedInterceptEntryPayload;
     createdInterceptMessage: CreatedInterceptMessagePayload;
     createdLogLines: CreatedLogLinesPayload;
+    createdOOBInteraction: CreatedOobInteractionPayload;
+    createdOOBSession: CreatedOobSessionPayload;
     createdPluginEvent: CreatedPluginEventPayload;
     createdPluginPackage: CreatedPluginPackagePayload;
     createdProject: CreatedProjectPayload;
@@ -4698,6 +4845,7 @@ export type SubscriptionRoot = {
     deletedHostedFile: DeletedHostedFilePayload;
     deletedInterceptEntry: DeletedInterceptEntryPayload;
     deletedInterceptMessage: DeletedInterceptMessagePayload;
+    deletedOOBInteractions: DeletedOobInteractionsPayload;
     deletedPluginPackage: DeletedPluginPackagePayload;
     deletedPluginPackageData: DeletedPluginPackageDataPayload;
     deletedProject: DeletedProjectPayload;
@@ -4736,6 +4884,7 @@ export type SubscriptionRoot = {
     updatedBrowser: UpdatedBrowserPayload;
     updatedClientCertificate: UpdatedClientCertificatePayload;
     updatedCloudStatus: UpdatedCloudStatusPayload;
+    updatedCompressTask: UpdatedCompressTaskPayload;
     updatedDataExport: UpdatedDataExportPayload;
     updatedDeleteInterceptEntriesTask: UpdatedDeleteInterceptEntriesTaskPayload;
     updatedDnsRewrite: UpdatedDnsRewritePayload;
@@ -4762,6 +4911,7 @@ export type SubscriptionRoot = {
     updatedRequestMetadata: UpdatedRequestMetadataPayload;
     updatedScope: UpdatedScopePayload;
     updatedSitemapEntry: UpdatedSitemapEntryPayload;
+    updatedStream: UpdatedStreamPayload;
     updatedStreamWsMessage: UpdatedStreamWsMessagePayload;
     updatedTamperRule: UpdatedTamperRulePayload;
     updatedTamperRuleCollection: UpdatedTamperRuleCollectionPayload;
@@ -5061,11 +5211,23 @@ export type TamperOperationStreamWsMessageRawInput = {
     matcher: TamperMatcherRawInput;
     replacer: TamperReplacerInput;
 };
-export type TamperReplacer = TamperReplacerTerm | TamperReplacerWorkflow;
+export type TamperReplacer = TamperReplacerEnvironment | TamperReplacerTerm | TamperReplacerWorkflow;
+export type TamperReplacerEnvironment = {
+    variableName: Scalars["String"]["output"];
+};
+export type TamperReplacerEnvironmentInput = {
+    variableName: Scalars["String"]["input"];
+};
 export type TamperReplacerInput = {
+    environment: TamperReplacerEnvironmentInput;
+    term?: never;
+    workflow?: never;
+} | {
+    environment?: never;
     term: TamperReplacerTermInput;
     workflow?: never;
 } | {
+    environment?: never;
     term?: never;
     workflow: TamperReplacerWorkflowInput;
 };
@@ -5752,6 +5914,22 @@ export type UpdateScopePayload = {
     error?: Maybe<UpdateScopeError>;
     scope?: Maybe<Scope>;
 };
+export type UpdateStreamError = OtherUserError | UnknownIdUserError;
+export type UpdateStreamInput = {
+    color?: InputMaybe<Scalars["String"]["input"]>;
+};
+export type UpdateStreamPayload = {
+    error?: Maybe<UpdateStreamError>;
+    stream?: Maybe<Stream>;
+};
+export type UpdateStreamWsMessageError = OtherUserError | UnknownIdUserError;
+export type UpdateStreamWsMessageInput = {
+    color?: InputMaybe<Scalars["String"]["input"]>;
+};
+export type UpdateStreamWsMessagePayload = {
+    error?: Maybe<UpdateStreamWsMessageError>;
+    message?: Maybe<StreamWsMessage>;
+};
 export type UpdateTamperRuleError = InvalidHttpqlUserError | InvalidRegexUserError | OtherUserError | UnknownIdUserError;
 export type UpdateTamperRuleInput = {
     condition?: InputMaybe<QueryInput>;
@@ -5848,6 +6026,9 @@ export type UpdatedClientCertificatePayload = {
 };
 export type UpdatedCloudStatusPayload = {
     cloudStatus: CloudStatus;
+};
+export type UpdatedCompressTaskPayload = {
+    task: CompressTask;
 };
 export type UpdatedDnsRewritePayload = {
     rewrite: DnsRewrite;
@@ -5959,6 +6140,10 @@ export type UpdatedSitemapEntryPayload = {
 };
 export type UpdatedSitemapEntryPayloadRequestEdgeArgs = {
     order?: InputMaybe<RequestResponseOrderInput>;
+};
+export type UpdatedStreamPayload = {
+    snapshot: Scalars["Snapshot"]["output"];
+    stream: Stream;
 };
 export type UpdatedStreamWsMessage = {
     messageEdge: StreamWsMessageEdge;
@@ -9276,6 +9461,7 @@ export type RestoreBackupTaskMetaFragment = {
         status: ProjectStatus;
         temporary: boolean;
         size: number;
+        compressionState: CompressionState;
         createdAt: Date;
         updatedAt: Date;
         readOnly: boolean;
@@ -9351,6 +9537,7 @@ export type FinishedRestoreBackupTaskSuccessFullFragment = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -9457,6 +9644,7 @@ export type RestoreBackupTasksQuery = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -9578,6 +9766,7 @@ export type RestoreBackupFromFileMutation = {
                 status: ProjectStatus;
                 temporary: boolean;
                 size: number;
+                compressionState: CompressionState;
                 createdAt: Date;
                 updatedAt: Date;
                 readOnly: boolean;
@@ -9631,6 +9820,7 @@ export type RestoreBackupMutation = {
                 status: ProjectStatus;
                 temporary: boolean;
                 size: number;
+                compressionState: CompressionState;
                 createdAt: Date;
                 updatedAt: Date;
                 readOnly: boolean;
@@ -9818,6 +10008,7 @@ export type StartedRestoreBackupTaskSubscription = {
                 status: ProjectStatus;
                 temporary: boolean;
                 size: number;
+                compressionState: CompressionState;
                 createdAt: Date;
                 updatedAt: Date;
                 readOnly: boolean;
@@ -9877,6 +10068,7 @@ export type FinishedRetoreBackupTaskSubscription = {
                 status: ProjectStatus;
                 temporary: boolean;
                 size: number;
+                compressionState: CompressionState;
                 createdAt: Date;
                 updatedAt: Date;
                 readOnly: boolean;
@@ -10777,6 +10969,10 @@ type UserErrorFull_NewerVersionUserError_Fragment = {
     __typename: "NewerVersionUserError";
     code: string;
 };
+type UserErrorFull_OobUserError_Fragment = {
+    __typename: "OOBUserError";
+    code: string;
+};
 type UserErrorFull_OtherUserError_Fragment = {
     __typename: "OtherUserError";
     code: string;
@@ -10829,7 +11025,7 @@ type UserErrorFull_WorkflowUserError_Fragment = {
     __typename: "WorkflowUserError";
     code: string;
 };
-export type UserErrorFullFragment = UserErrorFull_AiUserError_Fragment | UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRangeUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_InvalidStreamQlUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WsUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
+export type UserErrorFullFragment = UserErrorFull_AiUserError_Fragment | UserErrorFull_AliasTakenUserError_Fragment | UserErrorFull_AssistantUserError_Fragment | UserErrorFull_AuthenticationUserError_Fragment | UserErrorFull_AuthorizationUserError_Fragment | UserErrorFull_AutomateTaskUserError_Fragment | UserErrorFull_BackupUserError_Fragment | UserErrorFull_CertificateUserError_Fragment | UserErrorFull_CloudUserError_Fragment | UserErrorFull_InternalUserError_Fragment | UserErrorFull_InvalidGlobTermsUserError_Fragment | UserErrorFull_InvalidHttpqlUserError_Fragment | UserErrorFull_InvalidRangeUserError_Fragment | UserErrorFull_InvalidRegexUserError_Fragment | UserErrorFull_InvalidStreamQlUserError_Fragment | UserErrorFull_NameTakenUserError_Fragment | UserErrorFull_NewerVersionUserError_Fragment | UserErrorFull_OobUserError_Fragment | UserErrorFull_OtherUserError_Fragment | UserErrorFull_PermissionDeniedUserError_Fragment | UserErrorFull_PluginUserError_Fragment | UserErrorFull_ProjectUserError_Fragment | UserErrorFull_RankUserError_Fragment | UserErrorFull_ReadOnlyUserError_Fragment | UserErrorFull_RenderFailedUserError_Fragment | UserErrorFull_StoreUserError_Fragment | UserErrorFull_TaskInProgressUserError_Fragment | UserErrorFull_UnknownIdUserError_Fragment | UserErrorFull_UnsupportedPlatformUserError_Fragment | UserErrorFull_WsUserError_Fragment | UserErrorFull_WorkflowUserError_Fragment;
 export type InvalidHttpqlUserErrorFullFragment = {
     __typename: "InvalidHTTPQLUserError";
     query: string;
@@ -10873,6 +11069,11 @@ export type AuthorizationUserErrorFullFragment = {
 export type RankUserErrorFullFragment = {
     __typename: "RankUserError";
     reason: RankErrorReason;
+    code: string;
+};
+export type OobUserErrorFullFragment = {
+    __typename: "OOBUserError";
+    reason: OobErrorReason;
     code: string;
 };
 export type DataExportStoredMetaFragment = {
@@ -12984,6 +13185,7 @@ export type InterceptStreamWsMessageMetaFragment = {
     id: string;
     message: {
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -13097,6 +13299,7 @@ type InterceptMessageMeta_InterceptStreamWsMessage_Fragment = {
     id: string;
     message: {
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -13336,6 +13539,7 @@ export type InterceptRequestMessagesQuery = {
             id: string;
             message: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -13454,6 +13658,7 @@ export type InterceptResponseMessagesQuery = {
             id: string;
             message: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -13572,6 +13777,7 @@ export type InterceptStreamWsMessagesQuery = {
             id: string;
             message: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -13739,6 +13945,7 @@ export type CreatedInterceptMessageSubscription = {
                 id: string;
                 message: {
                     id: string;
+                    color?: string | undefined | null;
                     stream: {
                         id: string;
                     };
@@ -13806,9 +14013,17 @@ export type TamperReplacerTermFullFragment = {
     __typename: "TamperReplacerTerm";
     term: string;
 };
+export type TamperReplacerEnvironmentFullFragment = {
+    __typename: "TamperReplacerEnvironment";
+    variableName: string;
+};
 export type TamperReplacerWorkflowFullFragment = {
     __typename: "TamperReplacerWorkflow";
     id: string;
+};
+type TamperReplacerFull_TamperReplacerEnvironment_Fragment = {
+    __typename: "TamperReplacerEnvironment";
+    variableName: string;
 };
 type TamperReplacerFull_TamperReplacerTerm_Fragment = {
     __typename: "TamperReplacerTerm";
@@ -13818,7 +14033,7 @@ type TamperReplacerFull_TamperReplacerWorkflow_Fragment = {
     __typename: "TamperReplacerWorkflow";
     id: string;
 };
-export type TamperReplacerFullFragment = TamperReplacerFull_TamperReplacerTerm_Fragment | TamperReplacerFull_TamperReplacerWorkflow_Fragment;
+export type TamperReplacerFullFragment = TamperReplacerFull_TamperReplacerEnvironment_Fragment | TamperReplacerFull_TamperReplacerTerm_Fragment | TamperReplacerFull_TamperReplacerWorkflow_Fragment;
 export type TamperMatcherNameFullFragment = {
     __typename: "TamperMatcherName";
     name: string;
@@ -13855,6 +14070,9 @@ export type TamperOperationAllRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13874,6 +14092,9 @@ export type TamperOperationAllFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13893,6 +14114,9 @@ export type TamperOperationPathRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13912,6 +14136,9 @@ export type TamperOperationPathFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13922,6 +14149,9 @@ export type TamperOperationPathFullFragment = {
 export type TamperOperationMethodUpdateFullFragment = {
     __typename: "TamperOperationMethodUpdate";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13932,6 +14162,9 @@ export type TamperOperationMethodUpdateFullFragment = {
 export type TamperOperationMethodFullFragment = {
     __typename: "TamperOperationMethodUpdate";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13951,6 +14184,9 @@ export type TamperOperationQueryRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13965,6 +14201,9 @@ export type TamperOperationQueryUpdateFullFragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -13979,6 +14218,9 @@ export type TamperOperationQueryAddFullFragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14000,6 +14242,9 @@ type TamperOperationQueryFull_TamperOperationQueryAdd_Fragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14019,6 +14264,9 @@ type TamperOperationQueryFull_TamperOperationQueryRaw_Fragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14040,6 +14288,9 @@ type TamperOperationQueryFull_TamperOperationQueryUpdate_Fragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14060,6 +14311,9 @@ export type TamperOperationFirstLineRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14079,6 +14333,9 @@ export type TamperOperationFirstLineFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14098,6 +14355,9 @@ export type TamperOperationHeaderRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14112,6 +14372,9 @@ export type TamperOperationHeaderUpdateFullFragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14126,6 +14389,9 @@ export type TamperOperationHeaderAddFullFragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14147,6 +14413,9 @@ type TamperOperationHeaderFull_TamperOperationHeaderAdd_Fragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14166,6 +14435,9 @@ type TamperOperationHeaderFull_TamperOperationHeaderRaw_Fragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14187,6 +14459,9 @@ type TamperOperationHeaderFull_TamperOperationHeaderUpdate_Fragment = {
         name: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14207,6 +14482,9 @@ export type TamperOperationBodyRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14226,6 +14504,9 @@ export type TamperOperationBodyFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14245,6 +14526,9 @@ export type TamperOperationStreamWsMessageRawFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14264,6 +14548,9 @@ export type TamperOperationStreamWsMessageFullFragment = {
         value: string;
     };
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14274,6 +14561,9 @@ export type TamperOperationStreamWsMessageFullFragment = {
 export type TamperOperationStatusCodeUpdateFullFragment = {
     __typename: "TamperOperationStatusCodeUpdate";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14284,6 +14574,9 @@ export type TamperOperationStatusCodeUpdateFullFragment = {
 export type TamperOperationStatusCodeFullFragment = {
     __typename: "TamperOperationStatusCodeUpdate";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14294,6 +14587,9 @@ export type TamperOperationStatusCodeFullFragment = {
 export type TamperOperationSniRawFullFragment = {
     __typename: "TamperOperationSNIRaw";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14304,6 +14600,9 @@ export type TamperOperationSniRawFullFragment = {
 export type TamperOperationSniFullFragment = {
     __typename: "TamperOperationSNIRaw";
     replacer: {
+        __typename: "TamperReplacerEnvironment";
+        variableName: string;
+    } | {
         __typename: "TamperReplacerTerm";
         term: string;
     } | {
@@ -14325,6 +14624,9 @@ type TamperSectionFull_TamperSectionRequestAll_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14347,6 +14649,9 @@ type TamperSectionFull_TamperSectionRequestBody_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14369,6 +14674,9 @@ type TamperSectionFull_TamperSectionRequestFirstLine_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14386,6 +14694,9 @@ type TamperSectionFull_TamperSectionRequestHeader_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14404,6 +14715,9 @@ type TamperSectionFull_TamperSectionRequestHeader_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14423,6 +14737,9 @@ type TamperSectionFull_TamperSectionRequestHeader_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14436,6 +14753,9 @@ type TamperSectionFull_TamperSectionRequestMethod_Fragment = {
     operation: {
         __typename: "TamperOperationMethodUpdate";
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14458,6 +14778,9 @@ type TamperSectionFull_TamperSectionRequestPath_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14475,6 +14798,9 @@ type TamperSectionFull_TamperSectionRequestQuery_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14493,6 +14819,9 @@ type TamperSectionFull_TamperSectionRequestQuery_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14512,6 +14841,9 @@ type TamperSectionFull_TamperSectionRequestQuery_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14525,6 +14857,9 @@ type TamperSectionFull_TamperSectionRequestSni_Fragment = {
     operation: {
         __typename: "TamperOperationSNIRaw";
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14547,6 +14882,9 @@ type TamperSectionFull_TamperSectionResponseAll_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14569,6 +14907,9 @@ type TamperSectionFull_TamperSectionResponseBody_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14591,6 +14932,9 @@ type TamperSectionFull_TamperSectionResponseFirstLine_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14608,6 +14952,9 @@ type TamperSectionFull_TamperSectionResponseHeader_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14626,6 +14973,9 @@ type TamperSectionFull_TamperSectionResponseHeader_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14645,6 +14995,9 @@ type TamperSectionFull_TamperSectionResponseHeader_Fragment = {
             name: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14658,6 +15011,9 @@ type TamperSectionFull_TamperSectionResponseStatusCode_Fragment = {
     operation: {
         __typename: "TamperOperationStatusCodeUpdate";
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14680,6 +15036,9 @@ type TamperSectionFull_TamperSectionStreamWsMessageDownstream_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14702,6 +15061,9 @@ type TamperSectionFull_TamperSectionStreamWsMessageUpstream_Fragment = {
             value: string;
         };
         replacer: {
+            __typename: "TamperReplacerEnvironment";
+            variableName: string;
+        } | {
             __typename: "TamperReplacerTerm";
             term: string;
         } | {
@@ -14734,6 +15096,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14755,6 +15120,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14776,6 +15144,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14792,6 +15163,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14810,6 +15184,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14829,6 +15206,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14841,6 +15221,9 @@ export type TamperRuleCollectionFullFragment = {
             operation: {
                 __typename: "TamperOperationMethodUpdate";
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14862,6 +15245,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14878,6 +15264,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14896,6 +15285,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14915,6 +15307,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14927,6 +15322,9 @@ export type TamperRuleCollectionFullFragment = {
             operation: {
                 __typename: "TamperOperationSNIRaw";
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14948,6 +15346,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14969,6 +15370,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -14990,6 +15394,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15006,6 +15413,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15024,6 +15434,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15043,6 +15456,9 @@ export type TamperRuleCollectionFullFragment = {
                     name: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15055,6 +15471,9 @@ export type TamperRuleCollectionFullFragment = {
             operation: {
                 __typename: "TamperOperationStatusCodeUpdate";
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15076,6 +15495,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15097,6 +15519,9 @@ export type TamperRuleCollectionFullFragment = {
                     value: string;
                 };
                 replacer: {
+                    __typename: "TamperReplacerEnvironment";
+                    variableName: string;
+                } | {
                     __typename: "TamperReplacerTerm";
                     term: string;
                 } | {
@@ -15139,6 +15564,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15160,6 +15588,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15181,6 +15612,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15197,6 +15631,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15215,6 +15652,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15234,6 +15674,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15246,6 +15689,9 @@ export type TamperRuleFullFragment = {
         operation: {
             __typename: "TamperOperationMethodUpdate";
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15267,6 +15713,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15283,6 +15732,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15301,6 +15753,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15320,6 +15775,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15332,6 +15790,9 @@ export type TamperRuleFullFragment = {
         operation: {
             __typename: "TamperOperationSNIRaw";
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15353,6 +15814,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15374,6 +15838,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15395,6 +15862,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15411,6 +15881,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15429,6 +15902,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15448,6 +15924,9 @@ export type TamperRuleFullFragment = {
                 name: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15460,6 +15939,9 @@ export type TamperRuleFullFragment = {
         operation: {
             __typename: "TamperOperationStatusCodeUpdate";
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15481,6 +15963,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15502,6 +15987,9 @@ export type TamperRuleFullFragment = {
                 value: string;
             };
             replacer: {
+                __typename: "TamperReplacerEnvironment";
+                variableName: string;
+            } | {
                 __typename: "TamperReplacerTerm";
                 term: string;
             } | {
@@ -15551,6 +16039,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15572,6 +16063,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15593,6 +16087,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15609,6 +16106,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15627,6 +16127,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15646,6 +16149,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15658,6 +16164,9 @@ export type TamperRuleCollectionsQuery = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15679,6 +16188,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15695,6 +16207,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15713,6 +16228,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15732,6 +16250,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15744,6 +16265,9 @@ export type TamperRuleCollectionsQuery = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15765,6 +16289,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15786,6 +16313,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15807,6 +16337,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15823,6 +16356,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15841,6 +16377,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15860,6 +16399,9 @@ export type TamperRuleCollectionsQuery = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15872,6 +16414,9 @@ export type TamperRuleCollectionsQuery = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15893,6 +16438,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15914,6 +16462,9 @@ export type TamperRuleCollectionsQuery = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -15967,6 +16518,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -15988,6 +16542,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16009,6 +16566,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16025,6 +16585,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16043,6 +16606,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16062,6 +16628,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16074,6 +16643,9 @@ export type RenameTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationMethodUpdate";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16095,6 +16667,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16111,6 +16686,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16129,6 +16707,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16148,6 +16729,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16160,6 +16744,9 @@ export type RenameTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationSNIRaw";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16181,6 +16768,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16202,6 +16792,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16223,6 +16816,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16239,6 +16835,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16257,6 +16856,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16276,6 +16878,9 @@ export type RenameTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16288,6 +16893,9 @@ export type RenameTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationStatusCodeUpdate";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16309,6 +16917,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16330,6 +16941,9 @@ export type RenameTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16383,6 +16997,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16404,6 +17021,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16425,6 +17045,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16441,6 +17064,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16459,6 +17085,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16478,6 +17107,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16490,6 +17122,9 @@ export type CreateTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationMethodUpdate";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16511,6 +17146,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16527,6 +17165,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16545,6 +17186,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16564,6 +17208,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16576,6 +17223,9 @@ export type CreateTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationSNIRaw";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16597,6 +17247,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16618,6 +17271,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16639,6 +17295,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16655,6 +17314,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16673,6 +17335,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16692,6 +17357,9 @@ export type CreateTamperRuleCollectionMutation = {
                             name: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16704,6 +17372,9 @@ export type CreateTamperRuleCollectionMutation = {
                     operation: {
                         __typename: "TamperOperationStatusCodeUpdate";
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16725,6 +17396,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16746,6 +17420,9 @@ export type CreateTamperRuleCollectionMutation = {
                             value: string;
                         };
                         replacer: {
+                            __typename: "TamperReplacerEnvironment";
+                            variableName: string;
+                        } | {
                             __typename: "TamperReplacerTerm";
                             term: string;
                         } | {
@@ -16815,6 +17492,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16836,6 +17516,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16857,6 +17540,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16873,6 +17559,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16891,6 +17580,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16910,6 +17602,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16922,6 +17617,9 @@ export type CreateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16943,6 +17641,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16959,6 +17660,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16977,6 +17681,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -16996,6 +17703,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17008,6 +17718,9 @@ export type CreateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17029,6 +17742,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17050,6 +17766,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17071,6 +17790,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17087,6 +17809,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17105,6 +17830,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17124,6 +17852,9 @@ export type CreateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17136,6 +17867,9 @@ export type CreateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17157,6 +17891,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17178,6 +17915,9 @@ export type CreateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17251,6 +17991,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17272,6 +18015,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17293,6 +18039,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17309,6 +18058,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17327,6 +18079,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17346,6 +18101,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17358,6 +18116,9 @@ export type UpdateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17379,6 +18140,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17395,6 +18159,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17413,6 +18180,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17432,6 +18202,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17444,6 +18217,9 @@ export type UpdateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17465,6 +18241,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17486,6 +18265,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17507,6 +18289,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17523,6 +18308,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17541,6 +18329,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17560,6 +18351,9 @@ export type UpdateTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17572,6 +18366,9 @@ export type UpdateTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17593,6 +18390,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17614,6 +18414,9 @@ export type UpdateTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17663,6 +18466,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17684,6 +18490,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17705,6 +18514,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17721,6 +18533,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17739,6 +18554,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17758,6 +18576,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17770,6 +18591,9 @@ export type RenameTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17791,6 +18615,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17807,6 +18634,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17825,6 +18655,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17844,6 +18677,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17856,6 +18692,9 @@ export type RenameTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17877,6 +18716,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17898,6 +18740,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17919,6 +18764,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17935,6 +18783,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17953,6 +18804,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17972,6 +18826,9 @@ export type RenameTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -17984,6 +18841,9 @@ export type RenameTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18005,6 +18865,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18026,6 +18889,9 @@ export type RenameTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18091,6 +18957,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18112,6 +18981,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18133,6 +19005,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18149,6 +19024,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18167,6 +19045,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18186,6 +19067,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18198,6 +19082,9 @@ export type ToggleTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18219,6 +19106,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18235,6 +19125,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18253,6 +19146,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18272,6 +19168,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18284,6 +19183,9 @@ export type ToggleTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18305,6 +19207,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18326,6 +19231,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18347,6 +19255,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18363,6 +19274,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18381,6 +19295,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18400,6 +19317,9 @@ export type ToggleTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18412,6 +19332,9 @@ export type ToggleTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18433,6 +19356,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18454,6 +19380,9 @@ export type ToggleTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18503,6 +19432,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18524,6 +19456,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18545,6 +19480,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18561,6 +19499,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18579,6 +19520,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18598,6 +19542,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18610,6 +19557,9 @@ export type RankTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18631,6 +19581,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18647,6 +19600,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18665,6 +19621,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18684,6 +19643,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18696,6 +19658,9 @@ export type RankTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18717,6 +19682,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18738,6 +19706,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18759,6 +19730,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18775,6 +19749,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18793,6 +19770,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18812,6 +19792,9 @@ export type RankTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18824,6 +19807,9 @@ export type RankTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18845,6 +19831,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18866,6 +19855,9 @@ export type RankTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18915,6 +19907,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18936,6 +19931,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18957,6 +19955,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18973,6 +19974,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -18991,6 +19995,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19010,6 +20017,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19022,6 +20032,9 @@ export type MoveTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19043,6 +20056,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19059,6 +20075,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19077,6 +20096,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19096,6 +20118,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19108,6 +20133,9 @@ export type MoveTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19129,6 +20157,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19150,6 +20181,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19171,6 +20205,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19187,6 +20224,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19205,6 +20245,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19224,6 +20267,9 @@ export type MoveTamperRuleMutation = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19236,6 +20282,9 @@ export type MoveTamperRuleMutation = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19257,6 +20306,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19278,6 +20330,9 @@ export type MoveTamperRuleMutation = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19365,6 +20420,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19386,6 +20444,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19407,6 +20468,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19423,6 +20487,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19441,6 +20508,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19460,6 +20530,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19472,6 +20545,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationMethodUpdate";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19493,6 +20569,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19509,6 +20588,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19527,6 +20609,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19546,6 +20631,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19558,6 +20646,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationSNIRaw";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19579,6 +20670,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19600,6 +20694,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19621,6 +20718,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19637,6 +20737,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19655,6 +20758,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19674,6 +20780,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19686,6 +20795,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationStatusCodeUpdate";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19707,6 +20819,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19728,6 +20843,9 @@ export type CreatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -19779,6 +20897,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19800,6 +20921,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19821,6 +20945,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19837,6 +20964,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19855,6 +20985,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19874,6 +21007,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19886,6 +21022,9 @@ export type CreatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19907,6 +21046,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19923,6 +21065,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19941,6 +21086,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19960,6 +21108,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19972,6 +21123,9 @@ export type CreatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -19993,6 +21147,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20014,6 +21171,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20035,6 +21195,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20051,6 +21214,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20069,6 +21235,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20088,6 +21257,9 @@ export type CreatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20100,6 +21272,9 @@ export type CreatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20121,6 +21296,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20142,6 +21320,9 @@ export type CreatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20191,6 +21372,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20212,6 +21396,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20233,6 +21420,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20249,6 +21439,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20267,6 +21460,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20286,6 +21482,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20298,6 +21497,9 @@ export type UpdatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationMethodUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20319,6 +21521,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20335,6 +21540,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20353,6 +21561,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20372,6 +21583,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20384,6 +21598,9 @@ export type UpdatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationSNIRaw";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20405,6 +21622,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20426,6 +21646,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20447,6 +21670,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20463,6 +21689,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20481,6 +21710,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20500,6 +21732,9 @@ export type UpdatedTamperRuleSubscription = {
                         name: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20512,6 +21747,9 @@ export type UpdatedTamperRuleSubscription = {
                 operation: {
                     __typename: "TamperOperationStatusCodeUpdate";
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20533,6 +21771,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20554,6 +21795,9 @@ export type UpdatedTamperRuleSubscription = {
                         value: string;
                     };
                     replacer: {
+                        __typename: "TamperReplacerEnvironment";
+                        variableName: string;
+                    } | {
                         __typename: "TamperReplacerTerm";
                         term: string;
                     } | {
@@ -20618,6 +21862,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20639,6 +21886,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20660,6 +21910,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20676,6 +21929,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20694,6 +21950,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20713,6 +21972,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20725,6 +21987,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationMethodUpdate";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20746,6 +22011,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20762,6 +22030,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20780,6 +22051,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20799,6 +22073,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20811,6 +22088,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationSNIRaw";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20832,6 +22112,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20853,6 +22136,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20874,6 +22160,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20890,6 +22179,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20908,6 +22200,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20927,6 +22222,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 name: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20939,6 +22237,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                         operation: {
                             __typename: "TamperOperationStatusCodeUpdate";
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20960,6 +22261,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -20981,6 +22285,9 @@ export type UpdatedTamperRuleCollectionSubscription = {
                                 value: string;
                             };
                             replacer: {
+                                __typename: "TamperReplacerEnvironment";
+                                variableName: string;
+                            } | {
                                 __typename: "TamperReplacerTerm";
                                 term: string;
                             } | {
@@ -21014,6 +22321,155 @@ export type DeletedTamperRuleCollectionSubscription = {
     deletedTamperRuleCollection: {
         deletedCollectionId: string;
         snapshot: number;
+    };
+};
+export type OobSessionFullFragment = {
+    hostname: string;
+    createdAt: Date;
+};
+export type OobInteractionFullFragment = {
+    id: string;
+    protocol: OobInteractionProtocol;
+    fullId: string;
+    remoteAddress: string;
+    rawRequest: string;
+    rawResponse?: string | undefined | null;
+    timestamp: Date;
+    metadata?: {
+        __typename: "OOBInteractionMetadataDns";
+        queryType: string;
+    } | {
+        __typename: "OOBInteractionMetadataSmtp";
+        from: string;
+    } | undefined | null;
+};
+export type OobSessionQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type OobSessionQuery = {
+    oobSession?: {
+        hostname: string;
+        createdAt: Date;
+    } | undefined | null;
+};
+export type OobInteractionsQueryVariables = Exact<{
+    before?: InputMaybe<Scalars["String"]["input"]>;
+    last: Scalars["Int"]["input"];
+}>;
+export type OobInteractionsQuery = {
+    oobInteractions: {
+        nodes: Array<{
+            id: string;
+            protocol: OobInteractionProtocol;
+            fullId: string;
+            remoteAddress: string;
+            rawRequest: string;
+            rawResponse?: string | undefined | null;
+            timestamp: Date;
+            metadata?: {
+                __typename: "OOBInteractionMetadataDns";
+                queryType: string;
+            } | {
+                __typename: "OOBInteractionMetadataSmtp";
+                from: string;
+            } | undefined | null;
+        }>;
+        pageInfo: {
+            __typename: "PageInfo";
+            hasPreviousPage: boolean;
+            hasNextPage: boolean;
+            startCursor?: string | undefined | null;
+            endCursor?: string | undefined | null;
+        };
+    };
+};
+export type CreateOobSessionMutationVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreateOobSessionMutation = {
+    createOOBSession: {
+        session?: {
+            hostname: string;
+            createdAt: Date;
+        } | undefined | null;
+        error?: {
+            __typename: "OOBUserError";
+            reason: OobErrorReason;
+            code: string;
+        } | {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | undefined | null;
+    };
+};
+export type ClearOobInteractionsMutationVariables = Exact<{
+    [key: string]: never;
+}>;
+export type ClearOobInteractionsMutation = {
+    clearOOBInteractions: {
+        deletedIds?: Array<string> | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "PermissionDeniedUserError";
+            code: string;
+            permissionDeniedReason: PermissionDeniedErrorReason;
+        } | {
+            __typename: "ReadOnlyUserError";
+            code: string;
+        } | undefined | null;
+    };
+};
+export type CreatedOobSessionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedOobSessionSubscription = {
+    createdOOBSession: {
+        session: {
+            hostname: string;
+            createdAt: Date;
+        };
+    };
+};
+export type CreatedOobInteractionSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type CreatedOobInteractionSubscription = {
+    createdOOBInteraction: {
+        interactionEdge: {
+            node: {
+                id: string;
+                protocol: OobInteractionProtocol;
+                fullId: string;
+                remoteAddress: string;
+                rawRequest: string;
+                rawResponse?: string | undefined | null;
+                timestamp: Date;
+                metadata?: {
+                    __typename: "OOBInteractionMetadataDns";
+                    queryType: string;
+                } | {
+                    __typename: "OOBInteractionMetadataSmtp";
+                    from: string;
+                } | undefined | null;
+            };
+        };
+    };
+};
+export type DeletedOobInteractionsSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type DeletedOobInteractionsSubscription = {
+    deletedOOBInteractions: {
+        deletedInteractionIds: Array<string>;
     };
 };
 export type PageInfoFullFragment = {
@@ -21861,6 +23317,7 @@ export type ProjectFullFragment = {
     status: ProjectStatus;
     temporary: boolean;
     size: number;
+    compressionState: CompressionState;
     createdAt: Date;
     updatedAt: Date;
     readOnly: boolean;
@@ -21878,6 +23335,7 @@ export type CurrentProjectFullFragment = {
         status: ProjectStatus;
         temporary: boolean;
         size: number;
+        compressionState: CompressionState;
         createdAt: Date;
         updatedAt: Date;
         readOnly: boolean;
@@ -21905,6 +23363,7 @@ export type CreatedProjectSubscription = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -21928,6 +23387,7 @@ export type UpdatedProjectSubscription = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -21971,6 +23431,7 @@ export type CreateProjectMutation = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -22011,6 +23472,7 @@ export type SelectProjectMutation = {
                 status: ProjectStatus;
                 temporary: boolean;
                 size: number;
+                compressionState: CompressionState;
                 createdAt: Date;
                 updatedAt: Date;
                 readOnly: boolean;
@@ -22073,6 +23535,7 @@ export type RenameProjectMutation = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -22108,6 +23571,7 @@ export type PersistProjectMutation = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -22143,6 +23607,7 @@ export type CurrentProjectQuery = {
             status: ProjectStatus;
             temporary: boolean;
             size: number;
+            compressionState: CompressionState;
             createdAt: Date;
             updatedAt: Date;
             readOnly: boolean;
@@ -22170,6 +23635,7 @@ export type ProjectsQuery = {
         status: ProjectStatus;
         temporary: boolean;
         size: number;
+        compressionState: CompressionState;
         createdAt: Date;
         updatedAt: Date;
         readOnly: boolean;
@@ -24582,6 +26048,7 @@ export type ReplaySessionHttpPipelineMetaFragment = {
         }>;
     };
     settings?: {
+        updateContentLength: boolean;
         strategy: {
             __typename: "PipelineStrategyLastByteSynchronization";
             failureBehavior: FailureBehavior;
@@ -27254,6 +28721,7 @@ export type ReplayEntryWebsocketFullFragment = {
     error?: string | undefined | null;
     messages: Array<{
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -28629,6 +30097,7 @@ type ReplayEntryFull_ReplayEntryWs_Fragment = {
     error?: string | undefined | null;
     messages: Array<{
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -31269,6 +32738,7 @@ type ReplaySessionMeta_ReplaySessionHttpPipeline_Fragment = {
         }>;
     };
     settings?: {
+        updateContentLength: boolean;
         strategy: {
             __typename: "PipelineStrategyLastByteSynchronization";
             failureBehavior: FailureBehavior;
@@ -34936,6 +36406,7 @@ export type ReplaySessionCollectionMetaFragment = {
             }>;
         };
         settings?: {
+            updateContentLength: boolean;
             strategy: {
                 __typename: "PipelineStrategyLastByteSynchronization";
                 failureBehavior: FailureBehavior;
@@ -36732,6 +38203,7 @@ export type ReplayTaskMetaFragment = {
         error?: string | undefined | null;
         messages: Array<{
             id: string;
+            color?: string | undefined | null;
             stream: {
                 id: string;
             };
@@ -37015,6 +38487,7 @@ export type StreamWsMessageEdgeFullFragment = {
     cursor: string;
     node: {
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -37040,6 +38513,7 @@ export type ReplayStreamWsMessagesPageFullFragment = {
         cursor: string;
         node: {
             id: string;
+            color?: string | undefined | null;
             stream: {
                 id: string;
             };
@@ -37081,6 +38555,7 @@ export type ReplayWebsocketMessagesAfterQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -37123,6 +38598,7 @@ export type ReplayWebsocketMessagesBeforeQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -37165,6 +38641,7 @@ export type ReplayWebsocketMessagesByOffsetQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -37760,6 +39237,7 @@ export type ReplayEntryQuery = {
         error?: string | undefined | null;
         messages: Array<{
             id: string;
+            color?: string | undefined | null;
             stream: {
                 id: string;
             };
@@ -40403,6 +41881,7 @@ export type ActiveReplayEntryBySessionQuery = {
             }>;
         };
         settings?: {
+            updateContentLength: boolean;
             strategy: {
                 __typename: "PipelineStrategyLastByteSynchronization";
                 failureBehavior: FailureBehavior;
@@ -45302,6 +46781,7 @@ export type ReplayEntriesBySessionQuery = {
             id: string;
         };
         settings?: {
+            updateContentLength: boolean;
             strategy: {
                 __typename: "PipelineStrategyLastByteSynchronization";
                 failureBehavior: FailureBehavior;
@@ -53263,6 +54743,7 @@ export type ReplaySessionCollectionsQuery = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -55063,6 +56544,7 @@ export type UpdateReplayEntryHttpPipelineDraftHttpEntriesMutation = {
             error?: string | undefined | null;
             messages: Array<{
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -55476,6 +56958,7 @@ export type SendReplayTaskMessageMutation = {
         } | undefined | null;
         message?: {
             id: string;
+            color?: string | undefined | null;
             stream: {
                 id: string;
             };
@@ -55517,6 +57000,7 @@ export type SendReplayTaskMessageDraftMutation = {
         } | undefined | null;
         message?: {
             id: string;
+            color?: string | undefined | null;
             stream: {
                 id: string;
             };
@@ -59265,6 +60749,7 @@ export type UpdateReplaySessionSettingsMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -62938,6 +64423,7 @@ export type RenameReplaySessionCollectionMutation = {
                     }>;
                 };
                 settings?: {
+                    updateContentLength: boolean;
                     strategy: {
                         __typename: "PipelineStrategyLastByteSynchronization";
                         failureBehavior: FailureBehavior;
@@ -66611,6 +68097,7 @@ export type CreateReplaySessionCollectionMutation = {
                     }>;
                 };
                 settings?: {
+                    updateContentLength: boolean;
                     strategy: {
                         __typename: "PipelineStrategyLastByteSynchronization";
                         failureBehavior: FailureBehavior;
@@ -70288,6 +71775,7 @@ export type RenameReplaySessionMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -73956,6 +75444,7 @@ export type SetActiveReplaySessionEntryMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -77641,6 +79130,7 @@ export type CreateReplaySessionMutation = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -82522,6 +84012,7 @@ export type CreateReplaySessionMutation = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -84957,6 +86448,7 @@ export type CreateReplaySessionMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -87412,6 +88904,7 @@ export type CreateReplaySessionMutation = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -92309,6 +93802,7 @@ export type CreateReplayPipelineHttpSessionMutation = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -94744,6 +96238,7 @@ export type CreateReplayPipelineHttpSessionMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -97210,6 +98705,7 @@ export type MoveReplaySessionMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -99012,6 +100508,7 @@ export type StartReplayTaskMutation = {
                 error?: string | undefined | null;
                 messages: Array<{
                     id: string;
+                    color?: string | undefined | null;
                     stream: {
                         id: string;
                     };
@@ -101679,6 +103176,7 @@ export type RankReplaySessionMutation = {
                 }>;
             };
             settings?: {
+                updateContentLength: boolean;
                 strategy: {
                     __typename: "PipelineStrategyLastByteSynchronization";
                     failureBehavior: FailureBehavior;
@@ -105364,6 +106862,7 @@ export type RankReplaySessionCollectionMutation = {
                     }>;
                 };
                 settings?: {
+                    updateContentLength: boolean;
                     strategy: {
                         __typename: "PipelineStrategyLastByteSynchronization";
                         failureBehavior: FailureBehavior;
@@ -109045,6 +110544,7 @@ export type CreatedReplaySessionSubscription = {
                     }>;
                 };
                 settings?: {
+                    updateContentLength: boolean;
                     strategy: {
                         __typename: "PipelineStrategyLastByteSynchronization";
                         failureBehavior: FailureBehavior;
@@ -112715,6 +114215,7 @@ export type UpdatedReplaySessionSubscription = {
                     }>;
                 };
                 settings?: {
+                    updateContentLength: boolean;
                     strategy: {
                         __typename: "PipelineStrategyLastByteSynchronization";
                         failureBehavior: FailureBehavior;
@@ -116397,6 +117898,7 @@ export type CreatedReplaySessionCollectionSubscription = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -120072,6 +121574,7 @@ export type UpdatedReplaySessionCollectionSubscription = {
                         }>;
                     };
                     settings?: {
+                        updateContentLength: boolean;
                         strategy: {
                             __typename: "PipelineStrategyLastByteSynchronization";
                             failureBehavior: FailureBehavior;
@@ -121488,6 +122991,7 @@ export type CreatedReplayStreamWsMessageSubscription = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -122795,6 +124299,7 @@ export type StreamMetaFragment = {
     port: number;
     protocol: StreamProtocol;
     source: Source;
+    color?: string | undefined | null;
 };
 export type StreamEdgeMetaFragment = {
     __typename: "StreamEdge";
@@ -122810,10 +124315,12 @@ export type StreamEdgeMetaFragment = {
         port: number;
         protocol: StreamProtocol;
         source: Source;
+        color?: string | undefined | null;
     };
 };
 export type StreamWsMessageMetaFragment = {
     id: string;
+    color?: string | undefined | null;
     stream: {
         id: string;
     };
@@ -122856,6 +124363,7 @@ export type StreamWsMessageEdgeMetaFragment = {
     cursor: string;
     node: {
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -122902,6 +124410,7 @@ export type WebsocketStreamsBeforeQuery = {
                 port: number;
                 protocol: StreamProtocol;
                 source: Source;
+                color?: string | undefined | null;
             };
         }>;
         pageInfo: {
@@ -122937,6 +124446,7 @@ export type WebsocketStreamsAfterQuery = {
                 port: number;
                 protocol: StreamProtocol;
                 source: Source;
+                color?: string | undefined | null;
             };
         }>;
         pageInfo: {
@@ -122972,6 +124482,7 @@ export type WebsocketStreamsByOffsetQuery = {
                 port: number;
                 protocol: StreamProtocol;
                 source: Source;
+                color?: string | undefined | null;
             };
         }>;
         pageInfo: {
@@ -123011,6 +124522,7 @@ export type WebsocketMessagesAfterQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -123052,6 +124564,7 @@ export type WebsocketMessagesBeforeQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -123093,6 +124606,7 @@ export type WebsocketMessagesByOffsetQuery = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -123138,6 +124652,7 @@ export type WebsocketMessageQueryVariables = Exact<{
 export type WebsocketMessageQuery = {
     streamWsMessage?: {
         id: string;
+        color?: string | undefined | null;
         stream: {
             id: string;
         };
@@ -123181,6 +124696,70 @@ export type StartDeleteStreamWsMessageTaskMutation = {
         } | undefined | null;
     };
 };
+export type UpdateStreamMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateStreamInput;
+}>;
+export type UpdateStreamMutation = {
+    updateStream: {
+        stream?: {
+            __typename: "Stream";
+            id: string;
+            createdAt: Date;
+            direction: StreamDirection;
+            host: string;
+            isTls: boolean;
+            path: string;
+            port: number;
+            protocol: StreamProtocol;
+            source: Source;
+            color?: string | undefined | null;
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
+export type UpdateStreamWsMessageMutationVariables = Exact<{
+    id: Scalars["ID"]["input"];
+    input: UpdateStreamWsMessageInput;
+}>;
+export type UpdateStreamWsMessageMutation = {
+    updateStreamWsMessage: {
+        message?: {
+            id: string;
+            color?: string | undefined | null;
+            stream: {
+                id: string;
+            };
+            edits: Array<{
+                id: string;
+                alteration: Alteration;
+            }>;
+            head: {
+                id: string;
+                length: number;
+                alteration: Alteration;
+                direction: StreamMessageDirection;
+                format: StreamWsMessageFormat;
+                createdAt: Date;
+            };
+        } | undefined | null;
+        error?: {
+            __typename: "OtherUserError";
+            code: string;
+        } | {
+            __typename: "UnknownIdUserError";
+            id: string;
+            code: string;
+        } | undefined | null;
+    };
+};
 export type CreatedWsStreamSubscriptionVariables = Exact<{
     scopeId?: InputMaybe<Scalars["ID"]["input"]>;
     order: StreamOrderInput;
@@ -123202,6 +124781,7 @@ export type CreatedWsStreamSubscription = {
                 port: number;
                 protocol: StreamProtocol;
                 source: Source;
+                color?: string | undefined | null;
             };
         };
     };
@@ -123218,6 +124798,7 @@ export type CreatedStreamWsMessageSubscription = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -123253,6 +124834,7 @@ export type UpdatedStreamWsMessageSubscription = {
             cursor: string;
             node: {
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -123280,8 +124862,34 @@ export type DeletedStreamWsMessagesSubscription = {
         deletedIds: Array<string>;
     };
 };
+export type UpdatedStreamSubscriptionVariables = Exact<{
+    [key: string]: never;
+}>;
+export type UpdatedStreamSubscription = {
+    updatedStream: {
+        snapshot: number;
+        stream: {
+            __typename: "Stream";
+            id: string;
+            createdAt: Date;
+            direction: StreamDirection;
+            host: string;
+            isTls: boolean;
+            path: string;
+            port: number;
+            protocol: StreamProtocol;
+            source: Source;
+            color?: string | undefined | null;
+        };
+    };
+};
 type TaskMeta_AiProviderOAuthTask_Fragment = {
     __typename: "AIProviderOAuthTask";
+    id: string;
+    createdAt: Date;
+};
+type TaskMeta_CompressTask_Fragment = {
+    __typename: "CompressTask";
     id: string;
     createdAt: Date;
 };
@@ -123305,7 +124913,7 @@ type TaskMeta_WorkflowTask_Fragment = {
     id: string;
     createdAt: Date;
 };
-export type TaskMetaFragment = TaskMeta_AiProviderOAuthTask_Fragment | TaskMeta_DataExportTask_Fragment | TaskMeta_DeleteStreamWsMessageTask_Fragment | TaskMeta_ReplayTask_Fragment | TaskMeta_WorkflowTask_Fragment;
+export type TaskMetaFragment = TaskMeta_AiProviderOAuthTask_Fragment | TaskMeta_CompressTask_Fragment | TaskMeta_DataExportTask_Fragment | TaskMeta_DeleteStreamWsMessageTask_Fragment | TaskMeta_ReplayTask_Fragment | TaskMeta_WorkflowTask_Fragment;
 export type GetTasksQueryVariables = Exact<{
     [key: string]: never;
 }>;
@@ -123318,6 +124926,10 @@ export type GetTasksQuery = {
         userCode: string;
         verificationUrl: string;
         verificationUrlComplete?: string | undefined | null;
+    } | {
+        __typename: "CompressTask";
+        id: string;
+        createdAt: Date;
     } | {
         __typename: "DataExportTask";
         id: string;
@@ -123909,6 +125521,7 @@ export type GetTasksQuery = {
             error?: string | undefined | null;
             messages: Array<{
                 id: string;
+                color?: string | undefined | null;
                 stream: {
                     id: string;
                 };
@@ -124159,6 +125772,10 @@ export type StartedTaskSubscription = {
             verificationUrl: string;
             verificationUrlComplete?: string | undefined | null;
         } | {
+            __typename: "CompressTask";
+            id: string;
+            createdAt: Date;
+        } | {
             __typename: "DataExportTask";
             id: string;
             createdAt: Date;
@@ -124749,6 +126366,7 @@ export type StartedTaskSubscription = {
                 error?: string | undefined | null;
                 messages: Array<{
                     id: string;
+                    color?: string | undefined | null;
                     stream: {
                         id: string;
                     };
@@ -124985,6 +126603,10 @@ export type FinishedTaskSubscription = {
             verificationUrl: string;
             verificationUrlComplete?: string | undefined | null;
         } | {
+            __typename: "CompressTask";
+            id: string;
+            createdAt: Date;
+        } | {
             __typename: "DataExportTask";
             id: string;
             createdAt: Date;
@@ -125575,6 +127197,7 @@ export type FinishedTaskSubscription = {
                 error?: string | undefined | null;
                 messages: Array<{
                     id: string;
+                    color?: string | undefined | null;
                     stream: {
                         id: string;
                     };
@@ -125846,6 +127469,9 @@ export type FinishedTaskSubscription = {
             code: string;
         } | {
             __typename: "NewerVersionUserError";
+            code: string;
+        } | {
+            __typename: "OOBUserError";
             code: string;
         } | {
             __typename: "OtherUserError";
@@ -127151,7 +128777,7 @@ export declare const FinishedBackupTaskCancelledFullFragmentDoc = "\n    fragmen
 export declare const InternalUserErrorFullFragmentDoc = "\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    ";
 export declare const BackupUserErrorFullFragmentDoc = "\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const FinishedBackupTaskErrorFullFragmentDoc = "\n    fragment finishedBackupTaskErrorFull on FinishedBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    ";
-export declare const ProjectFullFragmentDoc = "\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const ProjectFullFragmentDoc = "\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const RestoreBackupTaskMetaFragmentDoc = "\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    ";
 export declare const FinishedRestoreBackupTaskSuccessFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    ";
 export declare const FinishedRestoreBackupTaskCancelledFullFragmentDoc = "\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    ";
@@ -127184,6 +128810,7 @@ export declare const CertificateUserErrorFullFragmentDoc = "\n    fragment certi
 export declare const NewerVersionUserErrorFullFragmentDoc = "\n    fragment newerVersionUserErrorFull on NewerVersionUserError {\n  ...userErrorFull\n  version\n}\n    ";
 export declare const AuthorizationUserErrorFullFragmentDoc = "\n    fragment authorizationUserErrorFull on AuthorizationUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const RankUserErrorFullFragmentDoc = "\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const OobUserErrorFullFragmentDoc = "\n    fragment oobUserErrorFull on OOBUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const DataExportStoredMetaFieldsFragmentDoc = "\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    ";
 export declare const DataExportStoredMetaFragmentDoc = "\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    ";
 export declare const DataExportStoredFullFieldsFragmentDoc = "\n    fragment dataExportStoredFullFields on DataExportStored {\n  ...dataExportStoredMeta\n  fileDownloadUrl: downloadUri\n}\n    ";
@@ -127211,7 +128838,7 @@ export declare const InterceptRequestMessageMetaFragmentDoc = "\n    fragment in
 export declare const InterceptResponseMessageMetaFragmentDoc = "\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    ";
 export declare const StreamWsMessageEditRefFragmentDoc = "\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    ";
 export declare const StreamWsMessageEditMetaFragmentDoc = "\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const StreamWsMessageMetaFragmentDoc = "\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    ";
+export declare const StreamWsMessageMetaFragmentDoc = "\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    ";
 export declare const InterceptStreamWsMessageMetaFragmentDoc = "\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    ";
 export declare const InterceptMessageMetaFragmentDoc = "\n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    ";
 export declare const InterceptRequestOptionsMetaFragmentDoc = "\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    ";
@@ -127223,8 +128850,9 @@ export declare const TamperMatcherValueFullFragmentDoc = "\n    fragment tamperM
 export declare const TamperMatcherRegexFullFragmentDoc = "\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    ";
 export declare const TamperMatcherRawFullFragmentDoc = "\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    ";
 export declare const TamperReplacerTermFullFragmentDoc = "\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    ";
+export declare const TamperReplacerEnvironmentFullFragmentDoc = "\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    ";
 export declare const TamperReplacerWorkflowFullFragmentDoc = "\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    ";
-export declare const TamperReplacerFullFragmentDoc = "\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    ";
+export declare const TamperReplacerFullFragmentDoc = "\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    ";
 export declare const TamperOperationAllRawFullFragmentDoc = "\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
 export declare const TamperOperationAllFullFragmentDoc = "\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    ";
 export declare const TamperOperationPathRawFullFragmentDoc = "\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    ";
@@ -127255,6 +128883,8 @@ export declare const TamperOperationStatusCodeFullFragmentDoc = "\n    fragment 
 export declare const TamperSectionFullFragmentDoc = "\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    ";
 export declare const TamperRuleFullFragmentDoc = "\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    ";
 export declare const TamperRuleCollectionFullFragmentDoc = "\n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    ";
+export declare const OobSessionFullFragmentDoc = "\n    fragment oobSessionFull on OOBSession {\n  hostname\n  createdAt\n}\n    ";
+export declare const OobInteractionFullFragmentDoc = "\n    fragment oobInteractionFull on OOBInteraction {\n  id\n  protocol\n  fullId\n  remoteAddress\n  metadata {\n    __typename\n    ... on OOBInteractionMetadataDns {\n      queryType\n    }\n    ... on OOBInteractionMetadataSmtp {\n      from\n    }\n  }\n  rawRequest\n  rawResponse\n  timestamp\n}\n    ";
 export declare const CountFullFragmentDoc = "\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const PassthroughOptionsMetaFragmentDoc = "\n    fragment passthroughOptionsMeta on PassthroughOptions {\n  captureList\n  passthroughList\n  outOfScope\n}\n    ";
 export declare const PluginAuthorFullFragmentDoc = "\n    fragment pluginAuthorFull on PluginAuthor {\n  name\n  email\n  url\n}\n    ";
@@ -127293,13 +128923,13 @@ export declare const ReplayEntryFullFragmentDoc = "\n    fragment replayEntryFul
 export declare const ReplayEntryMetaFragmentDoc = "\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    ";
 export declare const ReplaySessionMetaHttpFragmentDoc = "\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    ";
 export declare const ReplaySessionMetaWsFragmentDoc = "\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    ";
-export declare const ReplaySessionHttpPipelineMetaFragmentDoc = "\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplaySessionHttpPipelineMetaFragmentDoc = "\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const ReplaySessionMetaFragmentDoc = "\n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    ";
 export declare const ReplaySessionCollectionMetaFragmentDoc = "\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    ";
 export declare const TaskMetaFragmentDoc = "\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    ";
 export declare const ReplayTaskMetaFragmentDoc = "\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    ";
 export declare const StreamWsMessageEditFullFragmentDoc = "\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    ";
-export declare const StreamWsMessageEdgeFullFragmentDoc = "\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    ";
+export declare const StreamWsMessageEdgeFullFragmentDoc = "\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n    color\n  }\n}\n    ";
 export declare const PageInfoFullFragmentDoc = "\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const ReplayStreamWsMessagesPageFullFragmentDoc = "\n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    ";
 export declare const RequestEdgeMetaFragmentDoc = "\n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    ";
@@ -127311,7 +128941,7 @@ export declare const LogLineFullFragmentDoc = "\n    fragment logLineFull on Log
 export declare const ScopeFullFragmentDoc = "\n    fragment scopeFull on Scope {\n  __typename\n  id\n  name\n  allowlist\n  denylist\n  indexed\n}\n    ";
 export declare const SitemapEntryMetaFragmentDoc = "\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const SitemapEntryEdgeMetaFragmentDoc = "\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    ";
-export declare const StreamMetaFragmentDoc = "\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
+export declare const StreamMetaFragmentDoc = "\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    ";
 export declare const StreamEdgeMetaFragmentDoc = "\n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    ";
 export declare const StreamWsMessageEdgeMetaFragmentDoc = "\n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    ";
 export declare const DeleteStreamWsMessageTaskFullFragmentDoc = "\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
@@ -127392,12 +129022,12 @@ export declare const DeletedAutomateSessionDocument = "\n    subscription delete
 export declare const BackupsDocument = "\n    query backups {\n  backups {\n    ...backupMeta\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const BackupUriDocument = "\n    query backupUri($id: ID!) {\n  backup(id: $id) {\n    downloadUri\n  }\n}\n    ";
 export declare const BackupTasksDocument = "\n    query backupTasks {\n  backupTasks {\n    ...backupTaskMeta\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupTasksDocument = "\n    query restoreBackupTasks {\n  restoreBackupTasks {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupTasksDocument = "\n    query restoreBackupTasks {\n  restoreBackupTasks {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const CreateBackupDocument = "\n    mutation createBackup($id: ID!) {\n  createBackup(projectId: $id) {\n    task {\n      ...backupTaskMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const DeleteBackupDocument = "\n    mutation deleteBackup($id: ID!) {\n  deleteBackup(id: $id) {\n    deletedId\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    ";
 export declare const RenameBackupDocument = "\n    mutation renameBackup($id: ID!, $name: String!) {\n  renameBackup(id: $id, name: $name) {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupFromFileDocument = "\n    mutation restoreBackupFromFile($name: String!, $file: Upload!) {\n  restoreBackup(input: {name: $name, source: {file: $file}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
-export declare const RestoreBackupDocument = "\n    mutation restoreBackup($name: String!, $id: ID!) {\n  restoreBackup(input: {name: $name, source: {backupId: $id}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupFromFileDocument = "\n    mutation restoreBackupFromFile($name: String!, $file: Upload!) {\n  restoreBackup(input: {name: $name, source: {file: $file}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const RestoreBackupDocument = "\n    mutation restoreBackup($name: String!, $id: ID!) {\n  restoreBackup(input: {name: $name, source: {backupId: $id}}) {\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const CancelBackupTaskDocument = "\n    mutation cancelBackupTask($id: ID!) {\n  cancelBackupTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CancelRestoreBackupTaskDocument = "\n    mutation cancelRestoreBackupTask($id: ID!) {\n  cancelRestoreBackupTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const CreatedBackupDocument = "\n    subscription createdBackup {\n  createdBackup {\n    backup {\n      ...backupMeta\n    }\n  }\n}\n    \n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
@@ -127405,8 +129035,8 @@ export declare const UpdatedBackupDocument = "\n    subscription updatedBackup {
 export declare const DeletedBackupDocument = "\n    subscription deletedBackup {\n  deletedBackup {\n    deletedBackupId\n  }\n}\n    ";
 export declare const StartedBackupTaskDocument = "\n    subscription startedBackupTask {\n  startedBackupTask {\n    task {\n      ...backupTaskMeta\n    }\n  }\n}\n    \n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    ";
 export declare const FinishedBackupTaskDocument = "\n    subscription finishedBackupTask {\n  finishedBackupTask {\n    ... on FinishedBackupTaskSuccess {\n      ...finishedBackupTaskSuccessFull\n    }\n    ... on FinishedBackupTaskCancelled {\n      ...finishedBackupTaskCancelledFull\n    }\n    ... on FinishedBackupTaskError {\n      ...finishedBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedBackupTaskSuccessFull on FinishedBackupTaskSuccess {\n  __typename\n  task {\n    ...backupTaskMeta\n  }\n}\n    \n\n    fragment backupTaskMeta on BackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment finishedBackupTaskCancelledFull on FinishedBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedBackupTaskErrorFull on FinishedBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
-export declare const StartedRestoreBackupTaskDocument = "\n    subscription startedRestoreBackupTask {\n  startedRestoreBackupTask {\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
-export declare const FinishedRetoreBackupTaskDocument = "\n    subscription finishedRetoreBackupTask {\n  finishedRestoreBackupTask {\n    ... on FinishedRestoreBackupTaskSuccess {\n      ...finishedRestoreBackupTaskSuccessFull\n    }\n    ... on FinishedRestoreBackupTaskCancelled {\n      ...finishedRestoreBackupTaskCancelledFull\n    }\n    ... on FinishedRestoreBackupTaskError {\n      ...finishedRestoreBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
+export declare const StartedRestoreBackupTaskDocument = "\n    subscription startedRestoreBackupTask {\n  startedRestoreBackupTask {\n    task {\n      ...restoreBackupTaskMeta\n    }\n  }\n}\n    \n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const FinishedRetoreBackupTaskDocument = "\n    subscription finishedRetoreBackupTask {\n  finishedRestoreBackupTask {\n    ... on FinishedRestoreBackupTaskSuccess {\n      ...finishedRestoreBackupTaskSuccessFull\n    }\n    ... on FinishedRestoreBackupTaskCancelled {\n      ...finishedRestoreBackupTaskCancelledFull\n    }\n    ... on FinishedRestoreBackupTaskError {\n      ...finishedRestoreBackupTaskErrorFull\n    }\n  }\n}\n    \n    fragment finishedRestoreBackupTaskSuccessFull on FinishedRestoreBackupTaskSuccess {\n  __typename\n  task {\n    ...restoreBackupTaskMeta\n  }\n}\n    \n\n    fragment restoreBackupTaskMeta on RestoreBackupTask {\n  __typename\n  id\n  backup {\n    ...backupMeta\n  }\n  project {\n    ...projectFull\n  }\n}\n    \n\n    fragment backupMeta on Backup {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  createdAt\n  updatedAt\n  project {\n    id\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment finishedRestoreBackupTaskCancelledFull on FinishedRestoreBackupTaskCancelled {\n  __typename\n  taskId\n}\n    \n\n    fragment finishedRestoreBackupTaskErrorFull on FinishedRestoreBackupTaskError {\n  __typename\n  taskId\n  error {\n    ... on OtherUserError {\n      ...otherUserErrorFull\n    }\n    ... on InternalUserError {\n      ...internalUserErrorFull\n    }\n    ... on BackupUserError {\n      ...backupUserErrorFull\n    }\n  }\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment internalUserErrorFull on InternalUserError {\n  ...userErrorFull\n  message\n}\n    \n\n    fragment backupUserErrorFull on BackupUserError {\n  ...userErrorFull\n  reason\n}\n    ";
 export declare const BrowserDocument = "\n    query browser {\n  browser {\n    ...browserFull\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    ";
 export declare const DeleteBrowserDocument = "\n    mutation deleteBrowser {\n  deleteBrowser {\n    deletedId\n  }\n}\n    ";
 export declare const InstallBrowserDocument = "\n    mutation installBrowser {\n  installBrowser {\n    browser {\n      ...browserFull\n    }\n    error {\n      ... on UnsupportedPlatformUserError {\n        ...unsupportedPlatformUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment browserFull on Browser {\n  __typename\n  id\n  installedAt\n  latest\n  path\n  size\n  version\n}\n    \n\n    fragment unsupportedPlatformUserErrorFull on UnsupportedPlatformUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
@@ -127501,35 +129131,42 @@ export declare const DropInterceptMesageDocument = "\n    mutation dropIntercept
 export declare const SetInterceptOptionsDocument = "\n    mutation setInterceptOptions($input: InterceptOptionsInput!) {\n  setInterceptOptions(input: $input) {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const PauseInterceptDocument = "\n    mutation pauseIntercept {\n  pauseIntercept {\n    status\n  }\n}\n    ";
 export declare const ResumeInterceptDocument = "\n    mutation resumeIntercept {\n  resumeIntercept {\n    status\n  }\n}\n    ";
-export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const InterceptStreamWsMessagesDocument = "\n    query interceptStreamWsMessages($first: Int!) {\n  interceptMessages(first: $first, kind: STREAM_WS) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptRequestMessagesDocument = "\n    query interceptRequestMessages($first: Int!) {\n  interceptMessages(first: $first, kind: REQUEST) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptResponseMessagesDocument = "\n    query interceptResponseMessages($first: Int!) {\n  interceptMessages(first: $first, kind: RESPONSE) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const InterceptStreamWsMessagesDocument = "\n    query interceptStreamWsMessages($first: Int!) {\n  interceptMessages(first: $first, kind: STREAM_WS) {\n    nodes {\n      ...interceptMessageMeta\n    }\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const InterceptOptionsDocument = "\n    query interceptOptions {\n  interceptOptions {\n    ...interceptOptionsMeta\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const InterceptStatusDocument = "\n    query interceptStatus {\n  interceptStatus\n}\n    ";
 export declare const UpdatedInterceptStatusDocument = "\n    subscription updatedInterceptStatus {\n  updatedInterceptStatus {\n    status\n  }\n}\n    ";
-export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const CreatedInterceptMessageDocument = "\n    subscription createdInterceptMessage {\n  createdInterceptMessage {\n    messageEdge {\n      node {\n        ...interceptMessageMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment interceptMessageMeta on InterceptMessage {\n  __typename\n  ... on InterceptRequestMessage {\n    ...interceptRequestMessageMeta\n  }\n  ... on InterceptResponseMessage {\n    ...interceptResponseMessageMeta\n  }\n  ... on InterceptStreamWsMessage {\n    ...interceptStreamWsMessageMeta\n  }\n}\n    \n\n    fragment interceptRequestMessageMeta on InterceptRequestMessage {\n  __typename\n  id\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment interceptResponseMessageMeta on InterceptResponseMessage {\n  __typename\n  id\n  response {\n    ...responseMeta\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment interceptStreamWsMessageMeta on InterceptStreamWsMessage {\n  __typename\n  id\n  message {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const UpdatedInterceptOptionsDocument = "\n    subscription updatedInterceptOptions {\n  updatedInterceptOptions {\n    options {\n      ...interceptOptionsMeta\n    }\n  }\n}\n    \n    fragment interceptOptionsMeta on InterceptOptions {\n  request {\n    ...interceptRequestOptionsMeta\n  }\n  response {\n    ...interceptResponseOptionsMeta\n  }\n  streamWs {\n    ...interceptStreamWsOptionsMeta\n  }\n  scope {\n    ...interceptScopeOptionsMeta\n  }\n}\n    \n\n    fragment interceptRequestOptionsMeta on InterceptRequestOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    \n\n    fragment interceptResponseOptionsMeta on InterceptResponseOptions {\n  enabled\n  filter {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n}\n    \n\n    fragment interceptStreamWsOptionsMeta on InterceptStreamWsOptions {\n  enabled\n}\n    \n\n    fragment interceptScopeOptionsMeta on InterceptScopeOptions {\n  scopeId\n}\n    ";
 export declare const DeletedInterceptMessageDocument = "\n    subscription deletedInterceptMessage {\n  deletedInterceptMessage {\n    deletedMessageId\n  }\n}\n    ";
-export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    ...tamperRuleCollectionFull\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const RenameTamperRuleCollectionDocument = "\n    mutation renameTamperRuleCollection($id: ID!, $name: String!) {\n  renameTamperRuleCollection(id: $id, name: $name) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const CreateTamperRuleCollectionDocument = "\n    mutation createTamperRuleCollection($input: CreateTamperRuleCollectionInput!) {\n  createTamperRuleCollection(input: $input) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const TamperRuleCollectionsDocument = "\n    query tamperRuleCollections {\n  tamperRuleCollections {\n    ...tamperRuleCollectionFull\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const RenameTamperRuleCollectionDocument = "\n    mutation renameTamperRuleCollection($id: ID!, $name: String!) {\n  renameTamperRuleCollection(id: $id, name: $name) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const CreateTamperRuleCollectionDocument = "\n    mutation createTamperRuleCollection($input: CreateTamperRuleCollectionInput!) {\n  createTamperRuleCollection(input: $input) {\n    collection {\n      ...tamperRuleCollectionFull\n    }\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeleteTamperRuleCollectionDocument = "\n    mutation deleteTamperRuleCollection($id: ID!) {\n  deleteTamperRuleCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const CreateTamperRuleDocument = "\n    mutation createTamperRule($input: CreateTamperRuleInput!) {\n  createTamperRule(input: $input) {\n    error {\n      ... on InvalidRegexUserError {\n        ...invalidRegexUserErrorFull\n      }\n      ... on InvalidHTTPQLUserError {\n        ...invalidHTTPQLUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment invalidRegexUserErrorFull on InvalidRegexUserError {\n  ...userErrorFull\n  term\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const CreateTamperRuleDocument = "\n    mutation createTamperRule($input: CreateTamperRuleInput!) {\n  createTamperRule(input: $input) {\n    error {\n      ... on InvalidRegexUserError {\n        ...invalidRegexUserErrorFull\n      }\n      ... on InvalidHTTPQLUserError {\n        ...invalidHTTPQLUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment invalidRegexUserErrorFull on InvalidRegexUserError {\n  ...userErrorFull\n  term\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeleteTamperRuleDocument = "\n    mutation deleteTamperRule($id: ID!) {\n  deleteTamperRule(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const UpdateTamperRuleDocument = "\n    mutation updateTamperRule($id: ID!, $input: UpdateTamperRuleInput!) {\n  updateTamperRule(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on InvalidRegexUserError {\n        ...invalidRegexUserErrorFull\n      }\n      ... on InvalidHTTPQLUserError {\n        ...invalidHTTPQLUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment invalidRegexUserErrorFull on InvalidRegexUserError {\n  ...userErrorFull\n  term\n}\n    \n\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const RenameTamperRuleDocument = "\n    mutation renameTamperRule($id: ID!, $name: String!) {\n  renameTamperRule(id: $id, name: $name) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const UpdateTamperRuleDocument = "\n    mutation updateTamperRule($id: ID!, $input: UpdateTamperRuleInput!) {\n  updateTamperRule(id: $id, input: $input) {\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on InvalidRegexUserError {\n        ...invalidRegexUserErrorFull\n      }\n      ... on InvalidHTTPQLUserError {\n        ...invalidHTTPQLUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment invalidRegexUserErrorFull on InvalidRegexUserError {\n  ...userErrorFull\n  term\n}\n    \n\n    fragment invalidHTTPQLUserErrorFull on InvalidHTTPQLUserError {\n  ...userErrorFull\n  query\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const RenameTamperRuleDocument = "\n    mutation renameTamperRule($id: ID!, $name: String!) {\n  renameTamperRule(id: $id, name: $name) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const TestTamperRuleDocument = "\n    mutation testTamperRule($input: TestTamperRuleInput!) {\n  testTamperRule(input: $input) {\n    raw\n    error {\n      ... on InvalidRegexUserError {\n        ...invalidRegexUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment invalidRegexUserErrorFull on InvalidRegexUserError {\n  ...userErrorFull\n  term\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const ToggleTamperRuleDocument = "\n    mutation toggleTamperRule($id: ID!, $enabled: Boolean!) {\n  toggleTamperRule(id: $id, enabled: $enabled) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const ToggleTamperRuleDocument = "\n    mutation toggleTamperRule($id: ID!, $enabled: Boolean!) {\n  toggleTamperRule(id: $id, enabled: $enabled) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const RankTamperRuleDocument = "\n    mutation rankTamperRule($id: ID!, $input: RankTamperRuleInput!) {\n  rankTamperRule(id: $id, input: $input) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const MoveTamperRuleDocument = "\n    mutation moveTamperRule($id: ID!, $collectionId: ID!) {\n  moveTamperRule(id: $id, collectionId: $collectionId) {\n    rule {\n      ...tamperRuleFull\n    }\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const ExportTamperDocument = "\n    mutation exportTamper($input: ExportTamperInput!) {\n  exportTamper(input: $input) {\n    export {\n      ...dataExportOnDemandMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    ";
 export declare const ImportTamperDocument = "\n    mutation importTamper($input: ImportTamperRuleInput!) {\n  importData(input: {tamper: $input}) {\n    id\n    errors\n    summary {\n      ... on TamperSummary {\n        collectionsCreated\n        rulesImported\n      }\n    }\n  }\n}\n    ";
-export declare const CreatedTamperRuleCollectionDocument = "\n    subscription createdTamperRuleCollection {\n  createdTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const CreatedTamperRuleDocument = "\n    subscription createdTamperRule {\n  createdTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
-export declare const UpdatedTamperRuleDocument = "\n    subscription updatedTamperRule {\n  updatedTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const CreatedTamperRuleCollectionDocument = "\n    subscription createdTamperRuleCollection {\n  createdTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const CreatedTamperRuleDocument = "\n    subscription createdTamperRule {\n  createdTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const UpdatedTamperRuleDocument = "\n    subscription updatedTamperRule {\n  updatedTamperRule {\n    rule {\n      ...tamperRuleFull\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeletedTamperRuleDocument = "\n    subscription deletedTamperRule {\n  deletedTamperRule {\n    deletedRuleId\n    snapshot\n  }\n}\n    ";
-export declare const UpdatedTamperRuleCollectionDocument = "\n    subscription updatedTamperRuleCollection {\n  updatedTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
+export declare const UpdatedTamperRuleCollectionDocument = "\n    subscription updatedTamperRuleCollection {\n  updatedTamperRuleCollection {\n    collectionEdge {\n      cursor\n      node {\n        ...tamperRuleCollectionFull\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment tamperRuleCollectionFull on TamperRuleCollection {\n  __typename\n  id\n  name\n  rules {\n    ...tamperRuleFull\n  }\n}\n    \n\n    fragment tamperRuleFull on TamperRule {\n  __typename\n  id\n  name\n  section {\n    ...tamperSectionFull\n  }\n  enable {\n    rank\n  }\n  condition {\n    ... on HTTPQL {\n      ...HTTPQLQueryFull\n    }\n    ... on StreamQL {\n      ...StreamQLQueryFull\n    }\n  }\n  collection {\n    id\n  }\n  sources\n}\n    \n\n    fragment tamperSectionFull on TamperSection {\n  __typename\n  ... on TamperSectionRequestAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionRequestPath {\n    operation {\n      ...tamperOperationPathFull\n    }\n  }\n  ... on TamperSectionRequestMethod {\n    operation {\n      ...tamperOperationMethodFull\n    }\n  }\n  ... on TamperSectionRequestQuery {\n    operation {\n      ...tamperOperationQueryFull\n    }\n  }\n  ... on TamperSectionRequestFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionRequestHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionRequestBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionRequestSNI {\n    operation {\n      ...tamperOperationSNIFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageUpstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n  ... on TamperSectionResponseAll {\n    operation {\n      ...tamperOperationAllFull\n    }\n  }\n  ... on TamperSectionResponseFirstLine {\n    operation {\n      ...tamperOperationFirstLineFull\n    }\n  }\n  ... on TamperSectionResponseStatusCode {\n    operation {\n      ...tamperOperationStatusCodeFull\n    }\n  }\n  ... on TamperSectionResponseHeader {\n    operation {\n      ...tamperOperationHeaderFull\n    }\n  }\n  ... on TamperSectionResponseBody {\n    operation {\n      ...tamperOperationBodyFull\n    }\n  }\n  ... on TamperSectionStreamWsMessageDownstream {\n    operation {\n      ...tamperOperationStreamWsMessageFull\n    }\n  }\n}\n    \n\n    fragment tamperOperationAllFull on TamperOperationAll {\n  __typename\n  ... on TamperOperationAllRaw {\n    ...tamperOperationAllRawFull\n  }\n}\n    \n\n    fragment tamperOperationAllRawFull on TamperOperationAllRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherRawFull on TamperMatcherRaw {\n  __typename\n  ... on TamperMatcherValue {\n    ...tamperMatcherValueFull\n  }\n  ... on TamperMatcherRegex {\n    ...tamperMatcherRegexFull\n  }\n}\n    \n\n    fragment tamperMatcherValueFull on TamperMatcherValue {\n  __typename\n  value\n}\n    \n\n    fragment tamperMatcherRegexFull on TamperMatcherRegex {\n  __typename\n  regex\n}\n    \n\n    fragment tamperReplacerFull on TamperReplacer {\n  __typename\n  ... on TamperReplacerTerm {\n    ...tamperReplacerTermFull\n  }\n  ... on TamperReplacerEnvironment {\n    ...tamperReplacerEnvironmentFull\n  }\n  ... on TamperReplacerWorkflow {\n    ...tamperReplacerWorkflowFull\n  }\n}\n    \n\n    fragment tamperReplacerTermFull on TamperReplacerTerm {\n  __typename\n  term\n}\n    \n\n    fragment tamperReplacerEnvironmentFull on TamperReplacerEnvironment {\n  __typename\n  variableName\n}\n    \n\n    fragment tamperReplacerWorkflowFull on TamperReplacerWorkflow {\n  __typename\n  id\n}\n    \n\n    fragment tamperOperationPathFull on TamperOperationPath {\n  __typename\n  ... on TamperOperationPathRaw {\n    ...tamperOperationPathRawFull\n  }\n}\n    \n\n    fragment tamperOperationPathRawFull on TamperOperationPathRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationMethodFull on TamperOperationMethod {\n  __typename\n  ... on TamperOperationMethodUpdate {\n    ...tamperOperationMethodUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationMethodUpdateFull on TamperOperationMethodUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryFull on TamperOperationQuery {\n  __typename\n  ... on TamperOperationQueryRaw {\n    ...tamperOperationQueryRawFull\n  }\n  ... on TamperOperationQueryUpdate {\n    ...tamperOperationQueryUpdateFull\n  }\n  ... on TamperOperationQueryAdd {\n    ...tamperOperationQueryAddFull\n  }\n  ... on TamperOperationQueryRemove {\n    ...tamperOperationQueryRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRawFull on TamperOperationQueryRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryUpdateFull on TamperOperationQueryUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperMatcherNameFull on TamperMatcherName {\n  __typename\n  name\n}\n    \n\n    fragment tamperOperationQueryAddFull on TamperOperationQueryAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationQueryRemoveFull on TamperOperationQueryRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineFull on TamperOperationFirstLine {\n  __typename\n  ... on TamperOperationFirstLineRaw {\n    ...tamperOperationFirstLineRawFull\n  }\n}\n    \n\n    fragment tamperOperationFirstLineRawFull on TamperOperationFirstLineRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderFull on TamperOperationHeader {\n  __typename\n  ... on TamperOperationHeaderRaw {\n    ...tamperOperationHeaderRawFull\n  }\n  ... on TamperOperationHeaderUpdate {\n    ...tamperOperationHeaderUpdateFull\n  }\n  ... on TamperOperationHeaderAdd {\n    ...tamperOperationHeaderAddFull\n  }\n  ... on TamperOperationHeaderRemove {\n    ...tamperOperationHeaderRemoveFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRawFull on TamperOperationHeaderRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderUpdateFull on TamperOperationHeaderUpdate {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderAddFull on TamperOperationHeaderAdd {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationHeaderRemoveFull on TamperOperationHeaderRemove {\n  __typename\n  matcher {\n    ...tamperMatcherNameFull\n  }\n}\n    \n\n    fragment tamperOperationBodyFull on TamperOperationBody {\n  __typename\n  ... on TamperOperationBodyRaw {\n    ...tamperOperationBodyRawFull\n  }\n}\n    \n\n    fragment tamperOperationBodyRawFull on TamperOperationBodyRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationSNIFull on TamperOperationSNI {\n  __typename\n  ... on TamperOperationSNIRaw {\n    ...tamperOperationSNIRawFull\n  }\n}\n    \n\n    fragment tamperOperationSNIRawFull on TamperOperationSNIRaw {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageFull on TamperOperationStreamWsMessage {\n  __typename\n  ... on TamperOperationStreamWsMessageRaw {\n    ...tamperOperationStreamWsMessageRawFull\n  }\n}\n    \n\n    fragment tamperOperationStreamWsMessageRawFull on TamperOperationStreamWsMessageRaw {\n  __typename\n  matcher {\n    ...tamperMatcherRawFull\n  }\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeFull on TamperOperationStatusCode {\n  __typename\n  ... on TamperOperationStatusCodeUpdate {\n    ...tamperOperationStatusCodeUpdateFull\n  }\n}\n    \n\n    fragment tamperOperationStatusCodeUpdateFull on TamperOperationStatusCodeUpdate {\n  __typename\n  replacer {\n    ...tamperReplacerFull\n  }\n}\n    \n\n    fragment HTTPQLQueryFull on HTTPQL {\n  __typename\n  code\n}\n    \n\n    fragment StreamQLQueryFull on StreamQL {\n  __typename\n  code\n}\n    ";
 export declare const DeletedTamperRuleCollectionDocument = "\n    subscription deletedTamperRuleCollection {\n  deletedTamperRuleCollection {\n    deletedCollectionId\n    snapshot\n  }\n}\n    ";
+export declare const OobSessionDocument = "\n    query oobSession {\n  oobSession {\n    ...oobSessionFull\n  }\n}\n    \n    fragment oobSessionFull on OOBSession {\n  hostname\n  createdAt\n}\n    ";
+export declare const OobInteractionsDocument = "\n    query oobInteractions($before: String, $last: Int!) {\n  oobInteractions(before: $before, last: $last) {\n    nodes {\n      ...oobInteractionFull\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n  }\n}\n    \n    fragment oobInteractionFull on OOBInteraction {\n  id\n  protocol\n  fullId\n  remoteAddress\n  metadata {\n    __typename\n    ... on OOBInteractionMetadataDns {\n      queryType\n    }\n    ... on OOBInteractionMetadataSmtp {\n      from\n    }\n  }\n  rawRequest\n  rawResponse\n  timestamp\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const CreateOobSessionDocument = "\n    mutation createOobSession {\n  createOOBSession {\n    session {\n      ...oobSessionFull\n    }\n    error {\n      ... on OOBUserError {\n        ...oobUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment oobSessionFull on OOBSession {\n  hostname\n  createdAt\n}\n    \n\n    fragment oobUserErrorFull on OOBUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const ClearOobInteractionsDocument = "\n    mutation clearOobInteractions {\n  clearOOBInteractions {\n    deletedIds\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on ReadOnlyUserError {\n        ...readOnlyUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment readOnlyUserErrorFull on ReadOnlyUserError {\n  ...userErrorFull\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedOobSessionDocument = "\n    subscription createdOobSession {\n  createdOOBSession {\n    session {\n      ...oobSessionFull\n    }\n  }\n}\n    \n    fragment oobSessionFull on OOBSession {\n  hostname\n  createdAt\n}\n    ";
+export declare const CreatedOobInteractionDocument = "\n    subscription createdOobInteraction {\n  createdOOBInteraction {\n    interactionEdge {\n      node {\n        ...oobInteractionFull\n      }\n    }\n  }\n}\n    \n    fragment oobInteractionFull on OOBInteraction {\n  id\n  protocol\n  fullId\n  remoteAddress\n  metadata {\n    __typename\n    ... on OOBInteractionMetadataDns {\n      queryType\n    }\n    ... on OOBInteractionMetadataSmtp {\n      from\n    }\n  }\n  rawRequest\n  rawResponse\n  timestamp\n}\n    ";
+export declare const DeletedOobInteractionsDocument = "\n    subscription deletedOobInteractions {\n  deletedOOBInteractions {\n    deletedInteractionIds\n  }\n}\n    ";
 export declare const PassthroughOptionsDocument = "\n    query passthroughOptions {\n  passthroughOptions {\n    ...passthroughOptionsMeta\n  }\n}\n    \n    fragment passthroughOptionsMeta on PassthroughOptions {\n  captureList\n  passthroughList\n  outOfScope\n}\n    ";
 export declare const SetPassthroughOptionsDocument = "\n    mutation setPassthroughOptions($input: SetPassthroughOptionsInput) {\n  setPassthroughOptions(input: $input) {\n    options {\n      ...passthroughOptionsMeta\n    }\n  }\n}\n    \n    fragment passthroughOptionsMeta on PassthroughOptions {\n  captureList\n  passthroughList\n  outOfScope\n}\n    ";
 export declare const UpdatedPassthroughOptionsDocument = "\n    subscription updatedPassthroughOptions {\n  updatedPassthroughOptions {\n    options {\n      ...passthroughOptionsMeta\n    }\n  }\n}\n    \n    fragment passthroughOptionsMeta on PassthroughOptions {\n  captureList\n  passthroughList\n  outOfScope\n}\n    ";
@@ -127549,54 +129186,54 @@ export declare const SetPluginPackageDataDocument = "\n    mutation setPluginPac
 export declare const DeletePluginPackageDataDocument = "\n    mutation deletePluginPackageData($id: ID!, $key: String!) {\n  deletePluginPackageData(id: $id, key: $key) {\n    success\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const UpdatedPluginPackageDataDocument = "\n    subscription updatedPluginPackageData {\n  updatedPluginPackageData {\n    packageData {\n      ...pluginPackageDataFull\n    }\n  }\n}\n    \n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
 export declare const DeletedPluginPackageDataDocument = "\n    subscription deletedPluginPackageData {\n  deletedPluginPackageData {\n    packageId\n    key\n  }\n}\n    ";
-export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
-export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
 export declare const SelectedProjectDocument = "\n    subscription selectedProject {\n  selectedProject {\n    currentProject {\n      project {\n        id\n      }\n    }\n  }\n}\n    ";
-export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreateProjectDocument = "\n    mutation createProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const SelectProjectDocument = "\n    mutation selectProject($id: ID!) {\n  selectProject(id: $id) {\n    currentProject {\n      ...currentProjectFull\n    }\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    \n\n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
 export declare const DeleteProjectDocument = "\n    mutation deleteProject($id: ID!) {\n  deleteProject(id: $id) {\n    deletedId\n    error {\n      ... on ProjectUserError {\n        ...projectUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectUserErrorFull on ProjectUserError {\n  ...userErrorFull\n  projectReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const PersistProjectDocument = "\n    mutation persistProject($id: ID!) {\n  persistProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
-export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
+export declare const RenameProjectDocument = "\n    mutation renameProject($id: ID!, $name: String!) {\n  renameProject(id: $id, name: $name) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on NameTakenUserError {\n        ...nameTakenUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment nameTakenUserErrorFull on NameTakenUserError {\n  ...userErrorFull\n  name\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const PersistProjectDocument = "\n    mutation persistProject($id: ID!) {\n  persistProject(id: $id) {\n    project {\n      ...projectFull\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CurrentProjectDocument = "\n    query currentProject {\n  currentProject {\n    ...currentProjectFull\n  }\n}\n    \n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    \n\n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    \n\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    \n\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
+export declare const ProjectsDocument = "\n    query projects {\n  projects {\n    ...projectFull\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const SetProjectConfigStreamDocument = "\n    mutation setProjectConfigStream($input: ProjectConfigStreamInput!) {\n  setProjectConfigStream(input: $input) {\n    config {\n      ...projectConfigStreamFull\n    }\n  }\n}\n    \n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
-export declare const ReplayWebsocketMessagesAfterDocument = "\n    query replayWebsocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const ReplayWebsocketMessagesBeforeDocument = "\n    query replayWebsocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const ReplayWebsocketMessagesByOffsetDocument = "\n    query replayWebsocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
-export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const ReplayWebsocketMessagesAfterDocument = "\n    query replayWebsocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n    color\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const ReplayWebsocketMessagesBeforeDocument = "\n    query replayWebsocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n    color\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const ReplayWebsocketMessagesByOffsetDocument = "\n    query replayWebsocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    ...replayStreamWsMessagesPageFull\n  }\n}\n    \n    fragment replayStreamWsMessagesPageFull on StreamWsMessageConnection {\n  edges {\n    ...streamWsMessageEdgeFull\n  }\n  pageInfo {\n    ...pageInfoFull\n  }\n  snapshot\n}\n    \n\n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n    color\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const ReplayEntryDocument = "\n    query replayEntry($id: ID!, $sessionKind: ReplaySessionKind!) {\n  replayEntry(id: $id, sessionKind: $sessionKind) {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
+export declare const ActiveReplayEntryBySessionDocument = "\n    query activeReplayEntryBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      activeEntry {\n        ... on ReplayEntryHttp {\n          ...replayEntryHttpMeta\n        }\n        ... on ReplayEntryWs {\n          ...replayEntryWsMeta\n        }\n      }\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n      activeEntry {\n        ...replayEntryMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const ReplayEntriesBySessionDocument = "\n    query replayEntriesBySession($sessionId: ID!) {\n  replaySession(id: $sessionId) {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const ReplaySessionEntriesDocument = "\n    query replaySessionEntries($id: ID!) {\n  replaySession(id: $id) {\n    ... on ReplaySessionHttp {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionWs {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n    ... on ReplaySessionHttpPipeline {\n      activeEntry {\n        ...replayEntryMeta\n      }\n      entries {\n        edges {\n          cursor\n          node {\n            ...replayEntryMeta\n          }\n        }\n        pageInfo {\n          ...pageInfoFull\n        }\n        count {\n          ...countFull\n        }\n      }\n    }\n  }\n}\n    \n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    \n\n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdateReplayEntryHttpPipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpPipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpPipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpPipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpPipeline {\n        ...replayEntryHttpPipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const ReplaySessionCollectionsDocument = "\n    query replaySessionCollections {\n  replaySessionCollections {\n    edges {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const UpdateReplayEntryHttpPipelineDraftHttpEntriesDocument = "\n    mutation updateReplayEntryHttpPipelineDraftHttpEntries($id: ID!, $input: UpdateReplayEntryHttpPipelineDraftHttpEntriesInput!) {\n  updateReplayEntryHttpPipelineDraftHttpEntries(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttpPipeline {\n        ...replayEntryHttpPipelineFull\n      }\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWebsocketFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const SetActiveReplayPipelineEntryHttpEntryDocument = "\n    mutation setActiveReplayPipelineEntryHttpEntry($id: ID!, $httpEntryId: ID!) {\n  setActiveReplayPipelineEntryHttpEntry(id: $id, httpEntryId: $httpEntryId) {\n    entry {\n      activeHttpEntry {\n        ...replayEntryHttpFull\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    ";
-export declare const SendReplayTaskMessageDocument = "\n    mutation sendReplayTaskMessage($task: ID!, $input: SendReplayTaskMessageInput!) {\n  sendReplayTaskMessage(task: $task, input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const SendReplayTaskMessageDraftDocument = "\n    mutation sendReplayTaskMessageDraft($task: ID!) {\n  sendReplayTaskMessageDraft(task: $task) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const SendReplayTaskMessageDocument = "\n    mutation sendReplayTaskMessage($task: ID!, $input: SendReplayTaskMessageInput!) {\n  sendReplayTaskMessage(task: $task, input: $input) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const SendReplayTaskMessageDraftDocument = "\n    mutation sendReplayTaskMessageDraft($task: ID!) {\n  sendReplayTaskMessageDraft(task: $task) {\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n    message {\n      ...streamWsMessageMeta\n    }\n  }\n}\n    \n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const StopReplayWsTasksDocument = "\n    mutation stopReplayWsTasks($taskIds: [ID!]!) {\n  stopReplayWsTasks(taskIds: $taskIds) {\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const ClearReplayEntryDraftDocument = "\n    mutation clearReplayEntryDraft($id: ID!, $kind: ReplaySessionKind!) {\n  clearReplayEntryDraft(id: $id, kind: $kind) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpPipeline {\n        ...replayEntryHttpPipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
 export declare const UpdateReplayEntryDraftDocument = "\n    mutation updateReplayEntryDraft($id: ID!, $input: UpdateReplayEntryDraftInput!) {\n  updateReplayEntryDraft(id: $id, input: $input) {\n    entry {\n      ... on ReplayEntryHttp {\n        ...replayEntryHttpFull\n      }\n      ... on ReplayEntryWs {\n        ...replayEntryWsMeta\n      }\n      ... on ReplayEntryHttpPipeline {\n        ...replayEntryHttpPipelineMeta\n      }\n    }\n  }\n}\n    \n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWsMeta on ReplayEntryWs {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  http {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    ";
-export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const UpdateReplaySessionSettingsDocument = "\n    mutation updateReplaySessionSettings($id: ID!, $input: ReplaySessionSettingsInput!) {\n  updateReplaySessionSettings(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const RenameReplaySessionCollectionDocument = "\n    mutation renameReplaySessionCollection($id: ID!, $name: String!) {\n  renameReplaySessionCollection(id: $id, name: $name) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const CreateReplaySessionCollectionDocument = "\n    mutation createReplaySessionCollection($input: CreateReplaySessionCollectionInput!) {\n  createReplaySessionCollection(input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const DeleteReplaySessionCollectionDocument = "\n    mutation deleteReplaySessionCollection($id: ID!) {\n  deleteReplaySessionCollection(id: $id) {\n    deletedId\n  }\n}\n    ";
-export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const RenameReplaySessionDocument = "\n    mutation renameReplaySession($id: ID!, $name: String!) {\n  renameReplaySession(id: $id, name: $name) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const SetActiveReplaySessionEntryDocument = "\n    mutation setActiveReplaySessionEntry($id: ID!, $entryId: ID!) {\n  setActiveReplaySessionEntry(id: $id, entryId: $entryId) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const DeleteReplaySessionsDocument = "\n    mutation deleteReplaySessions($ids: [ID!]!) {\n  deleteReplaySessions(ids: $ids) {\n    deletedIds\n  }\n}\n    ";
-export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpPipeline {\n        ...replaySessionHttpPipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const CreateReplayPipelineHttpSessionDocument = "\n    mutation createReplayPipelineHttpSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpSession(input: $input) {\n    session {\n      ...replaySessionHttpPipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
-export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
-export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreateReplaySessionDocument = "\n    mutation createReplaySession($input: CreateReplaySessionInput!) {\n  createReplaySession(input: $input) {\n    session {\n      ... on ReplaySessionHttp {\n        ...replaySessionMetaHttp\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionWs {\n        ...replaySessionMetaWs\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n      ... on ReplaySessionHttpPipeline {\n        ...replaySessionHttpPipelineMeta\n        collection {\n          ...replaySessionCollectionMeta\n        }\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const CreateReplayPipelineHttpSessionDocument = "\n    mutation createReplayPipelineHttpSession($input: CreateReplayPipelineSessionInput!) {\n  createReplayPipelineHttpSession(input: $input) {\n    session {\n      ...replaySessionHttpPipelineMeta\n      collection {\n        ...replaySessionCollectionMeta\n      }\n    }\n    error {\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    ";
+export declare const MoveReplaySessionDocument = "\n    mutation moveReplaySession($id: ID!, $collectionId: ID!) {\n  moveReplaySession(collectionId: $collectionId, id: $id) {\n    session {\n      ...replaySessionMeta\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const StartReplayTaskDocument = "\n    mutation startReplayTask($sessionId: ID!) {\n  startReplayTask(sessionId: $sessionId) {\n    task {\n      ...replayTaskMeta\n    }\n    error {\n      ... on TaskInProgressUserError {\n        ...taskInProgressUserErrorFull\n      }\n      ... on PermissionDeniedUserError {\n        ...permissionDeniedUserErrorFull\n      }\n      ... on CloudUserError {\n        ...cloudUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment taskInProgressUserErrorFull on TaskInProgressUserError {\n  ...userErrorFull\n  taskId\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment permissionDeniedUserErrorFull on PermissionDeniedUserError {\n  ...userErrorFull\n  permissionDeniedReason: reason\n}\n    \n\n    fragment cloudUserErrorFull on CloudUserError {\n  ...userErrorFull\n  cloudReason: reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const RankReplaySessionDocument = "\n    mutation rankReplaySession($id: ID!, $input: RankInput!) {\n  rankReplaySession(id: $id, input: $input) {\n    session {\n      ...replaySessionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const RankReplaySessionCollectionDocument = "\n    mutation rankReplaySessionCollection($id: ID!, $input: RankInput!) {\n  rankReplaySessionCollection(id: $id, input: $input) {\n    collection {\n      ...replaySessionCollectionMeta\n    }\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on RankUserError {\n        ...rankUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment rankUserErrorFull on RankUserError {\n  ...userErrorFull\n  reason\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
+export declare const CreatedReplaySessionDocument = "\n    subscription createdReplaySession {\n  createdReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const UpdatedReplaySessionDocument = "\n    subscription updatedReplaySession {\n  updatedReplaySession {\n    sessionEdge {\n      node {\n        ...replaySessionMeta\n      }\n    }\n    snapshot\n  }\n}\n    \n    fragment replaySessionMeta on ReplaySession {\n  ... on ReplaySessionHttp {\n    ...replaySessionMetaHttp\n  }\n  ... on ReplaySessionWs {\n    ...replaySessionMetaWs\n  }\n  ... on ReplaySessionHttpPipeline {\n    ...replaySessionHttpPipelineMeta\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const DeletedReplaySessionDocument = "\n    subscription deletedReplaySession {\n  deletedReplaySession {\n    deletedSessionId\n  }\n}\n    ";
-export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
-export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    ";
+export declare const CreatedReplaySessionCollectionDocument = "\n    subscription createdReplaySessionCollection {\n  createdReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
+export declare const UpdatedReplaySessionCollectionDocument = "\n    subscription updatedReplaySessionCollection {\n  updatedReplaySessionCollection {\n    collectionEdge {\n      node {\n        ...replaySessionCollectionMeta\n      }\n    }\n  }\n}\n    \n    fragment replaySessionCollectionMeta on ReplaySessionCollection {\n  __typename\n  id\n  name\n  rank\n  sessions {\n    ... on ReplaySessionHttp {\n      ...replaySessionMetaHttp\n    }\n    ... on ReplaySessionWs {\n      ...replaySessionMetaWs\n    }\n    ... on ReplaySessionHttpPipeline {\n      ...replaySessionHttpPipelineMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionMetaHttp on ReplaySessionHttp {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    connectionClose\n    updateContentLength\n  }\n}\n    \n\n    fragment replayEntryMeta on ReplayEntry {\n  __typename\n  ... on ReplayEntryHttp {\n    ...replayEntryHttpMeta\n  }\n  ... on ReplayEntryWs {\n    ...replayEntryWebsocketMeta\n  }\n  ... on ReplayEntryHttpPipeline {\n    ...replayEntryHttpPipelineMeta\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment replaySessionMetaWs on ReplaySessionWs {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n}\n    \n\n    fragment replaySessionHttpPipelineMeta on ReplaySessionHttpPipeline {\n  __typename\n  id\n  name\n  rank\n  activeEntry {\n    ...replayEntryMeta\n  }\n  collection {\n    id\n  }\n  entries {\n    nodes {\n      ...replayEntryMeta\n    }\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n    updateContentLength\n  }\n}\n    ";
 export declare const DeletedReplaySessionCollectionDocument = "\n    subscription deletedReplaySessionCollection {\n  deletedReplaySessionCollection {\n    deletedCollectionId\n  }\n}\n    ";
 export declare const UpdatedReplayEntryWsDocument = "\n    subscription updatedReplayEntryWs {\n  updatedReplayEntryWs {\n    entry {\n      ...replayEntryWebsocketMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
-export declare const CreatedReplayStreamWsMessageDocument = "\n    subscription createdReplayStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeFull\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const CreatedReplayStreamWsMessageDocument = "\n    subscription createdReplayStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeFull\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeFull on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    id\n    stream {\n      id\n    }\n    edits {\n      ...streamWsMessageEditRef\n    }\n    head {\n      ...streamWsMessageEditFull\n    }\n    color\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const RequestsDocument = "\n    query requests($after: String, $before: String, $first: Int, $last: Int, $order: RequestResponseOrderInput, $scopeId: ID, $filter: HTTPQLInput) {\n  requests(\n    after: $after\n    before: $before\n    first: $first\n    last: $last\n    order: $order\n    scopeId: $scopeId\n    filter: $filter\n  ) {\n    edges {\n      ...requestEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const RequestCountDocument = "\n    query requestCount($scopeId: ID, $filter: HTTPQLInput) {\n  requests(first: 0, scopeId: $scopeId, filter: $filter) {\n    count {\n      ...countFull\n    }\n    snapshot\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
 export declare const RequestDocument = "\n    query request($id: ID!) {\n  request(id: $id) {\n    ...requestFull\n  }\n}\n    \n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    ";
@@ -127634,25 +129271,28 @@ export declare const ExportSitemapEntriesDocument = "\n    mutation exportSitema
 export declare const CreatedSitemapEntryDocument = "\n    subscription createdSitemapEntry($scopeId: ID) {\n  createdSitemapEntry(scopeId: $scopeId) {\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const UpdatedSitemapEntryDocument = "\n    subscription updatedSitemapEntry($scopeId: ID) {\n  updatedSitemapEntry(scopeId: $scopeId) {\n    oldRequest {\n      id\n    }\n    requestEdge {\n      ...requestEdgeMeta\n    }\n    sitemapEntryEdge {\n      ...sitemapEntryEdgeMeta\n    }\n    ancestorIds\n    snapshot\n  }\n}\n    \n    fragment requestEdgeMeta on RequestEdge {\n  __typename\n  cursor\n  node {\n    ...requestMeta\n  }\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment sitemapEntryEdgeMeta on SitemapEntryEdge {\n  __typename\n  cursor\n  node {\n    ...sitemapEntryMeta\n  }\n}\n    \n\n    fragment sitemapEntryMeta on SitemapEntry {\n  __typename\n  id\n  label\n  kind\n  parentId\n  metadata {\n    ... on SitemapEntryMetadataDomain {\n      isTls\n      port\n    }\n  }\n  hasDescendants\n}\n    ";
 export declare const DeletedSitemapEntryDocument = "\n    subscription deletedSitemapEntry {\n  deletedSitemapEntry {\n    deletedIds\n    snapshot\n  }\n}\n    ";
-export declare const WebsocketStreamsBeforeDocument = "\n    query websocketStreamsBefore($before: String, $last: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    before: $before\n    last: $last\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketStreamsAfterDocument = "\n    query websocketStreamsAfter($after: String, $first: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    after: $after\n    first: $first\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketStreamsByOffsetDocument = "\n    query websocketStreamsByOffset($offset: Int!, $limit: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streamsByOffset(\n    offset: $offset\n    limit: $limit\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketStreamsBeforeDocument = "\n    query websocketStreamsBefore($before: String, $last: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    before: $before\n    last: $last\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketStreamsAfterDocument = "\n    query websocketStreamsAfter($after: String, $first: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streams(\n    after: $after\n    first: $first\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketStreamsByOffsetDocument = "\n    query websocketStreamsByOffset($offset: Int!, $limit: Int!, $scopeId: ID, $filter: StreamQLInput, $order: StreamOrderInput!) {\n  streamsByOffset(\n    offset: $offset\n    limit: $limit\n    scopeId: $scopeId\n    filter: $filter\n    order: $order\n  ) {\n    edges {\n      ...streamEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketStreamCountDocument = "\n    query websocketStreamCount($filter: StreamQLInput, $scopeId: ID) {\n  streams(first: 0, filter: $filter, scopeId: $scopeId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const WebsocketMessagesAfterDocument = "\n    query websocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketMessagesBeforeDocument = "\n    query websocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
-export declare const WebsocketMessagesByOffsetDocument = "\n    query websocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesAfterDocument = "\n    query websocketMessagesAfter($after: String, $first: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    after: $after\n    first: $first\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesBeforeDocument = "\n    query websocketMessagesBefore($before: String, $last: Int!, $filter: StreamQLInput, $order: StreamWsMessageOrderInput!, $streamId: ID!) {\n  streamWsMessages(\n    before: $before\n    last: $last\n    filter: $filter\n    order: $order\n    streamId: $streamId\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
+export declare const WebsocketMessagesByOffsetDocument = "\n    query websocketMessagesByOffset($offset: Int!, $limit: Int!, $order: StreamWsMessageOrderInput!, $streamId: ID!, $filter: StreamQLInput) {\n  streamWsMessagesByOffset(\n    offset: $offset\n    limit: $limit\n    order: $order\n    streamId: $streamId\n    filter: $filter\n  ) {\n    edges {\n      ...streamWsMessageEdgeMeta\n    }\n    pageInfo {\n      ...pageInfoFull\n    }\n    snapshot\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment pageInfoFull on PageInfo {\n  __typename\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}\n    ";
 export declare const WebsocketMessageCountDocument = "\n    query websocketMessageCount($filter: StreamQLInput, $streamId: ID!) {\n  streamWsMessages(first: 0, filter: $filter, streamId: $streamId) {\n    count {\n      ...countFull\n    }\n  }\n}\n    \n    fragment countFull on Count {\n  __typename\n  value\n  snapshot\n}\n    ";
-export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageMeta\n  }\n}\n    \n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const WebsocketMessageDocument = "\n    query websocketMessage($id: ID!) {\n  streamWsMessage(id: $id) {\n    ...streamWsMessageMeta\n  }\n}\n    \n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const WebsocketMessageEditDocument = "\n    query websocketMessageEdit($id: ID!) {\n  streamWsMessageEdit(id: $id) {\n    ...streamWsMessageEditFull\n  }\n}\n    \n    fragment streamWsMessageEditFull on StreamWsMessageEdit {\n  ...streamWsMessageEditMeta\n  raw\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const StartDeleteStreamWsMessageTaskDocument = "\n    mutation startDeleteStreamWsMessageTask($input: StartDeleteStreamWsMessageTaskInput!) {\n  startDeleteStreamWsMessageTask(input: $input) {\n    task {\n      ...deleteStreamWsMessageTaskFull\n    }\n  }\n}\n    \n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    ";
-export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n}\n    ";
-export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
-export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!, $filter: StreamQLInput) {\n  updatedStreamWsMessage(filter: $filter) {\n    __typename\n    ... on UpdatedStreamWsMessage {\n      snapshot\n      messageEdge(order: $order) {\n        ...streamWsMessageEdgeMeta\n      }\n    }\n    ... on HiddenStreamWsMessage {\n      hiddenId\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const UpdateStreamDocument = "\n    mutation updateStream($id: ID!, $input: UpdateStreamInput!) {\n  updateStream(id: $id, input: $input) {\n    stream {\n      ...streamMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const UpdateStreamWsMessageDocument = "\n    mutation updateStreamWsMessage($id: ID!, $input: UpdateStreamWsMessageInput!) {\n  updateStreamWsMessage(id: $id, input: $input) {\n    message {\n      ...streamWsMessageMeta\n    }\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
+export declare const CreatedWsStreamDocument = "\n    subscription createdWsStream($scopeId: ID, $order: StreamOrderInput!) {\n  createdStream(protocol: WS, scopeId: $scopeId) {\n    snapshot\n    streamEdge(order: $order) {\n      ...streamEdgeMeta\n    }\n  }\n}\n    \n    fragment streamEdgeMeta on StreamEdge {\n  __typename\n  cursor\n  node {\n    ...streamMeta\n  }\n}\n    \n\n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    ";
+export declare const CreatedStreamWsMessageDocument = "\n    subscription createdStreamWsMessage($filter: StreamQLInput, $order: StreamWsMessageOrderInput!) {\n  createdStreamWsMessage(filter: $filter) {\n    snapshot\n    messageEdge(order: $order) {\n      ...streamWsMessageEdgeMeta\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
+export declare const UpdatedStreamWsMessageDocument = "\n    subscription updatedStreamWsMessage($order: StreamWsMessageOrderInput!, $filter: StreamQLInput) {\n  updatedStreamWsMessage(filter: $filter) {\n    __typename\n    ... on UpdatedStreamWsMessage {\n      snapshot\n      messageEdge(order: $order) {\n        ...streamWsMessageEdgeMeta\n      }\n    }\n    ... on HiddenStreamWsMessage {\n      hiddenId\n    }\n  }\n}\n    \n    fragment streamWsMessageEdgeMeta on StreamWsMessageEdge {\n  __typename\n  cursor\n  node {\n    ...streamWsMessageMeta\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    ";
 export declare const DeletedStreamWsMessagesDocument = "\n    subscription deletedStreamWsMessages {\n  deletedStreamWsMessages {\n    deletedIds\n  }\n}\n    ";
-export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n    ... on AIProviderOAuthTask {\n      ...aiProviderOAuthTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    ";
+export declare const UpdatedStreamDocument = "\n    subscription updatedStream {\n  updatedStream {\n    stream {\n      ...streamMeta\n    }\n    snapshot\n  }\n}\n    \n    fragment streamMeta on Stream {\n  __typename\n  id\n  createdAt\n  direction\n  host\n  isTls\n  path\n  port\n  protocol\n  source\n  color\n}\n    ";
+export declare const GetTasksDocument = "\n    query getTasks {\n  tasks {\n    ... on DataExportTask {\n      ...dataExportTaskMeta\n    }\n    ... on ReplayTask {\n      ...replayTaskMeta\n    }\n    ... on WorkflowTask {\n      ...workflowTaskMeta\n    }\n    ... on CompressTask {\n      ...taskMeta\n    }\n    ... on DeleteStreamWsMessageTask {\n      ...deleteStreamWsMessageTaskFull\n    }\n    ... on AIProviderOAuthTask {\n      ...aiProviderOAuthTaskFull\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    ";
 export declare const CancelTaskDocument = "\n    mutation cancelTask($id: ID!) {\n  cancelTask(id: $id) {\n    cancelledId\n    error {\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    ";
-export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n      ... on AIProviderOAuthTask {\n        ...aiProviderOAuthTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    ";
-export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    status\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n      ... on AIProviderOAuthTask {\n        ...aiProviderOAuthTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n      ... on AIUserError {\n        message\n        aiReason: reason\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
+export declare const StartedTaskDocument = "\n    subscription startedTask {\n  startedTask {\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on CompressTask {\n        ...taskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n      ... on AIProviderOAuthTask {\n        ...aiProviderOAuthTaskFull\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    ";
+export declare const FinishedTaskDocument = "\n    subscription finishedTask {\n  finishedTask {\n    status\n    task {\n      ... on DataExportTask {\n        ...dataExportTaskMeta\n      }\n      ... on WorkflowTask {\n        ...workflowTaskMeta\n      }\n      ... on ReplayTask {\n        ...replayTaskMeta\n      }\n      ... on CompressTask {\n        ...taskMeta\n      }\n      ... on DeleteStreamWsMessageTask {\n        ...deleteStreamWsMessageTaskFull\n      }\n      ... on AIProviderOAuthTask {\n        ...aiProviderOAuthTaskFull\n      }\n    }\n    error {\n      code\n      __typename\n      ... on WSUserError {\n        ...wsUserErrorFull\n      }\n      ... on AIUserError {\n        message\n        aiReason: reason\n      }\n    }\n  }\n}\n    \n    fragment dataExportTaskMeta on DataExportTask {\n  ...dataExportTaskMetaFields\n}\n    \n\n    fragment dataExportTaskMetaFields on DataExportTask {\n  __typename\n  id\n  createdAt\n  export {\n    __typename\n    ... on DataExportStored {\n      ...dataExportStoredMeta\n    }\n    ... on DataExportOnDemand {\n      ...dataExportOnDemandMeta\n    }\n  }\n}\n    \n\n    fragment dataExportStoredMeta on DataExportStored {\n  ...dataExportStoredMetaFields\n}\n    \n\n    fragment dataExportStoredMetaFields on DataExportStored {\n  __typename\n  id\n  name\n  path\n  size\n  status\n  format\n  error\n  createdAt\n}\n    \n\n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    \n\n    fragment workflowTaskMeta on WorkflowTask {\n  ...taskMeta\n  workflow {\n    ...workflowMeta\n  }\n}\n    \n\n    fragment taskMeta on Task {\n  __typename\n  id\n  createdAt\n}\n    \n\n    fragment workflowMeta on Workflow {\n  __typename\n  id\n  kind\n  name\n  enabled\n  global\n  readOnly\n}\n    \n\n    fragment replayTaskMeta on ReplayTask {\n  ...taskMeta\n  sessionKind\n  replayEntry {\n    ... on ReplayEntryHttp {\n      ...replayEntryHttpFull\n    }\n    ... on ReplayEntryWs {\n      ...replayEntryWebsocketFull\n    }\n    ... on ReplayEntryHttpPipeline {\n      ...replayEntryHttpPipelineFull\n    }\n  }\n}\n    \n\n    fragment replayEntryHttpFull on ReplayEntryHttp {\n  ...replayEntryHttpMeta\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestFull\n  }\n}\n    \n\n    fragment replayEntryHttpMeta on ReplayEntryHttp {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  connection {\n    ...connectionInfoFull\n  }\n  draft {\n    ...replayEntryHttpDraftMeta\n  }\n  raw\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n  request {\n    ...requestMeta\n  }\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment replayEntryHttpDraftMeta on ReplayEntryHttpDraft {\n  __typename\n  connection {\n    ...connectionInfoFull\n  }\n  raw\n  editorState\n  settings {\n    placeholders {\n      ...replayPlaceholderFull\n    }\n  }\n}\n    \n\n    fragment replayPlaceholderFull on ReplayPlaceholder {\n  __typename\n  inputRange {\n    ...rangeFull\n  }\n  outputRange {\n    ...rangeFull\n  }\n  preprocessors {\n    ...replayPreprocessorFull\n  }\n}\n    \n\n    fragment rangeFull on Range {\n  start\n  end\n}\n    \n\n    fragment replayPreprocessorFull on ReplayPreprocessor {\n  __typename\n  options {\n    ... on ReplayPrefixPreprocessor {\n      ...replayPrefixPreprocessorFull\n    }\n    ... on ReplaySuffixPreprocessor {\n      ...replaySuffixPreprocessorFull\n    }\n    ... on ReplayUrlEncodePreprocessor {\n      ...replayUrlEncodePreprocessorFull\n    }\n    ... on ReplayWorkflowPreprocessor {\n      ...replayWorkflowPreprocessorFull\n    }\n    ... on ReplayEnvironmentPreprocessor {\n      ...replayEnvironmentPreprocessorFull\n    }\n  }\n}\n    \n\n    fragment replayPrefixPreprocessorFull on ReplayPrefixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replaySuffixPreprocessorFull on ReplaySuffixPreprocessor {\n  __typename\n  value\n}\n    \n\n    fragment replayUrlEncodePreprocessorFull on ReplayUrlEncodePreprocessor {\n  __typename\n  charset\n  nonAscii\n}\n    \n\n    fragment replayWorkflowPreprocessorFull on ReplayWorkflowPreprocessor {\n  __typename\n  id\n}\n    \n\n    fragment replayEnvironmentPreprocessorFull on ReplayEnvironmentPreprocessor {\n  __typename\n  variableName\n}\n    \n\n    fragment requestMeta on Request {\n  __typename\n  id\n  host\n  port\n  path\n  query\n  method\n  edited\n  isTls\n  sni\n  length\n  alteration\n  metadata {\n    ...requestMetadataFull\n  }\n  fileExtension\n  source\n  createdAt\n  response {\n    ...responseMeta\n  }\n  stream {\n    id\n  }\n}\n    \n\n    fragment requestMetadataFull on RequestMetadata {\n  __typename\n  id\n  color\n}\n    \n\n    fragment responseMeta on Response {\n  __typename\n  id\n  statusCode\n  roundtripTime\n  length\n  createdAt\n  alteration\n  edited\n  downloadUri\n}\n    \n\n    fragment requestFull on Request {\n  ...requestFullFields\n}\n    \n\n    fragment requestFullFields on Request {\n  ...requestMeta\n  raw\n  edits {\n    ...requestMeta\n  }\n}\n    \n\n    fragment replayEntryWebsocketFull on ReplayEntryWs {\n  ...replayEntryWebsocketMeta\n  messages {\n    ...streamWsMessageMeta\n  }\n  http {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryWebsocketMeta on ReplayEntryWs {\n  __typename\n  id\n  createdAt\n  error\n  http {\n    ...replayEntryHttpMeta\n  }\n  session {\n    id\n  }\n  stream {\n    id\n  }\n  draft {\n    direction\n    editorState\n    format\n    raw\n  }\n}\n    \n\n    fragment streamWsMessageMeta on StreamWsMessage {\n  id\n  stream {\n    id\n  }\n  edits {\n    ...streamWsMessageEditRef\n  }\n  head {\n    ...streamWsMessageEditMeta\n  }\n  color\n}\n    \n\n    fragment streamWsMessageEditRef on StreamWsMessageEditRef {\n  id\n  alteration\n}\n    \n\n    fragment streamWsMessageEditMeta on StreamWsMessageEdit {\n  id\n  length\n  alteration\n  direction\n  format\n  createdAt\n}\n    \n\n    fragment replayEntryHttpPipelineFull on ReplayEntryHttpPipeline {\n  ...replayEntryHttpPipelineMeta\n  activeHttpEntry {\n    ...replayEntryHttpFull\n  }\n  httpEntries {\n    ...replayEntryHttpFull\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineMeta on ReplayEntryHttpPipeline {\n  __typename\n  id\n  error\n  session {\n    id\n  }\n  createdAt\n  draft {\n    ...replayEntryHttpPipelineDraftMeta\n  }\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n  session {\n    id\n  }\n  activeHttpEntry {\n    ...replayEntryHttpMeta\n  }\n  httpEntries {\n    ...replayEntryHttpMeta\n  }\n}\n    \n\n    fragment replayEntryHttpPipelineDraftMeta on ReplayEntryHttpPipelineDraft {\n  __typename\n  settings {\n    strategy {\n      ...pipelineStrategyFull\n    }\n  }\n}\n    \n\n    fragment pipelineStrategyFull on PipelineStrategy {\n  __typename\n  ... on PipelineStrategySequential {\n    abortOnFailure\n  }\n  ... on PipelineStrategyLastByteSynchronization {\n    failureBehavior\n  }\n  ... on PipelineStrategySinglePacketAttack {\n    convertToHttp2\n    failureBehavior\n  }\n}\n    \n\n    fragment deleteStreamWsMessageTaskFull on DeleteStreamWsMessageTask {\n  __typename\n  createdAt\n  id\n}\n    \n\n    fragment aiProviderOAuthTaskFull on AIProviderOAuthTask {\n  __typename\n  id\n  createdAt\n  expiresAt\n  userCode\n  verificationUrl\n  verificationUrlComplete\n}\n    \n\n    fragment wsUserErrorFull on WSUserError {\n  ...userErrorFull\n  message\n  reason\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    ";
 export declare const UpstreamsDocument = "\n    query upstreams {\n  upstreamProxiesHttp {\n    ...upstreamProxyHttpFull\n  }\n  upstreamProxiesSocks {\n    ...upstreamProxySocksFull\n  }\n  upstreamPlugins {\n    ...upstreamPluginFull\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    \n\n    fragment upstreamProxySocksFull on UpstreamProxySocks {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  connection {\n    ...connectionInfoFull\n  }\n  enabled\n  includeDns\n  rank\n}\n    \n\n    fragment upstreamPluginFull on UpstreamPlugin {\n  __typename\n  id\n  allowlist\n  denylist\n  enabled\n  rank\n  plugin {\n    ...pluginMeta\n  }\n}\n    \n\n    fragment pluginMeta on Plugin {\n  __typename\n  id\n  name\n  enabled\n  manifestId\n  package {\n    id\n  }\n}\n    ";
 export declare const CreateUpstreamProxyHttpDocument = "\n    mutation createUpstreamProxyHttp($input: CreateUpstreamProxyHttpInput!) {\n  createUpstreamProxyHttp(input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
 export declare const UpdateUpstreamProxyHttpDocument = "\n    mutation updateUpstreamProxyHttp($id: ID!, $input: UpdateUpstreamProxyHttpInput!) {\n  updateUpstreamProxyHttp(id: $id, input: $input) {\n    proxy {\n      ...upstreamProxyHttpFull\n    }\n  }\n}\n    \n    fragment upstreamProxyHttpFull on UpstreamProxyHttp {\n  __typename\n  id\n  allowlist\n  denylist\n  auth {\n    ... on UpstreamProxyAuthBasic {\n      ...upstreamProxyAuthBasicFull\n    }\n  }\n  enabled\n  rank\n  connection {\n    ...connectionInfoFull\n  }\n}\n    \n\n    fragment upstreamProxyAuthBasicFull on UpstreamProxyAuthBasic {\n  __typename\n  username\n  password\n}\n    \n\n    fragment connectionInfoFull on ConnectionInfo {\n  __typename\n  host\n  port\n  isTLS\n  SNI\n}\n    ";
@@ -127907,6 +129547,13 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletedTamperRule(variables?: DeletedTamperRuleSubscriptionVariables, options?: C): AsyncIterable<DeletedTamperRuleSubscription>;
     updatedTamperRuleCollection(variables?: UpdatedTamperRuleCollectionSubscriptionVariables, options?: C): AsyncIterable<UpdatedTamperRuleCollectionSubscription>;
     deletedTamperRuleCollection(variables?: DeletedTamperRuleCollectionSubscriptionVariables, options?: C): AsyncIterable<DeletedTamperRuleCollectionSubscription>;
+    oobSession(variables?: OobSessionQueryVariables, options?: C): Promise<OobSessionQuery>;
+    oobInteractions(variables: OobInteractionsQueryVariables, options?: C): Promise<OobInteractionsQuery>;
+    createOobSession(variables?: CreateOobSessionMutationVariables, options?: C): Promise<CreateOobSessionMutation>;
+    clearOobInteractions(variables?: ClearOobInteractionsMutationVariables, options?: C): Promise<ClearOobInteractionsMutation>;
+    createdOobSession(variables?: CreatedOobSessionSubscriptionVariables, options?: C): AsyncIterable<CreatedOobSessionSubscription>;
+    createdOobInteraction(variables?: CreatedOobInteractionSubscriptionVariables, options?: C): AsyncIterable<CreatedOobInteractionSubscription>;
+    deletedOobInteractions(variables?: DeletedOobInteractionsSubscriptionVariables, options?: C): AsyncIterable<DeletedOobInteractionsSubscription>;
     passthroughOptions(variables?: PassthroughOptionsQueryVariables, options?: C): Promise<PassthroughOptionsQuery>;
     setPassthroughOptions(variables?: SetPassthroughOptionsMutationVariables, options?: C): Promise<SetPassthroughOptionsMutation>;
     updatedPassthroughOptions(variables?: UpdatedPassthroughOptionsSubscriptionVariables, options?: C): AsyncIterable<UpdatedPassthroughOptionsSubscription>;
@@ -128022,10 +129669,13 @@ export declare function getSdk<C>(requester: Requester<C>): {
     websocketMessage(variables: WebsocketMessageQueryVariables, options?: C): Promise<WebsocketMessageQuery>;
     websocketMessageEdit(variables: WebsocketMessageEditQueryVariables, options?: C): Promise<WebsocketMessageEditQuery>;
     startDeleteStreamWsMessageTask(variables: StartDeleteStreamWsMessageTaskMutationVariables, options?: C): Promise<StartDeleteStreamWsMessageTaskMutation>;
+    updateStream(variables: UpdateStreamMutationVariables, options?: C): Promise<UpdateStreamMutation>;
+    updateStreamWsMessage(variables: UpdateStreamWsMessageMutationVariables, options?: C): Promise<UpdateStreamWsMessageMutation>;
     createdWsStream(variables: CreatedWsStreamSubscriptionVariables, options?: C): AsyncIterable<CreatedWsStreamSubscription>;
     createdStreamWsMessage(variables: CreatedStreamWsMessageSubscriptionVariables, options?: C): AsyncIterable<CreatedStreamWsMessageSubscription>;
     updatedStreamWsMessage(variables: UpdatedStreamWsMessageSubscriptionVariables, options?: C): AsyncIterable<UpdatedStreamWsMessageSubscription>;
     deletedStreamWsMessages(variables?: DeletedStreamWsMessagesSubscriptionVariables, options?: C): AsyncIterable<DeletedStreamWsMessagesSubscription>;
+    updatedStream(variables?: UpdatedStreamSubscriptionVariables, options?: C): AsyncIterable<UpdatedStreamSubscription>;
     getTasks(variables?: GetTasksQueryVariables, options?: C): Promise<GetTasksQuery>;
     cancelTask(variables: CancelTaskMutationVariables, options?: C): Promise<CancelTaskMutation>;
     startedTask(variables?: StartedTaskSubscriptionVariables, options?: C): AsyncIterable<StartedTaskSubscription>;

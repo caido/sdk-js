@@ -19,6 +19,7 @@ import type { LogSDK } from "./log";
 import type { MatchReplaceSDK } from "./matchReplace";
 import type { MenuSDK } from "./menu";
 import type { NavigationSDK } from "./navigation";
+import type { OOBSDK } from "./oob";
 import type { ProjectsSDK } from "./projects";
 import type { ReplaySDK } from "./replay";
 import type { RuntimeSDK } from "./runtime";
@@ -155,6 +156,10 @@ export type API<T extends BackendEndpoints | BackendSpec = Record<string, never>
      * Utilities to interact with the environment.
      */
     env: EnvironmentSDK;
+    /**
+     * Utilities to interact with the out-of-band (OOB) server.
+     */
+    oob: OOBSDK;
     /**
      * Utilities to interact with the Sitemap page.
      */

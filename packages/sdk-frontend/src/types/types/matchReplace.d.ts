@@ -398,15 +398,26 @@ export type MatchReplaceMatcherRawFull = {
  * A replacer in Match and Replace.
  * @category Match and Replace
  */
-export type MatchReplaceReplacer = MatchReplaceReplacerTerm | MatchReplaceReplacerWorkflow;
+export type MatchReplaceReplacer = MatchReplaceReplacerTerm | MatchReplaceReplacerEnvironment | MatchReplaceReplacerWorkflow;
 /**
  * A replacer that replaces with a term.
  * If the matcher is a regex, groups will be interpolated.
+ * Environment variables written as `{{name}}` are resolved, and `\{{` is a literal `{{`.
  * @category Match and Replace
  */
 export type MatchReplaceReplacerTerm = {
     kind: "ReplacerTerm";
     term: string;
+};
+/**
+ * A replacer that replaces with the value of an environment variable.
+ * The selected environment is checked first, then the global environment.
+ * An unset variable is replaced with an empty value.
+ * @category Match and Replace
+ */
+export type MatchReplaceReplacerEnvironment = {
+    kind: "ReplacerEnvironment";
+    variableName: string;
 };
 /**
  * A replacer that replaces with the result of a workflow.
