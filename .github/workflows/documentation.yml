@@ -4,9 +4,15 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Stable release tag to document (e.g. v0.59.1)
+        required: true
+        type: string
 
 env:
-  CAIDO_REF: ${{ github.ref }}
+  CAIDO_REF: ${{ inputs.tag || github.ref_name }}
   CAIDO_GITHUB_TOKEN: ${{ github.token }}
   CAIDO_DOC_RW_TOKEN: ${{ secrets.CI__DOC__RW }}
   PR_BRANCH: bot-sdk-update
@@ -47,7 +53,11 @@ jobs:
         id: version
         working-directory: ./doc-developer
         run: |
-          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$CAIDO_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::$CAIDO_REF is not a stable release tag"
+            exit 1
+          fi
+          version="${CAIDO_REF#v}"
 
           # The PR branch gets force-pushed, so it must not hold newer docs either
           refs=(HEAD)
@@ -100,7 +110,7 @@ jobs:
 
       - name: Pull Request
         if: steps.version.outputs.version
-        uses: caido/action-pull-request@bac6da8071ada152cce76cfbd24b54b7190ad799 # v6.0.1
+        uses: caido/action-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           token: ${{ env.CAIDO_DOC_RW_TOKEN }}
           path: ./doc-developer
