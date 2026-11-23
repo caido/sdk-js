@@ -23308,6 +23308,233 @@ export type DeletedPluginPackageDataSubscription = {
         key: string;
     };
 };
+export type PortableSettingRefFullFragment = {
+    __typename: "PortableSettingRef";
+    subset: PortableSettingsSubset;
+    identifier: string;
+};
+export type PortableSettingsPreviewFullFragment = {
+    __typename: "PortableSettingsPreview";
+    new: Array<{
+        __typename: "PortableSettingsPreviewEntry";
+        value: unknown;
+        setting: {
+            __typename: "PortableSettingRef";
+            subset: PortableSettingsSubset;
+            identifier: string;
+        };
+    }>;
+    collisions: Array<{
+        __typename: "PortableSettingsPreviewCollision";
+        before: unknown;
+        after: unknown;
+        setting: {
+            __typename: "PortableSettingRef";
+            subset: PortableSettingsSubset;
+            identifier: string;
+        };
+    }>;
+    deletes: Array<{
+        __typename: "PortableSettingsPreviewEntry";
+        value: unknown;
+        setting: {
+            __typename: "PortableSettingRef";
+            subset: PortableSettingsSubset;
+            identifier: string;
+        };
+    }>;
+    issues: Array<{
+        __typename: "DuplicatePortableSettings";
+        selected: unknown;
+        rejected: Array<unknown>;
+        setting: {
+            __typename: "PortableSettingRef";
+            subset: PortableSettingsSubset;
+            identifier: string;
+        };
+    } | {
+        __typename: "UnknownPortableSettings";
+        data: unknown;
+    }>;
+    revision: {
+        __typename: "PortableSettingsRevision";
+        storage: string;
+        acknowledgement: string;
+    };
+};
+export type PortableSettingsQueryVariables = Exact<{
+    [key: string]: never;
+}>;
+export type PortableSettingsQuery = {
+    viewer: {
+        __typename: "CloudUser";
+        id: string;
+        portableSettings: {
+            data: unknown;
+        };
+    } | {
+        __typename: "GuestUser";
+        id: string;
+        portableSettings: {
+            data: unknown;
+        };
+    } | {
+        __typename: "ScriptUser";
+    };
+};
+export type PreviewPortableSettingsQueryVariables = Exact<{
+    data: Scalars["JSON"]["input"];
+    subsets: Array<PortableSettingsSubset> | PortableSettingsSubset;
+}>;
+export type PreviewPortableSettingsQuery = {
+    viewer: {
+        __typename: "CloudUser";
+        id: string;
+        previewPortableSettings: {
+            __typename: "PortableSettingsPreview";
+            new: Array<{
+                __typename: "PortableSettingsPreviewEntry";
+                value: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            collisions: Array<{
+                __typename: "PortableSettingsPreviewCollision";
+                before: unknown;
+                after: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            deletes: Array<{
+                __typename: "PortableSettingsPreviewEntry";
+                value: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            issues: Array<{
+                __typename: "DuplicatePortableSettings";
+                selected: unknown;
+                rejected: Array<unknown>;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            } | {
+                __typename: "UnknownPortableSettings";
+                data: unknown;
+            }>;
+            revision: {
+                __typename: "PortableSettingsRevision";
+                storage: string;
+                acknowledgement: string;
+            };
+        };
+    } | {
+        __typename: "GuestUser";
+        id: string;
+        previewPortableSettings: {
+            __typename: "PortableSettingsPreview";
+            new: Array<{
+                __typename: "PortableSettingsPreviewEntry";
+                value: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            collisions: Array<{
+                __typename: "PortableSettingsPreviewCollision";
+                before: unknown;
+                after: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            deletes: Array<{
+                __typename: "PortableSettingsPreviewEntry";
+                value: unknown;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            }>;
+            issues: Array<{
+                __typename: "DuplicatePortableSettings";
+                selected: unknown;
+                rejected: Array<unknown>;
+                setting: {
+                    __typename: "PortableSettingRef";
+                    subset: PortableSettingsSubset;
+                    identifier: string;
+                };
+            } | {
+                __typename: "UnknownPortableSettings";
+                data: unknown;
+            }>;
+            revision: {
+                __typename: "PortableSettingsRevision";
+                storage: string;
+                acknowledgement: string;
+            };
+        };
+    } | {
+        __typename: "ScriptUser";
+    };
+};
+export type UpdatePortableSettingsMutationVariables = Exact<{
+    input: UpdatePortableSettingsInput;
+}>;
+export type UpdatePortableSettingsMutation = {
+    updatePortableSettings: {
+        settings: {
+            data: unknown;
+        };
+    };
+};
+export type ExportPortableSettingsMutationVariables = Exact<{
+    input: ExportPortableSettingsInput;
+}>;
+export type ExportPortableSettingsMutation = {
+    exportPortableSettings: {
+        downloadUri: string;
+        id: string;
+    };
+};
+export type ApplyPortableSettingsImportMutationVariables = Exact<{
+    input: ApplyPortableSettingsImportInput;
+}>;
+export type ApplyPortableSettingsImportMutation = {
+    applyPortableSettingsImport: {
+        id: string;
+        errors: Array<string>;
+        summary?: {
+            __typename: "FindingsSummary";
+        } | {
+            __typename: "PluginPackageDataSummary";
+        } | {
+            __typename: "PortableSettingsSummary";
+            imported: number;
+            overwritten: number;
+            skipped: number;
+        } | {
+            __typename: "TamperSummary";
+        } | undefined | null;
+    };
+};
 export type ProjectFullFragment = {
     __typename: "Project";
     id: string;
@@ -128195,6 +128422,9 @@ export type UserSettingsQuery = {
             data: unknown;
             migrations: unknown;
         } | undefined | null;
+        portableSettings: {
+            data: unknown;
+        };
     } | {
         __typename: "GuestUser";
         id: string;
@@ -128203,6 +128433,9 @@ export type UserSettingsQuery = {
             data: unknown;
             migrations: unknown;
         } | undefined | null;
+        portableSettings: {
+            data: unknown;
+        };
     } | {
         __typename: "ScriptUser";
     };
@@ -128899,6 +129132,8 @@ export declare const PluginWorkflowFullFragmentDoc = "\n    fragment pluginWorkf
 export declare const PluginPackageFullFragmentDoc = "\n    fragment pluginPackageFull on PluginPackage {\n  ...pluginPackageMeta\n  plugins {\n    ... on PluginFrontend {\n      ...pluginFrontendFull\n    }\n    ... on PluginBackend {\n      ...pluginBackendFull\n    }\n    ... on PluginWorkflow {\n      ...pluginWorkflowFull\n    }\n  }\n}\n    ";
 export declare const StorePluginPackageFullFragmentDoc = "\n    fragment storePluginPackageFull on StorePluginPackage {\n  author {\n    email\n    name\n    url\n  }\n  description\n  downloads\n  license\n  manifestId\n  name\n  repository\n  version\n  official\n  quality\n  readmeUrl\n  changelogUrl\n}\n    ";
 export declare const PluginPackageDataFullFragmentDoc = "\n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
+export declare const PortableSettingRefFullFragmentDoc = "\n    fragment portableSettingRefFull on PortableSettingRef {\n  __typename\n  subset\n  identifier\n}\n    ";
+export declare const PortableSettingsPreviewFullFragmentDoc = "\n    fragment portableSettingsPreviewFull on PortableSettingsPreview {\n  __typename\n  new {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    value\n  }\n  collisions {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    before\n    after\n  }\n  deletes {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    value\n  }\n  issues {\n    __typename\n    ... on UnknownPortableSettings {\n      data\n    }\n    ... on DuplicatePortableSettings {\n      setting {\n        ...portableSettingRefFull\n      }\n      selected\n      rejected\n    }\n  }\n  revision {\n    __typename\n    storage\n    acknowledgement\n  }\n}\n    ";
 export declare const ProjectConfigStreamFullFragmentDoc = "\n    fragment projectConfigStreamFull on ProjectConfigStream {\n  stripExtension\n}\n    ";
 export declare const ProjectConfigFullFragmentDoc = "\n    fragment projectConfigFull on ProjectConfig {\n  stream {\n    ...projectConfigStreamFull\n  }\n}\n    ";
 export declare const CurrentProjectFullFragmentDoc = "\n    fragment currentProjectFull on CurrentProject {\n  project {\n    ...projectFull\n  }\n  config {\n    ...projectConfigFull\n  }\n}\n    ";
@@ -129186,6 +129421,11 @@ export declare const SetPluginPackageDataDocument = "\n    mutation setPluginPac
 export declare const DeletePluginPackageDataDocument = "\n    mutation deletePluginPackageData($id: ID!, $key: String!) {\n  deletePluginPackageData(id: $id, key: $key) {\n    success\n    error {\n      ... on OtherUserError {\n        ...otherUserErrorFull\n      }\n      ... on UnknownIdUserError {\n        ...unknownIdUserErrorFull\n      }\n    }\n  }\n}\n    \n    fragment otherUserErrorFull on OtherUserError {\n  ...userErrorFull\n}\n    \n\n    fragment userErrorFull on UserError {\n  __typename\n  code\n}\n    \n\n    fragment unknownIdUserErrorFull on UnknownIdUserError {\n  ...userErrorFull\n  id\n}\n    ";
 export declare const UpdatedPluginPackageDataDocument = "\n    subscription updatedPluginPackageData {\n  updatedPluginPackageData {\n    packageData {\n      ...pluginPackageDataFull\n    }\n  }\n}\n    \n    fragment pluginPackageDataFull on PluginPackageData {\n  key\n  value\n  flags {\n    exportable\n  }\n  package {\n    id\n  }\n}\n    ";
 export declare const DeletedPluginPackageDataDocument = "\n    subscription deletedPluginPackageData {\n  deletedPluginPackageData {\n    packageId\n    key\n  }\n}\n    ";
+export declare const PortableSettingsDocument = "\n    query portableSettings {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      portableSettings {\n        data\n      }\n    }\n    ... on GuestUser {\n      id\n      portableSettings {\n        data\n      }\n    }\n  }\n}\n    ";
+export declare const PreviewPortableSettingsDocument = "\n    query previewPortableSettings($data: JSON!, $subsets: [PortableSettingsSubset!]!) {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      previewPortableSettings(data: $data, subsets: $subsets) {\n        ...portableSettingsPreviewFull\n      }\n    }\n    ... on GuestUser {\n      id\n      previewPortableSettings(data: $data, subsets: $subsets) {\n        ...portableSettingsPreviewFull\n      }\n    }\n  }\n}\n    \n    fragment portableSettingsPreviewFull on PortableSettingsPreview {\n  __typename\n  new {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    value\n  }\n  collisions {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    before\n    after\n  }\n  deletes {\n    __typename\n    setting {\n      ...portableSettingRefFull\n    }\n    value\n  }\n  issues {\n    __typename\n    ... on UnknownPortableSettings {\n      data\n    }\n    ... on DuplicatePortableSettings {\n      setting {\n        ...portableSettingRefFull\n      }\n      selected\n      rejected\n    }\n  }\n  revision {\n    __typename\n    storage\n    acknowledgement\n  }\n}\n    \n\n    fragment portableSettingRefFull on PortableSettingRef {\n  __typename\n  subset\n  identifier\n}\n    ";
+export declare const UpdatePortableSettingsDocument = "\n    mutation updatePortableSettings($input: UpdatePortableSettingsInput!) {\n  updatePortableSettings(input: $input) {\n    settings {\n      data\n    }\n  }\n}\n    ";
+export declare const ExportPortableSettingsDocument = "\n    mutation exportPortableSettings($input: ExportPortableSettingsInput!) {\n  exportPortableSettings(input: $input) {\n    ...dataExportOnDemandMeta\n  }\n}\n    \n    fragment dataExportOnDemandMeta on DataExportOnDemand {\n  downloadUri\n  id\n}\n    ";
+export declare const ApplyPortableSettingsImportDocument = "\n    mutation applyPortableSettingsImport($input: ApplyPortableSettingsImportInput!) {\n  applyPortableSettingsImport(input: $input) {\n    id\n    errors\n    summary {\n      __typename\n      ... on PortableSettingsSummary {\n        imported\n        overwritten\n        skipped\n      }\n    }\n  }\n}\n    ";
 export declare const CreatedProjectDocument = "\n    subscription createdProject {\n  createdProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const UpdatedProjectDocument = "\n    subscription updatedProject {\n  updatedProject {\n    project {\n      ...projectFull\n    }\n  }\n}\n    \n    fragment projectFull on Project {\n  __typename\n  id\n  name\n  path\n  version\n  status\n  temporary\n  size\n  compressionState\n  createdAt\n  updatedAt\n  readOnly\n  backups {\n    id\n  }\n}\n    ";
 export declare const DeletedProjectDocument = "\n    subscription deletedProject {\n  deletedProject {\n    deletedProjectId\n  }\n}\n    ";
@@ -129319,7 +129559,7 @@ export declare const UpdatedUpstreamPluginDocument = "\n    subscription updated
 export declare const DeletedUpstreamPluginDocument = "\n    subscription deletedUpstreamPlugin {\n  deletedUpstreamPlugin {\n    deletedUpstreamId\n  }\n}\n    ";
 export declare const UpdateViewerSettingsDocument = "\n    mutation updateViewerSettings($input: UpdateViewerSettingsInput!) {\n  updateViewerSettings(input: $input) {\n    settings {\n      ...userSettingsFull\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UserProfileDocument = "\n    query userProfile {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      profile {\n        ...userProfileFull\n      }\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
-export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n    ... on GuestUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
+export declare const UserSettingsDocument = "\n    query userSettings {\n  viewer {\n    __typename\n    ... on CloudUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n      portableSettings {\n        data\n      }\n    }\n    ... on GuestUser {\n      id\n      settings {\n        ...userSettingsFull\n      }\n      portableSettings {\n        data\n      }\n    }\n  }\n}\n    \n    fragment userSettingsFull on UserSettings {\n  __typename\n  data\n  migrations\n}\n    ";
 export declare const UpdatedViewerProfileDocument = "\n    subscription updatedViewerProfile {\n  updatedViewerProfile {\n    profile {\n      ...userProfileFull\n    }\n  }\n}\n    \n    fragment userProfileFull on UserProfile {\n  __typename\n  identity {\n    __typename\n    name\n    email\n  }\n  subscription {\n    __typename\n    entitlements {\n      __typename\n      name\n    }\n    plan {\n      __typename\n      name\n    }\n  }\n}\n    ";
 export declare const UpdatedViewerSettingsDocument = "\n    subscription updatedViewerSettings {\n  updatedViewerSettings {\n    settings {\n      data\n    }\n  }\n}\n    ";
 export declare const ExpiredViewerProfileDocument = "\n    subscription expiredViewerProfile {\n  expiredViewerProfile {\n    expiredAt\n  }\n}\n    ";
@@ -129573,6 +129813,11 @@ export declare function getSdk<C>(requester: Requester<C>): {
     deletePluginPackageData(variables: DeletePluginPackageDataMutationVariables, options?: C): Promise<DeletePluginPackageDataMutation>;
     updatedPluginPackageData(variables?: UpdatedPluginPackageDataSubscriptionVariables, options?: C): AsyncIterable<UpdatedPluginPackageDataSubscription>;
     deletedPluginPackageData(variables?: DeletedPluginPackageDataSubscriptionVariables, options?: C): AsyncIterable<DeletedPluginPackageDataSubscription>;
+    portableSettings(variables?: PortableSettingsQueryVariables, options?: C): Promise<PortableSettingsQuery>;
+    previewPortableSettings(variables: PreviewPortableSettingsQueryVariables, options?: C): Promise<PreviewPortableSettingsQuery>;
+    updatePortableSettings(variables: UpdatePortableSettingsMutationVariables, options?: C): Promise<UpdatePortableSettingsMutation>;
+    exportPortableSettings(variables: ExportPortableSettingsMutationVariables, options?: C): Promise<ExportPortableSettingsMutation>;
+    applyPortableSettingsImport(variables: ApplyPortableSettingsImportMutationVariables, options?: C): Promise<ApplyPortableSettingsImportMutation>;
     createdProject(variables?: CreatedProjectSubscriptionVariables, options?: C): AsyncIterable<CreatedProjectSubscription>;
     updatedProject(variables?: UpdatedProjectSubscriptionVariables, options?: C): AsyncIterable<UpdatedProjectSubscription>;
     deletedProject(variables?: DeletedProjectSubscriptionVariables, options?: C): AsyncIterable<DeletedProjectSubscription>;
