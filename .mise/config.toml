@@ -5,6 +5,7 @@ toolshed = "https://github.com/caido/mise-toolshed"
 node = "24.11.1"
 pnpm = "11.28.0"
 zizmor = "1.31.1"
+lychee = "0.24.2"
 "toolshed:get-skills" = "latest"
 
 [settings]
@@ -21,6 +22,10 @@ run = "pnpm lint"
 [tasks.knip]
 description = "Run knip"
 run = "pnpm knip"
+
+[tasks."lint:links"]
+description = "Check links"
+run = "lychee --config .lychee.toml '**/*.md' '**/*.ts'"
 
 [tasks.validate]
 description = 'Validate the project'

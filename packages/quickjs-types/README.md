@@ -25,7 +25,7 @@
 This is the repository for the Caido [QuickJS](https://github.com/bellard/quickjs) types.
 We also included a lot of custom modules based on [LLRT](https://github.com/awslabs/llrt/tree/main/llrt_modules) to polyfill those expected by a Node runtime.
 
-You should probably not use this package directly, prefer to use either the [SDK Backend](https://github.com/caido/sdk-backend) or the [SDK-Workflow](https://github.com/caido/sdk-workflow).
+You should probably not use this package directly, prefer to use either the [SDK Backend](https://github.com/caido/sdk-js/tree/main/packages/sdk-backend) or the [SDK-Workflow](https://github.com/caido/sdk-js/tree/main/packages/sdk-workflow).
 
 ## 💚 Community
 

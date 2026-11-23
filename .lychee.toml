@@ -1,0 +1,14 @@
+exclude_path = ["node_modules", "dist", "__generated__"]
+
+exclude = [
+  "localhost",
+  "^file://",
+  "xn--",
+  "^https://api\\.caido\\.io/?$",
+  "npmjs\\.com",
+]
+
+timeout = 30
+max_retries = 2
+
+accept = [200, 201, 202, 203, 204, 205, 206, 207, 208, 226, 429]
