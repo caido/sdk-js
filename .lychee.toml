@@ -1,6 +1,7 @@
 exclude_path = ["node_modules", "dist", "__generated__"]
 
 exclude = [
+  "localhost",
   "^file://",
   "xn--",
   "^https://api\\.caido\\.io/?$",
