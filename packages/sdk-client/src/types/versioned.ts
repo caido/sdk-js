@@ -2,8 +2,8 @@
  * Bundled GraphQL transport forks shipped in the SDK.
  */
 export const TransportVersion = {
-  V0_56: "0.56.0",
-  V0_57: "0.57.0",
+  V0_58: "0.58.0",
+  V0_59: "0.59.0",
 } as const;
 
 export type TransportVersion =

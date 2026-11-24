@@ -1,6 +1,7 @@
 import { encodeBlob } from "@/convert/blob.js";
 import { mapToPageInfo } from "@/convert/connection.js";
 import { mapToRequestResponseOpt } from "@/convert/request.js";
+import { OtherUserError } from "@/errors/index.js";
 import {
   CreateRequestDocument,
   type GraphQLClient,
@@ -172,6 +173,7 @@ export class RequestSDK {
    * @returns The created request and optional response.
    */
   async create(options: CreateRequestOptions): Promise<RequestResponseOpt> {
+    // `CreateRequestPayload` carries only ids, so the request is read back.
     const result = await this.graphql.mutation(CreateRequestDocument, {
       input: {
         host: options.host,
@@ -180,23 +182,16 @@ export class RequestSDK {
         port: options.port,
         query: options.query,
         raw: encodeBlob(options.raw),
-        alteration: options.alteration as any,
-        source: options.source as any,
+        source: options.source,
         isTls: false,
-        parentId: options.parentId,
         sni: options.sni,
       },
-      includeRequestRaw: true,
-      includeResponseRaw: true,
     });
-    const payload = result.createRequest;
-    if (isPresent(payload.error)) {
-      handleGraphQLError(payload.error);
+
+    const created = await this.get(result.createRequest.id as ID);
+    if (isAbsent(created)) {
+      throw new OtherUserError("INTERNAL", "createRequest returned no request");
     }
-    const request = payload.request;
-    if (isAbsent(request)) {
-      throw new Error("createRequest returned no request");
-    }
-    return mapToRequestResponseOpt(request);
+    return created;
   }
 }

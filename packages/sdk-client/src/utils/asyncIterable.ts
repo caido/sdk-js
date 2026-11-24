@@ -19,14 +19,21 @@ export async function* filterAsyncIterable<T>(
   }
 }
 
+export type BufferedAsyncIterable<T> = AsyncIterable<T> & {
+  cancel: () => Promise<void>;
+};
+
 export function bufferAsyncIterable<T>(
   source: AsyncIterable<T>,
-): AsyncIterable<T> {
+): BufferedAsyncIterable<T> {
   const iterator = source[Symbol.asyncIterator]();
   const first = iterator.next();
+  void first.catch(() => undefined); // The generator still surfaces it.
+  let consumed = false;
 
   return {
     async *[Symbol.asyncIterator]() {
+      consumed = true;
       try {
         let result = await first;
         while (result.done !== true) {
@@ -36,6 +43,13 @@ export function bufferAsyncIterable<T>(
       } finally {
         await iterator.return?.(undefined);
       }
+    },
+    async cancel() {
+      if (consumed) {
+        return;
+      }
+      consumed = true;
+      await iterator.return?.(undefined);
     },
   };
 }
