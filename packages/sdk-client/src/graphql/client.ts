@@ -12,6 +12,7 @@ import {
   createSubscriptionExchange,
 } from "./exchanges/index.js";
 import { toUserError } from "./utils.js";
+import { createWebSocketImpl } from "./webSocket.js";
 
 import type { AuthManager } from "@/auth/index.js";
 import {
@@ -38,6 +39,7 @@ export class GraphQLClient {
   private readonly auth: AuthManager;
   private readonly requestOptions: RequestOptions | undefined;
   private readonly logger: Logger;
+  private readonly userAgent: string | undefined;
   private client: Client;
   private wsClient: WSClient;
   private sockets: WebSocket[] = [];
@@ -47,6 +49,7 @@ export class GraphQLClient {
     auth: AuthManager,
     logger: Logger,
     requestOptions?: RequestOptions,
+    userAgent?: string,
   ) {
     const normalizedUrl = baseUrl.replace(/\/$/, "");
     this.graphqlUrl = `${normalizedUrl}/graphql`;
@@ -54,6 +57,7 @@ export class GraphQLClient {
     this.auth = auth;
     this.logger = logger;
     this.requestOptions = requestOptions;
+    this.userAgent = userAgent;
     this.wsClient = this.createWSClient();
     this.client = this.createUrqlClient();
 
@@ -125,6 +129,9 @@ export class GraphQLClient {
 
     return createWSClient({
       url: this.wsUrl,
+      webSocketImpl: isPresent(this.userAgent)
+        ? createWebSocketImpl(this.userAgent)
+        : undefined,
       lazy: true,
       shouldRetry: () => true,
       connectionParams: () => {
@@ -161,6 +168,7 @@ export class GraphQLClient {
   private createUrqlClient(): Client {
     const fetchFn = this.requestOptions?.fetch;
     const timeout = this.requestOptions?.timeout;
+    const userAgent = this.userAgent;
 
     return new Client({
       url: this.graphqlUrl,
@@ -171,6 +179,9 @@ export class GraphQLClient {
       ],
       fetchOptions: () => {
         const options: RequestInit = {};
+        if (isPresent(userAgent)) {
+          options.headers = { "User-Agent": userAgent };
+        }
         if (isPresent(timeout)) {
           options.signal = AbortSignal.timeout(timeout);
         }

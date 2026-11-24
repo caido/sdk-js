@@ -26,6 +26,24 @@ export interface ClientOptions {
    * Defaults to `ConsoleLogger`.
    */
   logger?: Logger;
+
+  /**
+   * Identifies your application to the Caido instance.
+   * Sent at the start of the `User-Agent` header, before the SDK's own name and version.
+   * @example { name: "my-tool", version: "1.2.0" }
+   */
+  app?: AppInfo;
+}
+
+/**
+ * Name and version of the application built on the SDK.
+ */
+export interface AppInfo {
+  /** Application name (e.g., "my-tool") */
+  name: string;
+
+  /** Application version (e.g., "1.2.0") */
+  version: string;
 }
 
 /**

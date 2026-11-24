@@ -11,7 +11,7 @@ describe("Instance", () => {
 
   afterEach(async () => {
     await caido.instance.settings.setAnalytics({
-      enabled: original.analytics.enabled,
+      enabled: original.analytics.local,
     });
     await caido.instance.settings.setOnboarding({
       analytic: original.onboarding.analytic,
@@ -48,17 +48,18 @@ describe("Instance", () => {
     }
   });
 
+  // `enabled` is `local && cloud`, so only `local` reflects this write.
   it("should read and update instance settings", async () => {
-    expect(original.analytics.enabled).toBeTypeOf("boolean");
+    expect(original.analytics.local).toBeTypeOf("boolean");
     expect(original.onboarding.analytic).toBeTypeOf("boolean");
 
-    const nextAnalytics = !original.analytics.enabled;
+    const nextAnalytics = !original.analytics.local;
     const nextOnboarding = !original.onboarding.analytic;
 
     const analyticsUpdated = await caido.instance.settings.setAnalytics({
       enabled: nextAnalytics,
     });
-    expect(analyticsUpdated.analytics.enabled).toBe(nextAnalytics);
+    expect(analyticsUpdated.analytics.local).toBe(nextAnalytics);
 
     const onboardingUpdated = await caido.instance.settings.setOnboarding({
       analytic: nextOnboarding,

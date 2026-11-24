@@ -1,7 +1,7 @@
 export { Client } from "@/client.js";
 export { Version } from "@/version.js";
 
-export type { ClientOptions, RequestOptions } from "@/options.js";
+export type { AppInfo, ClientOptions, RequestOptions } from "@/options.js";
 export type {
   AuthCacheOptions,
   AuthOptions,
