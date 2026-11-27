@@ -12,7 +12,7 @@ import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 import { TokenRefreshError } from "@/errors/index.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
-import { withUserAgent } from "@/userAgent.js";
+import { withUserAgent } from "@/utils/fetch.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 interface TokenState {

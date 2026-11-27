@@ -7,7 +7,6 @@ import {
   detectAgent,
   detectRuntime,
   formatUserAgent,
-  withUserAgent,
 } from "@/userAgent.js";
 
 const SDK = `caido-sdk-client/${packageJson.version}`;
@@ -149,25 +148,6 @@ describe("formatUserAgent", () => {
     });
 
     expect(() => new Headers({ "User-Agent": userAgent })).not.toThrow();
-  });
-});
-
-describe("withUserAgent", () => {
-  it("adds the user agent and keeps the other headers", async () => {
-    const fetchFn = vi.fn<typeof globalThis.fetch>(() =>
-      Promise.resolve(new Response()),
-    );
-
-    await withUserAgent(fetchFn, "my-agent")("http://localhost:8080", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "User-Agent": "node" },
-    });
-
-    const init = fetchFn.mock.calls[0]?.[1];
-    const headers = new Headers(init?.headers);
-    expect(init?.method).toBe("POST");
-    expect(headers.get("User-Agent")).toBe("my-agent");
-    expect(headers.get("Content-Type")).toBe("application/json");
   });
 });
 
