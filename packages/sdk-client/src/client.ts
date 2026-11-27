@@ -27,6 +27,7 @@ import {
   healthSchema,
   type ReadyOptions,
 } from "@/types/index.js";
+import { buildUserAgent } from "@/userAgent.js";
 import { sleep } from "@/utils/misc.js";
 import { Version } from "@/version.js";
 
@@ -121,12 +122,14 @@ export class Client {
 
   constructor(options: ClientOptions) {
     const logger = options.logger ?? new ConsoleLogger();
+    const userAgent = buildUserAgent(options.app);
 
     this.auth = new AuthManager(
       options.url,
       logger,
       options.auth,
       options.request,
+      userAgent,
     );
 
     this.graphql = new GraphQLClient(
@@ -134,9 +137,16 @@ export class Client {
       this.auth,
       logger,
       options.request,
+      userAgent,
     );
 
-    this.rest = new RestClient(options.url, this.auth, logger, options.request);
+    this.rest = new RestClient(
+      options.url,
+      this.auth,
+      logger,
+      options.request,
+      userAgent,
+    );
 
     this.version = options.version ?? Version.lazy(this.rest);
 

@@ -12,6 +12,7 @@ import { isPATAuth, isTokenAuth, resolveCache } from "./utils.js";
 import { TokenRefreshError } from "@/errors/index.js";
 import type { Logger } from "@/logger.js";
 import type { RequestOptions } from "@/options.js";
+import { withUserAgent } from "@/utils/fetch.js";
 import { isAbsent, isPresent } from "@/utils/optional.js";
 
 interface TokenState {
@@ -26,6 +27,7 @@ export class AuthManager {
   private readonly requestOptions: RequestOptions | undefined;
   private readonly cache: TokenCache | undefined;
   private readonly logger: Logger;
+  private readonly userAgent: string | undefined;
 
   private tokenState: TokenState | undefined;
   private authClient: AuthClient | undefined;
@@ -36,11 +38,13 @@ export class AuthManager {
     logger: Logger,
     authOptions?: AuthOptions,
     requestOptions?: RequestOptions,
+    userAgent?: string,
   ) {
     this.instanceUrl = instanceUrl;
     this.logger = logger;
     this.authOptions = authOptions;
     this.requestOptions = requestOptions;
+    this.userAgent = userAgent;
     this.cache = isPresent(authOptions?.cache)
       ? resolveCache(authOptions.cache, logger)
       : undefined;
@@ -134,11 +138,19 @@ export class AuthManager {
       this.authClient = new AuthClient({
         instanceUrl: this.instanceUrl,
         approver,
-        fetch: this.requestOptions?.fetch,
+        fetch: this.createInstanceFetch(),
         timeout: this.requestOptions?.timeout,
       });
     }
     return this.authClient;
+  }
+
+  private createInstanceFetch(): typeof globalThis.fetch | undefined {
+    const fetchFn = this.requestOptions?.fetch;
+    if (isAbsent(this.userAgent)) {
+      return fetchFn;
+    }
+    return withUserAgent(fetchFn ?? globalThis.fetch, this.userAgent);
   }
 
   private createApprover() {

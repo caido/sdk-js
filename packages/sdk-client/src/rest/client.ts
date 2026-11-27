@@ -27,18 +27,21 @@ export class RestClient {
   private readonly fetchFn: typeof globalThis.fetch;
   private readonly timeout: number | undefined;
   private readonly logger: Logger;
+  private readonly userAgent: string | undefined;
 
   constructor(
     baseUrl: string,
     auth: AuthManager,
     logger: Logger,
     requestOptions?: RequestOptions,
+    userAgent?: string,
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.auth = auth;
     this.logger = logger;
     this.fetchFn = requestOptions?.fetch ?? globalThis.fetch;
     this.timeout = requestOptions?.timeout;
+    this.userAgent = userAgent;
   }
 
   /**
@@ -89,6 +92,7 @@ export class RestClient {
 
     const headers: Record<string, string> = {
       Accept: "application/json",
+      ...(isPresent(this.userAgent) && { "User-Agent": this.userAgent }),
       ...options?.headers,
     };
 

@@ -4,6 +4,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "./dist",
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./src/*"]
     }
